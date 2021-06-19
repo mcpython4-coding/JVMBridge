@@ -1,0 +1,68 @@
+[uuk]: created this repository to host the jvm code, before developed as part of the main repository
+       below now the changelog before the move
+[uuk]: implemented a basic JVM in python for loading java bytecode
+[uuk]: implemented extension point for the javafml mod loader using the JVM
+[uuk]: the javafml mod loader is build to support BiomesOPlenty build 1.16.5-13.0.1.0.465, any other mod may work,
+       or may not. Feel free to write an extension library for the bridge system
+[uuk]: implemented JVM -> BlockFactory transformer
+[uuk]: JavaFML will now load all classes in class path of the mod
+[uuk]: JavaFML will now remember which mod is currently active making other mods in theory work
+[uuk]: bumped test version of biomesoplenty to 1.16.5-13.1.0.469
+[uuk]: added some parsing for the BlockProperty stuff
+[uuk]: fixed Runtime.run_method not returning for non-native methods the return value, resulting into None to be always
+       pushed back onto the stack
+[uuk]: fixed Blocks.func_235430_a_() not setting Block$Properties
+[uuk]: added base injection point for items
+[uuk]: items are now using the ItemGroup correctly
+[uuk]: made it possible to register classes only for a certain "version", meaning other versions cannot access it
+       [can be used to implement another mod loader version / type]
+       This allows in the future to load 1.17 mods in parallel to 1.16.5 mods
+[uuk]: implemented non-gui attachable debugger for methods
+[uuk]: cleaned up exception printing by using our own text collector for jvm exceptions
+[uuk]: fixed resolving of invokedynamic instruction
+[uuk]: fixed StairsBlocks not correctly getting resolved
+[uuk]: fixed factory transformer not using fence and fence gate base classes correctly
+[uuk]: fixed calling func_200948_a breaking blocks [wrong property setting]
+[uuk]: added debug flag --fill-unknown-natives for auto-filling native methods in-memory
+[uuk]: added some more debug info
+[uuk]: instructions can now be validated
+[uuk]: WARNING: the JVM is now starting to get natives which can DAMAGE your system!
+[uuk]: fixed invokevirtual on abstract methods
+[uuk]. fixed invokedynamic when passing additional parameters to the method
+[uuk]: added a continue button to the loading exception screen to continue mod loading even if an error occurred,
+       resuming where we stopped loading
+[uuk]: fixed invokedynamic with pre-args not returning the method result correctly
+[uuk]: instructions can now modify the data cache created during decode() during runtime
+[uuk]: InvokeDynamic will now cache the result of its method resolving
+[uuk]: InvokeDynamic is now using the "optimiser" system to split of the variants of targets into smaller bits
+[uuk]: hopefully fixed last InvokeDynamic miss-behaviours around binding constructors
+[uuk]: class files can now be validated after load [as part of the bake process].
+       Validation currently does only work on the access flags which are now allowed in some cases
+[uuk]: native methods can now specify if they are static or not
+[uuk]: fixed tableswitch instruction
+[uuk]: fixed InvokeDynamic on abstact methods and on signature expansion
+[uuk]: exported java jvm with bridge and built-ins into separate repository
+[uuk]: added __main__.py file for launching .jar archives outside
+
+tasks to do [maybe moved away for later]:
+- minifier task should minify builtin & bridge library into each only one file
+- a test system for testing mods & mod-packs against mcpython-4
+- a flag to jvm to skip not implemented natives & replace by holder methods, including the body in the console / write to file options
+- a system to export code portions as "subroutines" & a special invoke instruction, this needs:
+    - a code walker for deciding if instructions are jump-targets
+    - a code walker for deciding which portions of code should get sub-routined, including a system to transform
+        such code into python-native code where possible
+- a code walker to shorten code by removing NOOP's & resolving the jumps to the new destinations
+- maybe decoded instructions store their following instruction instead of the offset?
+- a code walker with a special instruction set for mc-specific instructions (shared.world access, current player) and
+    generic optimisation instructions (new with constructor call in ones)
+- a constant pool walker for identifying unnecessary elements in the pool and removing them
+
+Currently testing:
+AllTheMods6 version 1.6.9
+
+Currently working on fixing:
+- applied energetics 2
+
+Currently implementation problems:
+- InvokeDynamic stack operations during resolving leading into inaccurate stack items
