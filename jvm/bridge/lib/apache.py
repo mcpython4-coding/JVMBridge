@@ -15,19 +15,25 @@ from mcpython import shared
 from jvm.Java import NativeClass, native
 
 
-class System(NativeClass):
-    NAME = "java/lang/System"
+class Pair(NativeClass):
+    """
+    Represented by tuples
+    """
 
-    def __init__(self):
-        super().__init__()
-        self.exposed_attributes.update({
-            "out": None,
-        })
+    NAME = "org/apache/commons/lang3/tuple/Pair"
 
-    @native("getProperty", "(Ljava/lang/String;)Ljava/lang/String;")
-    def getProperty(self, name: str):
+    @native("getLeft", "()Ljava/lang/Object;")
+    def getLeft(self, instance):
+        return instance[0]
+
+    @native("getRight", "()Ljava/lang/Object;")
+    def getRight(self, instance):
+        return instance[1]
+
+
+class IOUtils(NativeClass):
+    NAME = "org/apache/commons/io/IOUtils"
+
+    @native("closeQuietly", "(Ljava/io/Reader;)V")
+    def closeQuietly(self, reader):
         pass
-
-    @native("lineSeparator", "()Ljava/lang/String;")
-    def lineSeparator(self):
-        return "\n"

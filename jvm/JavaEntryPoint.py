@@ -11,6 +11,10 @@ Mod loader inspired by "Minecraft Forge" (https://github.com/MinecraftForge/Mine
 
 This project is not official by mojang and does not relate to it.
 """
+'''
+Integration point to mcpython's mod loader 
+Highly depends on code of that stuff, so don't use it without it
+'''
 import sys
 import traceback
 

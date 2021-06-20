@@ -33,6 +33,8 @@ class Object(NativeClass):
             )
         elif isinstance(instance, str):
             return self.vm.get_class("java/lang/String", version=self.internal_version)
+        elif isinstance(instance, list):
+            return self.vm.get_class("java/util/List", version=self.internal_version)
 
         return instance.get_class()
 

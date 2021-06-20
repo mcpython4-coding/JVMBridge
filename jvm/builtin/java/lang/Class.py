@@ -91,3 +91,11 @@ class Class(NativeClass):
     @native("forName", "(Ljava/lang/String;ZLjava/lang/ClassLoader;)Ljava/lang/Class;")
     def forName(self, name: str, init, loader):
         return (loader if loader is not None else self.vm).get_class(name)
+
+    @native("getComponentType", "()Ljava/lang/Class;")
+    def getComponentType(self, instance):
+        return self.vm.get_class("java/lang/Object")
+
+    @native("getResource", "(Ljava/lang/String;)Ljava/net/URL;")
+    def getResource(self, instance, name):
+        return name

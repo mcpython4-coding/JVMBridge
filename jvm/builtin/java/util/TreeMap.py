@@ -40,3 +40,8 @@ class TreeMap(NativeClass):
     @native("containsKey", "(Ljava/lang/Object;)Z")
     def containsKey(self, instance, obj):
         return obj in instance
+
+    @native("put", "(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;")
+    def put(self, instance, key, value):
+        instance[key] = value
+        return value

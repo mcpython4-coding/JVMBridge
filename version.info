@@ -43,11 +43,11 @@
 [uuk]: fixed InvokeDynamic on abstact methods and on signature expansion
 [uuk]: exported java jvm with bridge and built-ins into separate repository
 [uuk]: added __main__.py file for launching .jar archives outside
+[uuk]: fixed some libraries not being included in git
 
 tasks to do [maybe moved away for later]:
 - minifier task should minify builtin & bridge library into each only one file
 - a test system for testing mods & mod-packs against mcpython-4
-- a flag to jvm to skip not implemented natives & replace by holder methods, including the body in the console / write to file options
 - a system to export code portions as "subroutines" & a special invoke instruction, this needs:
     - a code walker for deciding if instructions are jump-targets
     - a code walker for deciding which portions of code should get sub-routined, including a system to transform
@@ -60,9 +60,3 @@ tasks to do [maybe moved away for later]:
 
 Currently testing:
 AllTheMods6 version 1.6.9
-
-Currently working on fixing:
-- applied energetics 2
-
-Currently implementation problems:
-- InvokeDynamic stack operations during resolving leading into inaccurate stack items

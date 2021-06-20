@@ -17,7 +17,7 @@ import mcpython.common.mod.ModLoader
 from mcpython import logger, shared
 from jvm.Java import NativeClass, native
 from jvm.JavaExceptionStack import StackCollectingException
-from jvm.Runtime import Runtime, UnhandledInstructionException
+from jvm.Runtime import Runtime
 
 
 NAME2STAGE = {
@@ -510,7 +510,7 @@ class ForgeConfigSpec__Builder(NativeClass):
         "defineEnum",
         "(Ljava/lang/String;Ljava/lang/Enum;[Ljava/lang/Enum;)Lnet/minecraftforge/common/ForgeConfigSpec$EnumValue;",
     )
-    def defineEnum(self, instance, name: str, enum, values):
+    def defineEnum2(self, instance, name: str, enum, values):
         pass
 
     @native("pop", "(I)Lnet/minecraftforge/common/ForgeConfigSpec$Builder;")
@@ -519,6 +519,10 @@ class ForgeConfigSpec__Builder(NativeClass):
 
     @native("pop", "()Lnet/minecraftforge/common/ForgeConfigSpec$Builder;")
     def pop2(self, instance):
+        return instance
+
+    @native("defineEnum", "(Ljava/lang/String;Ljava/lang/Enum;)Lnet/minecraftforge/common/ForgeConfigSpec$EnumValue;")
+    def defineEnum3(self, instance, *_):
         return instance
 
 

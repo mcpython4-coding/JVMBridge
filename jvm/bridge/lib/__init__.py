@@ -11,23 +11,3 @@ Mod loader inspired by "Minecraft Forge" (https://github.com/MinecraftForge/Mine
 
 This project is not official by mojang and does not relate to it.
 """
-from mcpython import shared
-from jvm.Java import NativeClass, native
-
-
-class System(NativeClass):
-    NAME = "java/lang/System"
-
-    def __init__(self):
-        super().__init__()
-        self.exposed_attributes.update({
-            "out": None,
-        })
-
-    @native("getProperty", "(Ljava/lang/String;)Ljava/lang/String;")
-    def getProperty(self, name: str):
-        pass
-
-    @native("lineSeparator", "()Ljava/lang/String;")
-    def lineSeparator(self):
-        return "\n"

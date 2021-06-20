@@ -15,19 +15,16 @@ from mcpython import shared
 from jvm.Java import NativeClass, native
 
 
-class System(NativeClass):
-    NAME = "java/lang/System"
+class ConcurrentSet(NativeClass):
+    NAME = "io/netty/util/internal/ConcurrentSet"
 
-    def __init__(self):
-        super().__init__()
-        self.exposed_attributes.update({
-            "out": None,
-        })
-
-    @native("getProperty", "(Ljava/lang/String;)Ljava/lang/String;")
-    def getProperty(self, name: str):
+    @native("<init>", "()V")
+    def init(self, *_):
         pass
 
-    @native("lineSeparator", "()Ljava/lang/String;")
-    def lineSeparator(self):
-        return "\n"
+
+class ChannelHandler__Sharable(NativeClass):
+    NAME = "io/netty/channel/ChannelHandler$Sharable"
+
+    def on_annotate(self, cls, args):
+        pass

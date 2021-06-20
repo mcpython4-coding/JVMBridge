@@ -959,7 +959,7 @@ class Food__Builder(NativeClass):
     @native(
         "effect", "(Ljava/util/function/Supplier;F)Lnet/minecraft/item/Food$Builder;"
     )
-    def effect(self, instance, supplier):
+    def effect(self, instance, supplier, v: float):
         return instance
 
     @native("func_221455_b", "()Lnet/minecraft/item/Food$Builder;")

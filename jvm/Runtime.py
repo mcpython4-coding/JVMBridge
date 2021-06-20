@@ -11,9 +11,7 @@ Mod loader inspired by "Minecraft Forge" (https://github.com/MinecraftForge/Mine
 
 This project is not official by mojang and does not relate to it.
 """
-import asyncio
 import sys
-import traceback
 import typing
 from abc import ABC
 
@@ -22,11 +20,6 @@ from mcpython import logger
 from jvm.JavaExceptionStack import StackCollectingException
 
 DEBUG = "--debug-vm" in sys.argv
-
-
-# todo: remove
-class UnhandledInstructionException(Exception):
-    pass
 
 
 class Runtime:
@@ -628,7 +621,7 @@ class ArrayLoad(OpcodeInstruction):
 
 @BytecodeRepr.register_instruction
 class ArrayStore(OpcodeInstruction):
-    OPCODES = {0x53, 0x4F, 0x50, 0x54}
+    OPCODES = {0x53, 0x4F, 0x50, 0x54, 0x52}
 
     @classmethod
     def invoke(cls, data: typing.Any, stack: Stack):

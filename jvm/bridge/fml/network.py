@@ -94,3 +94,26 @@ class EventNetworkChannel(NativeClass):
     @native("registerObject", "(Ljava/lang/Object;)V")
     def registerObject(self, instance, obj):
         pass
+
+
+class DataSerializers(NativeClass):
+    NAME = "net/minecraft/network/datasync/DataSerializers"
+
+    def __init__(self):
+        super().__init__()
+        self.exposed_attributes.update({
+            "field_187197_g": None
+        })
+
+    @native("func_187189_a", "(Lnet/minecraft/network/datasync/IDataSerializer;)V")
+    def func_187189_a(self, *_):
+        pass
+
+
+class EntityDataManager(NativeClass):
+    NAME = "net/minecraft/network/datasync/EntityDataManager"
+
+    @native("func_187226_a",
+            "(Ljava/lang/Class;Lnet/minecraft/network/datasync/IDataSerializer;)Lnet/minecraft/network/datasync/DataParameter;")
+    def func_187226_a(self, *_):
+        pass

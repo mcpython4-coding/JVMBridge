@@ -15,19 +15,9 @@ from mcpython import shared
 from jvm.Java import NativeClass, native
 
 
-class System(NativeClass):
-    NAME = "java/lang/System"
+class Type(NativeClass):
+    NAME = "org/objectweb/asm/Type"
 
-    def __init__(self):
-        super().__init__()
-        self.exposed_attributes.update({
-            "out": None,
-        })
-
-    @native("getProperty", "(Ljava/lang/String;)Ljava/lang/String;")
-    def getProperty(self, name: str):
-        pass
-
-    @native("lineSeparator", "()Ljava/lang/String;")
-    def lineSeparator(self):
-        return "\n"
+    @native("getType", "(Ljava/lang/Class;)Lorg/objectweb/asm/Type;")
+    def getType(self, cls):
+        return self.create_instance()

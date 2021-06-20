@@ -146,6 +146,7 @@ class JavaVM:
             Path,
             PushbackInputStream,
             Reader,
+            PrintStream,
         )
         from jvm.builtin.java.lang import (
             Boolean,
@@ -177,8 +178,8 @@ class JavaVM:
             RetentionPolicy,
             Target,
         )
-        from jvm.builtin.java.lang.reflect import Field, Method
-        from jvm.builtin.java.lang.invoke import MethodHandles
+        from jvm.builtin.java.lang.reflect import Field, Method, Proxy
+        from jvm.builtin.java.lang.invoke import MethodHandles, ConstantCallSite
         from jvm.builtin.java.math import RoundingMode
         from jvm.builtin.java.nio.file import Files, Path, Paths
         from jvm.builtin.java.text import (
@@ -545,12 +546,14 @@ class NativeClassInstance:
 def native(name: str, signature: str, static=False):
     def setup(m):
 
-        # todo: do this with bytecode manipulation
-        def method(*args):
-            r = m(*args)
-            if signature[-1] == "Z":
+        if signature[-1] == "Z":
+            # todo: do this with bytecode manipulation
+            def method(*args):
+                r = m(*args)
                 r = int(r) if r is not None else 0
-            return r
+                return r
+        else:
+            method = m
 
         method.native_name = name
         method.native_signature = signature

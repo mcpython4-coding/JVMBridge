@@ -57,7 +57,7 @@ class IForgeRegistry(NativeClass):
 
     @native("iterator", "()Ljava/util/Iterator;")
     def iterator(self, instance):
-        return list(instance().entry_iterator())
+        return list(instance().entry_iterator()) if instance is not None else []
 
 
 class ForgeRegistries(NativeClass):
