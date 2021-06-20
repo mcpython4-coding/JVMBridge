@@ -273,6 +273,17 @@ class BaseInstruction(ABC):
     ):
         pass
 
+    @classmethod
+    def code_reference_changer(
+        cls,
+        container: "BytecodeRepr",
+        prepared_data: typing.Any,
+        instruction_index: int,
+        old_index: int,
+        checker: typing.Callable[[int], int],
+    ):
+        pass
+
 
 class OpcodeInstruction(BaseInstruction, ABC):
     """
@@ -412,6 +423,25 @@ class BytecodeRepr:
                     f"during validating {e[0].__name__} with data {e[1]} stored at index {i} in {self.code.table.parent}"
                 )
                 raise
+
+    def exchange_jump_offsets(self, begin_section: int, end_section: int, replace_section: typing.List, reference_reworker=lambda address, start, old_end, new_end: 0):
+        """
+        Helper method for exchanging two section of code with a new one and re-resolving references
+        """
+
+        self.decoded_code = self.decoded_code[:begin_section] + replace_section + self.decoded_code[end_section:]
+        new_end = begin_section + len(replace_section)
+
+        def resolve(address: int):
+            if address < begin_section: return address
+            if address > end_section: return address - end_section + new_end
+            return reference_reworker(address, begin_section, end_section, new_end)
+
+        for i, instruction in enumerate(self.decoded_code):
+            if instruction is None: continue
+            new_data = instruction[0].code_reference_changer(self, instruction[1], i, i if i < new_end else i - new_end + end_section, resolve)
+            if new_data is None: continue
+            self.decoded_code[i] = (instruction[0], new_data) + instruction[2:]
 
     def prepare_stack(self, stack: Stack):
         """
@@ -930,15 +960,28 @@ class IINC(OpcodeInstruction):
         stack.local_vars[data[0]] += data[1]
 
 
-@BytecodeRepr.register_instruction
-class IfGE0(OpcodeInstruction):
-    OPCODES = {0x9C}
-
+class CompareHelper(OpcodeInstruction, ABC):
     @classmethod
     def decode(
-        cls, data: bytearray, index, class_file
+            cls, data: bytearray, index, class_file
     ) -> typing.Tuple[typing.Any, int]:
-        return jvm.Java.U2_S.unpack(data[index : index + 2])[0], 3
+        return jvm.Java.U2_S.unpack(data[index: index + 2])[0], 3
+
+    @classmethod
+    def code_reference_changer(
+            cls,
+            container: "BytecodeRepr",
+            prepared_data: typing.Any,
+            instruction_index: int,
+            old_index: int,
+            checker: typing.Callable[[int], int],
+    ):
+        return checker(prepared_data + old_index) - instruction_index
+
+
+@BytecodeRepr.register_instruction
+class IfGE0(CompareHelper):
+    OPCODES = {0x9C}
 
     @classmethod
     def invoke(cls, data: typing.Any, stack: Stack) -> bool:
@@ -948,14 +991,8 @@ class IfGE0(OpcodeInstruction):
 
 
 @BytecodeRepr.register_instruction
-class IfEq(OpcodeInstruction):
+class IfEq(CompareHelper):
     OPCODES = {0x9F}
-
-    @classmethod
-    def decode(
-        cls, data: bytearray, index, class_file
-    ) -> typing.Tuple[typing.Any, int]:
-        return jvm.Java.U2_S.unpack(data[index : index + 2])[0], 3
 
     @classmethod
     def invoke(cls, data: typing.Any, stack: Stack) -> bool:
@@ -965,14 +1002,8 @@ class IfEq(OpcodeInstruction):
 
 
 @BytecodeRepr.register_instruction
-class IfNE(OpcodeInstruction):
+class IfNE(CompareHelper):
     OPCODES = {0xA0}
-
-    @classmethod
-    def decode(
-        cls, data: bytearray, index, class_file
-    ) -> typing.Tuple[typing.Any, int]:
-        return jvm.Java.U2_S.unpack(data[index : index + 2])[0], 3
 
     @classmethod
     def invoke(cls, data: typing.Any, stack: Stack) -> bool:
@@ -982,14 +1013,8 @@ class IfNE(OpcodeInstruction):
 
 
 @BytecodeRepr.register_instruction
-class IfLt(OpcodeInstruction):
+class IfLt(CompareHelper):
     OPCODES = {0xA1}
-
-    @classmethod
-    def decode(
-        cls, data: bytearray, index, class_file
-    ) -> typing.Tuple[typing.Any, int]:
-        return jvm.Java.U2_S.unpack(data[index : index + 2])[0], 3
 
     @classmethod
     def invoke(cls, data: typing.Any, stack: Stack) -> bool:
@@ -998,16 +1023,9 @@ class IfLt(OpcodeInstruction):
             return True
 
 
-
 @BytecodeRepr.register_instruction
-class IfGe(OpcodeInstruction):
+class IfGe(CompareHelper):
     OPCODES = {0xA2}
-
-    @classmethod
-    def decode(
-        cls, data: bytearray, index, class_file
-    ) -> typing.Tuple[typing.Any, int]:
-        return jvm.Java.U2_S.unpack(data[index : index + 2])[0], 3
 
     @classmethod
     def invoke(cls, data: typing.Any, stack: Stack) -> bool:
@@ -1017,14 +1035,8 @@ class IfGe(OpcodeInstruction):
 
 
 @BytecodeRepr.register_instruction
-class IfLe(OpcodeInstruction):
+class IfLe(CompareHelper):
     OPCODES = {0xA4}
-
-    @classmethod
-    def decode(
-        cls, data: bytearray, index, class_file
-    ) -> typing.Tuple[typing.Any, int]:
-        return jvm.Java.U2_S.unpack(data[index : index + 2])[0], 3
 
     @classmethod
     def invoke(cls, data: typing.Any, stack: Stack) -> bool:
@@ -1034,14 +1046,8 @@ class IfLe(OpcodeInstruction):
 
 
 @BytecodeRepr.register_instruction
-class IfEq(OpcodeInstruction):
+class IfEq(CompareHelper):
     OPCODES = {0xA5}
-
-    @classmethod
-    def decode(
-        cls, data: bytearray, index, class_file
-    ) -> typing.Tuple[typing.Any, int]:
-        return jvm.Java.U2_S.unpack(data[index : index + 2])[0], 3
 
     @classmethod
     def invoke(cls, data: typing.Any, stack: Stack) -> bool:
@@ -1051,14 +1057,8 @@ class IfEq(OpcodeInstruction):
 
 
 @BytecodeRepr.register_instruction
-class IfNEq(OpcodeInstruction):
+class IfNEq(CompareHelper):
     OPCODES = {0xA6}
-
-    @classmethod
-    def decode(
-        cls, data: bytearray, index, class_file
-    ) -> typing.Tuple[typing.Any, int]:
-        return jvm.Java.U2_S.unpack(data[index : index + 2])[0], 3
 
     @classmethod
     def invoke(cls, data: typing.Any, stack: Stack) -> bool:
@@ -1068,14 +1068,8 @@ class IfNEq(OpcodeInstruction):
 
 
 @BytecodeRepr.register_instruction
-class IfEq0(OpcodeInstruction):
+class IfEq0(CompareHelper):
     OPCODES = {0x99}
-
-    @classmethod
-    def decode(
-        cls, data: bytearray, index, class_file
-    ) -> typing.Tuple[typing.Any, int]:
-        return jvm.Java.U2_S.unpack(data[index : index + 2])[0], 3
 
     @classmethod
     def invoke(cls, data: typing.Any, stack: Stack) -> bool:
@@ -1085,14 +1079,8 @@ class IfEq0(OpcodeInstruction):
 
 
 @BytecodeRepr.register_instruction
-class IfNEq0(OpcodeInstruction):
+class IfNEq0(CompareHelper):
     OPCODES = {0x9A}
-
-    @classmethod
-    def decode(
-        cls, data: bytearray, index, class_file
-    ) -> typing.Tuple[typing.Any, int]:
-        return jvm.Java.U2_S.unpack(data[index : index + 2])[0], 3
 
     @classmethod
     def invoke(cls, data: typing.Any, stack: Stack) -> bool:
@@ -1102,14 +1090,8 @@ class IfNEq0(OpcodeInstruction):
 
 
 @BytecodeRepr.register_instruction
-class IfLT0(OpcodeInstruction):
+class IfLT0(CompareHelper):
     OPCODES = {0x9B}
-
-    @classmethod
-    def decode(
-        cls, data: bytearray, index, class_file
-    ) -> typing.Tuple[typing.Any, int]:
-        return jvm.Java.U2_S.unpack(data[index : index + 2])[0], 3
 
     @classmethod
     def invoke(cls, data: typing.Any, stack: Stack) -> bool:
@@ -1119,14 +1101,8 @@ class IfLT0(OpcodeInstruction):
 
 
 @BytecodeRepr.register_instruction
-class IfLE0(OpcodeInstruction):
+class IfLE0(CompareHelper):
     OPCODES = {0x9E}
-
-    @classmethod
-    def decode(
-        cls, data: bytearray, index, class_file
-    ) -> typing.Tuple[typing.Any, int]:
-        return jvm.Java.U2_S.unpack(data[index : index + 2])[0], 3
 
     @classmethod
     def invoke(cls, data: typing.Any, stack: Stack) -> bool:
@@ -1136,14 +1112,8 @@ class IfLE0(OpcodeInstruction):
 
 
 @BytecodeRepr.register_instruction
-class Goto(OpcodeInstruction):
+class Goto(CompareHelper):
     OPCODES = {0xA7}
-
-    @classmethod
-    def decode(
-        cls, data: bytearray, index, class_file
-    ) -> typing.Tuple[typing.Any, int]:
-        return jvm.Java.U2_S.unpack(data[index : index + 2])[0], 3
 
     @classmethod
     def invoke(cls, data: typing.Any, stack: Stack):
@@ -1702,14 +1672,8 @@ class InstanceOf(CPLinkedInstruction):
 
 
 @BytecodeRepr.register_instruction
-class IfNull(OpcodeInstruction):
+class IfNull(CompareHelper):
     OPCODES = {0xC6}
-
-    @classmethod
-    def decode(
-        cls, data: bytearray, index, class_file
-    ) -> typing.Tuple[typing.Any, int]:
-        return jvm.Java.U2_S.unpack(data[index : index + 2])[0], 3
 
     @classmethod
     def invoke(cls, data: typing.Any, stack: Stack) -> bool:
@@ -1719,14 +1683,8 @@ class IfNull(OpcodeInstruction):
 
 
 @BytecodeRepr.register_instruction
-class IfNonNull(OpcodeInstruction):
+class IfNonNull(CompareHelper):
     OPCODES = {0xC7}
-
-    @classmethod
-    def decode(
-        cls, data: bytearray, index, class_file
-    ) -> typing.Tuple[typing.Any, int]:
-        return jvm.Java.U2_S.unpack(data[index : index + 2])[0], 3
 
     @classmethod
     def invoke(cls, data: typing.Any, stack: Stack) -> bool:
@@ -1781,6 +1739,18 @@ class TableSwitch(OpcodeInstruction):
         else:
             stack.cp += data[3][index - data[1]]
         return True
+
+    @classmethod
+    def code_reference_changer(
+        cls,
+        container: "BytecodeRepr",
+        prepared_data: typing.Any,
+        instruction_index: int,
+        old_index: int,
+        checker: typing.Callable[[int], int],
+    ):
+        default, low, high, offsets = prepared_data
+        return checker(default + old_index) - instruction_index, low, high, [checker(e + old_index) - instruction_index for e in offsets]
 
 
 @BytecodeRepr.register_instruction
@@ -1875,3 +1845,15 @@ class LookupSwitch(OpcodeInstruction):
             stack.cp += data[0][key]
 
         return True
+
+    @classmethod
+    def code_reference_changer(
+        cls,
+        container: "BytecodeRepr",
+        prepared_data: typing.Any,
+        instruction_index: int,
+        old_index: int,
+        checker: typing.Callable[[int], int],
+    ):
+        default, pairs = prepared_data
+        return checker(default + old_index) - instruction_index, {e[0]: checker(e[1] + old_index) - instruction_index for e in pairs.items()}

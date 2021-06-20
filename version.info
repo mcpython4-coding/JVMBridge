@@ -44,6 +44,9 @@
 [uuk]: exported java jvm with bridge and built-ins into separate repository
 [uuk]: added __main__.py file for launching .jar archives outside
 [uuk]: fixed some libraries not being included in git
+[uuk]: implemented helper system for changing bytecode sections and chaning bytecode offsets in the instructions around
+       to the correct new values
+[uuk]: compare instructions use now a common base class removing duplicated code
 
 tasks to do [maybe moved away for later]:
 - minifier task should minify builtin & bridge library into each only one file
@@ -57,6 +60,7 @@ tasks to do [maybe moved away for later]:
 - a code walker with a special instruction set for mc-specific instructions (shared.world access, current player) and
     generic optimisation instructions (new with constructor call in ones)
 - a constant pool walker for identifying unnecessary elements in the pool and removing them
+- a system to generate .class files from the in-memory stuff, including a reversal of the non-default instructions
 
 Currently testing:
 AllTheMods6 version 1.6.9
