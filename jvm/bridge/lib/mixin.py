@@ -36,3 +36,10 @@ class At__Shift(NativeClass):
         self.exposed_attributes.update(
             {"AFTER": "org/spongepowered/asm/mixin/injection/At$Shift::AFTER", "BY": "org/spongepowered/asm/mixin/injection/At$Shift::BY"}
         )
+
+
+class Mixin(NativeClass):
+    NAME = "org/spongepowered/asm/mixin/Mixin"
+
+    def on_annotate(self, cls, args):
+        pass

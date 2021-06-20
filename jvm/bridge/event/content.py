@@ -106,7 +106,7 @@ class AbstractBlock_Properties(NativeClass):
         "(Lnet/minecraft/block/AbstractBlock;)Lnet/minecraft/block/AbstractBlock$Properties;",
     )
     def func_200950_a(self, instance):
-        return instance.properties
+        return instance.properties if instance is not None else None
 
     @native("func_200948_a", "(FF)Lnet/minecraft/block/AbstractBlock$Properties;")
     def func_200948_a(self, instance, a, b):
@@ -183,6 +183,11 @@ class AbstractBlock_Properties(NativeClass):
     def func_222380_e(self, instance):
         return instance
 
+    @native("func_235847_c_",
+            "(Lnet/minecraft/block/AbstractBlock$IPositionPredicate;)Lnet/minecraft/block/AbstractBlock$Properties;")
+    def func_235847_c_(self, instance, predicate):
+        return instance
+
 
 class SoundType(NativeClass):
     NAME = "net/minecraft/block/SoundType"
@@ -196,6 +201,8 @@ class SoundType(NativeClass):
                 "field_185848_a": None,
                 "field_185851_d": None,
                 "field_185853_f": None,
+                "field_185849_b": None,
+                "field_185852_e": None,
             }
         )
 
@@ -249,6 +256,7 @@ class ToolType(NativeClass):
                 "PICKAXE": "net/minecraft/block/ToolType::PICKAXE",
                 "AXE": "net/minecraft/block/ToolType::AXE",
                 "WRENCH": "net/minecraft/block/ToolType::WRENCH",
+                "HOE": "net/minecraft/block/ToolType::HOE",
             }
         )
 
@@ -336,6 +344,7 @@ class Material(NativeClass):
                 "field_203243_f": None,
                 "field_151573_f": None,
                 "field_151586_h": None,
+                "field_151572_C": None,
             }
         )
 
@@ -690,6 +699,9 @@ class BushBlock(Block):
     def init(self, instance, properties):
         instance.properties = properties
 
+    @native("func_208617_a", "(DDDDDD)Lnet/minecraft/util/math/shapes/VoxelShape;")
+    def func_208617_a(self, *_):
+        pass
 
 class IWaterLoggable(NativeClass):
     NAME = "net/minecraft/block/IWaterLoggable"
@@ -750,6 +762,10 @@ class MushroomBlock(Block):
     @native("<init>", "(Lnet/minecraft/block/AbstractBlock$Properties;)V")
     def init(self, instance, properties):
         instance.properties = properties
+
+    @native("func_208617_a", "(DDDDDD)Lnet/minecraft/util/math/shapes/VoxelShape;")
+    def func_208617_a(self, *_):
+        pass
 
 
 class FlowerPotBlock(Block):
@@ -884,6 +900,7 @@ class Items(NativeClass):
                 "field_151129_at": None,
                 "field_151117_aB": None,
                 "field_151131_as": None,
+                "field_151068_bn": None,
             }
         )
 
@@ -1354,6 +1371,7 @@ class BlockStateProperties(NativeClass):
                 "field_208198_y": None,
                 "field_208155_H": None,
                 "field_208157_J": None,
+                "field_208194_u": None,
             }
         )
 
@@ -1425,6 +1443,18 @@ class Direction(NativeClass):
         return instance[1][2]
 
 
+class Direction__Axis(NativeClass):
+    NAME = "net/minecraft/util/Direction$Axis"
+
+    def __init__(self):
+        super().__init__()
+        self.exposed_attributes.update({
+            "X": 0,
+            "Y": 1,
+            "Z": 2,
+        })
+
+
 class EnumProperty(NativeClass):
     NAME = "net/minecraft/state/EnumProperty"
 
@@ -1433,6 +1463,11 @@ class EnumProperty(NativeClass):
         "(Ljava/lang/String;Ljava/lang/Class;)Lnet/minecraft/state/EnumProperty;",
     )
     def func_1777709_a(self, name, cls):
+        return self.create_instance()
+
+    @native("func_177708_a",
+            "(Ljava/lang/String;Ljava/lang/Class;Ljava/util/function/Predicate;)Lnet/minecraft/state/EnumProperty;")
+    def func_177708_a(self, name, cls, predicate):
         return self.create_instance()
 
 

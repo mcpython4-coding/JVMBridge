@@ -58,6 +58,10 @@ class Map(NativeClass):
             instance[key] = supplier()
         return instance[key]
 
+    @native("isEmpty", "()Z")
+    def isEmpty(self, instance):
+        return not len(instance)
+
 
 class Map__Entry(NativeClass):
     NAME = "java/util/Map$Entry"

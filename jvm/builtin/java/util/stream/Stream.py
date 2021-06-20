@@ -40,6 +40,10 @@ class Stream(NativeClass):
     def of(self, array):
         return array
 
+    @native("of", "(Ljava/lang/Object;)Ljava/util/stream/Stream;")
+    def of2(self, obj):
+        return [obj]
+
     @native("map", "(Ljava/util/function/Function;)Ljava/util/stream/Stream;")
     def map(self, instance, function):
         return [function(e) for e in instance]

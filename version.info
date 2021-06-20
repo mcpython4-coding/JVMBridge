@@ -61,6 +61,14 @@ tasks to do [maybe moved away for later]:
     generic optimisation instructions (new with constructor call in ones)
 - a constant pool walker for identifying unnecessary elements in the pool and removing them
 - a system to generate .class files from the in-memory stuff, including a reversal of the non-default instructions
+- make versions 1.13 and up all compatible with the code
 
 Currently testing:
 AllTheMods6 version 1.6.9
+
+What to do with this:
+- make it load all mods [yes, including the ones requiring scala loading extension]
+- implement java bytecode -> python bytecode transformer & test it on the mod set
+- count the method calls and after X calls, transform it to python bytecode for optimisation
+- implement the runtime events & other loading events
+- more integration work

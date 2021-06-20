@@ -32,6 +32,16 @@ class Effects(NativeClass):
                 "field_188423_x": None,
                 "field_189112_A": None,
                 "field_76426_n": None,
+                "field_76419_f": None,
+                "field_76430_j": None,
+                "field_76436_u": None,
+                "field_76429_m": None,
+                "field_76437_t": None,
+                "field_76427_o": None,
+                "field_76439_r": None,
+                "field_82731_v": None,
+                "field_76420_g": None,
+                "field_76440_q": None,
             }
         )
 
@@ -67,3 +77,23 @@ class EffectType(NativeClass):
                 "HARMFUL": 1,
             }
         )
+
+
+class Potions(NativeClass):
+    NAME = "net/minecraft/potion/Potions"
+
+    def __init__(self):
+        super().__init__()
+        self.exposed_attributes.update({
+            "field_185230_b": None,
+            "field_185233_e": None,
+        })
+
+
+class PotionUtils(NativeClass):
+    NAME = "net/minecraft/potion/PotionUtils"
+
+    @native("func_185188_a",
+            "(Lnet/minecraft/item/ItemStack;Lnet/minecraft/potion/Potion;)Lnet/minecraft/item/ItemStack;")
+    def func_185188_a(self, itemstack, potion):
+        return itemstack

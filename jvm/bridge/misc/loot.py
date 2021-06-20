@@ -20,17 +20,18 @@ class GlobalLootModifierSerializer(NativeClass):
 
     @native("<init>", "()V")
     def init(self, instance):
-        pass
+        instance.registry_name = None
 
     @native(
         "setRegistryName", "(Lnet/minecraft/util/ResourceLocation;)Ljava/lang/Object;"
     )
     def setRegistryName(self, instance, name):
+        instance.registry_name = name if isinstance(name, str) else name.name
         return instance
 
     @native("getRegistryName", "()Lnet/minecraft/util/ResourceLocation;")
-    def getRegistryName(self, *_):
-        pass
+    def getRegistryName(self, instance):
+        return instance.registry_name
 
     @native("toString", "()Ljava/lang/String;")
     def toString(self, instance):
@@ -48,4 +49,12 @@ class LootConditionManager(NativeClass):
             "(Ljava/lang/String;Lnet/minecraft/loot/ILootSerializer;)Lnet/minecraft/loot/LootConditionType;")
     def func_237475_a_(self, name: str, serializer):
         pass
+
+
+class LootConditionType(NativeClass):
+    NAME = "net/minecraft/loot/LootConditionType"
+
+    @native("<init>", "(Lnet/minecraft/loot/ILootSerializer;)V")
+    def init(self, instance, serializer):
+        instance.serializer = serializer
 

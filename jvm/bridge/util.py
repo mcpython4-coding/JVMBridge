@@ -64,6 +64,7 @@ class IBooleanFunction(NativeClass):
         self.exposed_attributes.update(
             {
                 "field_223234_e_": None,
+                "field_223244_o_": None,
             }
         )
 
@@ -92,6 +93,11 @@ class VoxelShapes(NativeClass):
         return self.vm.get_class(
             "net/minecraft/util/math/shapes/VoxelShape", version=self.internal_version
         ).create_instance()
+
+    @native("func_197872_a",
+            "(Lnet/minecraft/util/math/shapes/VoxelShape;Lnet/minecraft/util/math/shapes/VoxelShape;)Lnet/minecraft/util/math/shapes/VoxelShape;")
+    def func_197872_a(self, *_):
+        pass
 
 
 class AxisAlignedBB(NativeClass):
@@ -181,6 +187,9 @@ class DamageSource(NativeClass):
 class NonNullList(NativeClass):
     NAME = "net/minecraft/util/NonNullList"
 
+    def create_instance(self):
+        return []
+
     @native("func_191196_a", "()Lnet/minecraft/util/NonNullList;")
     def func_191196_a(self):
         return []
@@ -189,6 +198,14 @@ class NonNullList(NativeClass):
     def add(self, instance, entry):
         instance.append(entry)
         return 1
+
+    @native("isEmpty", "()Z")
+    def isEmpty(self, instance):
+        return not len(instance)
+
+    @native("size", "()I")
+    def size(self, instance):
+        return len(instance)
 
 
 class BlockPos(NativeClass):

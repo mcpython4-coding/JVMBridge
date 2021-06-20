@@ -323,7 +323,20 @@ class ForgeRegistryEntry(NativeClass):
 
     @native("<init>", "()V")
     def init(self, instance):
-        pass
+        instance.registry_name = None
+
+    @native("setRegistryName", "(Lnet/minecraft/util/ResourceLocation;)Ljava/lang/Object;")
+    def setRegistryName(self, instance, name):
+        instance.registry_name = name if isinstance(name, str) else name.name
+        return instance
+
+    @native("getRegistryName", "()Lnet/minecraft/util/ResourceLocation;")
+    def getRegistryName(self, instance):
+        return instance.registry_name
+
+    @native("toString", "()Ljava/lang/String;")
+    def toString(self, instance):
+        return str(instance)
 
 
 class RegistryBuilder(NativeClass):

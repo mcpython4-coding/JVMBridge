@@ -29,3 +29,11 @@ class CriteriaTriggers(NativeClass):
 
 class ICriterionTrigger(NativeClass):
     NAME = "net/minecraft/advancements/ICriterionTrigger"
+
+
+class ItemPredicate(NativeClass):
+    NAME = "net/minecraft/advancements/criterion/ItemPredicate"
+
+    @native("register", "(Lnet/minecraft/util/ResourceLocation;Ljava/util/function/Function;)V")
+    def register(self, name, function):
+        pass

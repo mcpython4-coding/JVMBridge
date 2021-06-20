@@ -35,3 +35,19 @@ class SpecialRecipeSerializer(NativeClass):
     @native("<init>", "(Ljava/util/function/Function;)V")
     def init(self, instance, method):
         pass
+
+
+class Ingredient(NativeClass):
+    NAME = "net/minecraft/item/crafting/Ingredient"
+
+    @native("<init>", "(Ljava/util/stream/Stream;)V")
+    def init(self, instance, items):
+        instance.items = list(items)
+
+
+class Ingredient__SingleItemList(NativeClass):
+    NAME = "net/minecraft/item/crafting/Ingredient$SingleItemList"
+
+    @native("<init>", "(Lnet/minecraft/item/ItemStack;)V")
+    def init(self, instance, itemstack):
+        instance.underlying = itemstack

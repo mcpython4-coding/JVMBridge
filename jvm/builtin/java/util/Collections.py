@@ -36,3 +36,7 @@ class Collections(NativeClass):
     @native("emptyMap", "()Ljava/util/Map;")
     def emptyMap(self):
         return {}
+
+    @native("singletonList", "(Ljava/lang/Object;)Ljava/util/List;")
+    def singletonList(self, obj):
+        return obj,

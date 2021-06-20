@@ -476,7 +476,7 @@ class Any2Float(OpcodeInstruction):
 
 @BytecodeRepr.register_instruction
 class Any2Int(OpcodeInstruction):
-    OPCODES = {0x8E, 0x8B}
+    OPCODES = {0x8E, 0x8B, 0x8C}
 
     @classmethod
     def invoke(cls, data: typing.Any, stack: Stack):
@@ -670,7 +670,7 @@ class ArrayStore(OpcodeInstruction):
 
 @BytecodeRepr.register_instruction
 class Load(OpcodeInstruction):
-    OPCODES = {0x19, 0x15, 0x18}
+    OPCODES = {0x19, 0x15, 0x18, 0x17}
 
     @classmethod
     def decode(
@@ -1326,7 +1326,15 @@ class InvokeInterface(CPLinkedInstruction):
                 args = list(args)
                 method = args.pop(0)
 
-        stack.push(stack.runtime.run_method(method, *args))
+        try:
+            stack.push(stack.runtime.run_method(method, *args))
+        except StackCollectingException as e:
+            e.add_trace(f"during invoking interface {method} with {args}")
+
+            if hasattr(method, "class_file"):
+                e.add_trace(f"in class {method.class_file}")
+
+            raise
 
 
 @BytecodeRepr.register_instruction

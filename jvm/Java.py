@@ -777,6 +777,7 @@ class JavaAttributeTable:
         "NestHost",
         "NestMembers",
         "RuntimeVisibleAnnotations",
+        "RuntimeInvisibleAnnotations",
     }
     ATTRIBUTES_MAY_PARSING = {
         "Exceptions",

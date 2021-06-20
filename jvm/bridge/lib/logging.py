@@ -47,7 +47,15 @@ class Logger(CoreLogger):
 
     @native("debug", "(Ljava/lang/String;)V")
     def debug(self, instance, message):
-        logger.println("[FML LOGGER][WARN]", message)
+        logger.println("[FML LOGGER][DEBUG]", message)
+
+    @native("debug", "(Ljava/lang/String;Ljava/lang/Object;)V")
+    def debug2(self, instance, message, obj):
+        logger.println("[FML LOGGER][DEBUG]", message.format(obj))
+
+    @native("debug", "(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V")
+    def debug3(self, instance, message, obj1, obj2):
+        logger.println("[FML LOGGER][DEBUG]", message.format(obj1, obj2))
 
     @native("info", "(Ljava/lang/String;Ljava/lang/Object;)V")
     def info(self, instance, message, obj):

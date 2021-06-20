@@ -109,6 +109,10 @@ class ImmutableList(NativeClass):
         instance.underlying_tuple = tuple(array)
         return instance
 
+    @native("size", "()I")
+    def size(self, instance):
+        return len(instance) if isinstance(instance, tuple) else len(instance.underlying_tuple)
+
 
 class ImmutableMap(NativeClass):
     NAME = "com/google/common/collect/ImmutableMap"
@@ -453,4 +457,16 @@ class TypeToken(NativeClass):
     @native("getType", "()Ljava/lang/reflect/Type;")
     def getType(self, instance):
         pass
+
+
+class Predicates(NativeClass):
+    NAME = "com/google/common/base/Predicates"
+
+    @native("equalTo", "(Ljava/lang/Object;)Lcom/google/common/base/Predicate;")
+    def equalTo(self, obj):
+        return lambda e: e == obj
+
+    @native("not", "(Lcom/google/common/base/Predicate;)Lcom/google/common/base/Predicate;")
+    def not_(self, predicate):
+        return lambda e: not predicate(e)
 
