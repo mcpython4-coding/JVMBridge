@@ -51,3 +51,19 @@ class Ingredient__SingleItemList(NativeClass):
     @native("<init>", "(Lnet/minecraft/item/ItemStack;)V")
     def init(self, instance, itemstack):
         instance.underlying = itemstack
+
+
+class RecipeManager(NativeClass):
+    NAME = "net/minecraft/item/crafting/RecipeManager"
+
+    @native("func_215366_a", "(Lnet/minecraft/item/crafting/IRecipeType;)Ljava/util/Map;")
+    def func_215366_a(self, *_):
+        pass
+
+
+class RecipeBookGui(NativeClass):
+    NAME = "net/minecraft/client/gui/recipebook/RecipeBookGui"
+
+
+class RecipeBookPage(NativeClass):
+    NAME = "net/minecraft/client/gui/recipebook/RecipeBookPage"

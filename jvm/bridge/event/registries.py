@@ -145,7 +145,11 @@ class RegistryKey(NativeClass):
         "(Lnet/minecraft/util/RegistryKey;Lnet/minecraft/util/ResourceLocation;)Lnet/minecraft/util/RegistryKey;",
     )
     def func_240903_a_(self, key, location):
-        return key
+        return self.create_instance()
+
+    @native("func_240904_a_", "(Lnet/minecraft/util/ResourceLocation;)Lnet/minecraft/util/RegistryKey;")
+    def func_240904_a_(self, res_loc):
+        return self.create_instance()
 
 
 class RegistryObject(NativeClass):
@@ -401,3 +405,7 @@ class IForgeRegistryEntry(NativeClass):
     @native("getRegistryName", "()Lnet/minecraft/util/ResourceLocation;")
     def getRegistryName(self, *_):
         pass
+
+
+class EntitySpawnPlacementRegistry(NativeClass):
+    NAME = "net/minecraft/entity/EntitySpawnPlacementRegistry"

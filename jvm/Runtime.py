@@ -457,7 +457,8 @@ class BytecodeRepr:
 
 @BytecodeRepr.register_instruction
 class NoOp(OpcodeInstruction):
-    OPCODES = {0x00, 0x90, 0x88}
+    # C2 and C3: monitor stuff, as we are not threading, this works as it is
+    OPCODES = {0x00, 0x90, 0x88, 0xC2, 0xC3}
 
     @classmethod
     def invoke(cls, data: typing.Any, stack: Stack) -> bool:
@@ -651,7 +652,7 @@ class ArrayLoad(OpcodeInstruction):
 
 @BytecodeRepr.register_instruction
 class ArrayStore(OpcodeInstruction):
-    OPCODES = {0x53, 0x4F, 0x50, 0x54, 0x52}
+    OPCODES = {0x53, 0x4F, 0x50, 0x54, 0x52, 0x51}
 
     @classmethod
     def invoke(cls, data: typing.Any, stack: Stack):
@@ -1123,7 +1124,7 @@ class Goto(CompareHelper):
 
 @BytecodeRepr.register_instruction
 class AReturn(OpcodeInstruction):
-    OPCODES = {0xB0, 0xAC}
+    OPCODES = {0xB0, 0xAC, 0xAE}
 
     @classmethod
     def invoke(cls, data: typing.Any, stack: Stack):
@@ -1708,6 +1709,15 @@ class Mul(OpcodeInstruction):
     @classmethod
     def invoke(cls, data: typing.Any, stack: Stack):
         stack.push(stack.pop() * stack.pop())
+
+
+@BytecodeRepr.register_instruction
+class NEG(OpcodeInstruction):
+    OPCODES = {0x76}
+
+    @classmethod
+    def invoke(cls, data: typing.Any, stack: Stack):
+        stack.push(-stack.pop())
 
 
 @BytecodeRepr.register_instruction

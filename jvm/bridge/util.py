@@ -167,9 +167,20 @@ class DamageSource(NativeClass):
         super().__init__()
         self.exposed_attributes.update(
             {
-                "field_188406_j": None,
+                "field_188406_j": self.create_instance(),
+                "field_76369_e": self.create_instance(),
+                "field_76379_h": self.create_instance(),
+                "field_76371_c": self.create_instance(),
+                "field_76368_d": self.create_instance(),
+                "field_76366_f": self.create_instance(),
+                "field_76372_a": self.create_instance(),
+                "field_76370_b": self.create_instance(),
+                "field_190095_e": self.create_instance(),
             }
         )
+
+    def get_dynamic_field_keys(self):
+        return super().get_dynamic_field_keys() | {"field_76373_n"}
 
     @native("<init>", "(Ljava/lang/String;)V")
     def init(self, instance, v):
@@ -227,6 +238,15 @@ class ChunkPos(NativeClass):
 class SoundEvent(NativeClass):
     NAME = "net/minecraft/util/SoundEvent"
 
+    @native("<init>", "(Lnet/minecraft/util/ResourceLocation;)V")
+    def init(self, instance, name):
+        pass
+
+    @native("setRegistryName",
+            "(Lnet/minecraft/util/ResourceLocation;)Lnet/minecraftforge/registries/IForgeRegistryEntry;")
+    def setRegistryName(self, instance, name):
+        return instance
+
 
 class FolderName(NativeClass):
     NAME = "net/minecraft/world/storage/FolderName"
@@ -257,5 +277,18 @@ class TextFormatting(NativeClass):
                 "RED": 3,
                 "DARK_GREEN": 4,
                 "AQUA": 5,
+                "GOLD": 6,
             }
         )
+
+
+class Splashes(NativeClass):
+    NAME = "net/minecraft/client/util/Splashes"
+
+
+class LazyOptional(NativeClass):
+    NAME = "net/minecraftforge/common/util/LazyOptional"
+
+    @native("of", "(Lnet/minecraftforge/common/util/NonNullSupplier;)Lnet/minecraftforge/common/util/LazyOptional;")
+    def of(self, supplier):
+        return self.create_instance()

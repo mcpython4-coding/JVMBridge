@@ -101,7 +101,16 @@ class ImmutableList(NativeClass):
 
     @native("of", "(Ljava/lang/Object;)Lcom/google/common/collect/ImmutableList;")
     def of_3(self, obj):
-        return self.create_instance()
+        instance = self.create_instance()
+        instance.underlying_tuple = obj,
+        return instance
+
+    @native("of",
+            "(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Lcom/google/common/collect/ImmutableList;")
+    def of_4(self, *stuff):
+        instance = self.create_instance()
+        instance.underlying_tuple = stuff
+        return instance
 
     @native("copyOf", "([Ljava/lang/Object;)Lcom/google/common/collect/ImmutableList;")
     def copyOf(self, array):
@@ -309,6 +318,11 @@ class ImmutableSet(NativeClass):
     def of(self, *elements):
         return set(elements)
 
+    @native("of",
+            "(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;)Lcom/google/common/collect/ImmutableSet;")
+    def of2(self, *elements):
+        return set(elements[:-1]) | set(elements[-1])
+
     @native("builder", "()Lcom/google/common/collect/ImmutableSet$Builder;")
     def builder(self):
         return set()
@@ -469,4 +483,27 @@ class Predicates(NativeClass):
     @native("not", "(Lcom/google/common/base/Predicate;)Lcom/google/common/base/Predicate;")
     def not_(self, predicate):
         return lambda e: not predicate(e)
+
+
+class MapMaker(NativeClass):
+    NAME = "com/google/common/collect/MapMaker"
+
+    @native("<init>", "()V")
+    def init(self, instance):
+        instance.level = 0
+        instance.has_weak_keys = False
+
+    @native("concurrencyLevel", "(I)Lcom/google/common/collect/MapMaker;")
+    def concurrencyLevel(self, instance, level):
+        instance.level = level
+        return instance
+
+    @native("weakKeys", "()Lcom/google/common/collect/MapMaker;")
+    def weakKeys(self, instance):
+        instance.has_weak_keys = True
+        return instance
+
+    @native("makeMap", "()Ljava/util/concurrent/ConcurrentMap;")
+    def makeMap(self, instance):
+        return {}
 

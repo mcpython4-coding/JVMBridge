@@ -58,3 +58,7 @@ class LootConditionType(NativeClass):
     def init(self, instance, serializer):
         instance.serializer = serializer
 
+
+class LootTable(NativeClass):
+    NAME = "net/minecraft/loot/LootTable"
+

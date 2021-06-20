@@ -57,6 +57,10 @@ class ModelProperty(NativeClass):
 class ParticleType(NativeClass):
     NAME = "net/minecraft/particles/ParticleType"
 
+    @native("<init>", "(ZLnet/minecraft/particles/IParticleData$IDeserializer;)V")
+    def init(self, instance, v, deserializer):
+        pass
+
 
 class BlockColors(NativeClass):
     NAME = "net/minecraft/client/renderer/color/BlockColors"
@@ -67,3 +71,59 @@ class BlockColors(NativeClass):
     )
     def func_186722_a(self, instance, color, blocks):
         pass
+
+
+class EndPortalTileEntityRenderer(NativeClass):
+    NAME = "net/minecraft/client/renderer/tileentity/EndPortalTileEntityRenderer"
+
+
+class SoundEngine(NativeClass):
+    NAME = "net/minecraft/client/audio/SoundEngine"
+
+
+class WorldRenderer(NativeClass):
+    NAME = "net/minecraft/client/renderer/WorldRenderer"
+
+
+class FirstPersonRenderer(NativeClass):
+    NAME = "net/minecraft/client/renderer/FirstPersonRenderer"
+
+    @native("func_228406_b_", "(Lcom/mojang/blaze3d/matrix/MatrixStack;Lnet/minecraft/util/HandSide;F)V")
+    def func_228406_b_(self, *_):
+        pass
+
+    @native("func_228399_a_", "(Lcom/mojang/blaze3d/matrix/MatrixStack;Lnet/minecraft/util/HandSide;F)V")
+    def func_228399_a_(self, *_):
+        pass
+
+
+class RenderTypeBuffers(NativeClass):
+    NAME = "net/minecraft/client/renderer/RenderTypeBuffers"
+
+    def __init__(self):
+        super().__init__()
+        self.exposed_attributes.update({
+            "field_228480_b_": None
+        })
+
+
+class SkullTileEntityRenderer(NativeClass):
+    NAME = "net/minecraft/client/renderer/tileentity/SkullTileEntityRenderer"
+
+    @native("func_228878_a_",
+            "(Lnet/minecraft/block/SkullBlock$ISkullType;Lcom/mojang/authlib/GameProfile;)Lnet/minecraft/client/renderer/RenderType;")
+    def func_228878_a_(self, *_):
+        pass
+
+
+class ItemOverrideList(NativeClass):
+    NAME = "net/minecraft/client/renderer/model/ItemOverrideList"
+
+
+class ModelBakery(NativeClass):
+    NAME = "net/minecraft/client/renderer/model/ModelBakery"
+
+
+class RenderState(NativeClass):
+    NAME = "net/minecraft/client/renderer/RenderState"
+

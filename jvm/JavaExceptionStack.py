@@ -15,7 +15,7 @@ This project is not official by mojang and does not relate to it.
 
 class StackCollectingException(Exception):
     def __init__(self, text: str, base: Exception = None):
-        self.text = text
+        self.text = str(text)
         self.traces = []
         self.base = base
 

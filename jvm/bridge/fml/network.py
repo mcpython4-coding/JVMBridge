@@ -102,7 +102,12 @@ class DataSerializers(NativeClass):
     def __init__(self):
         super().__init__()
         self.exposed_attributes.update({
-            "field_187197_g": None
+            "field_187197_g": None,
+            "field_187192_b": None,
+            "field_187193_c": None,
+            "field_187200_j": None,
+            "field_187196_f": None,
+            "field_187198_h": None,
         })
 
     @native("func_187189_a", "(Lnet/minecraft/network/datasync/IDataSerializer;)V")

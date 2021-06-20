@@ -188,6 +188,14 @@ class AbstractBlock_Properties(NativeClass):
     def func_235847_c_(self, instance, predicate):
         return instance
 
+    @native("func_208770_d", "()Lnet/minecraft/block/AbstractBlock$Properties;")
+    def func_208770_d(self, instance):
+        return instance
+
+    @native("func_235859_g_", "()Lnet/minecraft/block/AbstractBlock$Properties;")
+    def func_235859_g_(self, instance):
+        return instance
+
 
 class SoundType(NativeClass):
     NAME = "net/minecraft/block/SoundType"
@@ -203,6 +211,7 @@ class SoundType(NativeClass):
                 "field_185853_f": None,
                 "field_185849_b": None,
                 "field_185852_e": None,
+                "field_185854_g": None,
             }
         )
 
@@ -345,6 +354,18 @@ class Material(NativeClass):
                 "field_151573_f": None,
                 "field_151586_h": None,
                 "field_151572_C": None,
+                "field_151580_n": None,
+                "field_189963_J": None,
+                "field_151588_w": None,
+                "field_76233_E": None,
+                "field_151574_g": None,
+                "field_151597_y": None,
+                "field_151596_z": None,
+                "field_151571_B": None,
+                "field_151570_A": None,
+                "field_215713_z": None,
+                "field_215712_y": None,
+                "field_76433_i": None,
             }
         )
 
@@ -452,6 +473,10 @@ class FireBlock(Block):
     @native("func_180686_a", "(Lnet/minecraft/block/Block;II)V")
     def func_180686_a(self, instance, block_class, a, b):
         pass
+
+
+class PaneBlock(Block):
+    NAME = "net/minecraft/block/PaneBlock"
 
 
 class ComposterBlock(Block):
@@ -656,6 +681,10 @@ class FlowerBlock(Block):
     def init(self, instance, effect, level, properties):
         instance.properties = properties
 
+    @native("func_208617_a", "(DDDDDD)Lnet/minecraft/util/math/shapes/VoxelShape;")
+    def func_208617_a(self, *_):
+        pass
+
 
 class TallFlowerBlock(Block):
     NAME = "net/minecraft/block/TallFlowerBlock"
@@ -687,6 +716,15 @@ class DoublePlantBlock(Block):
 class VineBlock(Block):
     NAME = "net/minecraft/block/VineBlock"
 
+    def __init__(self):
+        super().__init__()
+        self.exposed_attributes.update({
+            "field_176273_b": None,
+            "field_176279_N": None,
+            "field_176280_O": None,
+            "field_176278_M": None,
+        })
+
     @native("<init>", "(Lnet/minecraft/block/AbstractBlock$Properties;)V")
     def init(self, instance, properties):
         instance.properties = properties
@@ -702,6 +740,51 @@ class BushBlock(Block):
     @native("func_208617_a", "(DDDDDD)Lnet/minecraft/util/math/shapes/VoxelShape;")
     def func_208617_a(self, *_):
         pass
+
+
+class FarmlandBlock(Block):
+    NAME = "net/minecraft/block/FarmlandBlock"
+
+
+class AbstractRailBlock(Block):
+    NAME = "net/minecraft/block/AbstractRailBlock"
+
+    @native("<init>", "(ZLnet/minecraft/block/AbstractBlock$Properties;)V")
+    def init(self, instance, v, properties):
+        instance.properties = properties
+
+    @native("func_176223_P", "()Lnet/minecraft/block/BlockState;")
+    def func_176223_P(self, *_):
+        pass
+
+    @native("func_180632_j", "(Lnet/minecraft/block/BlockState;)V")
+    def func_180632_j(self, *_):
+        pass
+
+
+class AirBlock(Block):
+    NAME = "net/minecraft/block/AirBlock"
+
+    @native("<init>", "(Lnet/minecraft/block/AbstractBlock$Properties;)V")
+    def init(self, instance, properties):
+        instance.properties = properties
+
+
+class WallSkullBlock(Block):
+    NAME = "net/minecraft/block/WallSkullBlock"
+
+    @native("<init>", "(Lnet/minecraft/block/SkullBlock$ISkullType;Lnet/minecraft/block/AbstractBlock$Properties;)V")
+    def init(self, instance, skull_type, properties):
+        instance.properties = properties
+
+
+class SkullBlock(Block):
+    NAME = "net/minecraft/block/SkullBlock"
+
+    @native("<init>", "(Lnet/minecraft/block/SkullBlock$ISkullType;Lnet/minecraft/block/AbstractBlock$Properties;)V")
+    def init(self, instance, skull_type, properties):
+        instance.properties = properties
+
 
 class IWaterLoggable(NativeClass):
     NAME = "net/minecraft/block/IWaterLoggable"
@@ -887,6 +970,14 @@ class Item(NativeClass):
         return instance
 
 
+class EmptyHandler(NativeClass):
+    NAME = "net/minecraftforge/items/wrapper/EmptyHandler"
+
+    @native("<init>", "()V")
+    def init(self, *_):
+        pass
+
+
 class Items(NativeClass):
     NAME = "net/minecraft/item/Items"
 
@@ -957,6 +1048,43 @@ class Item_Properties(NativeClass):
     def addToolType(self, instance, tool_type, v):
         return instance
 
+    @native("func_221540_a", "(Lnet/minecraft/item/Food;)Lnet/minecraft/item/Item$Properties;")
+    def func_221540_a(self, instance, food):
+        return instance
+
+    @native("func_200915_b", "(I)Lnet/minecraft/item/Item$Properties;")
+    def func_200915_b(self, instance, v):
+        return instance
+
+
+class ArmorItem(Item):
+    NAME = "net/minecraft/item/ArmorItem"
+
+    @native("<init>",
+            "(Lnet/minecraft/item/IArmorMaterial;Lnet/minecraft/inventory/EquipmentSlotType;Lnet/minecraft/item/Item$Properties;)V")
+    def init(self, instance, material, slot_type, properties):
+        instance.properties = properties
+
+
+class ShearsItem(Item):
+    NAME = "net/minecraft/item/ShearsItem"
+
+    @native("<init>", "(Lnet/minecraft/item/Item$Properties;)V")
+    def init(self, instance, properties):
+        instance.properties = properties
+
+    @native("func_200915_b", "(I)Lnet/minecraft/item/Item$Properties;")
+    def func_200915_b(self, *_):
+        pass
+
+
+class BowItem(Item):
+    NAME = "net/minecraft/item/BowItem"
+
+    @native("<init>", "(Lnet/minecraft/item/Item$Properties;)V")
+    def init(self, instance, properties):
+        instance.properties = properties
+
 
 class Food__Builder(NativeClass):
     NAME = "net/minecraft/item/Food$Builder"
@@ -988,6 +1116,10 @@ class Food__Builder(NativeClass):
         return self.vm.get_class(
             "net/minecraft/item/Food", version=self.internal_version
         ).create_instance()
+
+    @native("func_221452_a", "(Lnet/minecraft/potion/EffectInstance;F)Lnet/minecraft/item/Food$Builder;")
+    def func_221452_a(self, instance, effect, v):
+        return instance
 
 
 class Food(NativeClass):
@@ -1093,6 +1225,10 @@ class IItemTier(NativeClass):
     @native("func_200926_a", "()I")
     def func_200926_a(self, instance):
         return 0
+
+    @native("func_200929_c", "()F")
+    def func_200929_c(self, *_):
+        pass
 
 
 class ItemTier(IItemTier):
@@ -1280,6 +1416,10 @@ class MusicDiscItem(Item):
     def init(self, instance, value, supplier, properties):
         instance.properties = properties
 
+    @native("<init>", "(ILnet/minecraft/util/SoundEvent;Lnet/minecraft/item/Item$Properties;)V")
+    def init2(self, instance, value, event, properties):
+        instance.properties = properties
+
 
 class IItemProvider(NativeClass):
     NAME = "net/minecraft/util/IItemProvider"
@@ -1301,6 +1441,10 @@ class ItemRarity(NativeClass):
                 "EPIC": "net/minecraft/item/Rarity::EPIC",
             }
         )
+
+    @native("create", "(Ljava/lang/String;Lnet/minecraft/util/text/TextFormatting;)Lnet/minecraft/item/Rarity;")
+    def create(self, name: str, formatting):
+        return self.create_instance()
 
 
 class DyeColor(NativeClass):
@@ -1372,6 +1516,7 @@ class BlockStateProperties(NativeClass):
                 "field_208155_H": None,
                 "field_208157_J": None,
                 "field_208194_u": None,
+                "field_208166_S": None,
             }
         )
 
@@ -1404,6 +1549,16 @@ class DoubleBlockHalf(NativeClass):
         self.exposed_attributes.update(
             {"LOWER": "net/minecraft/state/properties/DoubleBlockHalf::UPPER"}
         )
+
+
+class RailShape(NativeClass):
+    NAME = "net/minecraft/state/properties/RailShape"
+
+    def __init__(self):
+        super().__init__()
+        self.exposed_attributes.update({
+            "NORTH_SOUTH": 0,
+        })
 
 
 class Direction(NativeClass):
@@ -1541,7 +1696,8 @@ class EntityClassification(NativeClass):
         super().__init__()
         self.exposed_attributes.update(
             {
-                "MISC": None,
+                "MISC": 0,
+                "MONSTER": 1,
             }
         )
 
@@ -1608,6 +1764,10 @@ class EntityType__Builder(NativeClass):
     def setShouldReceiveVelocityUpdates(self, instance, should):
         return instance
 
+    @native("func_220320_c", "()Lnet/minecraft/entity/EntityType$Builder;")
+    def func_220320_c(self, instance):
+        return instance
+
 
 class Entity(NativeClass):
     NAME = "net/minecraft/entity/Entity"
@@ -1617,8 +1777,48 @@ class Entity(NativeClass):
         return 0
 
 
+class PlayerEntity(Entity):
+    NAME = "net/minecraft/entity/player/PlayerEntity"
+
+
+class PlayerList(NativeClass):
+    NAME = "net/minecraft/server/management/PlayerList"
+
+
 class ItemEntity(Entity):
     NAME = "net/minecraft/entity/item/ItemEntity"
+
+
+class ThrowableEntity(Entity):
+    NAME = "net/minecraft/entity/projectile/ThrowableEntity"
+
+
+class AbstractHorseEntity(Entity):
+    NAME = "net/minecraft/entity/passive/horse/AbstractHorseEntity"
+
+
+class WitherEntity(Entity):
+    NAME = "net/minecraft/entity/boss/WitherEntity"
+
+    @native("func_82214_u", "(I)D")
+    def func_82214_u(self, *_):
+        pass
+
+    @native("func_82208_v", "(I)D")
+    def func_82208_v(self, *_):
+        pass
+
+    @native("func_82213_w", "(I)D")
+    def func_82213_w(self, *_):
+        pass
+
+
+class AbstractMinecartEntity(Entity):
+    NAME = "net/minecraft/entity/item/minecart/AbstractMinecartEntity"
+
+
+class BeeEntity(Entity):
+    NAME = "net/minecraft/entity/passive/BeeEntity"
 
 
 class Attribute(NativeClass):
@@ -1637,8 +1837,29 @@ class TileEntityType(NativeClass):
     NAME = "net/minecraft/tileentity/TileEntityType"
 
 
+class TileEntityType__Builder(NativeClass):
+    NAME = "net/minecraft/tileentity/TileEntityType$Builder"
+
+    @native("func_223042_a",
+            "(Ljava/util/function/Supplier;[Lnet/minecraft/block/Block;)Lnet/minecraft/tileentity/TileEntityType$Builder;")
+    def func_223042_a(self, supplier, blocks):
+        return self.create_instance()
+
+    @native("func_206865_a", "(Lcom/mojang/datafixers/types/Type;)Lnet/minecraft/tileentity/TileEntityType;")
+    def func_206865_a(self, instance, data_fixer):
+        return instance
+
+
 class TileEntity(NativeClass):
     NAME = "net/minecraft/tileentity/TileEntity"
+
+
+class AbstractFurnaceTileEntity(TileEntity):
+    NAME = "net/minecraft/tileentity/AbstractFurnaceTileEntity"
+
+    @native("func_214008_b", "(Lnet/minecraft/item/crafting/IRecipe;)Z")
+    def func_214008_b(self, *_):
+        pass
 
 
 class BeaconTileEntity(TileEntity):
@@ -1715,6 +1936,34 @@ class SignTileEntity(NativeClass):
 
 class SkullTileEntity(NativeClass):
     NAME = "net/minecraft/tileentity/SkullTileEntity"
+
+
+class CreeperEntity(Entity):
+    NAME = "net/minecraft/entity/monster/CreeperEntity"
+
+
+class LivingEntity(Entity):
+    NAME = "net/minecraft/entity/LivingEntity"
+
+
+class MobEntity(Entity):
+    NAME = "net/minecraft/entity/MobEntity"
+
+    @native("func_184639_G", "()Lnet/minecraft/util/SoundEvent;")
+    def func_184639_G(self, *_):
+        pass
+
+
+class GoalSelector(NativeClass):
+    NAME = "net/minecraft/entity/ai/goal/GoalSelector"
+
+
+class AvoidEntityGoal(NativeClass):
+    NAME = "net/minecraft/entity/ai/goal/AvoidEntityGoal"
+
+
+class NearestAttackableTargetGoal(NativeClass):
+    NAME = "net/minecraft/entity/ai/goal/NearestAttackableTargetGoal"
 
 
 class PaintingType(NativeClass):

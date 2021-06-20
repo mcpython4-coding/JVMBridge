@@ -12,10 +12,14 @@ Mod loader inspired by "Minecraft Forge" (https://github.com/MinecraftForge/Mine
 This project is not official by mojang and does not relate to it.
 """
 from jvm.Java import NativeClass, native
+import weakref
 
 
 class WeakHashMap(NativeClass):
     NAME = "java/util/WeakHashMap"
+
+    def create_instance(self):
+        return weakref.WeakValueDictionary()
 
     @native("<init>", "()V")
     def init(self, instance):

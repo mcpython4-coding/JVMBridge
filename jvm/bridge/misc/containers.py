@@ -40,3 +40,11 @@ class EquipmentSlotType(NativeClass):
 
 class ContainerType(NativeClass):
     NAME = "net/minecraft/inventory/container/ContainerType"
+
+
+class IForgeContainerType(NativeClass):
+    NAME = "net/minecraftforge/common/extensions/IForgeContainerType"
+
+    @native("create", "(Lnet/minecraftforge/fml/network/IContainerFactory;)Lnet/minecraft/inventory/container/ContainerType;")
+    def create(self, factory):
+        pass

@@ -168,6 +168,7 @@ class JavaVM:
             Thread,
             ThreadLocal,
             ClassLoader,
+            SafeVarargs,
         )
         from jvm.builtin.java.lang.annotation import (
             Documented,
@@ -231,7 +232,7 @@ class JavaVM:
         )
         from jvm.builtin.java.util.regex import Pattern
         from jvm.builtin.java.util.stream import Collectors, Stream
-        from jvm.builtin.javax.annotation import CheckForNull, Nonnull
+        from jvm.builtin.javax.annotation import CheckForNull, Nonnull, Nullable
         from jvm.builtin.javax.annotation.meta import (
             TypeQualifierDefault,
         )
@@ -312,7 +313,7 @@ class {name.split('/')[-1].replace('$', '__')}(NativeClass):
 
                 return self.shared_classes[name]
 
-            raise StackCollectingException(f"class {name} not found!") from None
+            raise StackCollectingException(f"class '{name}' not found!") from None
 
         info("loading java class '" + name + "'")
 
@@ -388,6 +389,9 @@ class AbstractJavaClass:
     def create_instance(self):
         raise NotImplementedError
 
+    def inject_method(self, name: str, signature: str, method):
+        raise NotImplementedError
+
     def on_annotate(self, cls, args):
         if DYNAMIC_NATIVES:
             print("\n" + self.name + " is missing on_annotate implementation!")
@@ -427,6 +431,18 @@ class NativeClass(AbstractJavaClass, ABC):
 
         self.exposed_attributes = {}
         self.exposed_methods = {}
+        self.parent = self.__class__.__bases__[0]
+        self.injected_methods = []
+
+        if not isinstance(self.parent, NativeClass):
+            self.parent = None
+        else:
+            self.parent.children.append(self)
+
+            for injected in self.parent.injected_methods:
+                self.inject_method(*injected)
+
+        self.children: typing.List[AbstractJavaClass] = []
 
         for key, value in self.__class__.__dict__.items():
             if hasattr(value, "native_name"):
@@ -440,6 +456,14 @@ class NativeClass(AbstractJavaClass, ABC):
                 self.exposed_methods.setdefault(
                     (value.native_name, value.native_signature), method
                 )
+
+    def inject_method(self, name: str, signature: str, method):
+        self.exposed_methods[(name, signature)] = method
+
+        for child in self.children:
+            child.inject_method(name, signature, method)
+
+        self.injected_methods.append((name, signature, method))
 
     def get_method(self, name: str, signature: str, inner=False):
         try:
@@ -530,7 +554,7 @@ Static attribute {name}"""
 class NativeClassInstance:
     def __init__(self, native_class: "NativeClass"):
         self.native_class = native_class
-        self.fields = {}
+        self.fields = {key: None for key in native_class.get_dynamic_field_keys()}
 
     def get_method(self, name: str, signature: str):
         return self.native_class.get_method(name, signature)
@@ -728,6 +752,9 @@ class ElementValue:
             raise NotImplementedError(tag)
 
         return self
+
+    def __repr__(self):
+        return f"ElementValue({self.data})"
 
 
 class RuntimeAnnotationsParser(AbstractAttributeParser):
@@ -1100,28 +1127,45 @@ class JavaBytecodeClass(AbstractJavaClass):
         self.on_bake.clear()
 
         if "RuntimeVisibleAnnotations" in self.attributes.attributes:
-            for annotation in self.attributes["RuntimeVisibleAnnotations"]:
-                for cls_name, args in annotation.annotations:
-                    try:
-                        cls = vm.get_class(cls_name, version=self.internal_version)
-                    except StackCollectingException as e:
-                        # checks if the class exists, this will be true if it is a here class loader exception
-                        if (
-                            e.text.startswith("class ")
-                            and e.text.endswith(" not found!")
-                            and len(e.traces) == 0
-                        ):
-                            # todo: can we do something else here, maybe add a flag to get_class to return None if the class
-                            #   could not be loaded -> None check here
-                            print("classloading exception for annotation ignored")
-                            print(e.format_exception())
-                        else:
-                            e.add_trace(
-                                f"runtime visible annotation handling @class {self.name} loading class {cls_name}"
-                            )
-                            raise
+            self.process_annotation(self.attributes["RuntimeVisibleAnnotations"])
+
+        if "RuntimeInvisibleAnnotations" in self.attributes.attributes:
+            self.process_annotation(self.attributes["RuntimeInvisibleAnnotations"])
+
+        for method in self.methods.values():
+            attribute: JavaAttributeTable = method.attributes
+
+            if "RuntimeVisibleAnnotations" in attribute.attributes:
+                self.process_annotation(attribute.attributes["RuntimeVisibleAnnotations"], target=method)
+
+            if "RuntimeInvisibleAnnotations" in attribute.attributes:
+                self.process_annotation(attribute.attributes["RuntimeInvisibleAnnotations"], target=method)
+
+    def process_annotation(self, data, target=None):
+        if target is None: target = self
+
+        for annotation in data:
+            for cls_name, args in annotation.annotations:
+                try:
+                    cls = vm.get_class(cls_name, version=self.internal_version)
+                except StackCollectingException as e:
+                    # checks if the class exists, this will be true if it is a here class loader exception
+                    if (
+                        e.text.startswith("class ")
+                        and e.text.endswith(" not found!")
+                        and len(e.traces) == 0
+                    ):
+                        # todo: can we do something else here, maybe add a flag to get_class to return None if the class
+                        #   could not be loaded -> None check here
+                        print("classloading exception for annotation ignored")
+                        print(e.format_exception())
                     else:
-                        cls.on_annotate(self, args)
+                        e.add_trace(
+                            f"runtime annotation handling @class {self.name} loading class {cls_name}"
+                        )
+                        raise
+                else:
+                    cls.on_annotate(target, args)
 
     def create_instance(self):
         # Abstract classes cannot have instances
@@ -1213,6 +1257,9 @@ class JavaBytecodeClass(AbstractJavaClass):
                 raise RuntimeError(
                     f"class {self.name} is abstract and final, which is not allowed"
                 )
+
+    def inject_method(self, name: str, signature: str, method):
+        self.methods[(name, signature)] = method
 
 
 class JavaClassInstance:

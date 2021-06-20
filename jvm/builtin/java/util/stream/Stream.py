@@ -62,3 +62,7 @@ class Stream(NativeClass):
     @native("flatMap", "(Ljava/util/function/Function;)Ljava/util/stream/Stream;")
     def flatMap(self, instance, function):
         return [function(e) for e in instance]
+
+    @native("toArray", "(Ljava/util/function/IntFunction;)[Ljava/lang/Object;")
+    def toArray(self, instance, int_function):
+        return list(instance)

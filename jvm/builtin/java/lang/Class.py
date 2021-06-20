@@ -99,3 +99,7 @@ class Class(NativeClass):
     @native("getResource", "(Ljava/lang/String;)Ljava/net/URL;")
     def getResource(self, instance, name):
         return name
+
+    @native("forName", "(Ljava/lang/String;)Ljava/lang/Class;")
+    def forName(self, name: str):
+        return self.vm.get_class(name, version=self.internal_version)

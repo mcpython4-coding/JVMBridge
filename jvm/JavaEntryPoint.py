@@ -11,6 +11,8 @@ Mod loader inspired by "Minecraft Forge" (https://github.com/MinecraftForge/Mine
 
 This project is not official by mojang and does not relate to it.
 """
+import json
+
 '''
 Integration point to mcpython's mod loader 
 Highly depends on code of that stuff, so don't use it without it
@@ -56,10 +58,32 @@ class JavaMod(mcpython.common.mod.Mod.Mod):
         """
 
         for file in self.resource_access.get_all_entries_in_directory(""):
+            if file.endswith(".mixins.json"):
+                logger.println(f"found mixin info file at {file} for mod {self.name}")
+                self.load_mixin_map(file)
+
+        for file in self.resource_access.get_all_entries_in_directory(""):
             if not file.endswith(".class"):
                 continue
 
             self.load_mod_file(file)
+
+    def load_mixin_map(self, file: str):
+        data = json.loads(self.resource_access.read_raw(file).decode("utf-8"))
+
+        refmap = data["refmap"]
+
+        refmap_data = json.loads(self.resource_access.read_raw(refmap).decode("utf-8"))
+        shared.CURRENT_REF_MAP = refmap_data
+
+        package = data["package"].replace(".", "/")
+
+        for file in data["mixins"]:
+            module = package + "/" + file
+
+            shared.CURRENT_EVENT_SUB = self.name
+
+            java_jvm.load_class(module, version=self.loader_version).prepare_use()
 
     def load_mod_file(self, file: str):
         import mcpython.client.state.StateLoadingException
@@ -102,6 +126,7 @@ class JavaMod(mcpython.common.mod.Mod.Mod):
 
             shared.window.close()
             pyglet.app.exit()
+            print("closing")
             sys.exit(-1)
 
         except mcpython.common.mod.ModLoader.LoadingInterruptException:
@@ -126,6 +151,7 @@ class JavaMod(mcpython.common.mod.Mod.Mod):
 
             shared.window.close()
             pyglet.app.exit()
+            print("closing")
             sys.exit(-1)
 
 

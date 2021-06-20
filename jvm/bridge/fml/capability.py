@@ -44,3 +44,10 @@ class CapabilityFluidHandler(NativeClass):
                 "FLUID_HANDLER_ITEM_CAPABILITY": None,
             }
         )
+
+
+class CapabilityInject(NativeClass):
+    NAME = "net/minecraftforge/common/capabilities/CapabilityInject"
+
+    def on_annotate(self, cls, args):
+        pass

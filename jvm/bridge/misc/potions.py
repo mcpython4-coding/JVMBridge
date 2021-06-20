@@ -42,6 +42,13 @@ class Effects(NativeClass):
                 "field_82731_v": None,
                 "field_76420_g": None,
                 "field_76440_q": None,
+                "field_76443_y": None,
+                "field_76422_e": None,
+                "field_76432_h": None,
+                "field_76421_d": None,
+                "field_188425_z": None,
+                "field_204839_B": None,
+                "field_188424_y": None,
             }
         )
 
@@ -75,8 +82,17 @@ class EffectType(NativeClass):
             {
                 "NEUTRAL": 0,
                 "HARMFUL": 1,
+                "BENEFICIAL": 2,
             }
         )
+
+
+class InstantEffect(NativeClass):
+    NAME = "net/minecraft/potion/InstantEffect"
+
+    @native("<init>", "(Lnet/minecraft/potion/EffectType;I)V")
+    def init(self, instance, effect_type, v):
+        pass
 
 
 class Potions(NativeClass):
@@ -97,3 +113,15 @@ class PotionUtils(NativeClass):
             "(Lnet/minecraft/item/ItemStack;Lnet/minecraft/potion/Potion;)Lnet/minecraft/item/ItemStack;")
     def func_185188_a(self, itemstack, potion):
         return itemstack
+
+    @native("func_185181_a", "(Ljava/util/Collection;)I")
+    def func_185181_a(self, *_):
+        return []
+
+
+class EffectInstance(NativeClass):
+    NAME = "net/minecraft/potion/EffectInstance"
+
+    @native("<init>", "(Lnet/minecraft/potion/Effect;II)V")
+    def init(self, instance, effect, a, b):
+        pass

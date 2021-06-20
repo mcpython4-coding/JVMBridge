@@ -29,6 +29,10 @@ class BlockTags(NativeClass):
     def createOptional(self, name: str):
         pass
 
+    @native("func_242174_b", "()Ljava/util/List;")
+    def func_242174_b(self, *_):
+        return []
+
 
 class ItemTags(NativeClass):
     NAME = "net/minecraft/tags/ItemTags"
@@ -53,6 +57,14 @@ class FluidTags(NativeClass):
         "(Lnet/minecraft/util/ResourceLocation;)Lnet/minecraftforge/common/Tags$IOptionalNamedTag;",
     )
     def createOptional(self, *_):
+        pass
+
+
+class EntityTypeTags(NativeClass):
+    NAME = "net/minecraft/tags/EntityTypeTags"
+
+    @native("func_232896_a_", "(Ljava/lang/String;)Lnet/minecraft/tags/ITag$INamedTag;")
+    def func_232896_a_(self, *_):
         pass
 
 

@@ -273,6 +273,11 @@ class Stats(NativeClass):
         super().__init__()
         self.exposed_attributes.update({"field_199092_j": None})
 
+    @native("func_199084_a",
+            "(Ljava/lang/String;Lnet/minecraft/stats/IStatFormatter;)Lnet/minecraft/util/ResourceLocation;")
+    def func_199084_a(self, *_):
+        pass
+
 
 class IStatFormatter(NativeClass):
     NAME = "net/minecraft/stats/IStatFormatter"
@@ -295,3 +300,24 @@ class StatType(NativeClass):
     )
     def func_199077_a(self, instance, obj, formatter):
         pass
+
+
+class AbstractSpawner(NativeClass):
+    NAME = "net/minecraft/world/spawner/AbstractSpawner"
+
+    @native("func_98279_f", "()Z")
+    def func_98279_f(self, *_):
+        pass
+
+    @native("func_98273_j", "()V")
+    def func_98273_j(self, *_):
+        pass
+
+
+class WorldEntitySpawner(NativeClass):
+    NAME = "net/minecraft/world/spawner/WorldEntitySpawner"
+
+
+class ClientWorld__ClientWorldInfo(NativeClass):
+    NAME = "net/minecraft/client/world/ClientWorld$ClientWorldInfo"
+

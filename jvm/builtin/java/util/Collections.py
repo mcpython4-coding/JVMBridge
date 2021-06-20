@@ -12,6 +12,7 @@ Mod loader inspired by "Minecraft Forge" (https://github.com/MinecraftForge/Mine
 This project is not official by mojang and does not relate to it.
 """
 from jvm.Java import NativeClass, native
+from jvm.JavaExceptionStack import StackCollectingException
 
 
 class Collections(NativeClass):
@@ -40,3 +41,14 @@ class Collections(NativeClass):
     @native("singletonList", "(Ljava/lang/Object;)Ljava/util/List;")
     def singletonList(self, obj):
         return obj,
+
+    @native("newSetFromMap", "(Ljava/util/Map;)Ljava/util/Set;")
+    def newSetFromMap(self, m):
+        try:
+            return set(m.keys())
+        except:
+            raise StackCollectingException(m)
+
+    @native("synchronizedList", "(Ljava/util/List;)Ljava/util/List;")
+    def synchronizedList(self, array):
+        return array

@@ -47,6 +47,9 @@
 [uuk]: implemented helper system for changing bytecode sections and chaning bytecode offsets in the instructions around
        to the correct new values
 [uuk]: compare instructions use now a common base class removing duplicated code
+[uuk]: some work on mixin processor system
+[uuk]: added processor for method annotations
+[uuk]: added system to runtime-inject methods
 
 tasks to do [maybe moved away for later]:
 - minifier task should minify builtin & bridge library into each only one file

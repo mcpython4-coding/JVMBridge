@@ -11,8 +11,11 @@ Mod loader inspired by "Minecraft Forge" (https://github.com/MinecraftForge/Mine
 
 This project is not official by mojang and does not relate to it.
 """
-from mcpython import shared
-from jvm.Java import NativeClass, native
+import traceback
+
+from mcpython import shared, logger
+from jvm.Java import NativeClass, native, JavaMethod, AbstractJavaClass
+from jvm.JavaExceptionStack import StackCollectingException
 
 
 class LocalCapture(NativeClass):
@@ -41,5 +44,120 @@ class At__Shift(NativeClass):
 class Mixin(NativeClass):
     NAME = "org/spongepowered/asm/mixin/Mixin"
 
+    def on_annotate(self, cls, args):
+        try:
+            cls.mixin_target = cls.vm.get_class(args[0][1].data[0].data[1][1:-1])
+        except StackCollectingException as e:
+            print(e.format_exception())
+        except:
+            traceback.print_exc()
+
+
+class Invoker(NativeClass):
+    NAME = "org/spongepowered/asm/mixin/gen/Invoker"
+
+    def on_annotate(self, method: JavaMethod, args):
+        """
+        Mixin processor for an Invoker mixin
+        Will inject a new method into the target class wrapping the target method
+        """
+        try:
+            target_cls: AbstractJavaClass = method.class_file.mixin_target
+            target_method_name = shared.CURRENT_REF_MAP["mappings"][method.class_file.name][args[0][1].data].split("(")[0]
+            override_method = target_cls.get_method(target_method_name, method.signature)
+
+            logger.println(f"[MIXIN][INJECT] injecting into class {target_cls} method '{method.name}{method.signature}' wrapping '{args[0][1]}/{target_method_name}{method.signature}'")
+
+            m = lambda *a: override_method(*a)
+
+            native(method.name, method.signature)(m)
+
+            target_cls.inject_method(method.name, method.signature, m)
+            method.class_file.methods[(method.name, method.signature)] = m
+        except StackCollectingException as e:
+            print(e.format_exception())
+        except:
+            traceback.print_exc()
+
+
+class Accessor(NativeClass):
+    NAME = "org/spongepowered/asm/mixin/gen/Accessor"
+
+    def on_annotate(self, method: JavaMethod, args):
+        """
+        Mixin process for an Accessor mixin
+        """
+        try:
+            target_cls: AbstractJavaClass = method.class_file.mixin_target
+            target_attribute_name = method.name.removeprefix("get").removeprefix("set")
+            target_attribute_name = target_attribute_name[0].lower() + target_attribute_name[1:]
+            target_attribute_name = shared.CURRENT_REF_MAP["mappings"][method.class_file.name].setdefault(target_attribute_name, target_attribute_name).split(":")[0]
+
+            if method.name.startswith("get"):
+                m = lambda *instance: instance[0].fields[target_attribute_name] if instance else target_cls.get_static_attribute(target_attribute_name)
+            else:
+                def m(*v):
+                    if len(v) == 1:
+                        target_cls.set_static_attribute(target_attribute_name, v[0])
+                    else:
+                        v[0].fields[target_attribute_name] = v[1]
+
+            logger.println(f"[MIXIN][INJECT] injecting attribute accessor into {target_cls.name} accessing '{target_attribute_name}' via '{method.name}{method.signature}'")
+
+            native(method.name, method.signature)(m)
+
+            target_cls.inject_method(method.name, method.signature, m)
+            method.class_file.methods[(method.name, method.signature)] = m
+
+        except StackCollectingException as e:
+            print(e.format_exception())
+        except:
+            traceback.print_exc()
+
+
+class Inject(NativeClass):
+    NAME = "org/spongepowered/asm/mixin/injection/Inject"
+
+    # this requires runtime bytecode modification of python functions, so NO
+    def on_annotate(self, cls, args):
+        pass
+
+
+class ModifyArg(NativeClass):
+    NAME = "org/spongepowered/asm/mixin/injection/ModifyArg"
+
+    # todo: do something about this
+    def on_annotate(self, cls, args):
+        pass
+
+
+class Shadow(NativeClass):
+    NAME = "org/spongepowered/asm/mixin/Shadow"
+
+    # todo: implement this
+    def on_annotate(self, cls, args):
+        pass
+
+
+class ModifyVariable(NativeClass):
+    NAME = "org/spongepowered/asm/mixin/injection/ModifyVariable"
+
+    # todo: implement
+    def on_annotate(self, cls, args):
+        pass
+
+
+class Unique(NativeClass):
+    NAME = "org/spongepowered/asm/mixin/Unique"
+
+    # todo: implement
+    def on_annotate(self, cls, args):
+        pass
+
+
+class ModifyConstant(NativeClass):
+    NAME = "org/spongepowered/asm/mixin/injection/ModifyConstant"
+
+    # todo: implement
     def on_annotate(self, cls, args):
         pass
