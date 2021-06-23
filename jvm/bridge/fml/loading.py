@@ -94,6 +94,7 @@ class Mod_EventBusSubscriber(NativeClass):
                     except StackCollectingException as e:
                         import mcpython.client.state.StateLoadingException
 
+                        traceback.print_exc()
                         mcpython.client.state.StateLoadingException.error_occur(
                             e.format_exception()
                         )
@@ -210,6 +211,7 @@ class EventBus(NativeClass):
                 except StackCollectingException as e:
                     import mcpython.client.state.StateLoadingException
 
+                    traceback.print_exc()
                     mcpython.client.state.StateLoadingException.error_occur(
                         e.format_exception()
                     )

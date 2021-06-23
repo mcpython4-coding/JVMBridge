@@ -200,6 +200,14 @@ class AbstractBlock_Properties(NativeClass):
     def func_200941_a(self, instance, v):
         return instance
 
+    @native("func_222379_b", "(Lnet/minecraft/block/Block;)Lnet/minecraft/block/AbstractBlock$Properties;")
+    def func_222379_b(self, *_):
+        pass
+
+    @native("func_185904_a", "()Lnet/minecraft/block/material/Material;")
+    def func_185904_a(self, *_):
+        pass
+
 
 class SoundType(NativeClass):
     NAME = "net/minecraft/block/SoundType"
@@ -216,6 +224,7 @@ class SoundType(NativeClass):
                 "field_185849_b": None,
                 "field_185852_e": None,
                 "field_185854_g": None,
+                "field_185859_l": None,
             }
         )
 
@@ -378,6 +387,8 @@ class Material(NativeClass):
                 "field_215713_z": None,
                 "field_215712_y": None,
                 "field_76433_i": None,
+                "field_151598_x": None,
+                "field_151567_E": None,
             }
         )
 
@@ -504,7 +515,6 @@ class ContainerBlock(Block):
     def init(self, instance, properties):
         instance.properties = properties
 
-
     @native("func_176194_O", "()Lnet/minecraft/state/StateContainer;")
     def func_176194_O(self, *_):
         pass
@@ -515,13 +525,15 @@ class ContainerBlock(Block):
 
     @native("setRegistryName",
             "(Ljava/lang/String;Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;")
-    def setRegistryName(self, *_):
-        pass
+    def setRegistryName(self, instance, namespace, name):
+        instance.registry_name = namespace + ":" + name
+        return instance
 
     @native("setRegistryName",
-            "(Ljava/lang/String;Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;")
-    def setRegistryName2(self, *_):
-        pass
+            "(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;")
+    def setRegistryName2(self, instance, name):
+        instance.registry_name = name
+        return instance
 
 
 class FallingBlock(Block):
@@ -579,6 +591,11 @@ class StairsBlock(Block):
     def init(self, instance, a, properties):
         instance.properties = properties
 
+    @native("setRegistryName", "(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;")
+    def setRegistryName(self, instance, name):
+        instance.name = name
+        return instance
+
 
 class SlabBlock(Block):
     NAME = "net/minecraft/block/SlabBlock"
@@ -587,6 +604,39 @@ class SlabBlock(Block):
     def init(self, instance, properties):
         instance.properties = properties
 
+    @native("setRegistryName", "(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;")
+    def setRegistryName(self, instance, name):
+        instance.name = name
+        return instance
+
+
+class SpawnerBlock(Block):
+    NAME = "net/minecraft/block/SpawnerBlock"
+
+    @native("<init>", "(Lnet/minecraft/block/AbstractBlock$Properties;)V")
+    def init(self, instance, properties):
+        instance.properties = properties
+
+    @native("setRegistryName",
+            "(Ljava/lang/String;Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;")
+    def setRegistryName(self, instance, namespace, name):
+        instance.registry_name = namespace + ":" + name
+        return instance
+
+
+class ChestBlock(Block):
+    NAME = "net/minecraft/block/ChestBlock"
+
+    @native("<init>", "(Lnet/minecraft/block/AbstractBlock$Properties;Ljava/util/function/Supplier;)V")
+    def init(self, instance, properties, supplier):
+        instance.properties = properties
+
+    @native("setRegistryName",
+            "(Ljava/lang/String;Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;")
+    def setRegistryName(self, instance, namespace, name):
+        instance.registry_name = namespace + ":" + name
+        return instance
+
 
 class WallBlock(Block):
     NAME = "net/minecraft/block/WallBlock"
@@ -594,6 +644,12 @@ class WallBlock(Block):
     @native("<init>", "(Lnet/minecraft/block/AbstractBlock$Properties;)V")
     def init(self, instance, properties):
         instance.properties = properties
+
+    @native("setRegistryName",
+            "(Ljava/lang/String;Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;")
+    def setRegistryName(self, instance, namespace, name):
+        instance.registry_name = namespace + ":" + name
+        return instance
 
 
 class GrassBlock(Block):
@@ -668,6 +724,12 @@ class RotatedPillarBlock(Block):
     @native("<init>", "(Lnet/minecraft/block/AbstractBlock$Properties;)V")
     def init(self, instance, properties):
         instance.properties = properties
+
+    @native("setRegistryName",
+            "(Ljava/lang/String;Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;")
+    def setRegistryName(self, instance, namespace, name):
+        instance.registry_name = namespace + ":" + name
+        return instance
 
 
 class FenceBlock(Block):
@@ -809,6 +871,36 @@ class BushBlock(Block):
         instance.registry_name = namespace + ":" + name
         return instance
 
+    @native("func_176194_O", "()Lnet/minecraft/state/StateContainer;")
+    def func_176194_O(self, *_):
+        pass
+
+    @native("func_180632_j", "(Lnet/minecraft/block/BlockState;)V")
+    def func_180632_j(self, *_):
+        pass
+
+
+class BreakableBlock(Block):
+    NAME = "net/minecraft/block/BreakableBlock"
+
+    @native("<init>", "(Lnet/minecraft/block/AbstractBlock$Properties;)V")
+    def init(self, instance, properties):
+        instance.properties = properties
+
+    @native("func_176194_O", "()Lnet/minecraft/state/StateContainer;")
+    def func_176194_O(self, *_):
+        pass
+
+    @native("func_180632_j", "(Lnet/minecraft/block/BlockState;)V")
+    def func_180632_j(self, *_):
+        pass
+
+    @native("setRegistryName",
+            "(Ljava/lang/String;Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;")
+    def setRegistryName(self, instance, namespace, name):
+        instance.registry_name = namespace + ":" + name
+        return instance
+
 
 class GrassPathBlock(Block):
     NAME = "net/minecraft/block/GrassPathBlock"
@@ -816,6 +908,16 @@ class GrassPathBlock(Block):
     @native("<init>", "(Lnet/minecraft/block/AbstractBlock$Properties;)V")
     def init(self, instance, properties):
         instance.properties = properties
+
+    @native("setRegistryName",
+            "(Ljava/lang/String;Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;")
+    def setRegistryName(self, instance, namespace, name):
+        instance.registry_name = namespace + ":" + name
+        return instance
+
+    @native("func_180632_j", "(Lnet/minecraft/block/BlockState;)V")
+    def func_180632_j(self, *_):
+        pass
 
 
 class FarmlandBlock(Block):
@@ -950,6 +1052,16 @@ class HorizontalBlock(Block):
     def func_176223_P(self, instance):
         return instance
 
+    @native("func_176194_O", "()Lnet/minecraft/state/StateContainer;")
+    def func_176194_O(self, *_):
+        pass
+
+    @native("setRegistryName",
+            "(Ljava/lang/String;Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;")
+    def setRegistryName(self, instance, namespace, name):
+        instance.registry_name = namespace + ":" + name
+        return instance
+
 
 class SixWayBlock(Block):
     NAME = "net/minecraft/block/SixWayBlock"
@@ -986,6 +1098,34 @@ class MushroomBlock(Block):
     @native("func_208617_a", "(DDDDDD)Lnet/minecraft/util/math/shapes/VoxelShape;")
     def func_208617_a(self, *_):
         pass
+
+
+class TorchBlock(Block):
+    NAME = "net/minecraft/block/TorchBlock"
+
+    @native("<init>", "(Lnet/minecraft/block/AbstractBlock$Properties;Lnet/minecraft/particles/IParticleData;)V")
+    def init(self, instance, properties, particles):
+        instance.properties = properties
+
+    @native("setRegistryName",
+            "(Ljava/lang/String;Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;")
+    def setRegistryName(self, instance, namespace, name):
+        instance.registry_name = namespace + ":" + name
+        return instance
+
+
+class WallTorchBlock(Block):
+    NAME = "net/minecraft/block/WallTorchBlock"
+
+    @native("<init>", "(Lnet/minecraft/block/AbstractBlock$Properties;Lnet/minecraft/particles/IParticleData;)V")
+    def init(self, instance, properties, particles):
+        instance.properties = properties
+
+    @native("setRegistryName",
+            "(Ljava/lang/String;Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;")
+    def setRegistryName(self, instance, namespace, name):
+        instance.registry_name = namespace + ":" + name
+        return instance
 
 
 class FlowerPotBlock(Block):
@@ -1645,6 +1785,10 @@ class BlockState(NativeClass):
         "(Lnet/minecraft/state/Property;Ljava/lang/Comparable;)Ljava/lang/Object;",
     )
     def func_206870_a(self, instance, prop, value):
+        pass
+
+    @native("func_185904_a", "()Lnet/minecraft/block/material/Material;")
+    def func_185904_a(self, *_):
         pass
 
 

@@ -14,6 +14,7 @@ This project is not official by mojang and does not relate to it.
 import sys
 import typing
 from abc import ABC
+import array
 
 import jvm.Java
 from mcpython import logger
@@ -81,8 +82,9 @@ class Runtime:
 
         return stack.return_value
 
+    @classmethod
     def get_arg_parts_of(
-        self,
+        cls,
         method: typing.Union[jvm.Java.JavaMethod, typing.Callable],
     ) -> typing.Iterator[str]:
 
@@ -259,6 +261,37 @@ class Stack:
             )
 
 
+class VirtualStack:
+    def __init__(self):
+        self.stack = []
+        self.cp = 0
+        self.previous_visited = set()
+        self.pending = []
+        
+    def push(self, data_type=None):
+        self.stack.append(data_type)
+        
+    def pop(self):
+        if len(self.stack) == 0:
+            raise StackCollectingException("StackUnderflowException detected")
+        return self.stack.pop(-1)
+    
+    def pop_expect_type(self, *type_name: str):
+        t = self.stack.pop(-1)
+        if t is None or t in type_name:
+            return t
+        raise StackCollectingException("invalid stack type")
+    
+    def visit(self):
+        self.previous_visited.add((self.cp, tuple(self.stack)))
+        
+    def branch(self, offset):
+        self.pending.append((self.cp+offset, self.stack.copy()))
+        
+    def check(self) -> bool:
+        return (self.cp, tuple(self.stack)) in self.previous_visited
+
+
 class BaseInstruction(ABC):
     """
     Every instruction has to implement this, everything else does not matter
@@ -270,6 +303,10 @@ class BaseInstruction(ABC):
 
     @classmethod
     def validate(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr"):
+        pass
+    
+    @classmethod
+    def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr", stack: VirtualStack):
         pass
 
     @classmethod
@@ -354,18 +391,17 @@ class BytecodeRepr:
             typing.Optional[typing.Tuple[OpcodeInstruction, typing.Any, int]]
         ] = [None] * len(code.code)
 
+        # todo: use to indicate if bytecodes are jump-targets for optimisation lookup
+        # self.is_jump_target = array.ArrayType("b")
+
         code = bytearray(code.code)
         i = 0
-        # print("head", self.code.class_file.name)
         while 0 <= i < len(code):
-            # todo: raise error when below 0
             tag = code[i]
-
-            # print("".join(hex(e)[2:] for e in code[i:i+20]))
 
             if tag in self.OPCODES:
                 instr = self.OPCODES[tag]
-                # print(instr, code[:5])
+
                 try:
                     data, size = instr.decode(code, i + 1, self.code.class_file)
                 except StackCollectingException as e:
@@ -377,8 +413,6 @@ class BytecodeRepr:
                     raise StackCollectingException(
                         f"during decoding instruction {instr} in {self.code.table.parent}"
                     ).add_trace(f"index: {i}, near code: {code[max(0, i-5):i+5]}")
-
-                # print(data, size, code[i:i+10], len(code))
 
                 self.decoded_code[i] = (instr, data, size)
 
@@ -420,6 +454,20 @@ class BytecodeRepr:
         self.validate_code()
 
     def validate_code(self):
+        """
+        Helper method for validating the internal bytecode state and its assigned data
+        It first validates the base instructions via the validate() call and than does some code
+        stack simulation to validate the stack integrity over the runtime.
+        """
+
+        self.validate_code_data()
+        self.validate_runtime_stack()
+
+    def validate_code_data(self):
+        """
+        Helper method for validating the assigned data of all assigned instructions
+        """
+
         for i, e in enumerate(self.decoded_code):
             if e is None:
                 continue
@@ -427,24 +475,77 @@ class BytecodeRepr:
             try:
                 e[0].validate(i, e[1], self)
             except StackCollectingException as x:
+                self.print_stats()
                 x.add_trace(
                     f"during validating {e[0].__name__} with data {e[1]} stored at index {i} in {self.code.table.parent}"
                 )
                 raise
 
+    def validate_runtime_stack(self):
+        """
+        Simulates an execution in all arrival paths without real execution. Simulates stack pop's/push's for most
+        instructions [InvokeDynamic currently is not working]
+        """
+
+        # the virtual stack to execute on
+        stack = VirtualStack()
+
+        # As long as there are arrival paths, we need to work
+        while True:
+            # as long as the current path is finished, fetch a new one, and when there is none, exit the method
+            while not stack.check():
+                if len(stack.pending) == 0: return
+
+                stack.cp, stack.stack = stack.pending.pop(0)
+
+            # prepare for similuation
+            prev_cp = stack.cp
+            e = self.decoded_code[stack.cp]
+
+            # try simulating it
+            try:
+                e[0].validate_stack(stack.cp, e[1], self, stack)
+            except StackCollectingException as x:
+                # and add meta information when it fails
+                self.print_stats()
+                x.add_trace(
+                    f"during validating stack operations on {e[0].__name__} with data {e[1]} stored at index {stack.cp} in {self.code.table.parent}"
+                )
+                raise
+
+            if prev_cp == stack.cp:
+                stack.cp += e[2]
+
+            stack.visit()
+
+    def print_stats(self):
+        print(f"ByteCodeRepr stats of {self}")
+        print(f"code entries: {len(self.decoded_code)}")
+        for i, e in enumerate(self.decoded_code):
+            if e is not None:
+                print(f" - {i}: {e[0].__name__}({repr(e[1]).removeprefix('(').removesuffix(')')})")
+
     def exchange_jump_offsets(self, begin_section: int, end_section: int, replace_section: typing.List, reference_reworker=lambda address, start, old_end, new_end: 0):
         """
         Helper method for exchanging two section of code with a new one and re-resolving references
+        :param begin_section: where the section begins
+        :param end_section: where the section ends
+        :param replace_section: what the section should be replaced without
+        :param reference_reworker: a callable taking an address and the section parameters and should return the new pointer
+
+        todo: add a "builder" variant taking multiple changes, chaining them together and applying reference changes at ones
         """
 
         self.decoded_code = self.decoded_code[:begin_section] + replace_section + self.decoded_code[end_section:]
         new_end = begin_section + len(replace_section)
 
+        # This method re-references the references in the instructions
         def resolve(address: int):
             if address < begin_section: return address
             if address > end_section: return address - end_section + new_end
             return reference_reworker(address, begin_section, end_section, new_end)
 
+        # Iterate over all code and do the stuff
         for i, instruction in enumerate(self.decoded_code):
             if instruction is None: continue
             new_data = instruction[0].code_reference_changer(self, instruction[1], i, i if i < new_end else i - new_end + end_section, resolve)
@@ -454,6 +555,8 @@ class BytecodeRepr:
     def prepare_stack(self, stack: Stack):
         """
         Helper method for setting up the stack for execution of this code block
+
+        todo: do some more stuff here
         """
         stack.local_vars = [None] * self.code.max_locals
         stack.cp = 0
@@ -465,8 +568,8 @@ class BytecodeRepr:
 
 @BytecodeRepr.register_instruction
 class NoOp(OpcodeInstruction):
-    # C2 and C3: monitor stuff, as we are not threading, this works as it is
-    OPCODES = {0x00, 0x90, 0x88, 0xC2, 0xC3, 0x91, 0x8D}
+    # NoOp
+    OPCODES = {0x00}
 
     @classmethod
     def invoke(cls, data: typing.Any, stack: Stack) -> bool:
@@ -474,23 +577,87 @@ class NoOp(OpcodeInstruction):
 
 
 @BytecodeRepr.register_instruction
+class NoOpPop(OpcodeInstruction):
+    # C2 and C3: monitor stuff, as we are not threading, this works as it is
+    OPCODES = {0xC2, 0xC3}
+
+    @classmethod
+    def invoke(cls, data: typing.Any, stack: Stack):
+        stack.pop()
+
+    @classmethod
+    def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr", stack: VirtualStack):
+        stack.pop()
+
+
+@BytecodeRepr.register_instruction
+class Any2Byte(OpcodeInstruction):
+    # i2b
+    OPCODES = {0x91}
+
+    @classmethod
+    def invoke(cls, data: typing.Any, stack: Stack):
+        v = stack.pop()
+        stack.push(int(v) if v is not None else v)
+
+    @classmethod
+    def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr", stack: VirtualStack):
+        stack.pop()
+        stack.push("B")
+
+
+@BytecodeRepr.register_instruction
 class Any2Float(OpcodeInstruction):
-    OPCODES = {0x87, 0x86}
+    # i2f, d2f
+    OPCODES = {0x86, 0x90}
 
     @classmethod
     def invoke(cls, data: typing.Any, stack: Stack):
         v = stack.pop()
         stack.push(float(v) if v is not None else v)
 
+    @classmethod
+    def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr", stack: VirtualStack):
+        stack.pop()
+        stack.push("F")
+
+
+@BytecodeRepr.register_instruction
+class Any2Double(Any2Float):
+    # i2d, f2d
+    OPCODES = {0x87, 0x8D}
+
+    @classmethod
+    def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr", stack: VirtualStack):
+        stack.pop()
+        stack.push("D")
+
 
 @BytecodeRepr.register_instruction
 class Any2Int(OpcodeInstruction):
-    OPCODES = {0x8E, 0x8B, 0x8C}
+    # d2i, f2i, l2i
+    OPCODES = {0x8E, 0x8B, 0x88}
 
     @classmethod
     def invoke(cls, data: typing.Any, stack: Stack):
         v = stack.pop()
         stack.push(int(v) if v is not None else v)
+
+    @classmethod
+    def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr", stack: VirtualStack):
+        stack.pop()
+        stack.push("I")
+
+
+@BytecodeRepr.register_instruction
+class Any2Long(Any2Int):
+    # f2l
+    OPCODES = {0x8C}
+
+    @classmethod
+    def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr", stack: VirtualStack):
+        stack.pop()
+        stack.push("J")
 
 
 class ConstPush(OpcodeInstruction, ABC):
@@ -499,75 +666,112 @@ class ConstPush(OpcodeInstruction, ABC):
     """
 
     PUSHES = None
+    PUSH_TYPE = None
 
     @classmethod
     def invoke(cls, data: typing.Any, stack: Stack):
         stack.push(cls.PUSHES)
 
+    @classmethod
+    def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr", stack: VirtualStack):
+        stack.push(cls.PUSH_TYPE)
+
 
 @BytecodeRepr.register_instruction
 class AConstNull(ConstPush):
     OPCODES = {0x01}
+    PUSH_TYPE = "null"
 
 
 @BytecodeRepr.register_instruction
 class IConstM1(ConstPush):
     OPCODES = {0x02}
     PUSHES = -1
+    PUSH_TYPE = "i"
 
 
 @BytecodeRepr.register_instruction
 class IConst0(ConstPush):
-    OPCODES = {0x03, 0x0E, 0x09}
+    OPCODES = {0x03}
     PUSHES = 0
+    PUSH_TYPE = "i"
+
+
+@BytecodeRepr.register_instruction
+class LConst0(ConstPush):
+    OPCODES = {0x09}
+    PUSHES = 0
+    PUSH_TYPE = "j"
+
+
+@BytecodeRepr.register_instruction
+class DConst0(ConstPush):
+    OPCODES = {0x0E}
+    PUSHES = 0
+    PUSH_TYPE = "d"
 
 
 @BytecodeRepr.register_instruction
 class IConst1(ConstPush):
-    OPCODES = {0x04, 0x0F}
+    OPCODES = {0x04}
     PUSHES = 1
+    PUSH_TYPE = "i"
+
+
+@BytecodeRepr.register_instruction
+class DConst1(ConstPush):
+    OPCODES = {0x0F}
+    PUSHES = 1
+    PUSH_TYPE = "d"
 
 
 @BytecodeRepr.register_instruction
 class IConst2(ConstPush):
     OPCODES = {0x05}
     PUSHES = 2
+    PUSH_TYPE = "i"
 
 
 @BytecodeRepr.register_instruction
 class IConst3(ConstPush):
     OPCODES = {0x06}
     PUSHES = 3
+    PUSH_TYPE = "i"
 
 
 @BytecodeRepr.register_instruction
 class IConst4(ConstPush):
     OPCODES = {0x07}
     PUSHES = 4
+    PUSH_TYPE = "i"
 
 
 @BytecodeRepr.register_instruction
 class IConst5(ConstPush):
     OPCODES = {0x08}
     PUSHES = 5
+    PUSH_TYPE = "i"
 
 
 @BytecodeRepr.register_instruction
 class FConst0(ConstPush):
     OPCODES = {0x0B}
     PUSHES = 0.0
+    PUSH_TYPE = "f"
 
 
 @BytecodeRepr.register_instruction
 class FConst1(ConstPush):
     OPCODES = {0x0C}
     PUSHES = 1.0
+    PUSH_TYPE = "f"
 
 
 @BytecodeRepr.register_instruction
 class FConst2(ConstPush):
     OPCODES = {0x0D}
     PUSHES = 2.0
+    PUSH_TYPE = "f"
 
 
 @BytecodeRepr.register_instruction
@@ -583,6 +787,10 @@ class BiPush(OpcodeInstruction):
     @classmethod
     def invoke(cls, data: typing.Any, stack: Stack):
         stack.push(data)
+        
+    @classmethod
+    def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr", stack: VirtualStack):
+        stack.push("B")
 
 
 @BytecodeRepr.register_instruction
@@ -598,6 +806,11 @@ class SiPush(OpcodeInstruction):
     @classmethod
     def invoke(cls, data: typing.Any, stack: Stack):
         stack.push(data)
+
+    @classmethod
+    def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr",
+                       stack: VirtualStack):
+        stack.push("S")
 
 
 @BytecodeRepr.register_instruction
@@ -619,6 +832,11 @@ class LDC(OpcodeInstruction):
             )
         )
 
+    @classmethod
+    def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr",
+                       stack: VirtualStack):
+        stack.push(None)  # todo: add type
+
 
 @BytecodeRepr.register_instruction
 class LDC_W(OpcodeInstruction):
@@ -639,6 +857,11 @@ class LDC_W(OpcodeInstruction):
             )
         )
 
+    @classmethod
+    def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr",
+                       stack: VirtualStack):
+        stack.push(None)  # todo: add type
+
 
 @BytecodeRepr.register_instruction
 class ArrayLoad(OpcodeInstruction):
@@ -656,6 +879,12 @@ class ArrayLoad(OpcodeInstruction):
             raise StackCollectingException("NullPointerException: array is null")
 
         stack.push(array[index])
+        
+    @classmethod
+    def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr", stack: VirtualStack):
+        stack.pop_expect_type("i", "j")
+        stack.pop()
+        stack.push(None)  # todo: add type here
 
 
 @BytecodeRepr.register_instruction
@@ -675,6 +904,13 @@ class ArrayStore(OpcodeInstruction):
             raise StackCollectingException("NullPointerException: array is null")
 
         array[index] = value
+
+    @classmethod
+    def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr",
+                       stack: VirtualStack):
+        stack.pop()
+        stack.pop_expect_type("i", "j")
+        stack.pop()
 
 
 @BytecodeRepr.register_instruction
@@ -697,6 +933,10 @@ class Load(OpcodeInstruction):
             raise StackCollectingException(
                 f"LocalVariableIndexOutOfBounds: {prepared_data} does not fit into {container.code.max_locals}"
             )
+        
+    @classmethod
+    def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr", stack: VirtualStack):
+        stack.push(None)
 
 
 @BytecodeRepr.register_instruction
@@ -714,6 +954,11 @@ class Load0(OpcodeInstruction):
                 f"LocalVariableIndexOutOfBounds: 0 does not fit into {container.code.max_locals}"
             )
 
+    @classmethod
+    def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr",
+                       stack: VirtualStack):
+        stack.push(None)
+
 
 @BytecodeRepr.register_instruction
 class Load1(OpcodeInstruction):
@@ -729,6 +974,11 @@ class Load1(OpcodeInstruction):
             raise StackCollectingException(
                 f"LocalVariableIndexOutOfBounds: 1 does not fit into {container.code.max_locals}"
             )
+
+    @classmethod
+    def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr",
+                       stack: VirtualStack):
+        stack.push(None)
 
 
 @BytecodeRepr.register_instruction
@@ -746,6 +996,11 @@ class Load2(OpcodeInstruction):
                 f"LocalVariableIndexOutOfBounds: 2 does not fit into {container.code.max_locals}"
             )
 
+    @classmethod
+    def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr",
+                       stack: VirtualStack):
+        stack.push(None)
+
 
 @BytecodeRepr.register_instruction
 class Load3(OpcodeInstruction):
@@ -761,6 +1016,11 @@ class Load3(OpcodeInstruction):
             raise StackCollectingException(
                 f"LocalVariableIndexOutOfBounds: 3 does not fit into {container.code.max_locals}"
             )
+
+    @classmethod
+    def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr",
+                       stack: VirtualStack):
+        stack.push(None)
 
 
 @BytecodeRepr.register_instruction
@@ -784,6 +1044,11 @@ class Store(OpcodeInstruction):
                 f"LocalVariableIndexOutOfBounds: {prepared_data} does not fit into {container.code.max_locals}"
             )
 
+    @classmethod
+    def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr",
+                       stack: VirtualStack):
+        stack.pop()
+
 
 @BytecodeRepr.register_instruction
 class Store0(OpcodeInstruction):
@@ -799,6 +1064,11 @@ class Store0(OpcodeInstruction):
             raise StackCollectingException(
                 f"LocalVariableIndexOutOfBounds: 0 does not fit into {container.code.max_locals}"
             )
+
+    @classmethod
+    def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr",
+                       stack: VirtualStack):
+        stack.pop()
 
 
 @BytecodeRepr.register_instruction
@@ -816,6 +1086,11 @@ class Store1(OpcodeInstruction):
                 f"LocalVariableIndexOutOfBounds: 1 does not fit into {container.code.max_locals}"
             )
 
+    @classmethod
+    def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr",
+                       stack: VirtualStack):
+        stack.pop()
+
 
 @BytecodeRepr.register_instruction
 class Store2(OpcodeInstruction):
@@ -831,6 +1106,11 @@ class Store2(OpcodeInstruction):
             raise StackCollectingException(
                 f"LocalVariableIndexOutOfBounds: 2 does not fit into {container.code.max_locals}"
             )
+
+    @classmethod
+    def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr",
+                       stack: VirtualStack):
+        stack.pop()
 
 
 @BytecodeRepr.register_instruction
@@ -848,6 +1128,11 @@ class Store3(OpcodeInstruction):
                 f"LocalVariableIndexOutOfBounds: 3 does not fit into {container.code.max_locals}"
             )
 
+    @classmethod
+    def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr",
+                       stack: VirtualStack):
+        stack.pop()
+
 
 @BytecodeRepr.register_instruction
 class POP(OpcodeInstruction):
@@ -855,6 +1140,11 @@ class POP(OpcodeInstruction):
 
     @classmethod
     def invoke(cls, data: typing.Any, stack: Stack):
+        stack.pop()
+
+    @classmethod
+    def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr",
+                       stack: VirtualStack):
         stack.pop()
 
 
@@ -867,6 +1157,12 @@ class DUP(OpcodeInstruction):
         v = stack.pop()
         stack.push(v)
         stack.push(v)
+        
+    @classmethod
+    def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr", stack: VirtualStack):
+        t = stack.pop()
+        stack.push(t)
+        stack.push(t)
 
 
 @BytecodeRepr.register_instruction
@@ -875,6 +1171,13 @@ class DUP_X1(OpcodeInstruction):
 
     @classmethod
     def invoke(cls, data: typing.Any, stack: Stack):
+        a, b = stack.pop(), stack.pop()
+        stack.push(a)
+        stack.push(b)
+        stack.push(a)
+
+    @classmethod
+    def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr", stack: VirtualStack):
         a, b = stack.pop(), stack.pop()
         stack.push(a)
         stack.push(b)
@@ -890,6 +1193,12 @@ class ADD(OpcodeInstruction):
         b, a = stack.pop(), stack.pop()
         stack.push(a + b)
 
+    @classmethod
+    def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr", stack: VirtualStack):
+        a = stack.pop()
+        stack.pop_expect_type(a)
+        stack.push(a)
+
 
 @BytecodeRepr.register_instruction
 class SUB(OpcodeInstruction):
@@ -899,6 +1208,12 @@ class SUB(OpcodeInstruction):
     def invoke(cls, data: typing.Any, stack: Stack):
         b, a = stack.pop(), stack.pop()
         stack.push(b - a)
+
+    @classmethod
+    def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr", stack: VirtualStack):
+        a = stack.pop()
+        stack.pop_expect_type(a)
+        stack.push(a)
 
 
 @BytecodeRepr.register_instruction
@@ -910,6 +1225,12 @@ class IDIV(OpcodeInstruction):
         b, a = stack.pop(), stack.pop()
         stack.push(a // b)
 
+    @classmethod
+    def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr", stack: VirtualStack):
+        a = stack.pop()
+        stack.pop_expect_type(a)
+        stack.push(a)
+
 
 @BytecodeRepr.register_instruction
 class FDIV(OpcodeInstruction):
@@ -919,6 +1240,12 @@ class FDIV(OpcodeInstruction):
     def invoke(cls, data: typing.Any, stack: Stack):
         b, a = stack.pop(), stack.pop()
         stack.push(a / b)
+
+    @classmethod
+    def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr", stack: VirtualStack):
+        a = stack.pop()
+        stack.pop_expect_type(a)
+        stack.push(a)
 
 
 @BytecodeRepr.register_instruction
@@ -930,6 +1257,12 @@ class SHL(OpcodeInstruction):
         b, a = stack.pop(), stack.pop()
         stack.push(a << b)
 
+    @classmethod
+    def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr", stack: VirtualStack):
+        a = stack.pop()
+        stack.pop_expect_type(a)
+        stack.push(a)
+
 
 @BytecodeRepr.register_instruction
 class SHR(OpcodeInstruction):
@@ -939,6 +1272,12 @@ class SHR(OpcodeInstruction):
     def invoke(cls, data: typing.Any, stack: Stack):
         b, a = stack.pop(), stack.pop()
         stack.push(a >> b)
+
+    @classmethod
+    def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr", stack: VirtualStack):
+        a = stack.pop()
+        stack.pop_expect_type(a)
+        stack.push(a)
 
 
 @BytecodeRepr.register_instruction
@@ -950,6 +1289,12 @@ class AND(OpcodeInstruction):
         b, a = stack.pop(), stack.pop()
         stack.push(a & b)
 
+    @classmethod
+    def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr", stack: VirtualStack):
+        a = stack.pop()
+        stack.pop_expect_type(a)
+        stack.push(a)
+
 
 @BytecodeRepr.register_instruction
 class OR(OpcodeInstruction):
@@ -959,6 +1304,12 @@ class OR(OpcodeInstruction):
     def invoke(cls, data: typing.Any, stack: Stack):
         b, a = stack.pop(), stack.pop()
         stack.push(a | b)
+
+    @classmethod
+    def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr", stack: VirtualStack):
+        a = stack.pop()
+        stack.pop_expect_type(a)
+        stack.push(a)
 
 
 @BytecodeRepr.register_instruction
@@ -977,6 +1328,11 @@ class IINC(OpcodeInstruction):
     @classmethod
     def invoke(cls, data: typing.Any, stack: Stack):
         stack.local_vars[data[0]] += data[1]
+
+    @classmethod
+    def validate(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr"):
+        if prepared_data[0] >= container.code.max_locals:
+            raise StackCollectingException(f"local var index {prepared_data[0]} out of range")
 
 
 class CompareHelper(OpcodeInstruction, ABC):
@@ -1000,103 +1356,30 @@ class CompareHelper(OpcodeInstruction, ABC):
     @classmethod
     def validate(cls, command_index: int, prepared_data: typing.Any, container: "BytecodeRepr"):
         if command_index + prepared_data < 0:
-            raise StackCollectingException("pointing index is < 0")
+            raise StackCollectingException(f"pointing index {command_index + prepared_data} is < 0")
         elif command_index + prepared_data >= len(container.decoded_code):
-            raise StackCollectingException("pointing index is > max size")
+            raise StackCollectingException(f"pointing index {command_index + prepared_data} is >= {len(container.decoded_code)}")
         elif container.decoded_code[command_index + prepared_data] is None:
-            raise StackCollectingException("pointing index is null")
+            raise StackCollectingException(f"pointing index is null (bound 0 <= {command_index+prepared_data} < {len(container.decoded_code)})")
 
 
-@BytecodeRepr.register_instruction
-class IfGE0(CompareHelper):
-    OPCODES = {0x9C}
-
+class SingleCompare(CompareHelper, ABC):
     @classmethod
-    def invoke(cls, data: typing.Any, stack: Stack) -> bool:
-        if stack.pop() >= 0:
-            stack.cp += data
-            return True
+    def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr", stack: VirtualStack):
+        stack.pop()
+        stack.branch(prepared_data)
 
 
-@BytecodeRepr.register_instruction
-class IfEq(CompareHelper):
-    OPCODES = {0x9F}
-
+class DoubleCompare(CompareHelper, ABC):
     @classmethod
-    def invoke(cls, data: typing.Any, stack: Stack) -> bool:
-        if stack.pop() == stack.pop():
-            stack.cp += data
-            return True
+    def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr", stack: VirtualStack):
+        stack.pop()
+        stack.pop()
+        stack.branch(prepared_data)
 
 
 @BytecodeRepr.register_instruction
-class IfNE(CompareHelper):
-    OPCODES = {0xA0}
-
-    @classmethod
-    def invoke(cls, data: typing.Any, stack: Stack) -> bool:
-        if stack.pop() != stack.pop():
-            stack.cp += data
-            return True
-
-
-@BytecodeRepr.register_instruction
-class IfLt(CompareHelper):
-    OPCODES = {0xA1}
-
-    @classmethod
-    def invoke(cls, data: typing.Any, stack: Stack) -> bool:
-        if stack.pop() > stack.pop():
-            stack.cp += data
-            return True
-
-
-@BytecodeRepr.register_instruction
-class IfGe(CompareHelper):
-    OPCODES = {0xA2}
-
-    @classmethod
-    def invoke(cls, data: typing.Any, stack: Stack) -> bool:
-        if stack.pop() <= stack.pop():
-            stack.cp += data
-            return True
-
-
-@BytecodeRepr.register_instruction
-class IfLe(CompareHelper):
-    OPCODES = {0xA4}
-
-    @classmethod
-    def invoke(cls, data: typing.Any, stack: Stack) -> bool:
-        if stack.pop() >= stack.pop():
-            stack.cp += data
-            return True
-
-
-@BytecodeRepr.register_instruction
-class IfEq(CompareHelper):
-    OPCODES = {0xA5}
-
-    @classmethod
-    def invoke(cls, data: typing.Any, stack: Stack) -> bool:
-        if stack.pop() == stack.pop():
-            stack.cp += data
-            return True
-
-
-@BytecodeRepr.register_instruction
-class IfNEq(CompareHelper):
-    OPCODES = {0xA6}
-
-    @classmethod
-    def invoke(cls, data: typing.Any, stack: Stack) -> bool:
-        if stack.pop() != stack.pop():
-            stack.cp += data
-            return True
-
-
-@BytecodeRepr.register_instruction
-class IfEq0(CompareHelper):
+class IfEq0(SingleCompare):
     OPCODES = {0x99}
 
     @classmethod
@@ -1107,7 +1390,7 @@ class IfEq0(CompareHelper):
 
 
 @BytecodeRepr.register_instruction
-class IfNEq0(CompareHelper):
+class IfNEq0(SingleCompare):
     OPCODES = {0x9A}
 
     @classmethod
@@ -1118,7 +1401,7 @@ class IfNEq0(CompareHelper):
 
 
 @BytecodeRepr.register_instruction
-class IfLT0(CompareHelper):
+class IfLT0(SingleCompare):
     OPCODES = {0x9B}
 
     @classmethod
@@ -1129,12 +1412,111 @@ class IfLT0(CompareHelper):
 
 
 @BytecodeRepr.register_instruction
-class IfLE0(CompareHelper):
+class IfGE0(SingleCompare):
+    OPCODES = {0x9C}
+
+    @classmethod
+    def invoke(cls, data: typing.Any, stack: Stack) -> bool:
+        if stack.pop() >= 0:
+            stack.cp += data
+            return True
+
+
+@BytecodeRepr.register_instruction
+class IfGT0(SingleCompare):
+    OPCODES = {0x9D}
+
+    @classmethod
+    def invoke(cls, data: typing.Any, stack: Stack) -> bool:
+        if stack.pop() > 0:
+            stack.cp += data
+            return True
+
+
+@BytecodeRepr.register_instruction
+class IfLE0(SingleCompare):
     OPCODES = {0x9E}
 
     @classmethod
     def invoke(cls, data: typing.Any, stack: Stack) -> bool:
         if stack.pop() <= 0:
+            stack.cp += data
+            return True
+
+
+@BytecodeRepr.register_instruction
+class IfEq(DoubleCompare):
+    OPCODES = {0x9F}
+
+    @classmethod
+    def invoke(cls, data: typing.Any, stack: Stack) -> bool:
+        if stack.pop() == stack.pop():
+            stack.cp += data
+            return True
+
+
+@BytecodeRepr.register_instruction
+class IfNE(DoubleCompare):
+    OPCODES = {0xA0}
+
+    @classmethod
+    def invoke(cls, data: typing.Any, stack: Stack) -> bool:
+        if stack.pop() != stack.pop():
+            stack.cp += data
+            return True
+
+
+@BytecodeRepr.register_instruction
+class IfLt(DoubleCompare):
+    OPCODES = {0xA1}
+
+    @classmethod
+    def invoke(cls, data: typing.Any, stack: Stack) -> bool:
+        if stack.pop() > stack.pop():
+            stack.cp += data
+            return True
+
+
+@BytecodeRepr.register_instruction
+class IfGe(DoubleCompare):
+    OPCODES = {0xA2}
+
+    @classmethod
+    def invoke(cls, data: typing.Any, stack: Stack) -> bool:
+        if stack.pop() <= stack.pop():
+            stack.cp += data
+            return True
+
+
+@BytecodeRepr.register_instruction
+class IfLe(DoubleCompare):
+    OPCODES = {0xA4}
+
+    @classmethod
+    def invoke(cls, data: typing.Any, stack: Stack) -> bool:
+        if stack.pop() >= stack.pop():
+            stack.cp += data
+            return True
+
+
+@BytecodeRepr.register_instruction
+class IfEq(DoubleCompare):
+    OPCODES = {0xA5}
+
+    @classmethod
+    def invoke(cls, data: typing.Any, stack: Stack) -> bool:
+        if stack.pop() == stack.pop():
+            stack.cp += data
+            return True
+
+
+@BytecodeRepr.register_instruction
+class IfNEq(DoubleCompare):
+    OPCODES = {0xA6}
+
+    @classmethod
+    def invoke(cls, data: typing.Any, stack: Stack) -> bool:
+        if stack.pop() != stack.pop():
             stack.cp += data
             return True
 
@@ -1148,6 +1530,10 @@ class Goto(CompareHelper):
         stack.cp += data
         return True
 
+    @classmethod
+    def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr", stack: VirtualStack):
+        stack.cp += prepared_data
+
 
 @BytecodeRepr.register_instruction
 class AReturn(OpcodeInstruction):
@@ -1157,6 +1543,11 @@ class AReturn(OpcodeInstruction):
     def invoke(cls, data: typing.Any, stack: Stack):
         stack.end(stack.pop())
 
+    @classmethod
+    def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr", stack: VirtualStack):
+        stack.pop()
+        stack.cp = -1
+
 
 @BytecodeRepr.register_instruction
 class Return(OpcodeInstruction):
@@ -1165,6 +1556,10 @@ class Return(OpcodeInstruction):
     @classmethod
     def invoke(cls, data: typing.Any, stack: Stack):
         stack.end()
+
+    @classmethod
+    def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr", stack: VirtualStack):
+        stack.cp = -1
 
 
 @BytecodeRepr.register_instruction
@@ -1180,6 +1575,10 @@ class GetStatic(CPLinkedInstruction):
         name = data[2][1][1]
         stack.push(java_class.get_static_attribute(name, expected_type=data[2][2][1]))
 
+    @classmethod
+    def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr", stack: VirtualStack):
+        stack.push(None)
+
 
 @BytecodeRepr.register_instruction
 class PutStatic(CPLinkedInstruction):
@@ -1194,6 +1593,10 @@ class PutStatic(CPLinkedInstruction):
         name = data[2][1][1]
         value = stack.pop()
         java_class.set_static_attribute(name, value)
+
+    @classmethod
+    def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr", stack: VirtualStack):
+        stack.pop()
 
 
 @BytecodeRepr.register_instruction
@@ -1215,6 +1618,10 @@ class GetField(CPLinkedInstruction):
                 f"AttributeError: object {obj} (type {type(obj)}) has no attribute {name}"
             ) from None
 
+    @classmethod
+    def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr", stack: VirtualStack):
+        stack.push(None)
+
 
 @BytecodeRepr.register_instruction
 class PutField(CPLinkedInstruction):
@@ -1231,10 +1638,20 @@ class PutField(CPLinkedInstruction):
 
         obj.fields[name] = value
 
+    @classmethod
+    def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr", stack: VirtualStack):
+        stack.pop()
+
 
 @BytecodeRepr.register_instruction
 class InvokeVirtual(CPLinkedInstruction):
     OPCODES = {0xB6}
+
+    @classmethod
+    def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr", stack: VirtualStack):
+        args = len(tuple(Runtime.get_arg_parts_of(prepared_data[2][2][1])))
+        [stack.pop() for _ in range(args + 1)]
+        stack.push(None)
 
     @classmethod
     def invoke(cls, data: typing.Any, stack: Stack):
@@ -1275,6 +1692,12 @@ class InvokeSpecial(CPLinkedInstruction):
     OPCODES = {0xB7}
 
     @classmethod
+    def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr", stack: VirtualStack):
+        args = len(tuple(Runtime.get_arg_parts_of(prepared_data[2][2][1])))
+        [stack.pop() for _ in range(args + 1)]
+        stack.push(None)
+
+    @classmethod
     def invoke(cls, data: typing.Any, stack: Stack):
         method = stack.vm.get_method_of_nat(
             data, version=stack.method.class_file.internal_version
@@ -1294,6 +1717,12 @@ class InvokeStatic(CPLinkedInstruction):
     OPCODES = {0xB8}
 
     @classmethod
+    def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr", stack: VirtualStack):
+        args = len(tuple(Runtime.get_arg_parts_of(prepared_data[2][2][1])))
+        [stack.pop() for _ in range(args)]
+        stack.push(None)
+
+    @classmethod
     def invoke(cls, data: typing.Any, stack: Stack):
         method = stack.vm.get_method_of_nat(
             data, version=stack.method.class_file.internal_version
@@ -1308,6 +1737,10 @@ class InvokeStatic(CPLinkedInstruction):
 @BytecodeRepr.register_instruction
 class InvokeInterface(CPLinkedInstruction):
     OPCODES = {0xB9}
+
+    @classmethod
+    def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr", stack: VirtualStack):
+        stack.cp = -1  # todo: implement
 
     @classmethod
     def decode(
@@ -1380,6 +1813,10 @@ class InvokeDynamic(CPLinkedInstruction):
     OPCODES = {0xBA}
 
     @classmethod
+    def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr", stack: VirtualStack):
+        stack.cp = -1  # todo: implement
+
+    @classmethod
     def decode(
         cls, data: bytearray, index, class_file
     ) -> typing.Tuple[typing.Any, int]:
@@ -1432,6 +1869,10 @@ class LambdaInvokeDynamic(BaseInstruction):
     """
     Class representing the factory system for a lambda
     """
+
+    @classmethod
+    def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr", stack: VirtualStack):
+        stack.cp = -1  # todo: implement
 
     class LambdaInvokeDynamicWrapper:
         def __init__(
@@ -1622,6 +2063,10 @@ class New(CPLinkedInstruction):
     OPCODES = {0xBB}
 
     @classmethod
+    def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr", stack: VirtualStack):
+        stack.push(None)
+
+    @classmethod
     def invoke(cls, data: typing.Any, stack: Stack):
         c = stack.vm.get_class(
             data[1][1], version=stack.method.class_file.internal_version
@@ -1632,6 +2077,11 @@ class New(CPLinkedInstruction):
 @BytecodeRepr.register_instruction
 class NewArray(CPLinkedInstruction):
     OPCODES = {0xBC}
+
+    @classmethod
+    def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr", stack: VirtualStack):
+        stack.pop_expect_type("i", "j")
+        stack.push(None)
 
     @classmethod
     def decode(
@@ -1647,6 +2097,11 @@ class NewArray(CPLinkedInstruction):
 @BytecodeRepr.register_instruction
 class ANewArray(CPLinkedInstruction):
     OPCODES = {0xBD}
+
+    @classmethod
+    def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr", stack: VirtualStack):
+        stack.pop_expect_type("i", "j")
+        stack.push(None)
 
     @classmethod
     def invoke(cls, data: typing.Any, stack: Stack):
@@ -1668,6 +2123,11 @@ class ArrayLength(OpcodeInstruction):
     def invoke(cls, data: typing.Any, stack: Stack):
         stack.push(len(stack.pop()))
 
+    @classmethod
+    def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr", stack: VirtualStack):
+        stack.pop()
+        stack.push("i")
+
 
 @BytecodeRepr.register_instruction
 class AThrow(OpcodeInstruction):
@@ -1685,6 +2145,11 @@ class AThrow(OpcodeInstruction):
         stack.stack.clear()
         stack.push(exception)
         raise StackCollectingException("User raised exception", base=exception).add_trace(exception)
+
+    @classmethod
+    def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr", stack: VirtualStack):
+        stack.pop()
+        stack.cp = -1
 
 
 @BytecodeRepr.register_instruction
@@ -1710,9 +2175,14 @@ class InstanceOf(CPLinkedInstruction):
         else:
             stack.push(int(obj is None or obj.get_class().is_subclass_of(data[1][1])))
 
+    @classmethod
+    def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr", stack: VirtualStack):
+        stack.pop()
+        stack.push("Z")
+
 
 @BytecodeRepr.register_instruction
-class IfNull(CompareHelper):
+class IfNull(SingleCompare):
     OPCODES = {0xC6}
 
     @classmethod
@@ -1723,7 +2193,7 @@ class IfNull(CompareHelper):
 
 
 @BytecodeRepr.register_instruction
-class IfNonNull(CompareHelper):
+class IfNonNull(SingleCompare):
     OPCODES = {0xC7}
 
     @classmethod
@@ -1741,6 +2211,12 @@ class Mul(OpcodeInstruction):
     def invoke(cls, data: typing.Any, stack: Stack):
         stack.push(stack.pop() * stack.pop())
 
+    @classmethod
+    def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr", stack: VirtualStack):
+        t = stack.pop()
+        stack.pop_expect_type(t)
+        stack.push(t)
+
 
 @BytecodeRepr.register_instruction
 class NEG(OpcodeInstruction):
@@ -1750,15 +2226,26 @@ class NEG(OpcodeInstruction):
     def invoke(cls, data: typing.Any, stack: Stack):
         stack.push(-stack.pop())
 
+    @classmethod
+    def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr", stack: VirtualStack):
+        t = stack.pop()
+        stack.push(t)
+
 
 @BytecodeRepr.register_instruction
 class TableSwitch(OpcodeInstruction):
+    """
+    TableSwitch instruction
+    Similar to LookupSwitch, but in theory faster
+    """
+
     OPCODES = {0xAA}
 
     @classmethod
     def decode(
         cls, data: bytearray, index, class_file
     ) -> typing.Tuple[typing.Any, int]:
+        index2offset = array.ArrayType("l")
         initial = index
 
         while index % 4 != 0:
@@ -1777,17 +2264,31 @@ class TableSwitch(OpcodeInstruction):
             jvm.Java.pop_u4_s(data[index + i * 4 :])
             for i in range(high - low + 1)
         ]
+
+        index2offset.extend(offsets)
+
         index += (high - low + 1) * 4
-        return (default, low, high, offsets), index - initial
+        return (default, low, high, index2offset), index - initial + 1
 
     @classmethod
     def invoke(cls, data: typing.Any, stack: Stack) -> bool:
         index = stack.pop()
+
         if index < data[1] or index > data[2]:
             stack.cp += data[0]
         else:
             stack.cp += data[3][index - data[1]]
+
         return True
+
+    @classmethod
+    def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr", stack: VirtualStack):
+        stack.pop()
+
+        for offset in prepared_data[3]:
+            stack.branch(offset)
+
+        stack.cp += prepared_data[0]
 
     @classmethod
     def code_reference_changer(
@@ -1799,7 +2300,13 @@ class TableSwitch(OpcodeInstruction):
         checker: typing.Callable[[int], int],
     ):
         default, low, high, offsets = prepared_data
-        return checker(default + old_index) - instruction_index, low, high, [checker(e + old_index) - instruction_index for e in offsets]
+        return checker(default + old_index) - instruction_index, low, high, array.ArrayType("l", [checker(e + old_index) - instruction_index for e in offsets])
+
+    @classmethod
+    def validate(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr"):
+        for offset in prepared_data[3]:
+            CompareHelper.validate(command_index, offset, container)
+        CompareHelper.validate(command_index, prepared_data[0], container)
 
 
 @BytecodeRepr.register_instruction
@@ -1876,7 +2383,7 @@ class LookupSwitch(OpcodeInstruction):
                 ): jvm.Java.pop_u4_s(data[index + i * 4 :])
                 for i in range(npairs)
             }
-            index += npairs * 4
+            index += npairs * 8
         except:
             raise StackCollectingException(
                 f"during decoding lookupswitch of {npairs} entries, defaulting to {default}"
@@ -1891,7 +2398,7 @@ class LookupSwitch(OpcodeInstruction):
         if key not in data[1]:
             stack.cp += data[0]
         else:
-            stack.cp += data[0][key]
+            stack.cp += data[1][key]
 
         return True
 
@@ -1906,3 +2413,16 @@ class LookupSwitch(OpcodeInstruction):
     ):
         default, pairs = prepared_data
         return checker(default + old_index) - instruction_index, {e[0]: checker(e[1] + old_index) - instruction_index for e in pairs.items()}
+
+    @classmethod
+    def validate(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr"):
+        for offset in prepared_data[1].values():
+            CompareHelper.validate(command_index, offset, container)
+        CompareHelper.validate(command_index, prepared_data[0], container)
+
+    @classmethod
+    def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr", stack: VirtualStack):
+        stack.pop()
+        for offset in prepared_data[1].values():
+            stack.branch(offset)
+        stack.cp += prepared_data[0]

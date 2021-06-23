@@ -48,6 +48,7 @@ class Mixin(NativeClass):
         try:
             cls.mixin_target = cls.vm.get_class(args[0][1].data[0].data[1][1:-1])
         except StackCollectingException as e:
+            traceback.print_exc()
             print(e.format_exception())
         except:
             traceback.print_exc()
@@ -84,6 +85,7 @@ class Invoker(NativeClass):
             target_cls.inject_method(method.name, method.signature, m)
             method.class_file.methods[(method.name, method.signature)] = m
         except StackCollectingException as e:
+            traceback.print_exc()
             print(e.format_exception())
         except:
             logger.print_exception(f"during annotating {method} with {args}")
@@ -122,6 +124,7 @@ class Accessor(NativeClass):
             method.class_file.methods[(method.name, method.signature)] = m
 
         except StackCollectingException as e:
+            traceback.print_exc()
             print(e.format_exception())
         except:
             traceback.print_exc()
@@ -149,6 +152,7 @@ class Overwrite(NativeClass):
             method.class_file.methods[(method.name, method.signature)] = m
 
         except StackCollectingException as e:
+            traceback.print_exc()
             print(e.format_exception())
         except:
             traceback.print_exc()

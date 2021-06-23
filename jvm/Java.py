@@ -36,7 +36,7 @@ U1 = struct.Struct("!B")
 U1_S = struct.Struct("!b")
 U1_S_4 = struct.Struct("!bbbb")
 U2 = struct.Struct("!H")
-U2_S = struct.Struct("!h")
+U2_S = struct.Struct(">h")
 U4 = struct.Struct("!I")
 U4_S = struct.Struct(">i")
 
@@ -1165,6 +1165,7 @@ class JavaBytecodeClass(AbstractJavaClass):
                         # todo: can we do something else here, maybe add a flag to get_class to return None if the class
                         #   could not be loaded -> None check here
                         print("classloading exception for annotation ignored")
+                        traceback.print_exc()
                         print(e.format_exception())
                     else:
                         e.add_trace(

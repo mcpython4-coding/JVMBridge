@@ -53,6 +53,9 @@
 [uuk]: on_annotate missing implementations are now skipped when not debugging vm
 [uuk]: fixed 2-entry long entries in method calls not getting stored correctly in local vars
 [uuk]: instructions using jump offsets validate the offset now at runtime
+[uuk]: tableswitch and lookupswitch are now using also the validation system
+[uuk]: stack flow check system is now in place validating stack operations during default validation
+[uuk]: fixed LookupSwitch offset calculation
 
 tasks to do [maybe moved away for later]:
 - minifier task should minify builtin & bridge library into each only one file

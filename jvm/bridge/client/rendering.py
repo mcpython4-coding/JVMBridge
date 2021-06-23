@@ -62,6 +62,16 @@ class ParticleType(NativeClass):
         pass
 
 
+class RedstoneParticleData(NativeClass):
+    NAME = "net/minecraft/particles/RedstoneParticleData"
+
+    def __init__(self):
+        super().__init__()
+        self.exposed_attributes.update({
+            "field_197564_a": None,
+        })
+
+
 class BlockColors(NativeClass):
     NAME = "net/minecraft/client/renderer/color/BlockColors"
 

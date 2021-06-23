@@ -326,6 +326,11 @@ class TextFormatting(NativeClass):
                 "DARK_GREEN": 4,
                 "AQUA": 5,
                 "GOLD": 6,
+                "DARK_RED": 7,
+                "WHITE": 8,
+                "DARK_GRAY": 9,
+                "DARK_BLUE": 10,
+                "LIGHT_PURPLE": 11,
             }
         )
 
