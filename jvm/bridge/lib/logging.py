@@ -61,13 +61,13 @@ class Logger(CoreLogger):
     def info(self, instance, message, obj):
         logger.println("[FML LOGGER][INFO]", message)
 
+    @native("info", "(Ljava/lang/String;)V")
+    def info2(self, instance, message):
+        logger.println("[FML LOGGER][INFO]", message)
+
     @native("log", "(Lorg/apache/logging/log4j/Level;Ljava/lang/String;)V")
     def log(self, instance, level, text):
         logger.println(f"[FML LOGGER][{level}]", text)
-
-    @native("info", "(Ljava/lang/String;)V")
-    def info(self, instance, message):
-        logger.println("[FML LOGGER][INFO]", message)
 
     @native("getLevel", "()Lorg/apache/logging/log4j/Level;")
     def getLevel(self, instance):

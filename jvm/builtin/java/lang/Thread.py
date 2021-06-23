@@ -27,3 +27,7 @@ class Thread(NativeClass):
     @native("getThreadGroup", "()Ljava/lang/ThreadGroup;")
     def getThreadGroup(self, instance: threading.Thread):
         pass
+
+    @native("getContextClassLoader", "()Ljava/lang/ClassLoader;")
+    def getContextClassLoader(self, *_):
+        return self.vm

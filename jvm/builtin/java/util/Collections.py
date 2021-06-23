@@ -52,3 +52,7 @@ class Collections(NativeClass):
     @native("synchronizedList", "(Ljava/util/List;)Ljava/util/List;")
     def synchronizedList(self, array):
         return array
+
+    @native("sort", "(Ljava/util/List;)V")
+    def sort(self, instance):
+        return list(sorted(instance))

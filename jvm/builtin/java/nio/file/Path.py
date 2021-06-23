@@ -11,6 +11,8 @@ Mod loader inspired by "Minecraft Forge" (https://github.com/MinecraftForge/Mine
 
 This project is not official by mojang and does not relate to it.
 """
+import os
+
 from mcpython import shared
 from jvm.Java import NativeClass, native
 
@@ -20,11 +22,11 @@ class Path(NativeClass):
 
     @native("toAbsolutePath", "()Ljava/nio/file/Path;")
     def toAbsolutePath(self, instance):
-        pass
+        return instance
 
     @native("toString", "()Ljava/lang/String;")
     def toString(self, instance):
-        return ""
+        return str(instance)
 
     @native("toFile", "()Ljava/io/File;")
     def toFile(self, instance):
@@ -35,5 +37,11 @@ class Path(NativeClass):
     @native("resolve", "(Ljava/lang/String;)Ljava/nio/file/Path;")
     def resolve(self, instance, path: str):
         obj = self.create_instance()
-        obj.path = instance.path + "/" + path
+        obj.path = (instance.path if not isinstance(instance, str) else instance) + "/" + path
+        return obj
+
+    @native("getParent", "()Ljava/nio/file/Path;")
+    def getParent(self, instance):
+        obj = self.create_instance()
+        obj.path = os.path.dirname(instance if isinstance(instance, str) else instance.path)
         return obj

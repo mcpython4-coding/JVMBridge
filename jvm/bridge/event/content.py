@@ -196,6 +196,10 @@ class AbstractBlock_Properties(NativeClass):
     def func_235859_g_(self, instance):
         return instance
 
+    @native("func_200941_a", "(F)Lnet/minecraft/block/AbstractBlock$Properties;")
+    def func_200941_a(self, instance, v):
+        return instance
+
 
 class SoundType(NativeClass):
     NAME = "net/minecraft/block/SoundType"
@@ -327,6 +331,14 @@ class Block(AbstractBlock):
     def func_180632_j(self, instance, state):
         pass
 
+    @native("func_200941_a", "(F)Lnet/minecraft/block/AbstractBlock$Properties;")
+    def func_200941_a(self, *_):
+        pass
+
+    @native("func_176194_O", "()Lnet/minecraft/state/StateContainer;")
+    def func_176194_O(self, *_):
+        pass
+
     def get_dynamic_field_keys(self):
         return super().get_dynamic_field_keys() | {"field_176227_L"}
 
@@ -440,6 +452,8 @@ class MaterialColor(NativeClass):
                 "field_151655_K": None,
                 "field_151660_b": None,
                 "field_151668_h": None,
+                "field_151647_F": None,
+                "field_151673_t": None,
             }
         )
 
@@ -477,6 +491,54 @@ class FireBlock(Block):
 
 class PaneBlock(Block):
     NAME = "net/minecraft/block/PaneBlock"
+
+    @native("<init>", "(Lnet/minecraft/block/AbstractBlock$Properties;)V")
+    def init(self, instance, properties):
+        instance.properties = properties
+
+
+class ContainerBlock(Block):
+    NAME = "net/minecraft/block/ContainerBlock"
+
+    @native("<init>", "(Lnet/minecraft/block/AbstractBlock$Properties;)V")
+    def init(self, instance, properties):
+        instance.properties = properties
+
+
+    @native("func_176194_O", "()Lnet/minecraft/state/StateContainer;")
+    def func_176194_O(self, *_):
+        pass
+
+    @native("func_180632_j", "(Lnet/minecraft/block/BlockState;)V")
+    def func_180632_j(self, *_):
+        pass
+
+    @native("setRegistryName",
+            "(Ljava/lang/String;Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;")
+    def setRegistryName(self, *_):
+        pass
+
+    @native("setRegistryName",
+            "(Ljava/lang/String;Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;")
+    def setRegistryName2(self, *_):
+        pass
+
+
+class FallingBlock(Block):
+    NAME = "net/minecraft/block/FallingBlock"
+
+    @native("<init>", "(Lnet/minecraft/block/AbstractBlock$Properties;)V")
+    def init(self, instance, properties):
+        instance.properties = properties
+
+    @native("setRegistryName",
+            "(Ljava/lang/String;Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;")
+    def setRegistryName(self, instance, namespace, name):
+        return instance
+
+    @native("func_180632_j", "(Lnet/minecraft/block/BlockState;)V")
+    def func_180632_j(self, *_):
+        pass
 
 
 class ComposterBlock(Block):
@@ -741,9 +803,84 @@ class BushBlock(Block):
     def func_208617_a(self, *_):
         pass
 
+    @native("setRegistryName",
+            "(Ljava/lang/String;Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;")
+    def setRegistryName(self, instance, namespace, name):
+        instance.registry_name = namespace + ":" + name
+        return instance
+
+
+class GrassPathBlock(Block):
+    NAME = "net/minecraft/block/GrassPathBlock"
+
+    @native("<init>", "(Lnet/minecraft/block/AbstractBlock$Properties;)V")
+    def init(self, instance, properties):
+        instance.properties = properties
+
 
 class FarmlandBlock(Block):
     NAME = "net/minecraft/block/FarmlandBlock"
+
+
+class WoodType(Block):
+    NAME = "net/minecraft/block/WoodType"
+
+    def __init__(self):
+        super().__init__()
+        self.exposed_attributes.update({
+            "field_227044_g_": None,
+        })
+
+    @native("<init>", "(Ljava/lang/String;)V")
+    def init(self, *_):
+        pass
+
+
+class NyliumBlock(Block):
+    NAME = "net/minecraft/block/NyliumBlock"
+
+    @native("func_235516_b_",
+            "(Lnet/minecraft/block/BlockState;Lnet/minecraft/world/IWorldReader;Lnet/minecraft/util/math/BlockPos;)Z")
+    def func_235516_b_(self, *_):
+        return 1
+
+
+class SpreadableSnowyDirtBlock(Block):
+    NAME = "net/minecraft/block/SpreadableSnowyDirtBlock"
+
+    @native("func_220257_b",
+            "(Lnet/minecraft/block/BlockState;Lnet/minecraft/world/IWorldReader;Lnet/minecraft/util/math/BlockPos;)Z")
+    def func_220257_b(self, *_):
+        return 1
+
+    @native("func_220256_c",
+            "(Lnet/minecraft/block/BlockState;Lnet/minecraft/world/IWorldReader;Lnet/minecraft/util/math/BlockPos;)Z")
+    def func_220256_c(self, *_):
+        return 1
+
+
+class AbstractFireBlock(Block):
+    NAME = "net/minecraft/block/AbstractFireBlock"
+
+
+class CactusBlock(Block):
+    NAME = "net/minecraft/block/CactusBlock"
+
+
+class NetherrackBlock(Block):
+    NAME = "net/minecraft/block/NetherrackBlock"
+
+
+class SugarCaneBlock(Block):
+    NAME = "net/minecraft/block/SugarCaneBlock"
+
+
+class BrewingStandBlock(Block):
+    NAME = "net/minecraft/block/BrewingStandBlock"
+
+    @native("<init>", "(Lnet/minecraft/block/AbstractBlock$Properties;)V")
+    def init(self, instance, properties):
+        instance.properties = properties
 
 
 class AbstractRailBlock(Block):
@@ -992,6 +1129,9 @@ class Items(NativeClass):
                 "field_151117_aB": None,
                 "field_151131_as": None,
                 "field_151068_bn": None,
+                "field_151038_n": None,
+                "field_151053_p": None,
+                "field_151039_o": None,
             }
         )
 
@@ -1064,6 +1204,10 @@ class ArmorItem(Item):
             "(Lnet/minecraft/item/IArmorMaterial;Lnet/minecraft/inventory/EquipmentSlotType;Lnet/minecraft/item/Item$Properties;)V")
     def init(self, instance, material, slot_type, properties):
         instance.properties = properties
+
+
+class TippedArrowItem(Item):
+    NAME = "net/minecraft/item/TippedArrowItem"
 
 
 class ShearsItem(Item):
@@ -1517,6 +1661,11 @@ class BlockStateProperties(NativeClass):
                 "field_208157_J": None,
                 "field_208194_u": None,
                 "field_208166_S": None,
+                "field_208160_M": None,
+                "field_208159_L": None,
+                "field_208161_N": None,
+                "field_208162_O": None,
+                "field_208193_t": None,
             }
         )
 
@@ -1558,6 +1707,28 @@ class RailShape(NativeClass):
         super().__init__()
         self.exposed_attributes.update({
             "NORTH_SOUTH": 0,
+        })
+
+
+class DoorHingeSide(NativeClass):
+    NAME = "net/minecraft/state/properties/DoorHingeSide"
+
+    def __init__(self):
+        super().__init__()
+        self.exposed_attributes.update({
+            "LEFT": 0,
+            "RIGHT": 1,
+        })
+
+
+class RedstoneSide(NativeClass):
+    NAME = "net/minecraft/state/properties/RedstoneSide"
+
+    def __init__(self):
+        super().__init__()
+        self.exposed_attributes.update({
+            "NONE": 0,
+            "SIDE": 1,
         })
 
 
@@ -1610,6 +1781,16 @@ class Direction__Axis(NativeClass):
         })
 
 
+class Direction__Plane(NativeClass):
+    NAME = "net/minecraft/util/Direction$Plane"
+
+    def __init__(self):
+        super().__init__()
+        self.exposed_attributes.update({
+            "HORIZONTAL": 0,
+        })
+
+
 class EnumProperty(NativeClass):
     NAME = "net/minecraft/state/EnumProperty"
 
@@ -1623,6 +1804,15 @@ class EnumProperty(NativeClass):
     @native("func_177708_a",
             "(Ljava/lang/String;Ljava/lang/Class;Ljava/util/function/Predicate;)Lnet/minecraft/state/EnumProperty;")
     def func_177708_a(self, name, cls, predicate):
+        return self.create_instance()
+
+
+class DirectionProperty(NativeClass):
+    NAME = "net/minecraft/state/DirectionProperty"
+
+    @native("func_177712_a",
+            "(Ljava/lang/String;Ljava/util/function/Predicate;)Lnet/minecraft/state/DirectionProperty;")
+    def func_177712_a(self, *_):
         return self.create_instance()
 
 
@@ -1652,6 +1842,14 @@ class EntityPredicates(NativeClass):
                 "field_180132_d": None,
             }
         )
+
+
+class EatGrassGoal(NativeClass):
+    NAME = "net/minecraft/entity/ai/goal/EatGrassGoal"
+
+
+class PiglinTasks(NativeClass):
+    NAME = "net/minecraft/entity/monster/piglin/PiglinTasks"
 
 
 class EntityAttributes(NativeClass):
@@ -1777,8 +1975,28 @@ class Entity(NativeClass):
         return 0
 
 
+class ZombieVillagerEntity(Entity):
+    NAME = "net/minecraft/entity/monster/ZombieVillagerEntity"
+
+
+class LightningBoltEntity(Entity):
+    NAME = "net/minecraft/entity/effect/LightningBoltEntity"
+
+
 class PlayerEntity(Entity):
     NAME = "net/minecraft/entity/player/PlayerEntity"
+
+
+class ClientPlayerEntity(PlayerEntity):
+    NAME = "net/minecraft/client/entity/player/ClientPlayerEntity"
+
+
+class SlimeEntity(Entity):
+    NAME = "net/minecraft/entity/monster/SlimeEntity"
+
+
+class AnimalEntity(Entity):
+    NAME = "net/minecraft/entity/passive/AnimalEntity"
 
 
 class PlayerList(NativeClass):
@@ -1945,6 +2163,14 @@ class CreeperEntity(Entity):
 class LivingEntity(Entity):
     NAME = "net/minecraft/entity/LivingEntity"
 
+    @native("func_70693_a", "(Lnet/minecraft/entity/player/PlayerEntity;)I")
+    def func_70693_a(self, *_):
+        pass
+
+    @native("func_146066_aG", "()Z")
+    def func_146066_aG(self, *_):
+        pass
+
 
 class MobEntity(Entity):
     NAME = "net/minecraft/entity/MobEntity"
@@ -1996,6 +2222,14 @@ class ForgeFlowingFluid__Properties(NativeClass):
         "(Ljava/util/function/Supplier;)Lnet/minecraftforge/fluids/ForgeFlowingFluid$Properties;",
     )
     def block(self, *_):
+        pass
+
+
+class RangedAttribute(NativeClass):
+    NAME = "net/minecraft/entity/ai/attributes/RangedAttribute"
+
+    @native("<init>", "(Ljava/lang/String;DDD)V")
+    def init(self, *_):
         pass
 
 
@@ -2076,3 +2310,11 @@ class FluidState(NativeClass):
     @native("func_207183_f", "(Lnet/minecraft/fluid/FluidState;)V")
     def func_207183_f(self, *_):
         pass
+
+
+class StateHolder(NativeClass):
+    NAME = "net/minecraft/state/StateHolder"
+
+
+class AbstractBlock__AbstractBlockState(NativeClass):
+    NAME = "net/minecraft/block/AbstractBlock$AbstractBlockState"

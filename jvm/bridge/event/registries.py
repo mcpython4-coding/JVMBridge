@@ -90,6 +90,7 @@ class ForgeRegistries(NativeClass):
             "PROFESSIONS": None,
             "LOOT_MODIFIER_SERIALIZERS": None,
             "ATTRIBUTES": None,
+            "POTION_TYPES": None,
         }
 
 
@@ -114,6 +115,8 @@ class Registry(NativeClass):
             "field_218367_H": None,
             "field_243656_h": None,
             "field_212623_l": None,
+            "field_239704_ba_": None,
+            "field_239694_aZ_": None,
         }
 
     @native(
@@ -134,6 +137,14 @@ class Registry(NativeClass):
 
     @native("func_82594_a", "(Lnet/minecraft/util/ResourceLocation;)Ljava/lang/Object;")
     def func_82594_a(self, *_):
+        pass
+
+    @native("func_243576_d", "(Lnet/minecraft/util/RegistryKey;)Ljava/lang/Object;")
+    def func_243576_d(self, *_):
+        pass
+
+    @native("func_148757_b", "(Ljava/lang/Object;)I")
+    def func_148757_b(self, *_):
         pass
 
 
@@ -318,8 +329,12 @@ class DeferredRegister(NativeClass):
         "makeRegistry",
         "(Ljava/lang/String;Ljava/util/function/Supplier;)Ljava/util/function/Supplier;",
     )
-    def makeRegistry(self, instnace, name: str, supplier):
+    def makeRegistry(self, instance, name: str, supplier):
         pass
+
+    @native("getEntries", "()Ljava/util/Collection;")
+    def getEntries(self, *_):
+        return []
 
 
 class ForgeRegistryEntry(NativeClass):
@@ -382,6 +397,7 @@ class WorldGenRegistries(NativeClass):
             {
                 "field_243654_f": None,
                 "field_243656_h": None,
+                "field_243657_i": None,
             }
         )
 
@@ -409,3 +425,15 @@ class IForgeRegistryEntry(NativeClass):
 
 class EntitySpawnPlacementRegistry(NativeClass):
     NAME = "net/minecraft/entity/EntitySpawnPlacementRegistry"
+
+
+class BiomeRegistry(NativeClass):
+    NAME = "net/minecraft/world/biome/BiomeRegistry"
+
+
+class ClientRegistry(NativeClass):
+    NAME = "net/minecraftforge/fml/client/registry/ClientRegistry"
+
+    @native("registerKeyBinding", "(Lnet/minecraft/client/settings/KeyBinding;)V")
+    def registerKeyBinding(self, *_):
+        pass

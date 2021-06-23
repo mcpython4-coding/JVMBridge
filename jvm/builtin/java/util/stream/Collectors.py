@@ -21,15 +21,16 @@ class Collectors(NativeClass):
     @native(
         "toMap",
         "(Ljava/util/function/Function;Ljava/util/function/Function;)Ljava/util/stream/Collector;",
+        static=True,
     )
     def toMap(self, function1, function2):
-        pass
+        return lambda e: {function1(x): function2(x) for x in e}
 
-    @native("toList", "()Ljava/util/stream/Collector;")
-    def toList(self, collector):
-        return collector
+    @native("toList", "()Ljava/util/stream/Collector;", static=True)
+    def toList(self):
+        return lambda e: list(e)
 
-    @native("groupingBy", "(Ljava/util/function/Function;)Ljava/util/stream/Collector;")
+    @native("groupingBy", "(Ljava/util/function/Function;)Ljava/util/stream/Collector;", static=True)
     def groupingBy(self, function):
         def work(instance):
             data = {}

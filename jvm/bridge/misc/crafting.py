@@ -67,3 +67,12 @@ class RecipeBookGui(NativeClass):
 
 class RecipeBookPage(NativeClass):
     NAME = "net/minecraft/client/gui/recipebook/RecipeBookPage"
+
+
+class CraftingHelper(NativeClass):
+    NAME = "net/minecraftforge/common/crafting/CraftingHelper"
+
+    @native("register",
+            "(Lnet/minecraftforge/common/crafting/conditions/IConditionSerializer;)Lnet/minecraftforge/common/crafting/conditions/IConditionSerializer;")
+    def register(self, *_):
+        pass

@@ -49,6 +49,7 @@ class Effects(NativeClass):
                 "field_188425_z": None,
                 "field_204839_B": None,
                 "field_188424_y": None,
+                "field_76433_i": None,
             }
         )
 
@@ -125,3 +126,7 @@ class EffectInstance(NativeClass):
     @native("<init>", "(Lnet/minecraft/potion/Effect;II)V")
     def init(self, instance, effect, a, b):
         pass
+
+
+class PotionBrewing(NativeClass):
+    NAME = "net/minecraft/potion/PotionBrewing"

@@ -25,3 +25,7 @@ class Integer(NativeClass):
     @native("toString", "(I)Ljava/lang/String;")
     def toString(self, instance):
         return str(instance)
+
+    @native("intValue", "()I")
+    def intValue(self, instance):
+        return instance

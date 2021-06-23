@@ -12,8 +12,9 @@ Mod loader inspired by "Minecraft Forge" (https://github.com/MinecraftForge/Mine
 This project is not official by mojang and does not relate to it.
 """
 import re
+import traceback
 
-from mcpython import shared
+from mcpython import shared, logger
 from jvm.Java import JavaMethod, NativeClass, native
 
 
@@ -24,4 +25,16 @@ class Pattern(NativeClass):
     def compile(self, text: str):
         instance = self.create_instance()
         instance.underlying = re.compile(text)
+        return instance
+
+    @native("compile", "(Ljava/lang/String;I)Ljava/util/regex/Pattern;")
+    def compile2(self, text: str, v: int):
+        instance = self.create_instance()
+
+        try:
+            instance.underlying = re.compile(text)
+        except re.error:
+            logger.print_exception("re.Pattern compilation failed")
+            return
+
         return instance

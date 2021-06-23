@@ -62,6 +62,14 @@ class Map(NativeClass):
     def isEmpty(self, instance):
         return not len(instance)
 
+    @native("entrySet", "()Ljava/util/Set;")
+    def entrySet(self, instance):
+        return set(instance.items())
+
+    @native("putAll", "(Ljava/util/Map;)V")
+    def putAll(self, instance, other):
+        instance.update(other)
+
 
 class Map__Entry(NativeClass):
     NAME = "java/util/Map$Entry"

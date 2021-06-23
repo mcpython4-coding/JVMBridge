@@ -78,6 +78,7 @@ class JavaMod(mcpython.common.mod.Mod.Mod):
 
         package = data["package"].replace(".", "/")
 
+        if "mixins" not in data: return
         for file in data["mixins"]:
             module = package + "/" + file
 

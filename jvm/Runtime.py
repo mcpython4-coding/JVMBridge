@@ -139,7 +139,7 @@ class Runtime:
 
         except StackCollectingException as e:
             e.add_trace(
-                f"StackUnderflowException during preparing method execution of '{method}' (static: {static}) with stack size before data popping {previous_count}, expecting len(parts) {parts}"
+                f"StackUnderflowException during preparing method execution of '{method}' (static: {static}) with stack size before data popping {previous_count}, expecting {len(parts)+(int(not static))} ({parts})"
             )
             raise
 
@@ -147,7 +147,7 @@ class Runtime:
             offset = 0
             for i, (_, state) in enumerate(parts):
                 if state:
-                    args.insert(i + offset, None)
+                    args.insert(i + offset - 1, None)
                     offset += 1
 
         return tuple(reversed(args))
@@ -204,15 +204,23 @@ class Stack:
         # todo: is this really needed?
         self.method.class_file.prepare_use()
         if debugging:
-            jvm.Java.warn(("launching method", self.method))
+            jvm.Java.warn(f"launching method {self.method} with local vars {self.local_vars}")
 
         while self.cp != -1:
             instruction = self.code.decoded_code[self.cp]
 
             if instruction is None:
+                next_below = None
+                for i in range(self.cp, -1, -1):
+                    if self.code.decoded_code[i] is not None:
+                        next_below = self.code.decoded_code[i]
+                        break
+
                 raise StackCollectingException(
-                    "Instruction jump target was invalid"
-                ).add_trace(f"during fetching {self.cp} in {self.method}")
+                    "Instruction jump target was invalid [null -> inside instruction data]"
+                ).add_trace(f"during fetching {self.cp} in {self.method}").add_trace(
+                    f"next below: {next_below}"
+                )
 
             if debugging:
                 jvm.Java.warn(
@@ -261,7 +269,7 @@ class BaseInstruction(ABC):
         raise NotImplementedError
 
     @classmethod
-    def validate(cls, prepared_data: typing.Any, container: "BytecodeRepr"):
+    def validate(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr"):
         pass
 
     @classmethod
@@ -417,9 +425,9 @@ class BytecodeRepr:
                 continue
 
             try:
-                e[0].validate(e[1], self)
-            except StackCollectingException as e:
-                e.add_trace(
+                e[0].validate(i, e[1], self)
+            except StackCollectingException as x:
+                x.add_trace(
                     f"during validating {e[0].__name__} with data {e[1]} stored at index {i} in {self.code.table.parent}"
                 )
                 raise
@@ -458,7 +466,7 @@ class BytecodeRepr:
 @BytecodeRepr.register_instruction
 class NoOp(OpcodeInstruction):
     # C2 and C3: monitor stuff, as we are not threading, this works as it is
-    OPCODES = {0x00, 0x90, 0x88, 0xC2, 0xC3}
+    OPCODES = {0x00, 0x90, 0x88, 0xC2, 0xC3, 0x91, 0x8D}
 
     @classmethod
     def invoke(cls, data: typing.Any, stack: Stack) -> bool:
@@ -634,7 +642,7 @@ class LDC_W(OpcodeInstruction):
 
 @BytecodeRepr.register_instruction
 class ArrayLoad(OpcodeInstruction):
-    OPCODES = {0x32, 0x2E, 0x33}
+    OPCODES = {0x32, 0x2E, 0x33, 0x31}
 
     @classmethod
     def invoke(cls, data: typing.Any, stack: Stack):
@@ -671,7 +679,7 @@ class ArrayStore(OpcodeInstruction):
 
 @BytecodeRepr.register_instruction
 class Load(OpcodeInstruction):
-    OPCODES = {0x19, 0x15, 0x18, 0x17}
+    OPCODES = {0x19, 0x15, 0x18, 0x17, 0x16}
 
     @classmethod
     def decode(
@@ -684,7 +692,7 @@ class Load(OpcodeInstruction):
         stack.push(stack.local_vars[data])
 
     @classmethod
-    def validate(cls, prepared_data: typing.Any, container: "BytecodeRepr"):
+    def validate(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr"):
         if prepared_data >= container.code.max_locals:
             raise StackCollectingException(
                 f"LocalVariableIndexOutOfBounds: {prepared_data} does not fit into {container.code.max_locals}"
@@ -693,14 +701,14 @@ class Load(OpcodeInstruction):
 
 @BytecodeRepr.register_instruction
 class Load0(OpcodeInstruction):
-    OPCODES = {0x2A, 0x1A, 0x22, 0x26}
+    OPCODES = {0x2A, 0x1A, 0x22, 0x26, 0x1E}
 
     @classmethod
     def invoke(cls, data: typing.Any, stack: Stack):
         stack.push(stack.local_vars[0])
 
     @classmethod
-    def validate(cls, prepared_data: typing.Any, container: "BytecodeRepr"):
+    def validate(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr"):
         if container.code.max_locals <= 0:
             raise StackCollectingException(
                 f"LocalVariableIndexOutOfBounds: 0 does not fit into {container.code.max_locals}"
@@ -709,14 +717,14 @@ class Load0(OpcodeInstruction):
 
 @BytecodeRepr.register_instruction
 class Load1(OpcodeInstruction):
-    OPCODES = {0x2B, 0x1B, 0x23, 0x27}
+    OPCODES = {0x2B, 0x1B, 0x23, 0x27, 0x1F}
 
     @classmethod
     def invoke(cls, data: typing.Any, stack: Stack):
         stack.push(stack.local_vars[1])
 
     @classmethod
-    def validate(cls, prepared_data: typing.Any, container: "BytecodeRepr"):
+    def validate(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr"):
         if container.code.max_locals <= 1:
             raise StackCollectingException(
                 f"LocalVariableIndexOutOfBounds: 1 does not fit into {container.code.max_locals}"
@@ -725,14 +733,14 @@ class Load1(OpcodeInstruction):
 
 @BytecodeRepr.register_instruction
 class Load2(OpcodeInstruction):
-    OPCODES = {0x2C, 0x1C, 0x24, 0x28}
+    OPCODES = {0x2C, 0x1C, 0x24, 0x28, 0x20}
 
     @classmethod
     def invoke(cls, data: typing.Any, stack: Stack):
         stack.push(stack.local_vars[2])
 
     @classmethod
-    def validate(cls, prepared_data: typing.Any, container: "BytecodeRepr"):
+    def validate(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr"):
         if container.code.max_locals <= 2:
             raise StackCollectingException(
                 f"LocalVariableIndexOutOfBounds: 2 does not fit into {container.code.max_locals}"
@@ -741,14 +749,14 @@ class Load2(OpcodeInstruction):
 
 @BytecodeRepr.register_instruction
 class Load3(OpcodeInstruction):
-    OPCODES = {0x2D, 0x1D, 0x25, 0x29}
+    OPCODES = {0x2D, 0x1D, 0x25, 0x29, 0x21}
 
     @classmethod
     def invoke(cls, data: typing.Any, stack: Stack):
         stack.push(stack.local_vars[3])
 
     @classmethod
-    def validate(cls, prepared_data: typing.Any, container: "BytecodeRepr"):
+    def validate(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr"):
         if container.code.max_locals <= 3:
             raise StackCollectingException(
                 f"LocalVariableIndexOutOfBounds: 3 does not fit into {container.code.max_locals}"
@@ -770,7 +778,7 @@ class Store(OpcodeInstruction):
         stack.local_vars[data] = stack.pop()
 
     @classmethod
-    def validate(cls, prepared_data: typing.Any, container: "BytecodeRepr"):
+    def validate(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr"):
         if prepared_data >= container.code.max_locals:
             raise StackCollectingException(
                 f"LocalVariableIndexOutOfBounds: {prepared_data} does not fit into {container.code.max_locals}"
@@ -786,7 +794,7 @@ class Store0(OpcodeInstruction):
         stack.local_vars[0] = stack.pop()
 
     @classmethod
-    def validate(cls, prepared_data: typing.Any, container: "BytecodeRepr"):
+    def validate(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr"):
         if container.code.max_locals <= 0:
             raise StackCollectingException(
                 f"LocalVariableIndexOutOfBounds: 0 does not fit into {container.code.max_locals}"
@@ -802,7 +810,7 @@ class Store1(OpcodeInstruction):
         stack.local_vars[1] = stack.pop()
 
     @classmethod
-    def validate(cls, prepared_data: typing.Any, container: "BytecodeRepr"):
+    def validate(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr"):
         if container.code.max_locals <= 1:
             raise StackCollectingException(
                 f"LocalVariableIndexOutOfBounds: 1 does not fit into {container.code.max_locals}"
@@ -818,7 +826,7 @@ class Store2(OpcodeInstruction):
         stack.local_vars[2] = stack.pop()
 
     @classmethod
-    def validate(cls, prepared_data: typing.Any, container: "BytecodeRepr"):
+    def validate(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr"):
         if container.code.max_locals <= 2:
             raise StackCollectingException(
                 f"LocalVariableIndexOutOfBounds: 2 does not fit into {container.code.max_locals}"
@@ -834,7 +842,7 @@ class Store3(OpcodeInstruction):
         stack.local_vars[3] = stack.pop()
 
     @classmethod
-    def validate(cls, prepared_data: typing.Any, container: "BytecodeRepr"):
+    def validate(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr"):
         if container.code.max_locals <= 3:
             raise StackCollectingException(
                 f"LocalVariableIndexOutOfBounds: 3 does not fit into {container.code.max_locals}"
@@ -904,6 +912,16 @@ class IDIV(OpcodeInstruction):
 
 
 @BytecodeRepr.register_instruction
+class FDIV(OpcodeInstruction):
+    OPCODES = {0x6E}
+
+    @classmethod
+    def invoke(cls, data: typing.Any, stack: Stack):
+        b, a = stack.pop(), stack.pop()
+        stack.push(a / b)
+
+
+@BytecodeRepr.register_instruction
 class SHL(OpcodeInstruction):
     OPCODES = {0x78}
 
@@ -964,20 +982,29 @@ class IINC(OpcodeInstruction):
 class CompareHelper(OpcodeInstruction, ABC):
     @classmethod
     def decode(
-            cls, data: bytearray, index, class_file
+        cls, data: bytearray, index, class_file
     ) -> typing.Tuple[typing.Any, int]:
         return jvm.Java.U2_S.unpack(data[index: index + 2])[0], 3
 
     @classmethod
     def code_reference_changer(
-            cls,
-            container: "BytecodeRepr",
-            prepared_data: typing.Any,
-            instruction_index: int,
-            old_index: int,
-            checker: typing.Callable[[int], int],
+        cls,
+        container: "BytecodeRepr",
+        prepared_data: typing.Any,
+        instruction_index: int,
+        old_index: int,
+        checker: typing.Callable[[int], int],
     ):
         return checker(prepared_data + old_index) - instruction_index
+
+    @classmethod
+    def validate(cls, command_index: int, prepared_data: typing.Any, container: "BytecodeRepr"):
+        if command_index + prepared_data < 0:
+            raise StackCollectingException("pointing index is < 0")
+        elif command_index + prepared_data >= len(container.decoded_code):
+            raise StackCollectingException("pointing index is > max size")
+        elif container.decoded_code[command_index + prepared_data] is None:
+            raise StackCollectingException("pointing index is null")
 
 
 @BytecodeRepr.register_instruction
@@ -1482,7 +1509,11 @@ class LambdaInvokeDynamic(BaseInstruction):
 
             # have we args to give from the current runtime?
             if inner_args > outer_args:
-                extra_args += [stack.pop() for _ in range(inner_args - outer_args)]
+                try:
+                    extra_args += [stack.pop() for _ in range(inner_args - outer_args)]
+                except StackCollectingException as e:
+                    e.add_trace(f"during invoke-dynamic arg pop towards method {method}")
+                    raise
 
             if not hasattr(method, "name") and not hasattr(method, "native_name"):
                 raise StackCollectingException(

@@ -101,5 +101,9 @@ class Class(NativeClass):
         return name
 
     @native("forName", "(Ljava/lang/String;)Ljava/lang/Class;")
-    def forName(self, name: str):
+    def forName2(self, name: str):
         return self.vm.get_class(name, version=self.internal_version)
+
+    @native("getConstructor", "([Ljava/lang/Class;)Ljava/lang/reflect/Constructor;")
+    def getConstructor(self, instance, signature):
+        return instance  # todo: implement

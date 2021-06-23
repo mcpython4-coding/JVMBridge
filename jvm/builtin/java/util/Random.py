@@ -24,5 +24,5 @@ class Random(NativeClass):
         pass
 
     @native("nextInt", "()I")
-    def nextInt(self):
+    def nextInt(self, instance):
         return int.from_bytes(random.randbytes(4), "big")

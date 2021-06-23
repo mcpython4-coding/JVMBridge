@@ -11,6 +11,7 @@ Mod loader inspired by "Minecraft Forge" (https://github.com/MinecraftForge/Mine
 
 This project is not official by mojang and does not relate to it.
 """
+import re
 import time
 
 from mcpython import shared
@@ -118,6 +119,10 @@ class ImmutableList(NativeClass):
         instance.underlying_tuple = tuple(array)
         return instance
 
+    @native("iterator", "()Lcom/google/common/collect/UnmodifiableIterator;")
+    def iterator(self, instance):
+        return instance
+
     @native("size", "()I")
     def size(self, instance):
         return len(instance) if isinstance(instance, tuple) else len(instance.underlying_tuple)
@@ -125,6 +130,9 @@ class ImmutableList(NativeClass):
 
 class ImmutableMap(NativeClass):
     NAME = "com/google/common/collect/ImmutableMap"
+
+    def create_instance(self):
+        return {}
 
     @native("builder", "()Lcom/google/common/collect/ImmutableMap$Builder;")
     def builder(self):
@@ -140,12 +148,20 @@ class ImmutableMap(NativeClass):
     def of(self, *stuff):
         return self.create_instance()
 
+    @native("get", "(Ljava/lang/Object;)Ljava/lang/Object;")
+    def get(self, instance, key):
+        return None if key not in instance else instance[key]
+
 
 class ImmutableMap__Builder(NativeClass):
     NAME = "com/google/common/collect/ImmutableMap$Builder"
 
     def create_instance(self):
         return {}
+
+    @native("<init>", "()V")
+    def init(self, *_):
+        pass
 
     @native(
         "putAll", "(Ljava/util/Map;)Lcom/google/common/collect/ImmutableMap$Builder;"
@@ -506,4 +522,42 @@ class MapMaker(NativeClass):
     @native("makeMap", "()Ljava/util/concurrent/ConcurrentMap;")
     def makeMap(self, instance):
         return {}
+
+
+class Beta(NativeClass):
+    NAME = "com/google/common/annotations/Beta"
+
+    def on_annotate(self, cls, args):
+        pass
+
+
+class HashBasedTable(NativeClass):
+    NAME = "com/google/common/collect/HashBasedTable"
+
+    def create_instance(self):
+        return {}
+
+    @native("create", "()Lcom/google/common/collect/HashBasedTable;")
+    def create(self, *_):
+        return {}
+
+
+class CaseFormat(NativeClass):
+    NAME = "com/google/common/base/CaseFormat"
+
+    def __init__(self):
+        super().__init__()
+        self.exposed_attributes.update({
+            "LOWER_CAMEL": 0,
+            "UPPER_UNDERSCORE": 1,
+        })
+        self.camel2score = re.compile(r'(?<!^)(?=[A-Z])')
+        self.converters = {
+            (0, 1): lambda string: self.camel2score.sub("_", string).upper(),
+            (1, 0): lambda string: "".join(word.title() for word in string.split('_'))
+        }
+
+    @native("converterTo", "(Lcom/google/common/base/CaseFormat;)Lcom/google/common/base/Converter;")
+    def converterTo(self, start, end):
+        return self.converters[(start, end)]
 

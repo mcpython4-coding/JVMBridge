@@ -66,3 +66,7 @@ class Stream(NativeClass):
     @native("toArray", "(Ljava/util/function/IntFunction;)[Ljava/lang/Object;")
     def toArray(self, instance, int_function):
         return list(instance)
+
+    @native("sorted", "(Ljava/util/Comparator;)Ljava/util/stream/Stream;")
+    def sorted(self, instance, comparator):
+        return list(sorted(instance, key=comparator))

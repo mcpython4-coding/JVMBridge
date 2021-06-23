@@ -47,3 +47,7 @@ class EnchantmentType(NativeClass):
 
 class Enchantment(NativeClass):
     NAME = "net/minecraft/enchantment/Enchantment"
+
+
+class EnchantmentHelper(NativeClass):
+    NAME = "net/minecraft/enchantment/EnchantmentHelper"

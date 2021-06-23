@@ -13,6 +13,7 @@ This project is not official by mojang and does not relate to it.
 """
 import os
 
+from mcpython import logger
 from mcpython import shared
 from jvm.Java import NativeClass, native
 
@@ -26,7 +27,7 @@ class File(NativeClass):
 
     @native("<init>", "(Ljava/lang/String;)V")
     def init2(self, instance, path: str):
-        pass
+        instance.path = path
 
     @native("getParentFile", "()Ljava/io/File;")
     def getParentFile(self, instance):
@@ -60,4 +61,13 @@ class File(NativeClass):
 
     @native("toPath", "()Ljava/nio/file/Path;")
     def toPath(self, instance):
-        pass
+        return instance.path
+
+    @native("mkdir", "()Z")
+    def mkdir(self, instance):
+        if instance.path != "":
+            os.makedirs(instance.path, exist_ok=True)
+        else:
+            logger.println("[JVM][IO] mkdir failed: dir is empty")
+
+        return 1

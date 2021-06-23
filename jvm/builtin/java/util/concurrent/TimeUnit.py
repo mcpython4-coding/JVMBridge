@@ -30,3 +30,7 @@ class TimeUnit(NativeClass):
     @native("toNanos", "(J)J")
     def toNanos(self, instance, c: int):
         return c * instance
+
+    @native("toMillis", "(J)J")
+    def toMillis(self, instance, c: int):
+        return c * instance // 1000

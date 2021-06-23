@@ -38,3 +38,7 @@ class Set(NativeClass):
     def add(self, instance, obj):
         instance.add(obj)
         return 1
+
+    @native("stream", "()Ljava/util/stream/Stream;")
+    def stream(self, instance):
+        return list(instance)

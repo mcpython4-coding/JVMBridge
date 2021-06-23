@@ -13,6 +13,7 @@ This project is not official by mojang and does not relate to it.
 """
 from jvm.Java import NativeClass, native
 from jvm.JavaExceptionStack import StackCollectingException
+from mcpython import logger
 
 
 class String(NativeClass):
@@ -48,7 +49,11 @@ class String(NativeClass):
 
     @native("format", "(Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;")
     def format(self, instance, items):
-        return instance % items
+        try:
+            return instance % items
+        except TypeError:
+            logger.println(f"[FML][WARN] String.format got invalid parameter: {repr(instance)} % {repr(items)}")
+            return instance
 
     @native("trim", "()Ljava/lang/String;")
     def trim(self, instance: str):
@@ -70,6 +75,11 @@ class String(NativeClass):
     def replace(self, instance: str, before: str, after: str):
         return instance.replace(before, after, 1)
 
+    @native("indexOf", "(I)I")
+    def indexOf(self, instance, v: int):
+        c = chr(v)
+        return instance.index(c) if c in instance else -1
+
     @native("lastIndexOf", "(I)I")
     def lastIndexOf(self, instance: str, v: int):
         c = chr(v)
@@ -82,6 +92,10 @@ class String(NativeClass):
     @native("substring", "(I)Ljava/lang/String;")
     def substring2(self, instance, start):
         return instance[start:]
+
+    @native("equalsIgnoreCase", "(Ljava/lang/String;)Z")
+    def equalsIgnoreCase(self, instance, other):
+        return instance.lower() == other.lower()
 
 
 class StringBuilder(NativeClass):

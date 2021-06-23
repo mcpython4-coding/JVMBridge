@@ -108,6 +108,9 @@ class DataSerializers(NativeClass):
             "field_187200_j": None,
             "field_187196_f": None,
             "field_187198_h": None,
+            "field_187191_a": None,
+            "field_192734_n": None,
+            "field_187203_m": None,
         })
 
     @native("func_187189_a", "(Lnet/minecraft/network/datasync/IDataSerializer;)V")

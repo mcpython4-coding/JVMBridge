@@ -64,6 +64,24 @@ class Structure(NativeClass):
         return instance.registry_name
 
 
+class StructureFeatures(NativeClass):
+    NAME = "net/minecraft/world/gen/feature/structure/StructureFeatures"
+
+    @native("func_244162_a",
+            "(Ljava/lang/String;Lnet/minecraft/world/gen/feature/StructureFeature;)Lnet/minecraft/world/gen/feature/StructureFeature;")
+    def func_244162_a(self, *_):
+        pass
+
+
+class Features(NativeClass):
+    NAME = "net/minecraft/world/gen/feature/Features"
+
+    @native("func_243968_a",
+            "(Ljava/lang/String;Lnet/minecraft/world/gen/feature/ConfiguredFeature;)Lnet/minecraft/world/gen/feature/ConfiguredFeature;")
+    def func_243968_a(self, *_):
+        pass
+
+
 class DimensionStructuresSettings(NativeClass):
     NAME = "net/minecraft/world/gen/settings/DimensionStructuresSettings"
 
@@ -320,4 +338,146 @@ class WorldEntitySpawner(NativeClass):
 
 class ClientWorld__ClientWorldInfo(NativeClass):
     NAME = "net/minecraft/client/world/ClientWorld$ClientWorldInfo"
+
+
+class Dimension(NativeClass):
+    NAME = "net/minecraft/world/Dimension"
+
+
+class DimensionType(NativeClass):
+    NAME = "net/minecraft/world/DimensionType"
+
+    @native("<init>",
+            "(Ljava/util/OptionalLong;ZZZZDZZZZILnet/minecraft/util/ResourceLocation;Lnet/minecraft/util/ResourceLocation;F)Lnet/minecraft/world/DimensionType;")
+    def init(self, *_):
+        pass
+
+
+class WorldLightManager(NativeClass):
+    NAME = "net/minecraft/world/lighting/WorldLightManager"
+
+
+class BiomeGenerationSettings__Builder(NativeClass):
+    NAME = "net/minecraft/world/biome/BiomeGenerationSettings$Builder"
+
+
+class GameRules(NativeClass):
+    NAME = "net/minecraft/world/GameRules"
+
+
+class GameRules__BooleanValue(NativeClass):
+    NAME = "net/minecraft/world/GameRules$BooleanValue"
+
+    @native("func_223567_b", "(ZLjava/util/function/BiConsumer;)Lnet/minecraft/world/GameRules$RuleType;")
+    def func_223567_b(self, *_):
+        return self.create_instance()
+
+    @native("func_223568_b", "(Z)Lnet/minecraft/world/GameRules$RuleType;")
+    def func_223568_b(self, instance, v):
+        return instance
+
+
+class GameRules__IntegerValue(NativeClass):
+    NAME = "net/minecraft/world/GameRules$IntegerValue"
+
+    @native("func_223564_a", "(ILjava/util/function/BiConsumer;)Lnet/minecraft/world/GameRules$RuleType;")
+    def func_223564_a(self, *_):
+        return self.create_instance()
+
+    @native("func_223559_b", "(I)Lnet/minecraft/world/GameRules$RuleType;")
+    def func_223559_b(self, instance, v):
+        return instance
+
+
+class ChunkSerializer(NativeClass):
+    NAME = "net/minecraft/world/chunk/storage/ChunkSerializer"
+
+
+class MobSpawnInfo__Builder(NativeClass):
+    NAME = "net/minecraft/world/biome/MobSpawnInfo$Builder"
+
+
+class ClientWorld(NativeClass):
+    NAME = "net/minecraft/client/world/ClientWorld"
+
+
+class BiomeContainer(NativeClass):
+    NAME = "net/minecraft/world/biome/BiomeContainer"
+
+
+class ChunkStatus(NativeClass):
+    NAME = "net/minecraft/world/chunk/ChunkStatus"
+
+
+class BasaltColumnFeature(NativeClass):
+    NAME = "net/minecraft/world/gen/feature/BasaltColumnFeature"
+
+
+class HillsLayer(NativeClass):
+    NAME = "net/minecraft/world/gen/layer/HillsLayer"
+
+
+class MixRiverLayer(NativeClass):
+    NAME = "net/minecraft/world/gen/layer/MixRiverLayer"
+
+
+class ShoreLayer(NativeClass):
+    NAME = "net/minecraft/world/gen/layer/ShoreLayer"
+
+
+class MixOceansLayer(NativeClass):
+    NAME = "net/minecraft/world/gen/layer/MixOceansLayer"
+
+
+class Difficulty(NativeClass):
+    NAME = "net/minecraft/world/Difficulty"
+
+
+class GameSettings(NativeClass):
+    NAME = "net/minecraft/client/GameSettings"
+
+
+class TicketType(NativeClass):
+    NAME = "net/minecraft/world/server/TicketType"
+
+    def __init__(self):
+        super().__init__()
+        self.exposed_attributes.update({
+            "field_219494_g": self.create_instance(),
+        })
+
+    @native("func_223183_a", "(Ljava/lang/String;Ljava/util/Comparator;I)Lnet/minecraft/world/server/TicketType;")
+    def func_223183_a(self, *_):
+        return self.create_instance()
+
+
+class KeyBinding(NativeClass):
+    NAME = "net/minecraft/client/settings/KeyBinding"
+
+    @native("<init>",
+            "(Ljava/lang/String;Lnet/minecraftforge/client/settings/IKeyConflictContext;Lnet/minecraft/client/util/InputMappings$Type;ILjava/lang/String;)V")
+    def init(self, *_):
+        pass
+
+
+class InputMappings__Type(NativeClass):
+    NAME = "net/minecraft/client/util/InputMappings$Type"
+
+
+class KeyConflictContext(NativeClass):
+    NAME = "net/minecraftforge/client/settings/KeyConflictContext"
+
+    def __init__(self):
+        super().__init__()
+        self.exposed_attributes.update({
+            "GUI": 0,
+        })
+
+
+class NoiseChunkGenerator(NativeClass):
+    NAME = "net/minecraft/world/gen/NoiseChunkGenerator"
+
+
+class Layer(NativeClass):
+    NAME = "net/minecraft/world/gen/layer/Layer"
 

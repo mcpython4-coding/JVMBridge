@@ -19,12 +19,16 @@ from jvm.JavaExceptionStack import StackCollectingException
 class Objects(NativeClass):
     NAME = "java/util/Objects"
 
-    @native("requireNonNull", "(Ljava/lang/Object;)Ljava/lang/Object;")
+    @native("requireNonNull", "(Ljava/lang/Object;)Ljava/lang/Object;", static=True)
     def requireNonNull(self, obj):
         if obj is None:
             raise StackCollectingException("NullPointerException")
         return obj
 
-    @native("nonNull", "(Ljava/lang/Object;)Z")
+    @native("nonNull", "(Ljava/lang/Object;)Z", static=True)
     def nonNull(self, obj):
         return int(obj is not None)
+
+    @native("toString", "(Ljava/lang/Object;)Ljava/lang/String;", static=True)
+    def toString(self, instance):
+        return str(instance)

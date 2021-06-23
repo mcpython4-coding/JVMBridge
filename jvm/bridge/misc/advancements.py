@@ -37,3 +37,11 @@ class ItemPredicate(NativeClass):
     @native("register", "(Lnet/minecraft/util/ResourceLocation;Ljava/util/function/Function;)V")
     def register(self, name, function):
         pass
+
+
+class AbstractCriterionTrigger(NativeClass):
+    NAME = "net/minecraft/advancements/criterion/AbstractCriterionTrigger"
+
+    @native("<init>", "()V")
+    def init(self, *_):
+        pass

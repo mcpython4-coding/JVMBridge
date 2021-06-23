@@ -169,6 +169,8 @@ class JavaVM:
             ThreadLocal,
             ClassLoader,
             SafeVarargs,
+            Comparable,
+            Long,
         )
         from jvm.builtin.java.lang.annotation import (
             Documented,
@@ -179,7 +181,7 @@ class JavaVM:
             RetentionPolicy,
             Target,
         )
-        from jvm.builtin.java.lang.reflect import Field, Method, Proxy
+        from jvm.builtin.java.lang.reflect import Field, Method, Proxy, Constructor
         from jvm.builtin.java.lang.invoke import MethodHandles, ConstantCallSite
         from jvm.builtin.java.math import RoundingMode
         from jvm.builtin.java.nio.file import Files, Path, Paths
@@ -213,6 +215,7 @@ class JavaVM:
             TreeMap,
             TreeSet,
             WeakHashMap,
+            Comperator,
         )
         from jvm.builtin.java.util.concurrent import (
             ConcurrentHashMap,
@@ -232,17 +235,18 @@ class JavaVM:
         )
         from jvm.builtin.java.util.regex import Pattern
         from jvm.builtin.java.util.stream import Collectors, Stream
-        from jvm.builtin.javax.annotation import CheckForNull, Nonnull, Nullable
+        from jvm.builtin.javax.annotation import CheckForNull, Nonnull, Nullable, Nonnegative, OverridingMethodsMustInvokeSuper
         from jvm.builtin.javax.annotation.meta import (
-            TypeQualifierDefault,
+            TypeQualifierDefault, TypeQualifierNickname,
         )
+        from jvm.builtin.javax.annotation.concurrent import Immutable
 
     def init_bridge(self):
         from jvm.bridge import util
         from jvm.bridge.client import rendering
         from jvm.bridge.codec import builder
         from jvm.bridge.event import content, registries
-        from jvm.bridge.fml import capability, config, loading, network
+        from jvm.bridge.fml import capability, config, loading, network, server
         from jvm.bridge.lib import (
             apache,
             fastutil,
@@ -253,6 +257,8 @@ class JavaVM:
             netty,
             nightconfig,
             objectweb,
+            jetbrains,
+            checkerframework,
         )
         from jvm.bridge.misc import (
             advancements,
@@ -389,12 +395,12 @@ class AbstractJavaClass:
     def create_instance(self):
         raise NotImplementedError
 
-    def inject_method(self, name: str, signature: str, method):
+    def inject_method(self, name: str, signature: str, method, force=True):
         raise NotImplementedError
 
     def on_annotate(self, cls, args):
         if DYNAMIC_NATIVES:
-            print("\n" + self.name + " is missing on_annotate implementation!")
+            info("\n" + self.name + " is missing on_annotate implementation!")
             return
 
         raise RuntimeError((self, cls, args))
@@ -434,14 +440,6 @@ class NativeClass(AbstractJavaClass, ABC):
         self.parent = self.__class__.__bases__[0]
         self.injected_methods = []
 
-        if not isinstance(self.parent, NativeClass):
-            self.parent = None
-        else:
-            self.parent.children.append(self)
-
-            for injected in self.parent.injected_methods:
-                self.inject_method(*injected)
-
         self.children: typing.List[AbstractJavaClass] = []
 
         for key, value in self.__class__.__dict__.items():
@@ -457,11 +455,20 @@ class NativeClass(AbstractJavaClass, ABC):
                     (value.native_name, value.native_signature), method
                 )
 
-    def inject_method(self, name: str, signature: str, method):
-        self.exposed_methods[(name, signature)] = method
+        if not isinstance(self.parent, NativeClass):
+            self.parent = None
+        else:
+            self.parent.children.append(self)
+
+            for injected in self.parent.injected_methods:
+                self.inject_method(*injected, force=False)
+
+    def inject_method(self, name: str, signature: str, method, force=True):
+        if force or (name, signature) in self.exposed_methods:
+            self.exposed_methods[(name, signature)] = method
 
         for child in self.children:
-            child.inject_method(name, signature, method)
+            child.inject_method(name, signature, method, force=False)
 
         self.injected_methods.append((name, signature, method))
 
@@ -1258,7 +1265,10 @@ class JavaBytecodeClass(AbstractJavaClass):
                     f"class {self.name} is abstract and final, which is not allowed"
                 )
 
-    def inject_method(self, name: str, signature: str, method):
+    def inject_method(self, name: str, signature: str, method, force=True):
+        if not force and (name, signature) in self.methods:
+            return
+
         self.methods[(name, signature)] = method
 
 
@@ -1306,4 +1316,4 @@ def decode_cp_constant(const, version=0):
 vm = JavaVM()
 # this is the way how to attach a debugger to a certain method
 # vm.debug_method("com/jaquadro/minecraft/storagedrawers/block/EnumCompDrawer", "<clinit>", "()V")
-# vm.debug_method("architectury_inject_architectury_common_9cb7286195b84688b9282b7095db691c/PlatformMethods", "getModLoader",  "()Ljava/lang/String;")
+vm.debug_method("com/mrcrayfish/furniture/block/UpgradedGateBlock", "generateShapes", "(Lcom/google/common/collect/ImmutableList;Z)Lcom/google/common/collect/ImmutableMap;")

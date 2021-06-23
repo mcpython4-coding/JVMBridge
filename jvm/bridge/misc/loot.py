@@ -62,3 +62,19 @@ class LootConditionType(NativeClass):
 class LootTable(NativeClass):
     NAME = "net/minecraft/loot/LootTable"
 
+
+class LootFunctionType(NativeClass):
+    NAME = "net/minecraft/loot/LootFunctionType"
+
+    @native("<init>", "(Lnet/minecraft/loot/ILootSerializer;)V")
+    def init(self, *_):
+        pass
+
+
+class LootFunction__Serializer(NativeClass):
+    NAME = "net/minecraft/loot/LootFunction$Serializer"
+
+    @native("<init>", "()V")
+    def init(self, *_):
+        pass
+

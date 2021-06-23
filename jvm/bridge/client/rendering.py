@@ -127,3 +127,62 @@ class ModelBakery(NativeClass):
 class RenderState(NativeClass):
     NAME = "net/minecraft/client/renderer/RenderState"
 
+
+class ResourceLoadProgressGui(NativeClass):
+    NAME = "net/minecraft/client/gui/ResourceLoadProgressGui"
+
+
+class DimensionRenderInfo(NativeClass):
+    NAME = "net/minecraft/client/world/DimensionRenderInfo"
+
+
+class BakedQuad(NativeClass):
+    NAME = "net/minecraft/client/renderer/model/BakedQuad"
+
+
+class BlockModel(NativeClass):
+    NAME = "net/minecraft/client/renderer/model/BlockModel"
+
+
+class BlockPartFace__Deserializer(NativeClass):
+    NAME = "net/minecraft/client/renderer/model/BlockPartFace$Deserializer"
+
+
+class LanguageManager(NativeClass):
+    NAME = "net/minecraft/client/resources/LanguageManager"
+
+
+class AndCondition(NativeClass):
+    NAME = "net/minecraft/client/renderer/model/multipart/AndCondition"
+
+
+class OrCondition(NativeClass):
+    NAME = "net/minecraft/client/renderer/model/multipart/OrCondition"
+
+
+class ModelResourceLocation(NativeClass):
+    NAME = "net/minecraft/client/renderer/model/ModelResourceLocation"
+
+
+class MultipartBakedModel__Builder(NativeClass):
+    NAME = "net/minecraft/client/renderer/model/MultipartBakedModel$Builder"
+
+
+class SimpleBakedModel__Builder(NativeClass):
+    NAME = "net/minecraft/client/renderer/model/SimpleBakedModel$Builder"
+
+
+class PropertyValueCondition(NativeClass):
+    NAME = "net/minecraft/client/renderer/model/multipart/PropertyValueCondition"
+
+
+class GameRenderer(NativeClass):
+    NAME = "net/minecraft/client/renderer/GameRenderer"
+
+
+class DebugOverlayGui(NativeClass):
+    NAME = "net/minecraft/client/gui/overlay/DebugOverlayGui"
+
+
+class CapeLayer(NativeClass):
+    NAME = "net/minecraft/client/renderer/entity/layers/CapeLayer"

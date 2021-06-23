@@ -72,6 +72,14 @@ class IBooleanFunction(NativeClass):
 class VoxelShape(NativeClass):
     NAME = "net/minecraft/util/math/shapes/VoxelShape"
 
+    @native("func_197762_b", "(Lnet/minecraft/util/Direction$Axis;)D")
+    def func_197762_b(self, *_):
+        return 0
+
+    @native("func_197758_c", "(Lnet/minecraft/util/Direction$Axis;)D")
+    def func_197758_c(self, *_):
+        return 0
+
 
 class VoxelShapes(NativeClass):
     NAME = "net/minecraft/util/math/shapes/VoxelShapes"
@@ -98,6 +106,44 @@ class VoxelShapes(NativeClass):
             "(Lnet/minecraft/util/math/shapes/VoxelShape;Lnet/minecraft/util/math/shapes/VoxelShape;)Lnet/minecraft/util/math/shapes/VoxelShape;")
     def func_197872_a(self, *_):
         pass
+
+    @native("func_197880_a", "()Lnet/minecraft/util/math/shapes/VoxelShape;")
+    def func_197880_a(self, *_):
+        pass
+
+    @native("func_197873_a", "(DDDDDD)Lnet/minecraft/util/math/shapes/VoxelShape;")
+    def func_197873_a(self, *_):
+        pass
+
+    @native("func_197882_b",
+            "(Lnet/minecraft/util/math/shapes/VoxelShape;Lnet/minecraft/util/math/shapes/VoxelShape;Lnet/minecraft/util/math/shapes/IBooleanFunction;)Lnet/minecraft/util/math/shapes/VoxelShape;")
+    def func_197882_b(self, *_):
+        pass
+
+    @native("func_216384_a",
+            "(Lnet/minecraft/util/math/shapes/VoxelShape;[Lnet/minecraft/util/math/shapes/VoxelShape;)Lnet/minecraft/util/math/shapes/VoxelShape;")
+    def func_216384_a(self, *_):
+        pass
+
+
+class PartSplitVoxelShape(NativeClass):
+    NAME = "net/minecraft/util/math/shapes/PartSplitVoxelShape"
+
+
+class BitSetVoxelShapePart(NativeClass):
+    NAME = "net/minecraft/util/math/shapes/BitSetVoxelShapePart"
+
+
+class VoxelShapeArray(NativeClass):
+    NAME = "net/minecraft/util/math/shapes/VoxelShapeArray"
+
+
+class VoxelShapePart(NativeClass):
+    NAME = "net/minecraft/util/math/shapes/VoxelShapePart"
+
+
+class SplitVoxelShape(NativeClass):
+    NAME = "net/minecraft/util/math/shapes/SplitVoxelShape"
 
 
 class AxisAlignedBB(NativeClass):
@@ -176,6 +222,8 @@ class DamageSource(NativeClass):
                 "field_76372_a": self.create_instance(),
                 "field_76370_b": self.create_instance(),
                 "field_190095_e": self.create_instance(),
+                "field_76367_g": self.create_instance(),
+                "field_220302_v": self.create_instance(),
             }
         )
 
@@ -292,3 +340,15 @@ class LazyOptional(NativeClass):
     @native("of", "(Lnet/minecraftforge/common/util/NonNullSupplier;)Lnet/minecraftforge/common/util/LazyOptional;")
     def of(self, supplier):
         return self.create_instance()
+
+
+class Util(NativeClass):
+    NAME = "net/minecraft/util/Util"
+
+    @native("func_200696_a", "(Ljava/lang/Object;Ljava/util/function/Consumer;)Ljava/lang/Object;")
+    def func_200696_a(self, *_):
+        pass
+
+
+class CombatRules(NativeClass):
+    NAME = "net/minecraft/util/CombatRules"

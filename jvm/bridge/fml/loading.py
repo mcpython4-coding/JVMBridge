@@ -179,6 +179,10 @@ class ModContainer(NativeClass):
     def getModId(self, instance):
         return instance.name
 
+    @native("addConfig", "(Lnet/minecraftforge/fml/config/ModConfig;)V")
+    def addConfig(self, *_):
+        pass
+
 
 class EventBus(NativeClass):
     NAME = "net/minecraftforge/eventbus/api/IEventBus"
@@ -279,6 +283,11 @@ class EventBus(NativeClass):
     def post(self, instance, event):
         pass
 
+    @native("addGenericListener",
+            "(Ljava/lang/Class;Lnet/minecraftforge/eventbus/api/EventPriority;Ljava/util/function/Consumer;)V")
+    def addGenericListener3(self, instance, cls, priority, consumer):
+        pass
+
 
 class DistMarker(NativeClass):
     NAME = "net/minecraftforge/api/distmarker/Dist"
@@ -331,42 +340,43 @@ class DistExecutor(NativeClass):
         "(Lnet/minecraftforge/api/distmarker/Dist;Ljava/util/function/Supplier;)Ljava/lang/Object;",
     )
     def unsafeCallWhenOn(self, dist, supplier):
-        pass
+        if dist != "client" or shared.IS_CLIENT:
+            supplier()
 
     @native(
         "runWhenOn",
         "(Lnet/minecraftforge/api/distmarker/Dist;Ljava/util/function/Supplier;)V",
     )
-    def runWhenOn(self, *_):
-        pass
+    def runWhenOn(self, dist, supplier):
+        self.unsafeCallWhenOn(dist, supplier)
 
     @native(
         "unsafeRunWhenOn",
         "(Lnet/minecraftforge/api/distmarker/Dist;Ljava/util/function/Supplier;)V",
     )
-    def unsafeRunWhenOn(self, *_):
-        pass
+    def unsafeRunWhenOn(self, dist, supplier):
+        self.unsafeCallWhenOn(dist, supplier)
 
     @native(
         "callWhenOn",
         "(Lnet/minecraftforge/api/distmarker/Dist;Ljava/util/function/Supplier;)Ljava/lang/Object;",
     )
-    def callWhenOn(self, *_):
-        pass
+    def callWhenOn(self, dist, supplier):
+        self.unsafeCallWhenOn(dist, supplier)
 
     @native(
         "safeRunWhenOn",
         "(Lnet/minecraftforge/api/distmarker/Dist;Ljava/util/function/Supplier;)V",
     )
-    def safeRunWhenOn(self, *_):
-        pass
+    def safeRunWhenOn(self, dist, supplier):
+        self.unsafeCallWhenOn(dist, supplier)
 
     @native(
         "safeRunForDist",
         "(Ljava/util/function/Supplier;Ljava/util/function/Supplier;)Ljava/lang/Object;",
     )
-    def safeRunForDist(self, *_):
-        pass
+    def safeRunForDist(self, dist, supplier):
+        self.unsafeCallWhenOn(dist, supplier)
 
 
 class FMLPaths(NativeClass):
@@ -423,6 +433,22 @@ class ForgeConfigSpec__Builder(NativeClass):
     )
     def defineEnum(self, instance, name: str, enum):
         return instance
+
+    @native("defineEnum", "(Ljava/lang/String;Ljava/lang/Enum;)Lnet/minecraftforge/common/ForgeConfigSpec$EnumValue;")
+    def defineEnum3(self, instance, *_):
+        return instance
+
+    @native(
+        "defineEnum",
+        "(Ljava/lang/String;Ljava/lang/Enum;[Ljava/lang/Enum;)Lnet/minecraftforge/common/ForgeConfigSpec$EnumValue;",
+    )
+    def defineEnum2(self, instance, name: str, enum, values):
+        pass
+
+    @native("defineEnum",
+            "(Ljava/lang/String;Ljava/lang/Enum;Lcom/electronwill/nightconfig/core/EnumGetMethod;)Lnet/minecraftforge/common/ForgeConfigSpec$EnumValue;")
+    def defineEnum4(self, *_):
+        pass
 
     @native(
         "define",
@@ -484,12 +510,21 @@ class ForgeConfigSpec__Builder(NativeClass):
     def defineInRange2(self, instance, name: str, a, b, c):
         pass
 
+    @native("defineInRange", "(Ljava/lang/String;JJJ)Lnet/minecraftforge/common/ForgeConfigSpec$LongValue;")
+    def defineInRange3(self, *_):
+        pass
+
     @native(
         "defineList",
         "(Ljava/lang/String;Ljava/util/List;Ljava/util/function/Predicate;)Lnet/minecraftforge/common/ForgeConfigSpec$ConfigValue;",
     )
     def defineList(self, instance, name, a, b):
         return instance
+
+    @native("defineList",
+            "(Ljava/lang/String;Ljava/util/function/Supplier;Ljava/util/function/Predicate;)Lnet/minecraftforge/common/ForgeConfigSpec$ConfigValue;")
+    def defineList2(self, *_):
+        pass
 
     @native(
         "translation",
@@ -506,23 +541,12 @@ class ForgeConfigSpec__Builder(NativeClass):
     def get(self, instance):
         pass
 
-    @native(
-        "defineEnum",
-        "(Ljava/lang/String;Ljava/lang/Enum;[Ljava/lang/Enum;)Lnet/minecraftforge/common/ForgeConfigSpec$EnumValue;",
-    )
-    def defineEnum2(self, instance, name: str, enum, values):
-        pass
-
     @native("pop", "(I)Lnet/minecraftforge/common/ForgeConfigSpec$Builder;")
     def pop(self, instance, count: int):
         return instance
 
     @native("pop", "()Lnet/minecraftforge/common/ForgeConfigSpec$Builder;")
     def pop2(self, instance):
-        return instance
-
-    @native("defineEnum", "(Ljava/lang/String;Ljava/lang/Enum;)Lnet/minecraftforge/common/ForgeConfigSpec$EnumValue;")
-    def defineEnum3(self, instance, *_):
         return instance
 
 
@@ -533,11 +557,7 @@ class FMLCommonSetupEvent(NativeClass):
         "enqueueWork", "(Ljava/lang/Runnable;)Ljava/util/concurrent/CompletableFuture;"
     )
     def enqueueWork(self, instance, work):
-        # todo: make run safe
-        import jvm.Runtime
-
-        runtime = jvm.Runtime.Runtime()
-        runtime.run_method(work, None)
+        work(None)
 
 
 class OnlyIn(NativeClass):
@@ -545,9 +565,9 @@ class OnlyIn(NativeClass):
 
     def on_annotate(self, cls, args):
         return
-        logger.println(
-            f"[FML][WARN] got internal @OnlyIn marker on cls {cls.name} not specified for use in mods. Things may break!"
-        )
+        # logger.println(
+        #     f"[FML][WARN] got internal @OnlyIn marker on cls {cls.name} not specified for use in mods. Things may break!"
+        # )
 
 
 class MinecraftForge(NativeClass):
@@ -617,6 +637,10 @@ class Event(NativeClass):
         pass
 
 
+class Event__HasResult(NativeClass):
+    NAME = "net/minecraftforge/eventbus/api/Event$HasResult"
+
+
 class EventPriority(NativeClass):
     NAME = "net/minecraftforge/eventbus/api/EventPriority"
 
@@ -638,7 +662,7 @@ class IEnvironment__Keys(NativeClass):
 
     def __init__(self):
         super().__init__()
-        self.exposed_attributes.update({"VERSION": self.get_version})
+        self.exposed_attributes.update({"VERSION": self.get_version, "NAMING": lambda: None})
 
     @native("<get_version>", "()Ljava/lang/Object;")
     def get_version(self):
@@ -663,10 +687,11 @@ class Launcher(NativeClass):
     def __init__(self):
         super().__init__()
         self.exposed_attributes.update({"INSTANCE": self.create_instance()})
+        self.environment = Environment()
 
     @native("environment", "()Lcpw/mods/modlauncher/Environment;")
     def environment(self, *_):
-        pass
+        return self.environment
 
 
 class Cancelable(NativeClass):
@@ -685,6 +710,10 @@ class ObfuscationReflectionHelper(NativeClass):
     def findField(self, cls, name):
         return cls.fields[name] if hasattr(cls, name) else None
 
+    @native("remapName", "(Lcpw/mods/modlauncher/api/INameMappingService$Domain;Ljava/lang/String;)Ljava/lang/String;")
+    def remapName(self, *_):
+        pass
+
 
 class DeferredWorkQueue(NativeClass):
     NAME = "net/minecraftforge/fml/DeferredWorkQueue"
@@ -692,8 +721,8 @@ class DeferredWorkQueue(NativeClass):
     @native(
         "runLater", "(Ljava/lang/Runnable;)Ljava/util/concurrent/CompletableFuture;"
     )
-    def runLater(self, *_):
-        pass
+    def runLater(self, runnable):
+        return lambda: runnable()  # todo: schedule somewhere
 
 
 class ExtensionPoint(NativeClass):
@@ -731,3 +760,46 @@ class ModFileScanData__AnnotationData(NativeClass):
     @native("getMemberName", "()Ljava/lang/String;")
     def getMemberName(self, instance):
         return "unimplemented"
+
+
+class SubscribeEvent(NativeClass):
+    NAME = "net/minecraftforge/eventbus/api/SubscribeEvent"
+
+    def on_annotate(self, cls, args):
+        pass  # todo: implement
+
+
+class BrandingControl(NativeClass):
+    NAME = "net/minecraftforge/fml/BrandingControl"
+
+
+class WorldEvent(NativeClass):
+    NAME = "net/minecraftforge/event/world/WorldEvent"
+
+
+class DatagenModLoader(NativeClass):
+    NAME = "net/minecraftforge/fml/DatagenModLoader"
+
+    @native("isRunningDataGen", "()Z")
+    def isRunningDataGen(self, *_):
+        return shared.data_gen
+
+
+class ForgeMod(NativeClass):
+    NAME = "net/minecraftforge/common/ForgeMod"
+
+    @native("enableMilkFluid", "()V")
+    def enableMilkFluid(self, *_):
+        pass
+
+
+class INameMappingService__Domain(NativeClass):
+    NAME = "cpw/mods/modlauncher/api/INameMappingService$Domain"
+
+    def __init__(self):
+        super().__init__()
+        self.exposed_attributes.update(
+            {
+                "FIELD": 0,
+            }
+        )

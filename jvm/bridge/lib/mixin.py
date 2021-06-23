@@ -37,7 +37,7 @@ class At__Shift(NativeClass):
     def __init__(self):
         super().__init__()
         self.exposed_attributes.update(
-            {"AFTER": "org/spongepowered/asm/mixin/injection/At$Shift::AFTER", "BY": "org/spongepowered/asm/mixin/injection/At$Shift::BY"}
+            {"AFTER": "org/spongepowered/asm/mixin/injection/At$Shift::AFTER", "BY": "org/spongepowered/asm/mixin/injection/At$Shift::BY", "BEFORE": "org/spongepowered/asm/mixin/injection/At$Shift::BEFORE"}
         )
 
 
@@ -62,11 +62,20 @@ class Invoker(NativeClass):
         Will inject a new method into the target class wrapping the target method
         """
         try:
+            if len(args) == 0:
+                if not method.name.startswith("invoke"):
+                    logger.println(f"[MIXIN][INVOKER][FATAL] failed to invoke {method} as no args where provided")
+                    return
+                target_method_name = method.name.removeprefix("invoke")
+                target_method_name = target_method_name[0].lower() + target_method_name[1:]
+                target_method_name = shared.CURRENT_REF_MAP["mappings"][method.class_file.name].setdefault(target_method_name, target_method_name).split("(")[0]
+            else:
+                target_method_name = shared.CURRENT_REF_MAP["mappings"][method.class_file.name].setdefault(args[0][1].data, args[0][1].data).split("(")[0]
+
             target_cls: AbstractJavaClass = method.class_file.mixin_target
-            target_method_name = shared.CURRENT_REF_MAP["mappings"][method.class_file.name][args[0][1].data].split("(")[0]
             override_method = target_cls.get_method(target_method_name, method.signature)
 
-            logger.println(f"[MIXIN][INJECT] injecting into class {target_cls} method '{method.name}{method.signature}' wrapping '{args[0][1]}/{target_method_name}{method.signature}'")
+            logger.println(f"[MIXIN][INJECT] injecting into class {target_cls} method '{method.name}{method.signature}' wrapping '{args[0][1] if len(args) > 0 else 'unspecified'}/{target_method_name}{method.signature}'")
 
             m = lambda *a: override_method(*a)
 
@@ -77,7 +86,7 @@ class Invoker(NativeClass):
         except StackCollectingException as e:
             print(e.format_exception())
         except:
-            traceback.print_exc()
+            logger.print_exception(f"during annotating {method} with {args}")
 
 
 class Accessor(NativeClass):
@@ -90,8 +99,11 @@ class Accessor(NativeClass):
         try:
             target_cls: AbstractJavaClass = method.class_file.mixin_target
             target_attribute_name = method.name.removeprefix("get").removeprefix("set")
-            target_attribute_name = target_attribute_name[0].lower() + target_attribute_name[1:]
-            target_attribute_name = shared.CURRENT_REF_MAP["mappings"][method.class_file.name].setdefault(target_attribute_name, target_attribute_name).split(":")[0]
+
+            if not target_attribute_name.isupper():
+                target_attribute_name = target_attribute_name[0].lower() + target_attribute_name[1:]
+
+            target_attribute_name = shared.CURRENT_REF_MAP["mappings"].setdefault(method.class_file.name, {}).setdefault(target_attribute_name, target_attribute_name).split(":")[0]
 
             if method.name.startswith("get"):
                 m = lambda *instance: instance[0].fields[target_attribute_name] if instance else target_cls.get_static_attribute(target_attribute_name)
@@ -103,6 +115,33 @@ class Accessor(NativeClass):
                         v[0].fields[target_attribute_name] = v[1]
 
             logger.println(f"[MIXIN][INJECT] injecting attribute accessor into {target_cls.name} accessing '{target_attribute_name}' via '{method.name}{method.signature}'")
+
+            native(method.name, method.signature)(m)
+
+            target_cls.inject_method(method.name, method.signature, m)
+            method.class_file.methods[(method.name, method.signature)] = m
+
+        except StackCollectingException as e:
+            print(e.format_exception())
+        except:
+            traceback.print_exc()
+
+
+class Overwrite(NativeClass):
+    NAME = "org/spongepowered/asm/mixin/Overwrite"
+
+    def on_annotate(self, method, args):
+        if not hasattr(method.class_file, "mixin_target"):
+            logger.println(f"[MIXIN][OVERWRITE][ERROR] failed to attach mixin to {method}; super class was not annotated correctly!")
+            return
+
+        try:
+            target_cls: AbstractJavaClass = method.class_file.mixin_target
+
+            m = lambda *args: method(*args)
+
+            logger.println(
+                f"[MIXIN][INJECT] injecting override into {target_cls.name} at '{method.name}{method.signature}'")
 
             native(method.name, method.signature)(m)
 
@@ -161,3 +200,18 @@ class ModifyConstant(NativeClass):
     # todo: implement
     def on_annotate(self, cls, args):
         pass
+
+
+class Redirect(NativeClass):
+    NAME = "org/spongepowered/asm/mixin/injection/Redirect"
+
+    def on_annotate(self, cls, args):
+        pass  # todo: implement
+
+
+class Mutable(NativeClass):
+    NAME = "org/spongepowered/asm/mixin/Mutable"
+
+
+    def on_annotate(self, cls, args):
+        pass  # todo: implement

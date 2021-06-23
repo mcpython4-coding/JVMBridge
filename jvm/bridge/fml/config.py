@@ -81,3 +81,8 @@ class ConfigFileTypeHandler(NativeClass):
 
 class ModConfig(NativeClass):
     NAME = "net/minecraftforge/fml/config/ModConfig"
+
+    @native("<init>",
+            "(Lnet/minecraftforge/fml/config/ModConfig$Type;Lnet/minecraftforge/common/ForgeConfigSpec;Lnet/minecraftforge/fml/ModContainer;Ljava/lang/String;)V")
+    def init(self, *_):
+        pass

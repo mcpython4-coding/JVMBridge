@@ -28,3 +28,7 @@ class Collection(NativeClass):
     @native("stream", "()Ljava/util/stream/Stream;")
     def stream(self, instance):
         return instance
+
+    @native("size", "()I")
+    def size(self, *_):
+        pass

@@ -26,6 +26,10 @@ class List(NativeClass):
         instance.append(item)
         return True
 
+    @native("add", "(ILjava/lang/Object;)V")
+    def add2(self, instance, index, obj):
+        instance.insert(index, obj)
+
     @native("iterator", "()Ljava/util/Iterator;")
     def iterator(self, instance):
         return instance
@@ -60,3 +64,8 @@ class List(NativeClass):
     @native("size", "()I")
     def size(self, instance):
         return len(instance)
+
+    @native("toArray", "([Ljava/lang/Object;)[Ljava/lang/Object;")
+    def toArray(self, instance, array):
+        array[:] = instance
+        return array

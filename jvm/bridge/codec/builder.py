@@ -46,8 +46,9 @@ class Codec(NativeClass):
     @native(
         "unboundedMap",
         "(Lcom/mojang/serialization/Codec;Lcom/mojang/serialization/Codec;)Lcom/mojang/serialization/codecs/UnboundedMapCodec;",
+        static=True,
     )
-    def unboundedMap(self, instance, codec_key, codec_value):
+    def unboundedMap(self, codec_key, codec_value):
         return self.vm.get_class(
             "com/mojang/serialization/codecs/UnboundedMapCodec",
             version=self.internal_version,

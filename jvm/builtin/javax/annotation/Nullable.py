@@ -8,3 +8,10 @@ class Nullable(NativeClass):
     def on_annotate(self, cls, args):
         pass
 
+
+class Nullable2(NativeClass):
+    NAME = "edu/umd/cs/findbugs/annotations/Nullable"
+
+    def on_annotate(self, cls, args):
+        pass
+

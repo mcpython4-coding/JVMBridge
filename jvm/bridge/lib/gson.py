@@ -19,6 +19,10 @@ import json
 class Gson(NativeClass):
     NAME = "com/google/gson/Gson"
 
+    @native("<init>", "()V")
+    def init(self, *_):
+        pass
+
     @native("fromJson", "(Ljava/lang/String;Ljava/lang/reflect/Type;)Ljava/lang/Object;")
     def fromJson(self, instance, text, target_type):
         if target_type is not None:

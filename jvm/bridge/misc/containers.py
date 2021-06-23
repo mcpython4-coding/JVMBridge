@@ -22,6 +22,10 @@ class StateContainer(NativeClass):
     def func_177621_b(self, instance):
         return instance
 
+    @native("func_177619_a", "()Lcom/google/common/collect/ImmutableList;")
+    def func_177619_a(self, *_):
+        return []
+
 
 class EquipmentSlotType(NativeClass):
     NAME = "net/minecraft/inventory/EquipmentSlotType"
@@ -48,3 +52,15 @@ class IForgeContainerType(NativeClass):
     @native("create", "(Lnet/minecraftforge/fml/network/IContainerFactory;)Lnet/minecraft/inventory/container/ContainerType;")
     def create(self, factory):
         pass
+
+
+class RepairContainer(NativeClass):
+    NAME = "net/minecraft/inventory/container/RepairContainer"
+
+
+class PlayerInventory(NativeClass):
+    NAME = "net/minecraft/entity/player/PlayerInventory"
+
+
+class CreateWorldScreen(NativeClass):
+    NAME = "net/minecraft/client/gui/screen/CreateWorldScreen"

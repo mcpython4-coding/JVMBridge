@@ -20,6 +20,18 @@ from jvm.Java import NativeClass, native
 class UUID(NativeClass):
     NAME = "java/util/UUID"
 
-    @native("fromString", "(Ljava/lang/String;)Ljava/util/UUID;")
+    @native("<init>", "(JJ)V")
+    def init(self, instance):
+        pass
+
+    @native("fromString", "(Ljava/lang/String;)Ljava/util/UUID;", static=True)
     def fromString(self, string):
-        return uuid.uuid3("loader", string)
+        return uuid.UUID(string)
+
+    @native("randomUUID", "()Ljava/util/UUID;", static=True)
+    def randomUUID(self):
+        return uuid.uuid4()
+
+    @native("toString", "()Ljava/lang/String;")
+    def toString(self, instance: uuid.UUID):
+        return instance.urn

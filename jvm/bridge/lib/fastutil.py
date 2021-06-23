@@ -26,9 +26,17 @@ class Object2FloatMap(NativeClass):
 class Byte2ObjectArrayMap(NativeClass):
     NAME = "it/unimi/dsi/fastutil/bytes/Byte2ObjectArrayMap"
 
+    def create_instance(self):
+        return {}
+
     @native("<init>", "(I)V")
     def init(self, instance, size):
-        instance.underlying = {}
+        pass
+
+    @native("put", "(BLjava/lang/Object;)Ljava/lang/Object;")
+    def put(self, instance, key, value):
+        instance.setdefault(key, []).append(value)
+        return value
 
 
 class ObjectOpenHashSet(NativeClass):
@@ -59,3 +67,26 @@ class Object2ObjectOpenHashMap(NativeClass):
     @native("<init>", "()V")
     def init(self, *_):
         pass
+
+
+class Reference2ReferenceOpenHashMap(NativeClass):
+    NAME = "it/unimi/dsi/fastutil/objects/Reference2ReferenceOpenHashMap"
+
+    def create_instance(self):
+        return {}
+
+    @native("<init>", "()V")
+    def init(self, *_):
+        pass
+
+
+class Byte2ObjectMap(NativeClass):
+    NAME = "it/unimi/dsi/fastutil/bytes/Byte2ObjectMap"
+
+    def create_instance(self):
+        return {}
+
+    @native("put", "(BLjava/lang/Object;)Ljava/lang/Object;")
+    def put(self, instance, key, value):
+        instance[key] = values
+        return value
