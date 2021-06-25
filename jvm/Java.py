@@ -639,11 +639,15 @@ class AbstractAttributeParser(ABC):
     def parse(self, table: "JavaAttributeTable", data: bytearray):
         raise NotImplementedError
 
+    def dump(self, table: "JavaAttributeTable") -> bytearray:
+        raise NotImplementedError
+
 
 class ConstantValueParser(AbstractAttributeParser):
     def __init__(self):
         self.value = None
         self.field: "JavaField" = None
+        self.data = None
 
     def parse(self, table: "JavaAttributeTable", data: bytearray):
         self.value = table.class_file.cp[pop_u2(data)]
@@ -659,6 +663,9 @@ class ConstantValueParser(AbstractAttributeParser):
 
     def inject_instance(self, class_file: "JavaBytecodeClass", instance):
         instance.set_attribute(self.field.name, self.value)
+
+    def dump(self, table: "JavaAttributeTable") -> bytes:
+        return U2.pack(table.class_file.ensure_data)
 
 
 class CodeParser(AbstractAttributeParser):
@@ -690,6 +697,21 @@ class CodeParser(AbstractAttributeParser):
 
         self.attributes.from_data(table.class_file, data)
 
+    def dump(self, table: "JavaAttributeTable") -> bytearray:
+        data = bytearray()
+        data += U2.pack(self.max_locals)
+        data += U2.pack(self.max_stacks)
+
+        data += U4.pack(len(self.code))
+        data += self.code
+
+        data += U2.pack(len(self.exception_table))
+        for start, (end, handler, catch) in self.exception_table.items():
+            data += U2.pack(start) + U2.pack(end) + U2.pack(handler) + U2.pack(catch)
+
+        data += self.attributes.dump()
+        return data
+
 
 class BootstrapMethods(AbstractAttributeParser):
     def __init__(self):
@@ -703,16 +725,29 @@ class BootstrapMethods(AbstractAttributeParser):
             ]
             self.entries.append((method_ref, arguments))
 
+    def dump(self, table: "JavaAttributeTable") -> bytearray:
+        data = bytearray()
+        for method, args in self.entries:
+            data += table.class_file.ensure_data(method)
+            data += U2.pack(len(args)) + b"".join([
+                U2.pack(table.class_file.ensure_data(arg)) for arg in args
+            ])
+        return data
+
 
 class StackMapTableParser(AbstractAttributeParser):
     def parse(self, table: "JavaAttributeTable", data: bytearray):
         pass  # todo: implement
+
+    def dump(self, table: "JavaAttributeTable") -> bytearray:
+        return bytearray()  # todo: implement
 
 
 class ElementValue:
     def __init__(self):
         self.tag = None
         self.data = None
+        self.raw_data = None
 
     def parse(self, table: "JavaAttributeTable", data: bytearray):
         # as by https://docs.oracle.com/javase/specs/jvms/se16/html/jvms-4.html#jvms-4.7.16
@@ -730,6 +765,7 @@ class ElementValue:
                 .removesuffix(";")
             )
             attr_name = table.class_file.cp[pop_u2(data) - 1][1]
+            self.raw_data = cls_name, attr_name
 
             cls = vm.get_class(cls_name, version=table.class_file.internal_version)
             self.data = cls.get_static_attribute(attr_name, "ENUM-ENTRY")
@@ -749,7 +785,8 @@ class ElementValue:
             for _ in range(pop_u2(data)):
                 name = table.class_file.cp[pop_u2(data) - 1]
                 if name[0] != 1:
-                    raise StackCollectingException("invalid ")
+                    raise StackCollectingException("invalid entry: "+str(name))
+
                 name = name[1]
                 value = ElementValue().parse(table, data)
                 values.append((name, value))
@@ -759,6 +796,18 @@ class ElementValue:
             raise NotImplementedError(tag)
 
         return self
+
+    def dump(self, table: "JavaAttributeTable") -> typing.Union[bytes, bytearray]:
+        if self.tag in "BCDFIJSZs":
+            return U2.pack(table.class_file.ensure_data(self.data))
+        elif self.tag == "e":
+            cls, attr = self.raw_data
+            return U2.pack(table.class_file.ensure_data("L"+cls+";"))+U2.pack(table.class_file.ensure_data(attr))
+        elif self.tag == "[":
+            return U2.pack(len(self.data)) + sum([e.dump(table) for e in self.data])
+        elif self.tag == "@":
+            return U2.pack(table.class_file.ensure_data("L"+self.data[0]+";")) + U2.pack(len(self.data[1])) + b"".join([U2.pack(table.class_file.ensure_data([1, e]))+value.dump() for e, value in self.data[1]])
+        raise NotImplementedError(self.tag)
 
     def __repr__(self):
         return f"ElementValue({self.data})"
@@ -800,6 +849,20 @@ class RuntimeAnnotationsParser(AbstractAttributeParser):
             self.annotations.append((annotation_type, values))
 
         return self
+
+    def dump(self, table: "JavaAttributeTable") -> bytearray:
+        data = bytearray()
+        data += U2.pack(len(self.annotations))
+
+        for annotation_type, values in self.annotations:
+            data += U2.pack(table.class_file.ensure_data([1, "L"+annotation_type+";"]))
+            data += U2.pack(len(values))
+
+            for name, v in values:
+                data += U2.pack(table.class_file.ensure_data([1, name]))
+                data += v.pack(table)
+
+        return data
 
 
 class JavaAttributeTable:
@@ -877,6 +940,23 @@ class JavaAttributeTable:
     def __getitem__(self, item):
         return self.attributes[item]
 
+    def dump(self) -> bytearray:
+        data = bytearray()
+
+        attributes = sum([(key, e) for e in data for key, data in self.attributes_unparsed.items()])
+        attributes += sum([(key, e) for e in data for key, data in self.attributes.items()])
+
+        data += U2.pack(len(attributes))
+        
+        for name, body in attributes:
+            data += U2.pack(self.class_file.ensure_data([1, name]))
+
+            body = body if not isinstance(body, AbstractAttributeParser) else body.dump(self)
+            data += U4.pack(len(body))
+            data += body
+
+        return data
+
 
 class JavaField:
     def __init__(self):
@@ -895,6 +975,16 @@ class JavaField:
 
     def __repr__(self):
         return f"JavaField(name='{self.name}',descriptor='{self.descriptor}',access='{bin(self.access)}',class='{self.class_file.name}')"
+    
+    def dump(self) -> bytearray:
+        data = bytearray()
+
+        data += U2.pack(self.access)
+        data += U2.pack(self.class_file.ensure_data([1, self.name]))
+        data += U2.pack(self.class_file.ensure_data([1, self.descriptor]))
+        data += self.attributes.dump()
+
+        return data
 
 
 class JavaMethod:
@@ -931,10 +1021,22 @@ class JavaMethod:
     def __call__(self, *args):
         return self.invoke(*args)
 
+    def dump(self) -> bytearray:
+        data = bytearray()
+
+        data += U2.pack(self.access)
+        data += U2.pack(self.class_file.ensure_data([1, self.name]))
+        data += U2.pack(self.class_file.ensure_data([1, self.signature]))
+        data += self.attributes.dump()
+
+        return data
+
 
 class JavaBytecodeClass(AbstractJavaClass):
     def __init__(self):
         super().__init__()
+        self.class_file_version = -1, -1
+
         self.cp: typing.List[typing.Any] = []
         self.access = 0
         self.methods = {}
@@ -967,6 +1069,7 @@ class JavaBytecodeClass(AbstractJavaClass):
         assert magic == 0xCAFEBABE, f"magic {magic} is invalid!"
 
         minor, major = pop_u2(data), pop_u2(data)
+        self.class_file_version = major, minor
 
         info(
             f"class file version: {major}.{minor} (Java {major-44 if major > 45 else '1.0.2 or 1.1'}"
@@ -1271,6 +1374,88 @@ class JavaBytecodeClass(AbstractJavaClass):
             return
 
         self.methods[(name, signature)] = method
+
+    def dump(self) -> bytearray:
+        """
+        This method does the opposite to most of the stuff here
+        It dumps the content of the class into a .class file
+        """
+
+        data = bytearray()
+        data += U4.pack(0xCAFEBABE)
+
+        major, minor = self.class_file_version
+        data += U2.pack(minor)
+        data += U2.pack(major)
+
+        end_data = bytearray()
+
+        # todo: parse access flags from attributes
+        end_data += U2.pack(self.access)
+        end_data += U2.pack(self.ensure_data([7, [1, self.name]]))
+        end_data += U2.pack(self.ensure_data([7, [1, self.parent().name if self.parent is not None else "java/lang/Object"]]))
+
+        end_data += U2.pack(len(self.interfaces))
+        end_data += b"".join([U2.pack(self.ensure_data([7, [1, e().name]])) for e in self.interfaces])
+
+        end_data += U2.pack(len(self.fields))
+        end_data += b"".join([field.dump() for field in self.fields.values()])
+
+        end_data += U2.pack(len(self.methods))
+        end_data += b"".join([method.dump() for method in self.methods.values()])
+
+        # here encode the rest of the class body
+
+        cp_data = bytearray()
+
+        i = 0
+        while i < len(self.cp):
+            entry = self.cp[i]
+            if entry is None: continue
+
+            tag, *d = entry
+
+            if tag == 1:
+                s = entry[1].encode("utf-8")
+                cp_data += b"\x01" + U2.pack(len(s)) + s
+            elif tag == 3:
+                cp_data += b"\x03" + INT.pack(entry[1])
+            elif tag == 4:
+                cp_data += b"\x04" + FLOAT.pack(entry[1])
+            elif tag == 5:
+                cp_data += b"\x05" + LONG.pack(entry[1])
+            elif tag == 6:
+                cp_data += b"\x06" + DOUBLE.pack(entry[1])
+            elif tag == 7:  # class
+                cp_data += b"\x07" + U2.pack(self.ensure_data(entry[1]))
+            elif tag == 8:
+                cp_data += b"\x08" + U2.pack(self.ensure_data(entry[1]))
+            elif tag == 9:
+                cp_data += b"\x09" + U2.pack(self.ensure_data(entry[1])) + U2.pack(self.ensure_data(entry[2]))
+            elif tag == 10:
+                cp_data += b"\x0A" + U2.pack(self.ensure_data(entry[1])) + U2.pack(self.ensure_data(entry[2]))
+            elif tag == 11:
+                cp_data += b"\x0B" + U2.pack(self.ensure_data(entry[1])) + U2.pack(self.ensure_data(entry[2]))
+            elif tag == 12:
+                cp_data += b"\x0C" + U2.pack(self.ensure_data(entry[1])) + U2.pack(self.ensure_data(entry[2]))
+            else:
+                raise RuntimeError(tag, entry)
+
+        data += U2.pack(len(self.cp) + 1)
+        data += cp_data
+
+        data += end_data
+
+        return data
+
+    def ensure_data(self, data: typing.List) -> int:
+        if data not in self.cp:
+            index = len(self.cp) + 1
+            self.cp.append(data)
+            if data[0] in (5, 6):
+                self.cp.append(None)
+            return index
+        return self.cp.index(data) + 1
 
 
 class JavaClassInstance:
