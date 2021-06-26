@@ -1612,7 +1612,7 @@ class GetField(CPLinkedInstruction):
             raise StackCollectingException("NullPointerException: object is None")
 
         try:
-            stack.push(obj.fields[name])
+            stack.push(obj.get_field(name))
         except (KeyError, AttributeError):
             raise StackCollectingException(
                 f"AttributeError: object {obj} (type {type(obj)}) has no attribute {name}"
@@ -1636,7 +1636,7 @@ class PutField(CPLinkedInstruction):
         if obj is None:
             raise StackCollectingException("NullPointerException: obj is null")
 
-        obj.fields[name] = value
+        obj.set_field(name, value)
 
     @classmethod
     def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr", stack: VirtualStack):

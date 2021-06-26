@@ -108,13 +108,13 @@ class Accessor(NativeClass):
             target_attribute_name = shared.CURRENT_REF_MAP["mappings"].setdefault(method.class_file.name, {}).setdefault(target_attribute_name, target_attribute_name).split(":")[0]
 
             if method.name.startswith("get"):
-                m = lambda *instance: instance[0].fields[target_attribute_name] if instance else target_cls.get_static_attribute(target_attribute_name)
+                m = lambda *instance: instance[0].get_field(target_attribute_name) if instance else target_cls.get_static_attribute(target_attribute_name)
             else:
                 def m(*v):
                     if len(v) == 1:
                         target_cls.set_static_attribute(target_attribute_name, v[0])
                     else:
-                        v[0].fields[target_attribute_name] = v[1]
+                        v[0].set_field(target_attribute_name, v[1])
 
             logger.println(f"[MIXIN][INJECT] injecting attribute accessor into {target_cls.name} accessing '{target_attribute_name}' via '{method.name}{method.signature}'")
 

@@ -398,12 +398,12 @@ class AbstractJavaClass:
     def inject_method(self, name: str, signature: str, method, force=True):
         raise NotImplementedError
 
-    def on_annotate(self, cls, args):
+    def on_annotate(self, obj, args):
         if DYNAMIC_NATIVES:
             info("\n" + self.name + " is missing on_annotate implementation!")
             return
 
-        raise RuntimeError((self, cls, args))
+        raise RuntimeError(f"missing annotation implementation on {self} annotating {obj} with {args}")
 
     def get_dynamic_field_keys(self):
         return set()
@@ -413,6 +413,20 @@ class AbstractJavaClass:
 
     def prepare_use(self, runtime=None):
         pass
+
+
+class AbstractJavaClassInstance(ABC):
+    def get_field(self, name: str):
+        raise NotImplementedError
+
+    def set_field(self, name: str, value):
+        raise NotImplementedError
+
+    def get_method(self, name: str, signature: str):
+        raise NotImplementedError
+
+    def get_class(self) -> AbstractJavaClass:
+        raise NotImplementedError
 
 
 class NativeClass(AbstractJavaClass, ABC):
@@ -558,10 +572,16 @@ Static attribute {name}"""
         return ""
 
 
-class NativeClassInstance:
+class NativeClassInstance(AbstractJavaClassInstance):
     def __init__(self, native_class: "NativeClass"):
         self.native_class = native_class
         self.fields = {key: None for key in native_class.get_dynamic_field_keys()}
+
+    def get_field(self, name: str):
+        return self.fields[name]
+
+    def set_field(self, name: str, value):
+        self.fields[name] = value
 
     def get_method(self, name: str, signature: str):
         return self.native_class.get_method(name, signature)
@@ -1458,7 +1478,7 @@ class JavaBytecodeClass(AbstractJavaClass):
         return self.cp.index(data) + 1
 
 
-class JavaClassInstance:
+class JavaClassInstance(AbstractJavaClassInstance):
     """
     An instance of a java bytecode class
     Wires down some stuff to the underlying class and holds the dynamic field values
@@ -1479,6 +1499,12 @@ class JavaClassInstance:
 
     def get_class(self):
         return self.class_file
+
+    def get_field(self, name: str):
+        return self.fields[name]
+
+    def set_field(self, name: str, value):
+        self.fields[name] = value
 
 
 def decode_cp_constant(const, version=0):
