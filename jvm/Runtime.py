@@ -1356,11 +1356,11 @@ class CompareHelper(OpcodeInstruction, ABC):
     @classmethod
     def validate(cls, command_index: int, prepared_data: typing.Any, container: "BytecodeRepr"):
         if command_index + prepared_data < 0:
-            raise StackCollectingException(f"pointing index {command_index + prepared_data} is < 0")
+            raise StackCollectingException(f"opcode index {command_index + prepared_data} is < 0 (OutOfBoundError)")
         elif command_index + prepared_data >= len(container.decoded_code):
-            raise StackCollectingException(f"pointing index {command_index + prepared_data} is >= {len(container.decoded_code)}")
+            raise StackCollectingException(f"opcode index {command_index + prepared_data} is >= {len(container.decoded_code)} (OutOfBoundError)")
         elif container.decoded_code[command_index + prepared_data] is None:
-            raise StackCollectingException(f"pointing index is null (bound 0 <= {command_index+prepared_data} < {len(container.decoded_code)})")
+            raise StackCollectingException(f"opcode index {command_index+prepared_data} is pointing into opcode BODY, not HEAD (bound 0 <= {command_index+prepared_data} < {len(container.decoded_code)})")
 
 
 class SingleCompare(CompareHelper, ABC):
@@ -2379,8 +2379,8 @@ class LookupSwitch(OpcodeInstruction):
         try:
             pairs = {
                 jvm.Java.pop_u4_s(
-                    data
-                ): jvm.Java.pop_u4_s(data[index + i * 4 :])
+                    data[index + i * 8:]
+                ): jvm.Java.pop_u4_s(data[index + i * 8 + 4 :])
                 for i in range(npairs)
             }
             index += npairs * 8

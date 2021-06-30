@@ -330,7 +330,7 @@ class {name.split('/')[-1].replace('$', '__')}(NativeClass):
 
             raise StackCollectingException(f"class file source for '{name}' not found!").add_trace(version) from None
 
-        self.load_class_from_bytecode(name, bytecode, version=version, shared=shared)
+        return self.load_class_from_bytecode(name, bytecode, version=version, shared=shared)
 
     def load_class_from_bytecode(self, name: str, bytecode: bytes, version=None, shared=False, prepare=True):
         info("loading java class '" + name + "'")
