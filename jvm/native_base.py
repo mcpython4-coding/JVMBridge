@@ -13,7 +13,6 @@ class Native(AbstractJavaClass):
 
     IS_ABSTRACT = False
     IS_INTERFACE = False
-    IS_STATIC = False
 
     METHODS = None
     DYNAMIC_FIELD_KEYS = set()
@@ -70,8 +69,17 @@ class Native(AbstractJavaClass):
         return self.DYNAMIC_FIELD_KEYS
 
 
-def native_method(name: str, signature: str, static: bool = False, private: bool = False):
-    pass
+def native(name: str, signature: str, static: bool = False, private: bool = False):
+    def register(method):
+        method.name = name
+        method.signature = signature
+        method.access = (0x0008 if static else 0) | (0x0002 if private else 0x0001)
+
+        COLLECTED_METHODS.append(method)
+
+        return method
+
+    return register
 
 
 class MappedNative(Native):

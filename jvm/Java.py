@@ -25,7 +25,10 @@ import types
 import typing
 from abc import ABC
 
-from jvm.JavaExceptionStack import StackCollectingException
+try:
+    from jvm.JavaExceptionStack import StackCollectingException
+except ImportError:
+    from JavaExceptionStack import StackCollectingException
 
 # With this flag, the vm will do some fancy stuff when encountering unknown natives, trying to create
 # a empty method and outputting an empty method body in the log for later implementation
@@ -129,6 +132,8 @@ class JavaVM:
         self.lazy_classes: typing.Set[typing.Tuple[typing.Any, str]] = set()
 
         self.array_helper = JavaArrayManager(self)
+
+        self.simulation = False
 
     def load_lazy(self):
         while len(self.lazy_classes) > 0:
@@ -275,6 +280,8 @@ class JavaVM:
         from jvm.bridge.world import biomes, collection, world
 
     def get_class(self, name: str, version=0) -> "AbstractJavaClass":
+        if self.simulation: return
+
         name = name.replace(".", "/")
         if name in self.shared_classes:
             cls = self.shared_classes[name]
@@ -303,15 +310,17 @@ class JavaVM:
         except FileNotFoundError:
             if DYNAMIC_NATIVES:
 
+                # A dynamic class created in the place of the FileNotFoundError
                 class Dynamic(NativeClass):
                     NAME = name
 
                 print(
                     f"""
-Native Dynamic Builder: Class {name} (not found)
+Native Dynamic Builder: Class '{name}' (not found)
 Add into file and add to import list in natives:
 from mcpython import shared
 from jvm.Java import NativeClass, native
+
 
 class {name.split('/')[-1].replace('$', '__')}(NativeClass):
     NAME = \"{name}\""""
@@ -319,8 +328,11 @@ class {name.split('/')[-1].replace('$', '__')}(NativeClass):
 
                 return self.shared_classes[name]
 
-            raise StackCollectingException(f"class '{name}' not found!") from None
+            raise StackCollectingException(f"class file source for '{name}' not found!").add_trace(version) from None
 
+        self.load_class_from_bytecode(name, bytecode, version=version, shared=shared)
+
+    def load_class_from_bytecode(self, name: str, bytecode: bytes, version=None, shared=False, prepare=True):
         info("loading java class '" + name + "'")
 
         cls = JavaBytecodeClass()
@@ -333,17 +345,18 @@ class {name.split('/')[-1].replace('$', '__')}(NativeClass):
             e.add_trace(f"decoding class {name}")
             raise
 
-        if not shared:
-            self.classes_by_version.setdefault(version, {})[name] = cls
-        else:
-            self.shared_classes[name] = cls
+        if prepare:
+            if not shared:
+                self.classes_by_version.setdefault(version, {})[name] = cls
+            else:
+                self.shared_classes[name] = cls
 
-        try:
-            cls.bake()
-            cls.validate_class_file()
-        except StackCollectingException as e:
-            e.add_trace(f"baking class {name}")
-            raise
+            try:
+                cls.bake()
+                cls.validate_class_file()
+            except StackCollectingException as e:
+                e.add_trace(f"baking class {name}")
+                raise
 
         info(f"class load of class '{name}' finished")
 
@@ -788,11 +801,16 @@ class ElementValue:
             self.raw_data = cls_name, attr_name
 
             cls = vm.get_class(cls_name, version=table.class_file.internal_version)
-            self.data = cls.get_static_attribute(attr_name, "ENUM-ENTRY")
+
+            if cls is not None:
+                self.data = cls.get_static_attribute(attr_name, "ENUM-ENTRY")
+
         elif tag == "c":
             self.data = table.class_file.cp[pop_u2(data) - 1]
+
         elif tag == "[":
             self.data = [ElementValue().parse(table, data) for _ in range(pop_u2(data))]
+
         elif tag == "@":
             annotation_type = (
                 table.class_file.cp[pop_u2(data) - 1][1]
@@ -812,6 +830,7 @@ class ElementValue:
                 values.append((name, value))
 
             self.data = annotation_type, values
+
         else:
             raise NotImplementedError(tag)
 
@@ -820,13 +839,17 @@ class ElementValue:
     def dump(self, table: "JavaAttributeTable") -> typing.Union[bytes, bytearray]:
         if self.tag in "BCDFIJSZs":
             return U2.pack(table.class_file.ensure_data(self.data))
+
         elif self.tag == "e":
             cls, attr = self.raw_data
             return U2.pack(table.class_file.ensure_data("L"+cls+";"))+U2.pack(table.class_file.ensure_data(attr))
+
         elif self.tag == "[":
             return U2.pack(len(self.data)) + sum([e.dump(table) for e in self.data])
+
         elif self.tag == "@":
             return U2.pack(table.class_file.ensure_data("L"+self.data[0]+";")) + U2.pack(len(self.data[1])) + b"".join([U2.pack(table.class_file.ensure_data([1, e]))+value.dump() for e, value in self.data[1]])
+
         raise NotImplementedError(self.tag)
 
     def __repr__(self):
