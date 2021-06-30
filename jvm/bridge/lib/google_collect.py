@@ -362,10 +362,21 @@ class ImmutableSet__Builder(NativeClass):
 class BiMap(NativeClass):
     NAME = "com/google/common/collect/BiMap"
 
+    def create_instance(self):
+        return {}
+
     @native("put", "(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;")
     def put(self, instance, key, value):
         instance[key] = value
         return value
+
+
+class HashBiMap(BiMap):
+    NAME = "com/google/common/collect/HashBiMap"
+
+    @native("create", "()Lcom/google/common/collect/HashBiMap;")
+    def create(self, *_):
+        return {}
 
 
 class Joiner(NativeClass):
@@ -379,6 +390,9 @@ class Joiner(NativeClass):
 class ArrayListMultimap(NativeClass):
     NAME = "com/google/common/collect/ArrayListMultimap"
 
+    def create_instance(self):
+        return {}
+
     @native("create", "()Lcom/google/common/collect/ArrayListMultimap;")
     def create(self):
         return self.create_instance()
@@ -389,6 +403,14 @@ class Sets(NativeClass):
 
     @native("newHashSet", "()Ljava/util/HashSet;")
     def newHashSet(self, *_):
+        return set()
+
+    @native("newLinkedHashSet", "()Ljava/util/LinkedHashSet;")
+    def newLinkedHashSet(self, *_):
+        return set()
+
+    @native("newIdentityHashSet", "()Ljava/util/Set;")
+    def newIdentityHashSet(self, *_):
         return set()
 
 

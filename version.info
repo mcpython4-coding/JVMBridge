@@ -57,6 +57,13 @@
 [uuk]: stack flow check system is now in place validating stack operations during default validation
 [uuk]: fixed LookupSwitch offset calculation
 [uuk]: restructured some internals
+[uuk]: fixed lookupswitch instruction decoding being wrong resulting into invalid jump offsets
+[uuk]: hopefully fixed some registration event stuff
+[uuk]: native class instances may hash themself now
+[uuk]: non-arrival registries are now "lambda: None"'s instead of "None"'s, as some mods do null checks and they break
+       here...
+[uuk]: fixed up COFHCore failing in its deferred registry system due to above behaviour miss-match
+[uuk]: Method.apply(Object, Object) was not working correctly leading into some issues
 
 tasks to do [maybe moved away for later]:
 - minifier task should minify builtin & bridge library into each only one file
@@ -67,17 +74,22 @@ tasks to do [maybe moved away for later]:
         such code into python-native code where possible
 - a code walker to shorten code by removing NOOP's & resolving the jumps to the new destinations
 - maybe decoded instructions store their following instruction instead of the offset?
-- a code walker with a special instruction set for mc-specific instructions (shared.world access, current player) and
+- a code walker with a special instruction set for mc-specific instructions (shared.world access, current player, etc.) and
     generic optimisation instructions (new with constructor call in ones)
-- a constant pool walker for identifying unnecessary elements in the pool and removing them
 - a system to generate .class files from the in-memory stuff, including a reversal of the non-default instructions
 - make versions 1.13 and up all compatible with the code
+- split of instruction definitions from the Runtime system
+- add system to walk across code from outside
+- add instruction for invoking stack object directly and not across a java/util/function/... class call
+- all array/list/set/map stuff can be optimised directly into native code (-> special instructions)
+- StackUnderflowException after an InvokeDynamic might be caused by it, so we need some special handling
 
 Currently testing:
-AllTheMods6 version 1.6.9
+AllTheMods6 version 1.6.13
 
 What to do with this:
 - make it load all mods [yes, including the ones requiring scala loading extension]
+- fix the path generation (see json decoder errors in log)
 - implement java bytecode -> python bytecode transformer & test it on the mod set
 - count the method calls and after X calls, transform it to python bytecode for optimisation
 - implement the runtime events & other loading events

@@ -51,3 +51,23 @@ class Enchantment(NativeClass):
 
 class EnchantmentHelper(NativeClass):
     NAME = "net/minecraft/enchantment/EnchantmentHelper"
+
+
+class Enchantments(NativeClass):
+    NAME = "net/minecraft/enchantment/Enchantments"
+
+    def __init__(self):
+        super().__init__()
+        self.exposed_attributes.update({
+            "field_180310_c": 0,
+            "field_185297_d": 1,
+            "field_180309_e": 2,
+            "field_77329_d": 3,
+            "field_180308_g": 4,
+            "field_77334_n": 5,
+            "field_185301_j": 6,
+            "field_180313_o": 7,
+            "field_185304_p": 8,
+            "field_92091_k": 9,
+            "field_185296_A": 10,
+        })

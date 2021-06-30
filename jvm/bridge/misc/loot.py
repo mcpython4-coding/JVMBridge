@@ -78,3 +78,11 @@ class LootFunction__Serializer(NativeClass):
     def init(self, *_):
         pass
 
+
+class BlockLootTables(NativeClass):
+    NAME = "net/minecraft/data/loot/BlockLootTables"
+
+    @native("func_218492_c", "(Lnet/minecraft/block/Block;)V")
+    def func_218492_c(self, *_):
+        pass
+

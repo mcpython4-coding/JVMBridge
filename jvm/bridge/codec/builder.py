@@ -39,9 +39,10 @@ class Codec(NativeClass):
     @native(
         "pair",
         "(Lcom/mojang/serialization/Codec;Lcom/mojang/serialization/Codec;)Lcom/mojang/serialization/Codec;",
+        static=True,
     )
-    def pair(self, instance, a, b):
-        return instance
+    def pair(self, a, b):
+        return self.create_instance()
 
     @native(
         "unboundedMap",
@@ -65,3 +66,7 @@ class MapCodec(Codec):
 
 class UnboundedMapCodec(Codec):
     NAME = "com/mojang/serialization/codecs/UnboundedMapCodec"
+
+    @native("fieldOf", "(Ljava/lang/String;)Lcom/mojang/serialization/MapCodec;")
+    def fieldOf(self, instance, name: str):
+        return instance

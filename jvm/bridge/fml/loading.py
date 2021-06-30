@@ -30,18 +30,40 @@ NAME2STAGE = {
         "(Lnet/minecraftforge/event/RegistryEvent$Register;)V",
     ): ("stage:item:factory_usage", shared.registry.get_by_name("minecraft:item")),
     (
-        "init",
-        "(Lnet/minecraftforge/fml/event/lifecycle/FMLCommonSetupEvent;)V",
+        'init',
+        '(Ljava/lang/Object;)V'
     ): ("stage:mod:init", None),
+    ('preInit', '(Ljava/lang/Object;)V'): ("stage:mod:init", None),
+    ('registerCommands', '(Ljava/lang/Object;)V'): ("stage:commands", None),
+    ('commonSetup', '(Ljava/lang/Object;)V'): ("stage:mod:init", None),
     (
         "preInit",
-        "(Lnet/minecraftforge/fml/event/lifecycle/FMLCommonSetupEvent;)V"
+        "(Lnet/minecraftforge/fml/event/lifecycle/FMLCommonSetupEvent;)V",
     ): ("stage:mod:init", None),
-    (
-        "registerCommands",
-        "(Lnet/minecraftforge/fml/event/server/FMLServerStartingEvent;)V",
-    ): ("stage:commands", None)
+    ('configEvent', '(Lnet/minecraftforge/fml/config/ModConfig$ModConfigEvent;)V'): ("stage:mod:config:load", None),
+    ('updateLocatable', '(Ljava/lang/Object;)V'): ("stage:language", None),
+    ('registerDimension', '(Ljava/lang/Object;)V'): ("stage:dimension", None),
+    ('addWorldGenToBiome', '(Ljava/lang/Object;)V'): ("stage:worldgen:biomes", None),
+    ('setupCommon', '(Ljava/lang/Object;)V'): ("stage:mod:init", None),
+    ('setup', '(Ljava/lang/Object;)V'): ("stage:mod:init", None),
+    ('onLoadComplete', '(Ljava/lang/Object;)V'): ("stage:post", None),
+    ('onModloadingComplete', '(Ljava/lang/Object;)V'): ("stage:post", None),
+    ('onCommonSetup', '(Ljava/lang/Object;)V'): ("stage:mod:init", None),
+    ('common', '(Ljava/lang/Object;)V'): ("stage:mod:init", None),
 }
+
+
+if shared.IS_CLIENT:
+    NAME2STAGE.update({
+        ('clientSetup', '(Ljava/lang/Object;)V'): ("stage:mod:init", None),
+        (
+            "setupClient",
+            "(Lnet/minecraftforge/fml/event/lifecycle/FMLClientSetupEvent;)V",
+        ): ("stage:mod:init", None),
+        ('client', '(Ljava/lang/Object;)V'): ("stage:mod:init", None),
+        ('preInitClient', '(Ljava/lang/Object;)V'): ("stage:mod:init", None),
+        ('setupClient', '(Ljava/lang/Object;)V'): ("stage:mod:init", None),
+    })
 
 
 class Minecraft(NativeClass):
@@ -83,7 +105,17 @@ class Mod_EventBusSubscriber(NativeClass):
                 @shared.mod_loader(current_mod, stage)
                 def load():
                     shared.CURRENT_EVENT_SUB = current_mod
-                    method = cls.get_method(*signature)
+
+                    try:
+                        method = cls.get_method(*signature)
+                    except StackCollectingException as e:
+                        e.add_trace(cls).add_trace(signature)
+
+                        logger.print_exception("during annotation processing")
+                        print(e.format_exception())
+
+                        from mcpython.common.mod.ModLoader import LoadingInterruptException
+                        raise LoadingInterruptException from None
 
                     runtime = Runtime()
 
@@ -190,6 +222,10 @@ class EventBus(NativeClass):
 
     @native("addListener", "(Ljava/util/function/Consumer;)V")
     def addListener(self, instance, function):
+        if not callable(function):
+            logger.println(f"[FML][WARN] tried to add listener {function} which seems to be non!")
+            return
+
         func_name = function.name if hasattr(function, "name") else function.native_name
         func_signature = function.signature if hasattr(function, "signature") else function.native_signarure
 
@@ -227,7 +263,7 @@ class EventBus(NativeClass):
                     traceback.print_exc()
                     raise mcpython.common.mod.ModLoader.LoadingInterruptException from None
         else:
-            print("missing BRIDGE binding for", function)
+            print("missing BRIDGE binding for", function, (function.name, function.signature))
 
     @native(
         "addListener",
@@ -236,9 +272,14 @@ class EventBus(NativeClass):
     def addListener2(self, instance, priority, consumer):
         self.addListener(priority, consumer)
 
+    @native("addListener",
+            "(Lnet/minecraftforge/eventbus/api/EventPriority;ZLjava/lang/Class;Ljava/util/function/Consumer;)V")
+    def addListener3(self, instance, priority, v, cls, consumer):
+        self.addListener(priority, consumer)
+
     @native("register", "(Ljava/lang/Object;)V")
     def register(self, instance, obj):
-        pass
+        pass  # todo: do something here
 
     @native("addGenericListener", "(Ljava/lang/Class;Ljava/util/function/Consumer;)V")
     def addGenericListener(self, instance, cls, consumer):
@@ -279,16 +320,22 @@ class EventBus(NativeClass):
         "(Ljava/lang/Class;Lnet/minecraftforge/eventbus/api/EventPriority;ZLjava/lang/Class;Ljava/util/function/Consumer;)V",
     )
     def addGenericListener2(self, instance, cls, priority, b, cls2, consumer):
-        pass
+        # todo: use priority stuff
+        self.addGenericListener(instance, cls, consumer)
 
     @native("post", "(Lnet/minecraftforge/eventbus/api/Event;)Z")
     def post(self, instance, event):
-        pass
+        pass  # todo: add translation system
 
     @native("addGenericListener",
             "(Ljava/lang/Class;Lnet/minecraftforge/eventbus/api/EventPriority;Ljava/util/function/Consumer;)V")
     def addGenericListener3(self, instance, cls, priority, consumer):
-        pass
+        # todo: use priority stuff
+        self.addGenericListener(instance, cls, consumer)
+
+
+class EventBus2(EventBus):
+    NAME = "net/minecraftforge/eventbus/EventBus"
 
 
 class DistMarker(NativeClass):
@@ -782,7 +829,7 @@ class WorldEvent(NativeClass):
 class DatagenModLoader(NativeClass):
     NAME = "net/minecraftforge/fml/DatagenModLoader"
 
-    @native("isRunningDataGen", "()Z")
+    @native("isRunningDataGen", "()Z", static=True)
     def isRunningDataGen(self, *_):
         return shared.data_gen
 
@@ -805,3 +852,7 @@ class INameMappingService__Domain(NativeClass):
                 "FIELD": 0,
             }
         )
+
+
+class FMLLoadCompleteEvent(NativeClass):
+    NAME = "net/minecraftforge/fml/event/lifecycle/FMLLoadCompleteEvent"

@@ -69,6 +69,12 @@ class JavaMod(mcpython.common.mod.Mod.Mod):
             self.load_mod_file(file)
 
     def load_mixin_map(self, file: str):
+        """
+        Loader for the mixin ref-map data
+        Does some smart stuff with the data
+        :param file: the file, as reach-able by local access
+        """
+
         data = json.loads(self.resource_access.read_raw(file).decode("utf-8"))
 
         refmap = data["refmap"]
@@ -78,15 +84,20 @@ class JavaMod(mcpython.common.mod.Mod.Mod):
 
         package = data["package"].replace(".", "/")
 
-        if "mixins" not in data: return
-        for file in data["mixins"]:
-            module = package + "/" + file
+        if "mixins" in data:
+            for file in data["mixins"]:
+                module = package + "/" + file
 
-            shared.CURRENT_EVENT_SUB = self.name
+                shared.CURRENT_EVENT_SUB = self.name
 
-            java_jvm.load_class(module, version=self.loader_version).prepare_use()
+                java_jvm.load_class(module, version=self.loader_version).prepare_use()
 
     def load_mod_file(self, file: str):
+        """
+        Loads a given file which the local resource access can reach
+        :param file: the file
+        """
+
         import mcpython.client.state.StateLoadingException
 
         cls = file.split(".")[0]
@@ -96,15 +107,7 @@ class JavaMod(mcpython.common.mod.Mod.Mod):
 
             java_jvm.load_class(cls, version=self.loader_version)
 
-            # todo: check if mod main class
-
-            if False:
-                java_jvm.load_lazy()
-
-                logger.println(f"[JAVA FML][INFO] executing class {cls}")
-                instance = java_class.create_instance()
-                self.runtime.run_method(instance.get_method("<init>", "()V"), instance)
-
+        # StackCollectingException is something internal and contains more meta-data than the other exceptions
         except StackCollectingException as e:
             if shared.IS_CLIENT:
                 shared.window.set_caption("JavaFML JVM error")
@@ -123,16 +126,18 @@ class JavaMod(mcpython.common.mod.Mod.Mod):
                 else:
                     import mcpython.common.mod.ModLoader
 
-                    raise mcpython.common.mod.ModLoader.LoadingInterruptException from None
+            else:
+                shared.window.close()
+                pyglet.app.exit()
+                print("closing")
 
-            shared.window.close()
-            pyglet.app.exit()
-            print("closing")
-            sys.exit(-1)
+            raise mcpython.common.mod.ModLoader.LoadingInterruptException from None
 
+        # LoadingInterruptException is something we hand over to the underlying stuff
         except mcpython.common.mod.ModLoader.LoadingInterruptException:
             raise
 
+        # Any other exception is handled beforehand
         except:
             logger.print_exception("[JAVA][FATAL] fatal class loader exception")
 
@@ -148,12 +153,12 @@ class JavaMod(mcpython.common.mod.Mod.Mod):
                 else:
                     import mcpython.common.mod.ModLoader
 
-                    raise mcpython.common.mod.ModLoader.LoadingInterruptException from None
+            else:
+                shared.window.close()
+                pyglet.app.exit()
+                print("closing")
 
-            shared.window.close()
-            pyglet.app.exit()
-            print("closing")
-            sys.exit(-1)
+            raise mcpython.common.mod.ModLoader.LoadingInterruptException from None
 
 
 class JavaModLoader(mcpython.common.mod.ExtensionPoint.ModLoaderExtensionPoint):

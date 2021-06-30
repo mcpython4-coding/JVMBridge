@@ -31,8 +31,20 @@ class Method(NativeClass):
         return instance(arg1, arg2)
 
     @native("apply", "(Ljava/lang/Object;)Ljava/lang/Object;")
-    def apply(self, instance, arg):
+    def apply2(self, instance, arg):
         return instance(arg)
+
+    @native("accept", "(Ljava/lang/Object;)V")
+    def accept(self, instance, arg):
+        return instance(arg)
+
+    @native("accept", "(Ljava/lang/Object;Ljava/lang/Object;)V")
+    def accept2(self, instance, arg1, arg2):
+        return instance(arg1, arg2)
+
+    @native("get", "()Ljava/lang/Object;")
+    def get(self, instance):
+        return instance()
 
     @native("getAnnotation", "(Ljava/lang/Class;)Ljava/lang/annotation/Annotation;")
     def getAnnotation(self, *_):

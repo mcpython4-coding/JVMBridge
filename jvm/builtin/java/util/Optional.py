@@ -39,3 +39,7 @@ class Optional(NativeClass):
     def ifPresent(self, instance, consumer):
         if instance is not None:
             consumer(instance)
+
+    @native("orElse", "(Ljava/lang/Object;)Ljava/lang/Object;")
+    def orElse(self, instance, obj):
+        return instance if instance is not None else obj

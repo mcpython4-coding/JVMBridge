@@ -432,6 +432,12 @@ class MixOceansLayer(NativeClass):
 class Difficulty(NativeClass):
     NAME = "net/minecraft/world/Difficulty"
 
+    def __init__(self):
+        super().__init__()
+        self.exposed_attributes.update({
+            "NORMAL": 1,
+        })
+
 
 class GameSettings(NativeClass):
     NAME = "net/minecraft/client/GameSettings"
@@ -462,6 +468,12 @@ class KeyBinding(NativeClass):
 
 class InputMappings__Type(NativeClass):
     NAME = "net/minecraft/client/util/InputMappings$Type"
+
+    def __init__(self):
+        super().__init__()
+        self.exposed_attributes.update({
+            "KEYSYM": 0,
+        })
 
 
 class KeyConflictContext(NativeClass):

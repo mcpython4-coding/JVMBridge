@@ -76,7 +76,7 @@ class Invoker(NativeClass):
             target_cls: AbstractJavaClass = method.class_file.mixin_target
             override_method = target_cls.get_method(target_method_name, method.signature)
 
-            logger.println(f"[MIXIN][INJECT] injecting into class {target_cls} method '{method.name}{method.signature}' wrapping '{args[0][1] if len(args) > 0 else 'unspecified'}/{target_method_name}{method.signature}'")
+            # logger.println(f"[MIXIN][INJECT] injecting into class {target_cls} method '{method.name}{method.signature}' wrapping '{args[0][1] if len(args) > 0 else 'unspecified'}/{target_method_name}{method.signature}'")
 
             m = lambda *a: override_method(*a)
 
@@ -116,7 +116,7 @@ class Accessor(NativeClass):
                     else:
                         v[0].set_field(target_attribute_name, v[1])
 
-            logger.println(f"[MIXIN][INJECT] injecting attribute accessor into {target_cls.name} accessing '{target_attribute_name}' via '{method.name}{method.signature}'")
+            # logger.println(f"[MIXIN][INJECT] injecting attribute accessor into {target_cls.name} accessing '{target_attribute_name}' via '{method.name}{method.signature}'")
 
             native(method.name, method.signature)(m)
 
@@ -143,8 +143,8 @@ class Overwrite(NativeClass):
 
             m = lambda *args: method(*args)
 
-            logger.println(
-                f"[MIXIN][INJECT] injecting override into {target_cls.name} at '{method.name}{method.signature}'")
+            # logger.println(
+            #     f"[MIXIN][INJECT] injecting override into {target_cls.name} at '{method.name}{method.signature}'")
 
             native(method.name, method.signature)(m)
 
@@ -216,6 +216,13 @@ class Redirect(NativeClass):
 class Mutable(NativeClass):
     NAME = "org/spongepowered/asm/mixin/Mutable"
 
-
     def on_annotate(self, cls, args):
         pass  # todo: implement
+
+
+class ASMAPI(NativeClass):
+    NAME = "net/minecraftforge/coremod/api/ASMAPI"
+
+    @native("mapField", "(Ljava/lang/String;)Ljava/lang/String;")
+    def mapField(self, *_):
+        pass

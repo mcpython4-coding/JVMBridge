@@ -22,8 +22,16 @@ class Math(NativeClass):
     def max(self, a, b):
         return max(a, b)
 
+    @native("max", "(FF)F")
+    def max2(self, a, b):
+        return max(a, b)
+
     @native("min", "(DD)D")
     def min(self, a, b):
+        return min(a, b)
+
+    @native("min", "(FF)F")
+    def min2(self, a, b):
         return min(a, b)
 
     @native("pow", "(DD)D")

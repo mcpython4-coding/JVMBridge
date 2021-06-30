@@ -76,3 +76,11 @@ class CraftingHelper(NativeClass):
             "(Lnet/minecraftforge/common/crafting/conditions/IConditionSerializer;)Lnet/minecraftforge/common/crafting/conditions/IConditionSerializer;")
     def register(self, *_):
         pass
+
+
+class CookingRecipeSerializer(NativeClass):
+    NAME = "net/minecraft/item/crafting/CookingRecipeSerializer"
+
+    @native("<init>", "(Lnet/minecraft/item/crafting/CookingRecipeSerializer$IFactory;I)V")
+    def init(self, *_):
+        pass

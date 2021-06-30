@@ -31,6 +31,9 @@ class ResourceLocation(NativeClass):
         instance.name = ""
         return instance
 
+    def get_hash(self, instance):
+        return hash(instance.name)
+
     @native("<init>", "(Ljava/lang/String;)V")
     def init(self, instance, location: str):
         instance.name = location
@@ -41,7 +44,7 @@ class ResourceLocation(NativeClass):
 
     @native("toString", "()Ljava/lang/String;")
     def toString(self, instance):
-        return instance if isinstance(instance, str) else instance.name
+        return (instance if isinstance(instance, str) else instance.name) if instance is not None else None
 
     @native("func_110623_a", "()Ljava/lang/String;")
     def getNamespace(self, instance):
@@ -79,6 +82,10 @@ class VoxelShape(NativeClass):
     @native("func_197758_c", "(Lnet/minecraft/util/Direction$Axis;)D")
     def func_197758_c(self, *_):
         return 0
+
+    @native("func_197753_c", "()Lnet/minecraft/util/math/shapes/VoxelShape;")
+    def func_197753_c(self, *_):
+        pass
 
 
 class VoxelShapes(NativeClass):
@@ -331,6 +338,8 @@ class TextFormatting(NativeClass):
                 "DARK_GRAY": 9,
                 "DARK_BLUE": 10,
                 "LIGHT_PURPLE": 11,
+                "GREEN": 12,
+                "DARK_PURPLE": 13,
             }
         )
 

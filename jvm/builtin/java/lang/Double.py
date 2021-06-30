@@ -21,3 +21,7 @@ class Double(NativeClass):
     @native("valueOf", "(D)Ljava/lang/Double;")
     def valueOf(self, instance):
         return instance
+
+    @native("floatValue", "()F")
+    def floatValue(self, instance):
+        return instance

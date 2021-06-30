@@ -31,13 +31,13 @@ class IForgeRegistry(NativeClass):
 
     @native("register", "(Lnet/minecraftforge/registries/IForgeRegistryEntry;)V")
     def register(self, registry, entry):
+        registry = registry()
+
         if registry is None:
             logger.println(
-                f"[JAVAFML][WARN] object {entry} could not get registered to registry!"
+                f"[JAVAFML][WARN] object {entry} could not get registered to registry, as registry provided is None!"
             )
             return
-
-        registry = registry()
 
         if registry.name == "minecraft:block":
             parseBlockToFactory(entry)
@@ -49,15 +49,16 @@ class IForgeRegistry(NativeClass):
         "(Lnet/minecraft/util/ResourceLocation;)Lnet/minecraftforge/registries/IForgeRegistryEntry;",
     )
     def getValue(self, registry, name):
-        return registry().get(name if isinstance(name, str) else name.name)
+        return registry().get(name if isinstance(name, str) else name.name) if registry() is not None else None
 
     @native("getRegistrySuperType", "()Ljava/lang/Class;")
-    def getRegistrySuperType(self, *_):
-        pass
+    def getRegistrySuperType(self, registry):
+        return registry
 
     @native("iterator", "()Ljava/util/Iterator;")
     def iterator(self, instance):
-        return list(instance().entry_iterator()) if instance is not None else []
+        registry = instance()
+        return list(registry.entry_iterator()) if registry is not None else []
 
 
 class ForgeRegistries(NativeClass):
@@ -72,25 +73,29 @@ class ForgeRegistries(NativeClass):
 
     def __init__(self):
         super().__init__()
+
+        def no_registry():
+            pass
+
         self.exposed_attributes = {
-            "WORLD_TYPES": None,
+            "WORLD_TYPES": no_registry,
             "BLOCKS": lambda: shared.registry.get_by_name("minecraft:block"),
             "ITEMS": lambda: shared.registry.get_by_name("minecraft:item"),
-            "SOUND_EVENTS": None,
-            "FLUIDS": None,
-            "TILE_ENTITIES": None,
-            "RECIPE_SERIALIZERS": None,
-            "STRUCTURE_FEATURES": None,
-            "CONTAINERS": None,
-            "ENTITIES": None,
-            "POTIONS": None,
-            "PARTICLE_TYPES": None,
-            "ENCHANTMENTS": None,
-            "POI_TYPES": None,
-            "PROFESSIONS": None,
-            "LOOT_MODIFIER_SERIALIZERS": None,
-            "ATTRIBUTES": None,
-            "POTION_TYPES": None,
+            "SOUND_EVENTS": no_registry,
+            "FLUIDS": no_registry,
+            "TILE_ENTITIES": no_registry,
+            "RECIPE_SERIALIZERS": no_registry,
+            "STRUCTURE_FEATURES": no_registry,
+            "CONTAINERS": no_registry,
+            "ENTITIES": no_registry,
+            "POTIONS": no_registry,
+            "PARTICLE_TYPES": no_registry,
+            "ENCHANTMENTS": no_registry,
+            "POI_TYPES": no_registry,
+            "PROFESSIONS": no_registry,
+            "LOOT_MODIFIER_SERIALIZERS": no_registry,
+            "ATTRIBUTES": no_registry,
+            "POTION_TYPES": no_registry,
         }
 
 
@@ -106,17 +111,21 @@ class Registry(NativeClass):
 
     def __init__(self):
         super().__init__()
+
+        def no_registry():
+            pass
+
         self.exposed_attributes = {
-            "field_239689_aA_": None,
-            "field_239720_u_": None,
-            "field_212618_g": None,
-            "field_239690_aB_": None,
-            "field_239699_ae_": None,
-            "field_218367_H": None,
-            "field_243656_h": None,
-            "field_212623_l": None,
-            "field_239704_ba_": None,
-            "field_239694_aZ_": None,
+            "field_239689_aA_": no_registry,
+            "field_239720_u_": no_registry,
+            "field_212618_g": no_registry,
+            "field_239690_aB_": no_registry,
+            "field_239699_ae_": no_registry,
+            "field_218367_H": no_registry,
+            "field_243656_h": no_registry,
+            "field_212623_l": no_registry,
+            "field_239704_ba_": no_registry,
+            "field_239694_aZ_": no_registry,
         }
 
     @native(
@@ -126,7 +135,7 @@ class Registry(NativeClass):
     def func_218325_a(
         self, registry: mcpython.common.event.Registry.Registry, name: str, obj
     ):
-        pass
+        return obj
 
     @native(
         "func_218322_a",
@@ -136,8 +145,8 @@ class Registry(NativeClass):
         return obj
 
     @native("func_82594_a", "(Lnet/minecraft/util/ResourceLocation;)Ljava/lang/Object;")
-    def func_82594_a(self, *_):
-        pass
+    def func_82594_a(self, registry, name):
+        return registry().get(name if isinstance(name, str) else name.name)
 
     @native("func_243576_d", "(Lnet/minecraft/util/RegistryKey;)Ljava/lang/Object;")
     def func_243576_d(self, *_):
@@ -171,7 +180,7 @@ class RegistryObject(NativeClass):
         "(Lnet/minecraft/util/ResourceLocation;Lnet/minecraftforge/registries/IForgeRegistry;)Lnet/minecraftforge/fml/RegistryObject;",
     )
     def of(self, location, registry):
-        return registry().get(location.name) if registry is not None else None
+        return registry().get(location.name, default=None) if registry() is not None else None
 
     @native("get", "()Lnet/minecraftforge/registries/IForgeRegistryEntry;")
     def get(self, instance):
@@ -179,7 +188,7 @@ class RegistryObject(NativeClass):
 
     @native("getId", "()Lnet/minecraft/util/ResourceLocation;")
     def getId(self, instance):
-        pass
+        return instance.NAME if instance is not None else None
 
 
 class ObjectHolder(NativeClass):
@@ -268,6 +277,10 @@ class RegistryEvent__Register(NativeClass):
     @native("getRegistry", "()Lnet/minecraftforge/registries/IForgeRegistry;")
     def getRegistry(self, instance):
         return lambda: instance
+
+    @native("<init>", "(Lnet/minecraft/util/ResourceLocation;Lnet/minecraftforge/registries/IForgeRegistry;)V")
+    def init(self, instance, loc, registry):
+        pass
 
 
 class RenderingRegistry(NativeClass):

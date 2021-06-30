@@ -263,6 +263,10 @@ class SoundEvents(NativeClass):
                 "field_187567_bP": None,
                 "field_187565_bO": None,
                 "field_187563_bN": None,
+                "field_187615_H": None,
+                "field_191241_J": None,
+                "field_187630_M": None,
+                "field_187624_K": None,
             }
         )
 
@@ -322,6 +326,7 @@ class Block(AbstractBlock):
         "(Lnet/minecraft/util/ResourceLocation;)Lnet/minecraftforge/registries/IForgeRegistryEntry;",
     )
     def setRegistryName3(self, instance, name):
+        instance.registry_name = name if isinstance(name, str) else name.name
         return instance
 
     @native("getRegistryName", "()Lnet/minecraft/util/ResourceLocation;")
@@ -350,6 +355,10 @@ class Block(AbstractBlock):
 
     def get_dynamic_field_keys(self):
         return super().get_dynamic_field_keys() | {"field_176227_L"}
+
+    @native("func_149739_a", "()Ljava/lang/String;")
+    def getUnlocalizedName(self, instance):
+        return instance.registry_name.split(":")[-1]
 
 
 class Material(NativeClass):
@@ -389,6 +398,7 @@ class Material(NativeClass):
                 "field_76433_i": None,
                 "field_151598_x": None,
                 "field_151567_E": None,
+                "field_151593_r": None,
             }
         )
 
@@ -465,6 +475,10 @@ class MaterialColor(NativeClass):
                 "field_151668_h": None,
                 "field_151647_F": None,
                 "field_151673_t": None,
+                "field_151674_s": None,
+                "field_151672_u": None,
+                "field_151650_B": None,
+                "field_151651_C": None,
             }
         )
 
@@ -1220,6 +1234,7 @@ class Item(NativeClass):
         "(Ljava/lang/String;Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;",
     )
     def setRegistryName3(self, instance, namespace, name):
+        instance.registry_name = namespace + ":" + name
         return instance
 
     @native(
@@ -1232,7 +1247,10 @@ class Item(NativeClass):
 
     @native("getRegistryName", "()Lnet/minecraft/util/ResourceLocation;")
     def getRegistryName(self, instance):
-        return instance.registry_name
+        try:
+            return instance.registry_name
+        except AttributeError:
+            raise StackCollectingException(f"object {instance} has no attribute 'registry_name which is Invalid!'")
 
     @native("func_70067_L", "()Z")
     def func_70067_L(self, instance):
@@ -2385,7 +2403,36 @@ class FluidAttributes(NativeClass):
         "(Lnet/minecraft/util/ResourceLocation;Lnet/minecraft/util/ResourceLocation;)Lnet/minecraftforge/fluids/FluidAttributes$Builder;",
     )
     def builder(self, *_):
+        return self.vm.get_class(FluidAttributes__Builder.NAME).create_instance()
+
+
+class FluidAttributes__Builder(NativeClass):
+    NAME = "net/minecraftforge/fluids/FluidAttributes$Builder"
+
+    @native("<init>", "(Lnet/minecraft/util/ResourceLocation;Lnet/minecraft/util/ResourceLocation;Ljava/util/function/BiFunction;)V")
+    def init(self, *_):
         pass
+
+    @native("density", "(I)Lnet/minecraftforge/fluids/FluidAttributes$Builder;")
+    def density(self, instance, density):
+        return instance
+
+    @native("viscosity", "(I)Lnet/minecraftforge/fluids/FluidAttributes$Builder;")
+    def viscosity(self, instance, viscosity):
+        return instance
+
+    @native("sound",
+            "(Lnet/minecraft/util/SoundEvent;Lnet/minecraft/util/SoundEvent;)Lnet/minecraftforge/fluids/FluidAttributes$Builder;")
+    def sound(self, instance, a, b):
+        return instance
+
+    @native("luminosity", "(I)Lnet/minecraftforge/fluids/FluidAttributes$Builder;")
+    def luminosity(self, instance, luminosity):
+        return instance
+
+    @native("rarity", "(Lnet/minecraft/item/Rarity;)Lnet/minecraftforge/fluids/FluidAttributes$Builder;")
+    def rarity(self, instance, rarity):
+        return instance
 
 
 class FlowingFluid(NativeClass):

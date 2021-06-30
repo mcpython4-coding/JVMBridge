@@ -21,3 +21,7 @@ class ThreadLocal(NativeClass):
     @native("<init>", "()V")
     def init(self, instance):
         pass
+
+    @native("withInitial", "(Ljava/util/function/Supplier;)Ljava/lang/ThreadLocal;")
+    def withInitial(self, instance, supplier):
+        return instance

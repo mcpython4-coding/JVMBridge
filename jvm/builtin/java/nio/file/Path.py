@@ -31,7 +31,7 @@ class Path(NativeClass):
     @native("toFile", "()Ljava/io/File;")
     def toFile(self, instance):
         obj = self.vm.get_class("java/io/File", version=self.internal_version)
-        obj.path = instance.path
+        obj.path = instance.path if instance is not None else None
         return obj
 
     @native("resolve", "(Ljava/lang/String;)Ljava/nio/file/Path;")

@@ -71,6 +71,22 @@ class ForgeConfigSpec__ConfigValue(NativeClass):
         pass
 
 
+class ForgeConfigSpec__IntValue(NativeClass):
+    NAME = "net/minecraftforge/common/ForgeConfigSpec$IntValue"
+
+    @native("get", "()Ljava/lang/Object;")
+    def get(self, *_):
+        return 0
+
+
+class ForgeConfigSpec__DoubleValue(NativeClass):
+    NAME = "net/minecraftforge/common/ForgeConfigSpec$DoubleValue"
+
+    @native("get", "()Ljava/lang/Object;")
+    def get(self, *_):
+        return 0.0
+
+
 class ConfigFileTypeHandler(NativeClass):
     NAME = "net/minecraftforge/fml/config/ConfigFileTypeHandler"
 
@@ -85,4 +101,9 @@ class ModConfig(NativeClass):
     @native("<init>",
             "(Lnet/minecraftforge/fml/config/ModConfig$Type;Lnet/minecraftforge/common/ForgeConfigSpec;Lnet/minecraftforge/fml/ModContainer;Ljava/lang/String;)V")
     def init(self, *_):
+        pass
+
+    @native("<init>",
+            "(Lnet/minecraftforge/fml/config/ModConfig$Type;Lnet/minecraftforge/common/ForgeConfigSpec;Lnet/minecraftforge/fml/ModContainer;)V")
+    def init2(self, *_):
         pass

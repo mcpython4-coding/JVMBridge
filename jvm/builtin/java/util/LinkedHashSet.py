@@ -24,3 +24,12 @@ class LinkedHashSet(NativeClass):
     @native("<init>", "()V")
     def init(self, *_):
         pass
+
+    @native("add", "(Ljava/lang/Object;)Z")
+    def add(self, instance, obj):
+        instance.add(obj)
+        return instance
+
+    @native("iterator", "()Ljava/util/Iterator;")
+    def iterator(self, instance):
+        return list(instance)

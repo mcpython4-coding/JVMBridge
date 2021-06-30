@@ -652,7 +652,7 @@ class Any2Int(OpcodeInstruction):
 @BytecodeRepr.register_instruction
 class Any2Long(Any2Int):
     # f2l
-    OPCODES = {0x8C}
+    OPCODES = {0x8C, 0x85}
 
     @classmethod
     def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr", stack: VirtualStack):
@@ -1649,6 +1649,7 @@ class InvokeVirtual(CPLinkedInstruction):
 
     @classmethod
     def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr", stack: VirtualStack):
+        # todo: lookup signature and insert here
         args = len(tuple(Runtime.get_arg_parts_of(prepared_data[2][2][1])))
         [stack.pop() for _ in range(args + 1)]
         stack.push(None)
@@ -1677,12 +1678,20 @@ class InvokeVirtual(CPLinkedInstruction):
                 except TypeError:
                     pass
                 else:
+                    method_before = method
+
                     method = cls.get_method(
                         method.name if hasattr(method, "name") else method.native_name,
                         method.signature
                         if hasattr(method, "signature")
                         else method.native_signature,
                     )
+
+                    # dynamic methods need to be skipped here...
+                    # Abstract methods as outer cannot be used, as dynamic is still better than abstract
+                    # todo: add some better indicator here
+                    if hasattr(method, "__name__") and method.__name__ == "dynamic" and (not method_before.access & 0x0400 if hasattr(method_before, "access") else True):
+                        method = method_before
 
         stack.push(stack.runtime.run_method(method, *args))
 
@@ -1693,6 +1702,7 @@ class InvokeSpecial(CPLinkedInstruction):
 
     @classmethod
     def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr", stack: VirtualStack):
+        # todo: lookup signature and insert here
         args = len(tuple(Runtime.get_arg_parts_of(prepared_data[2][2][1])))
         [stack.pop() for _ in range(args + 1)]
         stack.push(None)
@@ -1718,6 +1728,7 @@ class InvokeStatic(CPLinkedInstruction):
 
     @classmethod
     def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr", stack: VirtualStack):
+        # todo: lookup signature and insert here
         args = len(tuple(Runtime.get_arg_parts_of(prepared_data[2][2][1])))
         [stack.pop() for _ in range(args)]
         stack.push(None)
@@ -2362,20 +2373,17 @@ class LookupSwitch(OpcodeInstruction):
     ) -> typing.Tuple[typing.Any, int]:
         before = index
 
+        # offset binding
         while index % 4 != 0:
             index += 1
 
+        # the static HEAD
         default = jvm.Java.pop_u4_s(data[index:])
         index += 4
         npairs = jvm.Java.pop_u4_s(data[index:])
         index += 4
 
-        if npairs > 100:
-            logger.println(
-                f"unusual high npair count {npairs}. This normally indicates an error in bytecode"
-            )
-            logger.println(data[index : 40 + index], index)
-
+        # And now, the key-value pairs
         try:
             pairs = {
                 jvm.Java.pop_u4_s(
@@ -2395,6 +2403,7 @@ class LookupSwitch(OpcodeInstruction):
     def invoke(cls, data: typing.Any, stack: Stack) -> bool:
         key = stack.pop()
 
+        # todo: do some clever checks here...
         if key not in data[1]:
             stack.cp += data[0]
         else:
@@ -2418,11 +2427,15 @@ class LookupSwitch(OpcodeInstruction):
     def validate(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr"):
         for offset in prepared_data[1].values():
             CompareHelper.validate(command_index, offset, container)
+
         CompareHelper.validate(command_index, prepared_data[0], container)
 
     @classmethod
     def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr", stack: VirtualStack):
         stack.pop()
+
         for offset in prepared_data[1].values():
             stack.branch(offset)
+
+        # the default offset goes here...
         stack.cp += prepared_data[0]

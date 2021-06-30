@@ -19,6 +19,8 @@ from jvm.Java import NativeClass, native
 class Object(NativeClass):
     NAME = "java/lang/Object"
 
+    ALLOW_FUNCTION_ADDITION = False
+
     @native("<init>", "()V")
     def init(self, instance):
         pass

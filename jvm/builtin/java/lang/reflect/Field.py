@@ -21,3 +21,7 @@ class Field(NativeClass):
     @native("getAnnotation", "(Ljava/lang/Class;)Ljava/lang/annotation/Annotation;")
     def getAnnotation(self, instance, cls):
         pass
+
+    @native("isAnnotationPresent", "(Ljava/lang/Class;)Z")
+    def isAnnotationPresent(self, instance, cls):
+        return False

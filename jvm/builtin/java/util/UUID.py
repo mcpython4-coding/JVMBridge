@@ -21,7 +21,7 @@ class UUID(NativeClass):
     NAME = "java/util/UUID"
 
     @native("<init>", "(JJ)V")
-    def init(self, instance):
+    def init(self, instance, a, b):
         pass
 
     @native("fromString", "(Ljava/lang/String;)Ljava/util/UUID;", static=True)

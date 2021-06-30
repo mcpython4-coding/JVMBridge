@@ -88,5 +88,5 @@ class Byte2ObjectMap(NativeClass):
 
     @native("put", "(BLjava/lang/Object;)Ljava/lang/Object;")
     def put(self, instance, key, value):
-        instance[key] = values
+        instance[key] = value
         return value

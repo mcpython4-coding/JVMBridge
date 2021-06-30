@@ -50,9 +50,9 @@ class Class(NativeClass):
     @native("getDeclaredFields", "()[Ljava/lang/reflect/Field;")
     def getDeclaredFields(self, instance):
         if isinstance(instance, NativeClass):
-            logger.println(
-                f"[WARN] from NativeImplementation: NativeImplementation.getDeclaredFields on {instance} is unsafe"
-            )
+            # logger.println(
+            #     f"[WARN] from NativeImplementation: NativeImplementation.getDeclaredFields on {instance} is unsafe"
+            # )
             return list(
                 instance.get_dynamic_field_keys()
                 | set(instance.exposed_attributes.keys())
@@ -63,9 +63,9 @@ class Class(NativeClass):
     @native("getDeclaredMethods", "()[Ljava/lang/reflect/Method;")
     def getDeclaredMethods(self, instance):
         if isinstance(instance, NativeClass):
-            logger.println(
-                f"[WARN] from NativeImplementation: NativeImplementation.getDeclaredMethods on {instance} is unsafe"
-            )
+            # logger.println(
+            #     f"[WARN] from NativeImplementation: NativeImplementation.getDeclaredMethods on {instance} is unsafe"
+            # )
             return list(instance.exposed_methods.values())
 
         return list(instance.methods.values())
@@ -73,9 +73,10 @@ class Class(NativeClass):
     @native("getSuperclass", "()Ljava/lang/Class;")
     def getSuperclass(self, instance: AbstractJavaClass):
         if isinstance(instance, NativeClass):
-            logger.println(
-                f"[WARN] from NativeImplementation: NativeImplementation.getSuperClass on {instance} is unsafe"
-            )
+            # logger.println(
+            #     f"[WARN] from NativeImplementation: NativeImplementation.getSuperClass on {instance} is unsafe"
+            # )
+            pass
 
         # If parent is None, parent is java/lang/Object, which is listed as None
         return instance.parent() if instance.parent is not None else None

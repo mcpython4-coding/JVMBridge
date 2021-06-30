@@ -152,6 +152,8 @@ class JavaVM:
             PushbackInputStream,
             Reader,
             PrintStream,
+            InputStreamReader,
+            InputStream,
         )
         from jvm.builtin.java.lang import (
             Boolean,
@@ -176,6 +178,7 @@ class JavaVM:
             SafeVarargs,
             Comparable,
             Long,
+            Float,
         )
         from jvm.builtin.java.lang.annotation import (
             Documented,
@@ -190,6 +193,7 @@ class JavaVM:
         from jvm.builtin.java.lang.invoke import MethodHandles, ConstantCallSite
         from jvm.builtin.java.math import RoundingMode
         from jvm.builtin.java.nio.file import Files, Path, Paths
+        from jvm.builtin.java.nio.charset import StandardCharsets
         from jvm.builtin.java.text import (
             DecimalFormat,
             DecimalFormatSymbols,
@@ -230,6 +234,7 @@ class JavaVM:
         )
         from jvm.builtin.java.util.concurrent.atomic import (
             AtomicInteger,
+            AtomicBoolean,
         )
         from jvm.builtin.java.util.function import (
             BiFunction,
@@ -237,6 +242,7 @@ class JavaVM:
             Function,
             Predicate,
             Supplier,
+            BiConsumer,
         )
         from jvm.builtin.java.util.regex import Pattern
         from jvm.builtin.java.util.stream import Collectors, Stream
@@ -446,6 +452,8 @@ class NativeClass(AbstractJavaClass, ABC):
     NAME = None
     EXPOSED_VERSIONS: typing.Optional[set] = None
 
+    ALLOW_FUNCTION_ADDITION = True
+
     @classmethod
     def __init_subclass__(cls, **kwargs):
         if cls.NAME is not None:
@@ -523,7 +531,7 @@ class NativeClass(AbstractJavaClass, ABC):
                 e.add_trace(f"not found up at {self.name}")
                 raise
 
-        if DYNAMIC_NATIVES:
+        if DYNAMIC_NATIVES and self.ALLOW_FUNCTION_ADDITION:
 
             @native(name, signature)
             def dynamic(*_):
@@ -605,6 +613,9 @@ class NativeClassInstance(AbstractJavaClassInstance):
     def __repr__(self):
         c = self.native_class.get_custom_info(self)
         return f"NativeClassInstance(of={self.native_class},id={hex(id(self))}"+(",custom="+c if c is not None else c)+")"
+
+    def __hash__(self):
+        return id(self) if not hasattr(self.native_class, "get_hash") else self.native_class.get_hash(self)
 
 
 def native(name: str, signature: str, static=False):
@@ -1551,4 +1562,6 @@ def decode_cp_constant(const, version=0):
 vm = JavaVM()
 # this is the way how to attach a debugger to a certain method
 # vm.debug_method("com/jaquadro/minecraft/storagedrawers/block/EnumCompDrawer", "<clinit>", "()V")
-vm.debug_method("com/mrcrayfish/furniture/block/UpgradedGateBlock", "generateShapes", "(Lcom/google/common/collect/ImmutableList;Z)Lcom/google/common/collect/ImmutableMap;")
+vm.debug_method("com/simibubi/create/AllBlocks", "<clinit>", "()V")
+vm.debug_method("com/simibubi/create/repack/registrate/builders/BlockBuilder", "initialProperties", "(Lcom/simibubi/create/repack/registrate/util/nullness/NonNullSupplier;)Lcom/simibubi/create/repack/registrate/builders/BlockBuilder;")
+vm.debug_method("com/simibubi/create/foundation/data/CreateRegistrate", "block", "(Ljava/lang/String;Lcom/simibubi/create/repack/registrate/util/nullness/NonNullFunction;)Lcom/simibubi/create/repack/registrate/builders/BlockBuilder;")
