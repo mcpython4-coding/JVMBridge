@@ -64,6 +64,7 @@
        here...
 [uuk]: fixed up COFHCore failing in its deferred registry system due to above behaviour miss-match
 [uuk]: Method.apply(Object, Object) was not working correctly leading into some issues
+[uuk]: made the vm ready for the new mod loader layout
 
 tasks to do [maybe moved away for later]:
 - minifier task should minify builtin & bridge library into each only one file

@@ -20,7 +20,7 @@ Highly depends on code of that stuff, so don't use it without it
 import sys
 import traceback
 
-import mcpython.common.mod.ExtensionPoint
+from mcpython.common.mod.ModLoader import LoadingInterruptException, AbstractModLoaderInstance, ModLoader
 import mcpython.common.mod.Mod
 import jvm.Java
 import jvm.Runtime
@@ -57,16 +57,20 @@ class JavaMod(mcpython.common.mod.Mod.Mod):
         Called during mod init for loading the java code from the .jar archives
         """
 
-        for file in self.resource_access.get_all_entries_in_directory(""):
-            if file.endswith(".mixins.json"):
-                logger.println(f"found mixin info file at {file} for mod {self.name}")
-                self.load_mixin_map(file)
+        try:
+            for file in self.resource_access.get_all_entries_in_directory(""):
+                if file.endswith(".mixins.json"):
+                    logger.println(f"found mixin info file at {file} for mod {self.name}")
+                    self.load_mixin_map(file)
 
-        for file in self.resource_access.get_all_entries_in_directory(""):
-            if not file.endswith(".class"):
-                continue
+            for file in self.resource_access.get_all_entries_in_directory(""):
+                if not file.endswith(".class"):
+                    continue
 
-            self.load_mod_file(file)
+                self.load_mod_file(file)
+        except:
+            print(self.container, self.name)
+            raise
 
     def load_mixin_map(self, file: str):
         """
@@ -123,18 +127,16 @@ class JavaMod(mcpython.common.mod.Mod.Mod):
                     )
                 except:
                     logger.print_exception("error screen error")
-                else:
-                    import mcpython.common.mod.ModLoader
 
             else:
                 shared.window.close()
                 pyglet.app.exit()
                 print("closing")
 
-            raise mcpython.common.mod.ModLoader.LoadingInterruptException from None
+            raise LoadingInterruptException from None
 
         # LoadingInterruptException is something we hand over to the underlying stuff
-        except mcpython.common.mod.ModLoader.LoadingInterruptException:
+        except LoadingInterruptException:
             raise
 
         # Any other exception is handled beforehand
@@ -150,28 +152,25 @@ class JavaMod(mcpython.common.mod.Mod.Mod):
                     )
                 except:
                     logger.print_exception("error screen error")
-                else:
-                    import mcpython.common.mod.ModLoader
 
             else:
                 shared.window.close()
                 pyglet.app.exit()
                 print("closing")
 
-            raise mcpython.common.mod.ModLoader.LoadingInterruptException from None
+            raise LoadingInterruptException from None
 
 
-class JavaModLoader(mcpython.common.mod.ExtensionPoint.ModLoaderExtensionPoint):
+class JavaModLoader(AbstractModLoaderInstance):
     """
     This is an example extension point for the mod loader
     It binds the java bytecode loader framework together with its bridges to mcpython mod loader
     """
 
-    NAME = "javafml"
-    ENABLE_MODS_TOML = True
+    def on_select(self):
+        shared.mod_loader.current_container = self.container
+        data = self.parent.raw_data
 
-    @classmethod
-    def load_mod_from_toml(cls, file, data):
         loader_version = int(
             data["loaderVersion"]
             .removeprefix("[")
@@ -188,6 +187,8 @@ class JavaModLoader(mcpython.common.mod.ExtensionPoint.ModLoaderExtensionPoint):
             mod.add_load_default_resources()
             mods[d["modId"]] = mod
             mod.loader_version = loader_version
+            mod.resource_access = self.container.resource_access
+            mod.container = self.container
 
             shared.mod_loader(d["modId"], "stage:mod:init")(mod.load_underlying_classes)
 
@@ -220,3 +221,7 @@ class JavaModLoader(mcpython.common.mod.ExtensionPoint.ModLoaderExtensionPoint):
                     logger.print_exception(
                         "decoding dependency structure", str(mod), data
                     )
+
+
+ModLoader.TOML_LOADERS["javafml"] = JavaModLoader
+ModLoader.TOML_LOADERS["kotori_scala"] = JavaModLoader
