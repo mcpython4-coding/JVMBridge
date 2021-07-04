@@ -8,3 +8,7 @@ class AtomicBoolean(NativeClass):
     @native("<init>", "()V")
     def init(self, *_):
         pass
+
+    @native("<init>", "(Z)V")
+    def init2(self, *_):
+        pass

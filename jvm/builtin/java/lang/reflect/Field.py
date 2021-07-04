@@ -25,3 +25,7 @@ class Field(NativeClass):
     @native("isAnnotationPresent", "(Ljava/lang/Class;)Z")
     def isAnnotationPresent(self, instance, cls):
         return False
+
+    @native("setAccessible", "(Z)V")
+    def setAccessible(self, *_):
+        pass

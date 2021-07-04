@@ -26,3 +26,11 @@ class EnumMap(NativeClass):
     def put(self, instance, key, obj):
         instance.underlying[key] = obj
         return obj
+
+    @native("get", "(Ljava/lang/Object;)Ljava/lang/Object;")
+    def get(self, instance, key):
+        return instance.underlying[key]
+
+    @native("putAll", "(Ljava/util/Map;)V")
+    def putAll(self, instance, data):
+        instance.underlying.update(data)

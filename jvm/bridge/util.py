@@ -87,6 +87,10 @@ class VoxelShape(NativeClass):
     def func_197753_c(self, *_):
         pass
 
+    @native("get", "()Ljava/lang/Object;")
+    def get(self, *_):
+        pass
+
 
 class VoxelShapes(NativeClass):
     NAME = "net/minecraft/util/math/shapes/VoxelShapes"
@@ -366,3 +370,39 @@ class Util(NativeClass):
 
 class CombatRules(NativeClass):
     NAME = "net/minecraft/util/CombatRules"
+
+
+class UUIDTypeAdapter(NativeClass):
+    NAME = "com/mojang/util/UUIDTypeAdapter"
+
+    @native("<init>", "()V")
+    def init(self, *_):
+        pass
+
+
+class JsonReloadListener(NativeClass):
+    NAME = "net/minecraft/client/resources/JsonReloadListener"
+
+    @native("<init>", "(Lcom/google/gson/Gson;Ljava/lang/String;)V")
+    def init(self, *_):
+        pass
+
+
+class Pair(NativeClass):
+    NAME = "com/mojang/datafixers/util/Pair"
+
+    @native("of", "(Ljava/lang/Object;Ljava/lang/Object;)Lcom/mojang/datafixers/util/Pair;")
+    def of(self, a, b):
+        return [a, b]
+
+
+class FallbackResourceManager(NativeClass):
+    NAME = "net/minecraft/resources/FallbackResourceManager"
+
+    @native("func_199019_a", "(Lnet/minecraft/util/ResourceLocation;Lnet/minecraft/resources/IResourcePack;)Ljava/io/InputStream;")
+    def func_199019_a(self, *_):
+        pass
+
+
+class SimpleReloadableResourceManager(NativeClass):
+    NAME = "net/minecraft/resources/SimpleReloadableResourceManager"

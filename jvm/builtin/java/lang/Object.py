@@ -13,7 +13,8 @@ This project is not official by mojang and does not relate to it.
 """
 import types
 
-from jvm.Java import NativeClass, native
+from jvm.Java import NativeClass, native, AbstractJavaClass
+from jvm.JavaExceptionStack import StackCollectingException
 
 
 class Object(NativeClass):
@@ -37,8 +38,18 @@ class Object(NativeClass):
             return self.vm.get_class("java/lang/String", version=self.internal_version)
         elif isinstance(instance, list):
             return self.vm.get_class("java/util/List", version=self.internal_version)
+        elif isinstance(instance, set):
+            return self.vm.get_class("java/util/Set", version=self.internal_version)
+        elif instance is None:
+            return self
 
-        return instance.get_class()
+        if isinstance(instance, AbstractJavaClass):
+            return self.vm.get_class("java/lang/Class", version=self.internal_version)
+
+        try:
+            return instance.get_class()
+        except AttributeError:
+            raise StackCollectingException(f"failed to fetch class of {instance}") from None
 
     @native("toString", "()Ljava/lang/String;")
     def toString(self, instance):

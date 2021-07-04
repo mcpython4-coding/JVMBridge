@@ -40,3 +40,8 @@ class ArrayList(NativeClass):
     def add(self, instance, obj):
         instance.append(obj)
         return 1
+
+    @native("forEach", "(Ljava/util/function/Consumer;)V")
+    def forEach(self, instance, consumer):
+        for e in instance:
+            consumer(e)

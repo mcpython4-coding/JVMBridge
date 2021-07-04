@@ -44,6 +44,10 @@ class Ingredient(NativeClass):
     def init(self, instance, items):
         instance.items = list(items)
 
+    @native("func_199804_a", "([Lnet/minecraft/util/IItemProvider;)Lnet/minecraft/item/crafting/Ingredient;")
+    def func_199804_a(self, *_):
+        return self.create_instance()
+
 
 class Ingredient__SingleItemList(NativeClass):
     NAME = "net/minecraft/item/crafting/Ingredient$SingleItemList"
@@ -84,3 +88,21 @@ class CookingRecipeSerializer(NativeClass):
     @native("<init>", "(Lnet/minecraft/item/crafting/CookingRecipeSerializer$IFactory;I)V")
     def init(self, *_):
         pass
+
+
+class ShapelessRecipe__Serializer(NativeClass):
+    NAME = "net/minecraft/item/crafting/ShapelessRecipe$Serializer"
+
+    @native("<init>", "()V")
+    def init(self, *_):
+        pass
+
+    @native("setRegistryName",
+            "(Lnet/minecraft/util/ResourceLocation;)Lnet/minecraftforge/registries/IForgeRegistryEntry;")
+    def setRegistryName(self, instance, name):
+        instance.registry_name = name if isinstance(name, str) else name.name
+        return instance
+
+
+class ServerRecipePlacer(NativeClass):
+    NAME = "net/minecraft/item/crafting/ServerRecipePlacer"

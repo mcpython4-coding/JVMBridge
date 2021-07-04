@@ -46,6 +46,10 @@ class Lists(NativeClass):
     def newLinkedList(self):
         return []
 
+    @native("newCopyOnWriteArrayList", "()Ljava/util/concurrent/CopyOnWriteArrayList;")
+    def newCopyOnWriteArrayList(self):
+        return []
+
 
 class Maps(NativeClass):
     NAME = "com/google/common/collect/Maps"
@@ -71,6 +75,10 @@ class Maps(NativeClass):
 
     @native("newIdentityHashMap", "()Ljava/util/IdentityHashMap;")
     def newIdentityHashMap(self, *_):
+        return {}
+
+    @native("newConcurrentMap", "()Ljava/util/concurrent/ConcurrentMap;")
+    def newConcurrentMap(self, *_):
         return {}
 
 
@@ -113,6 +121,25 @@ class ImmutableList(NativeClass):
         instance.underlying_tuple = stuff
         return instance
 
+    @native("of", "(Ljava/lang/Object;Ljava/lang/Object;)Lcom/google/common/collect/ImmutableList;")
+    def of5(self, *stuff):
+        instance = self.create_instance()
+        instance.underlying_tuple = stuff
+        return instance
+
+    @native("of", "()Lcom/google/common/collect/ImmutableList;")
+    def of6(self, *_):
+        instance = self.create_instance()
+        instance.underlying_tuple = tuple()
+        return instance
+
+    @native("of",
+            "(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Lcom/google/common/collect/ImmutableList;")
+    def of7(self, *stuff):
+        instance = self.create_instance()
+        instance.underlying_tuple = stuff
+        return instance
+
     @native("copyOf", "([Ljava/lang/Object;)Lcom/google/common/collect/ImmutableList;")
     def copyOf(self, array):
         instance = self.create_instance()
@@ -126,6 +153,26 @@ class ImmutableList(NativeClass):
     @native("size", "()I")
     def size(self, instance):
         return len(instance) if isinstance(instance, tuple) else len(instance.underlying_tuple)
+
+
+class ImmutableList__Builder(NativeClass):
+    NAME = "com/google/common/collect/ImmutableList$Builder"
+
+    def create_instance(self):
+        return []
+
+    @native("<init>", "()V")
+    def init(self, *_):
+        pass
+
+    @native("add", "(Ljava/lang/Object;)Lcom/google/common/collect/ImmutableList$Builder;")
+    def add(self, instance, obj):
+        instance.append(obj)
+        return obj
+
+    @native("build", "()Lcom/google/common/collect/ImmutableList;")
+    def build(self, instance):
+        return tuple(instance)
 
 
 class ImmutableMap(NativeClass):
@@ -146,6 +193,10 @@ class ImmutableMap(NativeClass):
         "(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Lcom/google/common/collect/ImmutableMap;",
     )
     def of(self, *stuff):
+        return self.create_instance()
+
+    @native("of", "()Lcom/google/common/collect/ImmutableMap;")
+    def of2(self, *_):
         return self.create_instance()
 
     @native("get", "(Ljava/lang/Object;)Ljava/lang/Object;")
@@ -259,6 +310,11 @@ class Preconditions(NativeClass):
         if not value:
             raise StackCollectingException(f"expected true, got false, message: {obj}")
 
+    @native("checkState", "(Z)V")
+    def checkState2(self, value):
+        if not value:
+            raise StackCollectingException(f"expected true, got false")
+
 
 class ClassToInstanceMap(NativeClass):
     NAME = "com/google/common/collect/ClassToInstanceMap"
@@ -339,6 +395,10 @@ class ImmutableSet(NativeClass):
     def of2(self, *elements):
         return set(elements[:-1]) | set(elements[-1])
 
+    @native("of", "()Lcom/google/common/collect/ImmutableSet;")
+    def of3(self):
+        return set()
+
     @native("builder", "()Lcom/google/common/collect/ImmutableSet$Builder;")
     def builder(self):
         return set()
@@ -369,6 +429,14 @@ class BiMap(NativeClass):
     def put(self, instance, key, value):
         instance[key] = value
         return value
+
+    @native("containsKey", "(Ljava/lang/Object;)Z")
+    def containsKey(self, instance, key):
+        return key in instance
+
+    @native("containsValue", "(Ljava/lang/Object;)Z")
+    def containsValue(self, instance, value):
+        return value in instance.values()
 
 
 class HashBiMap(BiMap):
@@ -404,6 +472,10 @@ class Sets(NativeClass):
     @native("newHashSet", "()Ljava/util/HashSet;")
     def newHashSet(self, *_):
         return set()
+
+    @native("newHashSet", "([Ljava/lang/Object;)Ljava/util/HashSet;")
+    def newHashSet2(self, array):
+        return set(array)
 
     @native("newLinkedHashSet", "()Ljava/util/LinkedHashSet;")
     def newLinkedHashSet(self, *_):
@@ -521,6 +593,10 @@ class Predicates(NativeClass):
     @native("not", "(Lcom/google/common/base/Predicate;)Lcom/google/common/base/Predicate;")
     def not_(self, predicate):
         return lambda e: not predicate(e)
+
+    @native("alwaysTrue", "()Lcom/google/common/base/Predicate;")
+    def alwaysTrue(self, *_):
+        return lambda: True
 
 
 class MapMaker(NativeClass):

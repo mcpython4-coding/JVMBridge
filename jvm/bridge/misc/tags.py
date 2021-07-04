@@ -18,6 +18,19 @@ from jvm.Java import NativeClass, native
 class BlockTags(NativeClass):
     NAME = "net/minecraft/tags/BlockTags"
 
+    def __init__(self):
+        super().__init__()
+        self.exposed_attributes.update({
+            "field_203292_x": None,
+            "field_203291_w": None,
+            "field_219757_z": None,
+            "field_199898_b": None,
+            "field_219748_G": None,
+            "field_232868_aA_": None,
+            "field_212185_E": None,
+            "field_200029_f": None,
+        })
+
     @native("func_199894_a", "(Ljava/lang/String;)Lnet/minecraft/tags/ITag$INamedTag;")
     def getByName(self, name: str):
         return shared.tag_handler.get_tag_for(name, "blocks", or_else_none=True)
@@ -36,6 +49,18 @@ class BlockTags(NativeClass):
 
 class ItemTags(NativeClass):
     NAME = "net/minecraft/tags/ItemTags"
+
+    def __init__(self):
+        super().__init__()
+        self.exposed_attributes.update({
+            "field_203442_w": None,
+            "field_203441_v": None,
+            "field_219778_z": None,
+            "field_199905_b": None,
+            "field_219772_G": None,
+            "field_212187_B": None,
+            "field_200036_f": None,
+        })
 
     @native("func_199901_a", "(Ljava/lang/String;)Lnet/minecraft/tags/ITag$INamedTag;")
     def func_199901_a(self, name: str):
@@ -59,9 +84,18 @@ class FluidTags(NativeClass):
     def createOptional(self, *_):
         pass
 
+    @native("func_206956_a", "(Ljava/lang/String;)Lnet/minecraft/tags/ITag$INamedTag;")
+    def func_206956_a(self, *_):
+        pass
+
 
 class EntityTypeTags(NativeClass):
     NAME = "net/minecraft/tags/EntityTypeTags"
+
+    @native("createOptional",
+            "(Lnet/minecraft/util/ResourceLocation;)Lnet/minecraftforge/common/Tags$IOptionalNamedTag;")
+    def createOptional(self, *_):
+        pass
 
     @native("func_232896_a_", "(Ljava/lang/String;)Lnet/minecraft/tags/ITag$INamedTag;")
     def func_232896_a_(self, *_):

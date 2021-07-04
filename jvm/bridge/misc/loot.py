@@ -86,3 +86,7 @@ class BlockLootTables(NativeClass):
     def func_218492_c(self, *_):
         pass
 
+
+class LootContext(NativeClass):
+    NAME = "net/minecraft/loot/LootContext"
+

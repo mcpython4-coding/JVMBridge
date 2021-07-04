@@ -39,3 +39,7 @@ class Collectors(NativeClass):
             return data
 
         return work
+
+    @native("joining", "(Ljava/lang/CharSequence;)Ljava/util/stream/Collector;")
+    def joining(self, in_between):
+        return lambda data: in_between.join(data)

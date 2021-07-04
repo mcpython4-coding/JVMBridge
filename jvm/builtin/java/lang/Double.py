@@ -18,6 +18,12 @@ from jvm.Java import NativeClass, native
 class Double(NativeClass):
     NAME = "java/lang/Double"
 
+    def __init__(self):
+        super().__init__()
+        self.exposed_attributes.update({
+            "TYPE": self,
+        })
+
     @native("valueOf", "(D)Ljava/lang/Double;")
     def valueOf(self, instance):
         return instance

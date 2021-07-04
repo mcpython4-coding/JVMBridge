@@ -54,3 +54,11 @@ class Enum(NativeClass):
     @native("toString", "()Ljava/lang/String;")
     def toString(self, instance):
         return str(instance)
+
+    @native("getClass", "()Ljava/lang/Class;")
+    def getClass(self, instance):
+        return self
+
+    @native("getName", "()Ljava/lang/String;")
+    def getName(self, instance):
+        return str(instance)

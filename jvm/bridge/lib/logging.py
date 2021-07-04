@@ -65,9 +65,21 @@ class Logger(CoreLogger):
     def info2(self, instance, message):
         logger.println("[FML LOGGER][INFO]", message)
 
+    @native("info", "(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V")
+    def info3(self, instance, message, obj1, obj2):
+        logger.println("[FML LOGGER][INFO]", message.format(obj1, obj2))
+
+    @native("warn", "(Ljava/lang/String;)V")
+    def warn(self, instance, message):
+        logger.println("[FML LOGGER][WARN]", message)
+
     @native("log", "(Lorg/apache/logging/log4j/Level;Ljava/lang/String;)V")
     def log(self, instance, level, text):
         logger.println(f"[FML LOGGER][{level}]", text)
+
+    @native("error", "(Ljava/lang/String;Ljava/lang/Object;)V")
+    def error(self, instance, message, obj):
+        logger.println("[FML LOGGER][ERROR]", message.format(obj))
 
     @native("getLevel", "()Lorg/apache/logging/log4j/Level;")
     def getLevel(self, instance):
@@ -76,6 +88,10 @@ class Logger(CoreLogger):
     @native("setLevel", "(Lorg/apache/logging/log4j/Level;)V")
     def setLevel(self, instance, level):
         pass
+
+    @native("getClass", "()Ljava/lang/Class;")
+    def getClass(self, *_):
+        return self
 
 
 class LogManager(NativeClass):
@@ -106,3 +122,13 @@ class LogManager(NativeClass):
         return self.vm.get_class(
             "org/apache/logging/log4j/Logger", version=self.internal_version
         ).create_instance()
+
+    @native("getRootLogger", "()Lorg/apache/logging/log4j/Logger;")
+    def getRootLogger(self, *_):
+        return self.vm.get_class(
+            "org/apache/logging/log4j/Logger", version=self.internal_version
+        ).create_instance()
+
+
+class Plugin(NativeClass):
+    NAME = "org/apache/logging/log4j/core/config/plugins/Plugin"

@@ -21,6 +21,12 @@ from jvm.Java import NativeClass, native
 class File(NativeClass):
     NAME = "java/io/File"
 
+    def __init__(self):
+        super().__init__()
+        self.exposed_attributes.update({
+            "separator": "\n",
+        })
+
     @native("<init>", "(Ljava/io/File;Ljava/lang/String;)V")
     def init(self, instance, d, path: str):
         instance.path = d.path + "/" + path.replace("\\", "/")
@@ -32,7 +38,7 @@ class File(NativeClass):
     @native("getParentFile", "()Ljava/io/File;")
     def getParentFile(self, instance):
         obj = self.create_instance()
-        obj.path = "/".join(instance.path.split("/")[:-1])
+        obj.path = "/".join(instance.path.split("/")[:-1]) if instance.path is not None else None
         return obj
 
     @native("exists", "()Z")
@@ -40,7 +46,7 @@ class File(NativeClass):
         if not hasattr(instance, "path"):
             raise ValueError(instance)
 
-        return os.path.exists(instance.path)
+        return os.path.exists(instance.path) if instance.path is not None else False
 
     @native("canRead", "()Z")
     def canRead(self, instance):
@@ -49,6 +55,14 @@ class File(NativeClass):
     @native("canWrite", "()Z")
     def canWrite(self, instance):
         return self.canRead(instance)
+
+    @native("isDirectory", "()Z")
+    def isDirectory(self, instance):
+        return os.path.isdir(instance.path)
+
+    @native("isFile", "()Z")
+    def isFile(self, instance):
+        return os.path.isfile(instance.path)
 
     @native("mkdirs", "()Z")
     def mkdirs(self, instance):

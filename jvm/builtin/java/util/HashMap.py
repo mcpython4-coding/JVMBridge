@@ -28,6 +28,10 @@ class HashMap(NativeClass):
     def init2(self, instance, size: int):
         pass
 
+    @native("<init>", "(Ljava/util/Map;)V")
+    def init3(self, instance, data):
+        instance.update(data)
+
     @native("put", "(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;")
     def put(self, instance, key, value):
         instance[key] = value
@@ -48,3 +52,7 @@ class HashMap(NativeClass):
     @native("entrySet", "()Ljava/util/Set;")
     def entrySet(self, instance):
         return set(instance.items())
+
+    @native("clear", "()V")
+    def clear(self, instance):
+        instance.clear()

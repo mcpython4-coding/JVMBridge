@@ -13,7 +13,7 @@ This project is not official by mojang and does not relate to it.
 """
 import mcpython.ResourceLoader
 from mcpython import logger
-from jvm.Java import AbstractJavaClass, NativeClass, native
+from jvm.Java import AbstractJavaClass, NativeClass, native, JavaBytecodeClass
 
 
 class Class(NativeClass):
@@ -45,7 +45,7 @@ class Class(NativeClass):
 
     @native("getResourceAsStream", "(Ljava/lang/String;)Ljava/io/InputStream;")
     def getResourceAsStream(self, instance, path: str):
-        return mcpython.ResourceLoader.read_raw(path)
+        return mcpython.ResourceLoader.read_raw(path.removeprefix("/"))
 
     @native("getDeclaredFields", "()[Ljava/lang/reflect/Field;")
     def getDeclaredFields(self, instance):
@@ -108,3 +108,34 @@ class Class(NativeClass):
     @native("getConstructor", "([Ljava/lang/Class;)Ljava/lang/reflect/Constructor;")
     def getConstructor(self, instance, signature):
         return instance  # todo: implement
+
+    @native("isAssignableFrom", "(Ljava/lang/Class;)Z")
+    def isAssignableFrom(self, instance, cls):
+        return False
+
+    @native("getFields", "()[Ljava/lang/reflect/Field;")
+    def getFields(self, instance):
+        return instance.get_dynamic_field_keys()
+
+    @native("getAnnotation", "(Ljava/lang/Class;)Ljava/lang/annotation/Annotation;")
+    def getAnnotation(self, instance):
+        if instance is None: return None
+        if not isinstance(instance, JavaBytecodeClass): return
+
+        return instance.attributes["RuntimeVisibleAnnotations"]
+
+    @native("getField", "(Ljava/lang/String;)Ljava/lang/reflect/Field;")
+    def getField(self, instance, name: str):
+        pass
+
+    @native("getMethod", "(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;")
+    def getMethod(self, instance, name, signature):
+        pass
+
+    @native("getCanonicalName", "()Ljava/lang/String;")
+    def getCanonicalName(self, instance):
+        return instance.name
+
+    @native("getDeclaredMethod", "(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;")
+    def getDeclaredMethod(self, *_):
+        return []

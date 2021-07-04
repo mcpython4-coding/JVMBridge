@@ -25,6 +25,10 @@ class LinkedHashMap(NativeClass):
     def init(self, *_):
         pass
 
+    @native("<init>", "(Ljava/util/Map;)V")
+    def init2(self, instance, underlying):
+        instance.update(underlying)
+
     @native("keySet", "()Ljava/util/Set;")
     def keySet(self, instance):
         return set(instance.keys())

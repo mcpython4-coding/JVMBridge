@@ -37,3 +37,7 @@ class IOUtils(NativeClass):
     @native("closeQuietly", "(Ljava/io/Reader;)V")
     def closeQuietly(self, reader):
         pass
+
+    @native("closeQuietly", "(Ljava/io/InputStream;)V")
+    def closeQuietly2(self, stream):
+        pass

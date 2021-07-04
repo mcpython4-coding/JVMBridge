@@ -19,5 +19,8 @@ class RuntimeException(NativeClass):
     NAME = "java/lang/RuntimeException"
 
     @native("<init>", "(Ljava/lang/String;)V")
-    def init(self, *_):
-        pass
+    def init(self, instance, text):
+        instance.text = text
+
+    def get_custom_info(self, instance) -> str:
+        return instance.text

@@ -28,3 +28,11 @@ class Files(NativeClass):
     )
     def createDirectory(self, path, b):
         pass
+
+    @native("createDirectories", "(Ljava/nio/file/Path;[Ljava/nio/file/attribute/FileAttribute;)Ljava/nio/file/Path;")
+    def createDirectories(self, *_):
+        pass
+
+    @native("walk", "(Ljava/nio/file/Path;[Ljava/nio/file/FileVisitOption;)Ljava/util/stream/Stream;")
+    def walk(self, *_):
+        return []

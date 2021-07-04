@@ -267,6 +267,8 @@ class SoundEvents(NativeClass):
                 "field_191241_J": None,
                 "field_187630_M": None,
                 "field_187624_K": None,
+                "field_187802_ec": None,
+                "field_187604_bf": None,
             }
         )
 
@@ -412,6 +414,16 @@ class Material(NativeClass):
     )
     def init(self, instance, color, a, b, c, d, e, f, reaction):
         pass
+
+
+class ArmorMaterial(NativeClass):
+    NAME = "net/minecraft/item/ArmorMaterial"
+
+    def __init__(self):
+        super().__init__()
+        self.exposed_attributes.update({
+            "IRON": 2,
+        })
 
 
 class Material__Builder(NativeClass):
@@ -1090,6 +1102,7 @@ class SixWayBlock(Block):
                 "field_196495_y": None,
                 "field_196496_z": None,
                 "field_196489_A": None,
+                "field_196491_B": None,
             }
         )
 
@@ -1276,8 +1289,15 @@ class EmptyHandler(NativeClass):
 class Items(NativeClass):
     NAME = "net/minecraft/item/Items"
 
+    def create_item(self, name: str):
+        item_cls = self.vm.get_class("net/minecraft/item/Item")
+        instance = item_cls.create_instance()
+        instance.registry_name = name
+        return instance
+
     def __init__(self):
         super().__init__()
+
         self.exposed_attributes.update(
             {
                 "field_151137_ax": None,
@@ -1290,6 +1310,12 @@ class Items(NativeClass):
                 "field_151038_n": None,
                 "field_151053_p": None,
                 "field_151039_o": None,
+                "field_221894_fe": None,
+                "field_221550_C": None,
+                "field_221658_aq": None,
+                "field_221657_bQ": self.create_item("minecraft:torch"),
+                "field_151156_bN": None,
+                "field_234737_dp_": self.create_item("minecraft:soul_torch"),
             }
         )
 
@@ -1353,6 +1379,10 @@ class Item_Properties(NativeClass):
     @native("func_200915_b", "(I)Lnet/minecraft/item/Item$Properties;")
     def func_200915_b(self, instance, v):
         return instance
+
+
+class EnderEyeItem(NativeClass):
+    NAME = "net/minecraft/item/EnderEyeItem"
 
 
 class ArmorItem(Item):
@@ -1440,6 +1470,7 @@ class ItemGroup(NativeClass):
                 "field_78040_i": None,
                 "field_78026_f": None,
                 "field_78037_j": None,
+                "field_78027_g": None,
             }
         )
 
@@ -1503,6 +1534,12 @@ class ItemGroup(NativeClass):
 
 class ItemStack(NativeClass):
     NAME = "net/minecraft/item/ItemStack"
+
+    def __init__(self):
+        super().__init__()
+        self.exposed_attributes.update({
+            "field_190927_a": None,
+        })
 
     @native("<init>", "(Lnet/minecraft/util/IItemProvider;)V")
     def init(self, instance, item_provider):
@@ -1772,6 +1809,10 @@ class DyeColor(NativeClass):
     def ordinal(self, instance):
         return self.colors.index(instance)
 
+    @native("func_176762_d", "()Ljava/lang/String;")
+    def func_176762_d(self, instance):
+        return instance
+
 
 class AttachFace(NativeClass):
     NAME = "net/minecraft/state/properties/AttachFace"
@@ -1828,6 +1869,9 @@ class BlockStateProperties(NativeClass):
                 "field_208161_N": None,
                 "field_208162_O": None,
                 "field_208193_t": None,
+                "field_208148_A": None,
+                "field_208171_X": None,
+                "field_208190_q": None,
             }
         )
 
@@ -1977,6 +2021,11 @@ class DirectionProperty(NativeClass):
     def func_177712_a(self, *_):
         return self.create_instance()
 
+    @native("func_196962_a",
+            "(Ljava/lang/String;[Lnet/minecraft/util/Direction;)Lnet/minecraft/state/DirectionProperty;")
+    def func_196962_a(self, *_):
+        return self.create_instance()
+
 
 class Tree(NativeClass):
     NAME = "net/minecraft/block/trees/Tree"
@@ -2034,6 +2083,10 @@ class EntityAttributeModifier(NativeClass):
         "(Ljava/util/UUID;Ljava/lang/String;DLnet/minecraft/entity/ai/attributes/AttributeModifier$Operation;)V",
     )
     def init(self, instance, uuid, a: str, b: float, operation):
+        pass
+
+    @native("<init>", "(Ljava/lang/String;DLnet/minecraft/entity/ai/attributes/AttributeModifier$Operation;)V")
+    def init2(self, *_):
         pass
 
 
@@ -2145,8 +2198,36 @@ class LightningBoltEntity(Entity):
     NAME = "net/minecraft/entity/effect/LightningBoltEntity"
 
 
+class IronGolemEntity(NativeClass):
+    NAME = "net/minecraft/entity/passive/IronGolemEntity"
+
+
+class BoatEntity(NativeClass):
+    NAME = "net/minecraft/entity/item/BoatEntity"
+
+
+class TNTEntity(NativeClass):
+    NAME = "net/minecraft/entity/item/TNTEntity"
+
+
+class CatEntity(NativeClass):
+    NAME = "net/minecraft/entity/passive/CatEntity"
+
+
 class PlayerEntity(Entity):
     NAME = "net/minecraft/entity/player/PlayerEntity"
+
+
+class PlayerController(NativeClass):
+    NAME = "net/minecraft/client/multiplayer/PlayerController"
+
+
+class PlayerInteractEvent(NativeClass):
+    NAME = "net/minecraftforge/event/entity/player/PlayerInteractEvent"
+
+
+class PlayerInteractionManager(NativeClass):
+    NAME = "net/minecraft/server/management/PlayerInteractionManager"
 
 
 class ClientPlayerEntity(PlayerEntity):
@@ -2201,8 +2282,24 @@ class BeeEntity(Entity):
     NAME = "net/minecraft/entity/passive/BeeEntity"
 
 
+class BeeEntity__EnterBeehiveGoal(NativeClass):
+    NAME = "net/minecraft/entity/passive/BeeEntity$EnterBeehiveGoal"
+
+
+class BeeEntity__FindBeehiveGoal(NativeClass):
+    NAME = "net/minecraft/entity/passive/BeeEntity$FindBeehiveGoal"
+
+
+class BeeEntity__UpdateBeehiveGoal(NativeClass):
+    NAME = "net/minecraft/entity/passive/BeeEntity$UpdateBeehiveGoal"
+
+
 class Attribute(NativeClass):
     NAME = "net/minecraft/entity/ai/attributes/Attribute"
+
+
+class WalkNodeProcessor(NativeClass):
+    NAME = "net/minecraft/pathfinding/WalkNodeProcessor"
 
 
 class TranslationTextComponent(NativeClass):
@@ -2213,8 +2310,34 @@ class TranslationTextComponent(NativeClass):
         pass
 
 
+class LanguageMap(NativeClass):
+    NAME = "net/minecraft/util/text/LanguageMap"
+
+    def __init__(self):
+        super().__init__()
+        self.instance = self.create_instance()
+
+    @native("func_74808_a", "()Lnet/minecraft/util/text/LanguageMap;")
+    def func_74808_a(self, *_):
+        return self.instance
+
+    @native("func_230503_a_", "(Ljava/lang/String;)Ljava/lang/String;")
+    def func_230503_a_(self, instance, key):
+        return key
+
+
 class TileEntityType(NativeClass):
     NAME = "net/minecraft/tileentity/TileEntityType"
+
+    @native("<init>", "(Ljava/util/function/Supplier;Ljava/util/Set;Lcom/mojang/datafixers/types/Type;)V")
+    def init(self, *_):
+        pass
+
+    @native("setRegistryName",
+            "(Ljava/lang/String;Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;")
+    def setRegistryName(self, instance, namespace, name):
+        instance.registry_name = namespace + ":" + name
+        return instance
 
 
 class TileEntityType__Builder(NativeClass):
@@ -2234,6 +2357,10 @@ class TileEntity(NativeClass):
     NAME = "net/minecraft/tileentity/TileEntity"
 
 
+class ITileEntityProvider(NativeClass):
+    NAME = "net/minecraft/block/ITileEntityProvider"
+
+
 class AbstractFurnaceTileEntity(TileEntity):
     NAME = "net/minecraft/tileentity/AbstractFurnaceTileEntity"
 
@@ -2244,6 +2371,10 @@ class AbstractFurnaceTileEntity(TileEntity):
 
 class BeaconTileEntity(TileEntity):
     NAME = "net/minecraft/tileentity/BeaconTileEntity"
+
+
+class BeehiveTileEntity__Bee(NativeClass):
+    NAME = "net/minecraft/tileentity/BeehiveTileEntity$Bee"
 
 
 class BannerTileEntity(TileEntity):
@@ -2362,6 +2493,20 @@ class Fluid(NativeClass):
     NAME = "net/minecraft/fluid/Fluid"
 
 
+class ForgeFlowingFluid__Source(NativeClass):
+    NAME = "net/minecraftforge/fluids/ForgeFlowingFluid$Source"
+
+    @native("<init>", "(Lnet/minecraftforge/fluids/ForgeFlowingFluid$Properties;)V")
+    def init(self, *_):
+        pass
+
+    @native("setRegistryName",
+            "(Ljava/lang/String;Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;")
+    def setRegistryName(self, instance, namespace, name):
+        instance.registry_name = namespace + ":" + name
+        return instance
+
+
 class ForgeFlowingFluid__Properties(NativeClass):
     NAME = "net/minecraftforge/fluids/ForgeFlowingFluid$Properties"
 
@@ -2432,6 +2577,10 @@ class FluidAttributes__Builder(NativeClass):
 
     @native("rarity", "(Lnet/minecraft/item/Rarity;)Lnet/minecraftforge/fluids/FluidAttributes$Builder;")
     def rarity(self, instance, rarity):
+        return instance
+
+    @native("translationKey", "(Ljava/lang/String;)Lnet/minecraftforge/fluids/FluidAttributes$Builder;")
+    def translationKey(self, instance, key):
         return instance
 
 

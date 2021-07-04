@@ -33,5 +33,7 @@ class ElementType(NativeClass):
                 "PACKAGE": 5,
                 "TYPE_PARAMETER": 6,
                 "TYPE_USE": 7,
+                "CONSTRUCTOR": 8,
+                "LOCAL_VARIABLE": 9,
             }
         )

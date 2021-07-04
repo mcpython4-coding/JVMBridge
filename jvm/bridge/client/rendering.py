@@ -196,3 +196,15 @@ class DebugOverlayGui(NativeClass):
 
 class CapeLayer(NativeClass):
     NAME = "net/minecraft/client/renderer/entity/layers/CapeLayer"
+
+
+class RenderSkyboxCube(NativeClass):
+    NAME = "net/minecraft/client/renderer/RenderSkyboxCube"
+
+
+class Debug__Renderer(NativeClass):
+    NAME = "org/jetbrains/annotations/Debug$Renderer"
+
+
+class EditStructureScreen(NativeClass):
+    NAME = "net/minecraft/client/gui/screen/EditStructureScreen"

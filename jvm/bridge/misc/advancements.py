@@ -45,3 +45,7 @@ class AbstractCriterionTrigger(NativeClass):
     @native("<init>", "()V")
     def init(self, *_):
         pass
+
+
+class ClientAdvancementManager(NativeClass):
+    NAME = "net/minecraft/client/multiplayer/ClientAdvancementManager"

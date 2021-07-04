@@ -49,7 +49,7 @@ class IForgeRegistry(NativeClass):
         "(Lnet/minecraft/util/ResourceLocation;)Lnet/minecraftforge/registries/IForgeRegistryEntry;",
     )
     def getValue(self, registry, name):
-        return registry().get(name if isinstance(name, str) else name.name) if registry() is not None else None
+        return registry().get(name if isinstance(name, str) else name.name, default=None) if registry() is not None else None
 
     @native("getRegistrySuperType", "()Ljava/lang/Class;")
     def getRegistrySuperType(self, registry):
@@ -96,6 +96,8 @@ class ForgeRegistries(NativeClass):
             "LOOT_MODIFIER_SERIALIZERS": no_registry,
             "ATTRIBUTES": no_registry,
             "POTION_TYPES": no_registry,
+            "FEATURES": no_registry,
+            "DECORATORS": no_registry,
         }
 
 
@@ -170,6 +172,10 @@ class RegistryKey(NativeClass):
     @native("func_240904_a_", "(Lnet/minecraft/util/ResourceLocation;)Lnet/minecraft/util/RegistryKey;")
     def func_240904_a_(self, res_loc):
         return self.create_instance()
+
+    @native("func_240901_a_", "()Lnet/minecraft/util/ResourceLocation;")
+    def func_240901_a_(self, *_):
+        pass
 
 
 class RegistryObject(NativeClass):
@@ -391,6 +397,10 @@ class RegistryBuilder(NativeClass):
     )
     def setType(self, instance, cls):
         instance.type = cls
+        return instance
+
+    @native("setIDRange", "(II)Lnet/minecraftforge/registries/RegistryBuilder;")
+    def setIDRange(self, instance, lower, upper):
         return instance
 
     @native("create", "()Lnet/minecraftforge/registries/IForgeRegistry;")

@@ -27,6 +27,11 @@ class NetworkRegistry(NativeClass):
             version=self.internal_version,
         ).create_instance()
 
+    @native("newEventChannel",
+            "(Lnet/minecraft/util/ResourceLocation;Ljava/util/function/Supplier;Ljava/util/function/Predicate;Ljava/util/function/Predicate;)Lnet/minecraftforge/fml/network/event/EventNetworkChannel;")
+    def newEventChannel(self, *_):
+        pass
+
 
 class SimpleChannel(NativeClass):
     NAME = "net/minecraftforge/fml/network/simple/SimpleChannel"
@@ -125,3 +130,19 @@ class EntityDataManager(NativeClass):
             "(Ljava/lang/Class;Lnet/minecraft/network/datasync/IDataSerializer;)Lnet/minecraft/network/datasync/DataParameter;")
     def func_187226_a(self, *_):
         pass
+
+
+class ServerPlayNetHandler(NativeClass):
+    NAME = "net/minecraft/network/play/ServerPlayNetHandler"
+
+
+class NettyCompressionDecoder(NativeClass):
+    NAME = "net/minecraft/network/NettyCompressionDecoder"
+
+
+class PacketBuffer(NativeClass):
+    NAME = "net/minecraft/network/PacketBuffer"
+
+
+class ServerLoginNetHandler(NativeClass):
+    NAME = "net/minecraft/network/login/ServerLoginNetHandler"

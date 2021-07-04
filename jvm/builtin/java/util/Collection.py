@@ -30,5 +30,10 @@ class Collection(NativeClass):
         return instance
 
     @native("size", "()I")
-    def size(self, *_):
-        pass
+    def size(self, instance):
+        return len(instance)
+
+    @native("forEach", "(Ljava/util/function/Consumer;)V")
+    def forEach(self, instance, consumer):
+        for e in instance:
+            consumer(e)

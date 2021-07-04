@@ -18,6 +18,14 @@ from jvm.Java import NativeClass, native
 class Exception(NativeClass):
     NAME = "java/lang/Exception"
 
+    @native("<init>", "()V")
+    def init(self, *_):
+        pass
+
     @native("<init>", "(Ljava/lang/String;)V")
     def init(self, instance, text):
         pass
+
+    @native("getStackTrace", "()[Ljava/lang/StackTraceElement;")
+    def getStackTrace(self, *_):
+        return []

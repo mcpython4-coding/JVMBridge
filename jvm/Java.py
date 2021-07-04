@@ -154,6 +154,10 @@ class JavaVM:
             PrintStream,
             InputStreamReader,
             InputStream,
+            BufferedReader,
+            FileReader,
+            FileWriter,
+            Serializable,
         )
         from jvm.builtin.java.lang import (
             Boolean,
@@ -179,6 +183,8 @@ class JavaVM:
             Comparable,
             Long,
             Float,
+            Runnable,
+            Number,
         )
         from jvm.builtin.java.lang.annotation import (
             Documented,
@@ -188,6 +194,10 @@ class JavaVM:
             Retention,
             RetentionPolicy,
             Target,
+        )
+        from jvm.builtin.java.lang.management import (
+            ManagementFactory,
+            RuntimeMXBean,
         )
         from jvm.builtin.java.lang.reflect import Field, Method, Proxy, Constructor
         from jvm.builtin.java.lang.invoke import MethodHandles, ConstantCallSite
@@ -225,12 +235,15 @@ class JavaVM:
             TreeSet,
             WeakHashMap,
             Comperator,
+            Properties,
         )
         from jvm.builtin.java.util.concurrent import (
             ConcurrentHashMap,
             CopyOnWriteArrayList,
             Executors,
             TimeUnit,
+            ConcurrentLinkedQueue,
+            ConcurrentMap,
         )
         from jvm.builtin.java.util.concurrent.atomic import (
             AtomicInteger,
@@ -248,9 +261,10 @@ class JavaVM:
         from jvm.builtin.java.util.stream import Collectors, Stream
         from jvm.builtin.javax.annotation import CheckForNull, Nonnull, Nullable, Nonnegative, OverridingMethodsMustInvokeSuper
         from jvm.builtin.javax.annotation.meta import (
-            TypeQualifierDefault, TypeQualifierNickname,
+            TypeQualifierDefault, TypeQualifierNickname, TypeQualifier,
         )
         from jvm.builtin.javax.annotation.concurrent import Immutable
+        from jvm.builtin.javax.crypto import Cipher
 
     def init_bridge(self):
         from jvm.bridge import util
@@ -270,6 +284,8 @@ class JavaVM:
             objectweb,
             jetbrains,
             checkerframework,
+            lwjgl,
+            authlib,
         )
         from jvm.bridge.misc import (
             advancements,
@@ -284,6 +300,7 @@ class JavaVM:
             tags,
         )
         from jvm.bridge.world import biomes, collection, world
+        from jvm.bridge.api import waila, crafttweaker
 
     def get_class(self, name: str, version=0) -> "AbstractJavaClass":
         if self.simulation: return
@@ -652,7 +669,7 @@ class ArrayBase(NativeClass):
 
     @native("clone", "()Ljava/lang/Object;")
     def clone(self, instance):
-        return instance.copy()
+        return instance.copy() if instance is not None else instance
 
 
 class JavaArrayManager:
@@ -1084,6 +1101,12 @@ class JavaMethod:
         data += self.attributes.dump()
 
         return data
+
+    def print_stats(self):
+        print(f"method {repr(self)}")
+
+        if self.code_repr is not None:
+            self.code_repr.print_stats()
 
 
 class JavaBytecodeClass(AbstractJavaClass):
@@ -1562,6 +1585,6 @@ def decode_cp_constant(const, version=0):
 vm = JavaVM()
 # this is the way how to attach a debugger to a certain method
 # vm.debug_method("com/jaquadro/minecraft/storagedrawers/block/EnumCompDrawer", "<clinit>", "()V")
-vm.debug_method("com/simibubi/create/AllBlocks", "<clinit>", "()V")
-vm.debug_method("com/simibubi/create/repack/registrate/builders/BlockBuilder", "initialProperties", "(Lcom/simibubi/create/repack/registrate/util/nullness/NonNullSupplier;)Lcom/simibubi/create/repack/registrate/builders/BlockBuilder;")
-vm.debug_method("com/simibubi/create/foundation/data/CreateRegistrate", "block", "(Ljava/lang/String;Lcom/simibubi/create/repack/registrate/util/nullness/NonNullFunction;)Lcom/simibubi/create/repack/registrate/builders/BlockBuilder;")
+# vm.debug_method("com/simibubi/create/AllBlocks", "<clinit>", "()V")
+# vm.debug_method("com/simibubi/create/repack/registrate/builders/BlockBuilder", "initialProperties", "(Lcom/simibubi/create/repack/registrate/util/nullness/NonNullSupplier;)Lcom/simibubi/create/repack/registrate/builders/BlockBuilder;")
+# vm.debug_method("com/simibubi/create/foundation/data/CreateRegistrate", "block", "(Ljava/lang/String;Lcom/simibubi/create/repack/registrate/util/nullness/NonNullFunction;)Lcom/simibubi/create/repack/registrate/builders/BlockBuilder;")

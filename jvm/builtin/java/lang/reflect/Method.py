@@ -18,6 +18,10 @@ from jvm.Java import NativeClass, native
 class Method(NativeClass):
     NAME = "java/lang/reflect/Method"
 
+    @native("init", "()V")
+    def init(self, *_):
+        pass
+
     @native("getClass", "()Ljava/lang/Class;")
     def getClass(self, instance):
         return self
@@ -49,3 +53,24 @@ class Method(NativeClass):
     @native("getAnnotation", "(Ljava/lang/Class;)Ljava/lang/annotation/Annotation;")
     def getAnnotation(self, *_):
         pass
+
+    @native("run", "()V")
+    def run(self, instance):
+        instance()
+
+    @native("setAccessible", "(Z)V")
+    def setAccessible(self, *_):
+        pass
+
+    @native("accept",
+            "(Ljava/lang/String;Ljava/lang/Class;Lcom/simibubi/create/repack/registrate/builders/Builder;Lcom/simibubi/create/repack/registrate/util/nullness/NonNullSupplier;Lcom/simibubi/create/repack/registrate/util/nullness/NonNullFunction;)Lcom/simibubi/create/repack/registrate/util/entry/RegistryEntry;")
+    def special_accept(self, instance, *args):
+        return instance(*args)
+
+    @native("invoke", "(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;")
+    def special_invoke(self, instance, *args):
+        instance(*args)
+
+    @native("get", "(Ljava/lang/Enum;)Lnet/minecraftforge/registries/IForgeRegistryEntry;")
+    def special_get(self, instance, *args):
+        return instance(*args)

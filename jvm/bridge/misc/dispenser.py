@@ -32,3 +32,7 @@ class DispenserBlock(NativeClass):
     )
     def func_199774_a(self, provider, behaviour):
         pass
+
+    @native("func_149940_a", "(Lnet/minecraft/item/ItemStack;)Lnet/minecraft/dispenser/IDispenseItemBehavior;")
+    def func_149940_a(self, *_):
+        pass

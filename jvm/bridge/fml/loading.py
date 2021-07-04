@@ -81,6 +81,9 @@ class Minecraft(NativeClass):
     def func_184125_al(self, instance):
         pass
 
+    def get_dynamic_field_keys(self):
+        return {"field_71412_D"}
+
 
 class Mod(NativeClass):
     NAME = "net/minecraftforge/fml/common/Mod"
@@ -111,7 +114,7 @@ class Mod_EventBusSubscriber(NativeClass):
                     except StackCollectingException as e:
                         e.add_trace(cls).add_trace(signature)
 
-                        logger.print_exception("during annotation processing")
+                        logger.print_exception(f"during annotation processing class {cls}")
                         print(e.format_exception())
 
                         from mcpython.common.mod.ModLoader import LoadingInterruptException
@@ -215,6 +218,18 @@ class ModContainer(NativeClass):
     @native("addConfig", "(Lnet/minecraftforge/fml/config/ModConfig;)V")
     def addConfig(self, *_):
         pass
+
+    @native("getModInfo", "()Lnet/minecraftforge/forgespi/language/IModInfo;")
+    def getModInfo(self, instance):
+        return instance
+
+
+class IModInfo(NativeClass):
+    NAME = "net/minecraftforge/forgespi/language/IModInfo"
+
+    @native("getVersion", "()Lorg/apache/maven/artifact/versioning/ArtifactVersion;")
+    def getVersion(self, instance):
+        return instance.version
 
 
 class EventBus(NativeClass):
@@ -338,7 +353,7 @@ class EventBus2(EventBus):
     NAME = "net/minecraftforge/eventbus/EventBus"
 
 
-class DistMarker(NativeClass):
+class Dist(NativeClass):
     NAME = "net/minecraftforge/api/distmarker/Dist"
 
     def __init__(self):
@@ -350,10 +365,23 @@ class DistMarker(NativeClass):
                 "DEDICATED_SERVER": "dedicated_server",
             }
         )
+        self.keys = list(self.exposed_attributes.keys())
 
     @native("isClient", "()Z")
     def isClient(self, instance):
         return int(instance == "client")
+
+    @native("values", "()[Lnet/minecraftforge/api/distmarker/Dist;")
+    def values(self, *_):
+        return list(self.exposed_attributes.values())
+
+    @native("ordinal", "()I")
+    def ordinal(self, value):
+        for i, key in enumerate(self.keys):
+            if self.exposed_attributes[key] == value:
+                return i
+
+        return -1
 
 
 class FMLEnvironment(NativeClass):
@@ -545,6 +573,11 @@ class ForgeConfigSpec__Builder(NativeClass):
     def define(self, instance, name, obj):
         return instance
 
+    @native("define",
+            "(Ljava/lang/String;Ljava/lang/Object;Ljava/util/function/Predicate;)Lnet/minecraftforge/common/ForgeConfigSpec$ConfigValue;")
+    def define2(self, instance, *_):
+        return instance
+
     @native(
         "defineInRange",
         "(Ljava/lang/String;III)Lnet/minecraftforge/common/ForgeConfigSpec$IntValue;",
@@ -598,6 +631,14 @@ class ForgeConfigSpec__Builder(NativeClass):
     def pop2(self, instance):
         return instance
 
+    @native("push", "(Ljava/util/List;)Lnet/minecraftforge/common/ForgeConfigSpec$Builder;")
+    def push(self, instance, array):
+        return instance
+
+    @native("push", "(Ljava/lang/String;)Lnet/minecraftforge/common/ForgeConfigSpec$Builder;")
+    def push(self, instance, text):
+        return instance
+
 
 class FMLCommonSetupEvent(NativeClass):
     NAME = "net/minecraftforge/fml/event/lifecycle/FMLCommonSetupEvent"
@@ -649,9 +690,17 @@ class ModList(NativeClass):
     def getModFileById(self, instance, name: str):
         return shared.mod_loader.mods[name]
 
+    @native("getModContainerById", "(Ljava/lang/String;)Ljava/util/Optional;")
+    def getModContainerById(self, instance, name: str):
+        return shared.mod_loader.mods[name] if name in shared.mod_loader.mods else None
+
     @native("getAllScanData", "()Ljava/util/List;")
     def getAllScanData(self, *_):
         return []
+
+    @native("getMods", "()Ljava/util/List;")
+    def getMods(self, *_):
+        return list(shared.mod_loader.mods.values())
 
 
 class ModFileInfo(NativeClass):
@@ -782,6 +831,7 @@ class ExtensionPoint(NativeClass):
         self.exposed_attributes.update(
             {
                 "DISPLAYTEST": 0,
+                "CONFIGGUIFACTORY": 1,
             }
         )
 
@@ -856,3 +906,25 @@ class INameMappingService__Domain(NativeClass):
 
 class FMLLoadCompleteEvent(NativeClass):
     NAME = "net/minecraftforge/fml/event/lifecycle/FMLLoadCompleteEvent"
+
+
+class TickEvent__Type(NativeClass):
+    NAME = "net/minecraftforge/event/TickEvent$Type"
+
+    def __init__(self):
+        super().__init__()
+        self.exposed_attributes.update({
+            "WORLD": 0,
+        })
+
+    @native("values", "()[Lnet/minecraftforge/event/TickEvent$Type;")
+    def values(self):
+        return list(self.exposed_attributes.values())
+
+
+class InterModComms(NativeClass):
+    NAME = "net/minecraftforge/fml/InterModComms"
+
+    @native("sendTo", "(Ljava/lang/String;Ljava/lang/String;Ljava/util/function/Supplier;)Z", static=True)
+    def sendTo(self, a, b, supplier):
+        pass

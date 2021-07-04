@@ -347,6 +347,12 @@ class Dimension(NativeClass):
 class DimensionType(NativeClass):
     NAME = "net/minecraft/world/DimensionType"
 
+    def __init__(self):
+        super().__init__()
+        self.exposed_attributes.update({
+            "field_236001_e_": None,
+        })
+
     @native("<init>",
             "(Ljava/util/OptionalLong;ZZZZDZZZZILnet/minecraft/util/ResourceLocation;Lnet/minecraft/util/ResourceLocation;F)Lnet/minecraft/world/DimensionType;")
     def init(self, *_):
@@ -365,6 +371,16 @@ class GameRules(NativeClass):
     NAME = "net/minecraft/world/GameRules"
 
 
+class GameRules__Category(NativeClass):
+    NAME = "net/minecraft/world/GameRules$Category"
+
+    def __init__(self):
+        super().__init__()
+        self.exposed_attributes.update({
+            "UPDATES": 0,
+        })
+
+
 class GameRules__BooleanValue(NativeClass):
     NAME = "net/minecraft/world/GameRules$BooleanValue"
 
@@ -372,9 +388,9 @@ class GameRules__BooleanValue(NativeClass):
     def func_223567_b(self, *_):
         return self.create_instance()
 
-    @native("func_223568_b", "(Z)Lnet/minecraft/world/GameRules$RuleType;")
-    def func_223568_b(self, instance, v):
-        return instance
+    @native("func_223568_b", "(Z)Lnet/minecraft/world/GameRules$RuleType;", static=True)
+    def func_223568_b(self, v):
+        return self.create_instance()
 
 
 class GameRules__IntegerValue(NativeClass):
@@ -465,6 +481,10 @@ class KeyBinding(NativeClass):
     def init(self, *_):
         pass
 
+    @native("<init>", "(Ljava/lang/String;ILjava/lang/String;)V")
+    def init2(self, *_):
+        pass
+
 
 class InputMappings__Type(NativeClass):
     NAME = "net/minecraft/client/util/InputMappings$Type"
@@ -493,3 +513,96 @@ class NoiseChunkGenerator(NativeClass):
 class Layer(NativeClass):
     NAME = "net/minecraft/world/gen/layer/Layer"
 
+
+class ChunkManager(NativeClass):
+    NAME = "net/minecraft/world/server/ChunkManager"
+
+
+class Chunk(NativeClass):
+    NAME = "net/minecraft/world/chunk/Chunk"
+
+
+class ServerWorldInfo(NativeClass):
+    NAME = "net/minecraft/world/storage/ServerWorldInfo"
+
+
+class TemplateManager(NativeClass):
+    NAME = "net/minecraft/world/gen/feature/template/TemplateManager"
+
+
+class DataFixesManager(NativeClass):
+    NAME = "net/minecraft/util/datafix/DataFixesManager"
+
+
+class Template(NativeClass):
+    NAME = "net/minecraft/world/gen/feature/template/Template"
+
+
+class ServerWorld(NativeClass):
+    NAME = "net/minecraft/world/server/ServerWorld"
+
+
+class OreFeature(NativeClass):
+    NAME = "net/minecraft/world/gen/feature/OreFeature"
+
+    @native("<init>", "(Lcom/mojang/serialization/Codec;)V")
+    def init(self, *_):
+        pass
+
+
+class OreFeatureConfig(NativeClass):
+    NAME = "net/minecraft/world/gen/feature/OreFeatureConfig"
+
+    def __init__(self):
+        super().__init__()
+        self.exposed_attributes.update({
+            "field_236566_a_": None,
+        })
+
+
+class DimensionGeneratorSettings(NativeClass):
+    NAME = "net/minecraft/world/gen/settings/DimensionGeneratorSettings"
+
+
+class ChunkGenerator(NativeClass):
+    NAME = "net/minecraft/world/gen/ChunkGenerator"
+
+    @native("func_230347_a_", "()Lcom/mojang/serialization/Codec;")
+    def func_230347_a_(self, *_):
+        pass
+
+
+class DungeonsFeature(NativeClass):
+    NAME = "net/minecraft/world/gen/feature/DungeonsFeature"
+
+
+class JigsawPattern(NativeClass):
+    NAME = "net/minecraft/world/gen/feature/jigsaw/JigsawPattern"
+
+
+class TreeFeature(NativeClass):
+    NAME = "net/minecraft/world/gen/feature/TreeFeature"
+
+
+class LakesFeature(NativeClass):
+    NAME = "net/minecraft/world/gen/feature/LakesFeature"
+
+
+class SpringFeature(NativeClass):
+    NAME = "net/minecraft/world/gen/feature/SpringFeature"
+
+
+class PillagerOutpostStructure(NativeClass):
+    NAME = "net/minecraft/world/gen/feature/structure/PillagerOutpostStructure"
+
+
+class SingleJigsawPiece(NativeClass):
+    NAME = "net/minecraft/world/gen/feature/jigsaw/SingleJigsawPiece"
+
+
+class StructurePiece(NativeClass):
+    NAME = "net/minecraft/world/gen/feature/structure/StructurePiece"
+
+
+class StrongholdPieces__Stronghold(NativeClass):
+    NAME = "net/minecraft/world/gen/feature/structure/StrongholdPieces$Stronghold"

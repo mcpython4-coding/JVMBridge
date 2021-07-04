@@ -70,3 +70,14 @@ class Stream(NativeClass):
     @native("sorted", "(Ljava/util/Comparator;)Ljava/util/stream/Stream;")
     def sorted(self, instance, comparator):
         return list(sorted(instance, key=comparator))
+
+    @native("reduce", "(Ljava/util/function/BinaryOperator;)Ljava/util/Optional;")
+    def reduce(self, instance, operator):
+        result = None
+        for e in instance:
+            result = operator(result, e)
+        return result
+
+    @native("noneMatch", "(Ljava/util/function/Predicate;)Z")
+    def noneMatch(self, stream, predicate):
+        return not any(predicate(e) for e in stream)

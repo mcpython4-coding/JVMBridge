@@ -23,7 +23,7 @@ class Set(NativeClass):
 
     @native("addAll", "(Ljava/util/Collection;)Z")
     def addAll(self, instance, array):
-        instance |= set(array)
+        if array is not None: instance |= set(array)
         return 1
 
     @native("iterator", "()Ljava/util/Iterator;")
@@ -36,6 +36,7 @@ class Set(NativeClass):
 
     @native("add", "(Ljava/lang/Object;)Z")
     def add(self, instance, obj):
+        if instance is None: return 0
         instance.add(obj)
         return 1
 

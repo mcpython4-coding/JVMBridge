@@ -64,11 +64,16 @@ class Map(NativeClass):
 
     @native("entrySet", "()Ljava/util/Set;")
     def entrySet(self, instance):
-        return set(instance.items())
+        return set(instance.items()) if instance is not None else set()
 
     @native("putAll", "(Ljava/util/Map;)V")
     def putAll(self, instance, other):
         instance.update(other)
+
+    @native("forEach", "(Ljava/util/function/BiConsumer;)V")
+    def forEach(self, instance, consumer):
+        for e in instance.items():
+            consumer(*e)
 
 
 class Map__Entry(NativeClass):

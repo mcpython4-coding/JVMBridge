@@ -18,6 +18,12 @@ from jvm.JavaExceptionStack import StackCollectingException
 class Collections(NativeClass):
     NAME = "java/util/Collections"
 
+    def __init__(self):
+        super().__init__()
+        self.exposed_attributes.update({
+            "EMPTY_LIST": [],
+        })
+
     @native("addAll", "(Ljava/util/Collection;[Ljava/lang/Object;)Z")
     def addAll(self, collection, objects):
         pass  # todo: implement
@@ -56,3 +62,7 @@ class Collections(NativeClass):
     @native("sort", "(Ljava/util/List;)V")
     def sort(self, instance):
         return list(sorted(instance))
+
+    @native("unmodifiableMap", "(Ljava/util/Map;)Ljava/util/Map;")
+    def unmodifiableMap(self, data):
+        return data.copy()

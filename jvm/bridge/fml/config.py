@@ -107,3 +107,11 @@ class ModConfig(NativeClass):
             "(Lnet/minecraftforge/fml/config/ModConfig$Type;Lnet/minecraftforge/common/ForgeConfigSpec;Lnet/minecraftforge/fml/ModContainer;)V")
     def init2(self, *_):
         pass
+
+
+class FMLConfig(NativeClass):
+    NAME = "net/minecraftforge/fml/loading/FMLConfig"
+
+    @native("defaultConfigPath", "()Ljava/lang/String;")
+    def defaultConfigPath(self, *_):
+        return shared.home+"/config"

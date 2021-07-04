@@ -42,3 +42,11 @@ class Boolean(NativeClass):
     @native("booleanValue", "()Z")
     def booleanValue(self, instance):
         return instance
+
+    @native("equals", "(Ljava/lang/Object;)Z")
+    def equals(self, a, b):
+        return a == b
+
+    @native("getBoolean", "(Ljava/lang/String;)Z")
+    def getBoolean(self, value):
+        return value.lower() == "true"

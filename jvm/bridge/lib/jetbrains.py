@@ -43,3 +43,19 @@ class ApiStatus__Experimental(NativeClass):
     def on_annotate(self, cls, args):
         pass
 
+
+class ApiStatus__OverrideOnly(NativeClass):
+    NAME = "org/jetbrains/annotations/ApiStatus$OverrideOnly"
+
+
+class VisibleForTesting(NativeClass):
+    NAME = "org/jetbrains/annotations/VisibleForTesting"
+
+
+class Contract(NativeClass):
+    NAME = "org/jetbrains/annotations/Contract"
+
+
+class Pattern(NativeClass):
+    NAME = "org/intellij/lang/annotations/Pattern"
+

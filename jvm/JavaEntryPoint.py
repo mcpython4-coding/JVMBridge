@@ -83,7 +83,12 @@ class JavaMod(mcpython.common.mod.Mod.Mod):
 
         refmap = data["refmap"]
 
-        refmap_data = json.loads(self.resource_access.read_raw(refmap).decode("utf-8"))
+        try:
+            refmap_data = json.loads(self.resource_access.read_raw(refmap).decode("utf-8"))
+        except KeyError:
+            logger.println("[MIXIN PROCESSOR][FATAL] failed to load refmap")
+            return
+
         shared.CURRENT_REF_MAP = refmap_data
 
         package = data["package"].replace(".", "/")

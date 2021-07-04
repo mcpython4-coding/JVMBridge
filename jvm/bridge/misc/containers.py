@@ -15,6 +15,18 @@ from mcpython import shared
 from jvm.Java import NativeClass, native
 
 
+class Container(NativeClass):
+    NAME = "net/minecraft/inventory/container/Container"
+
+
+class AbstractGui(NativeClass):
+    NAME = "net/minecraft/client/gui/AbstractGui"
+
+    @native("<init>", "()V")
+    def init(self, *_):
+        pass
+
+
 class StateContainer(NativeClass):
     NAME = "net/minecraft/state/StateContainer"
 
@@ -49,6 +61,12 @@ class ContainerType(NativeClass):
     def init(self, *_):
         pass
 
+    @native("setRegistryName",
+            "(Lnet/minecraft/util/ResourceLocation;)Lnet/minecraftforge/registries/IForgeRegistryEntry;")
+    def setRegistryName(self, instance, name):
+        instance.registry_name = name if isinstance(name, str) else name.name
+        return instance
+
 
 class IForgeContainerType(NativeClass):
     NAME = "net/minecraftforge/common/extensions/IForgeContainerType"
@@ -68,3 +86,7 @@ class PlayerInventory(NativeClass):
 
 class CreateWorldScreen(NativeClass):
     NAME = "net/minecraft/client/gui/screen/CreateWorldScreen"
+
+
+class ContainerScreen(NativeClass):
+    NAME = "net/minecraft/client/gui/screen/inventory/ContainerScreen"

@@ -23,4 +23,4 @@ class Arrays(NativeClass):
 
     @native("asList", "([Ljava/lang/Object;)Ljava/util/List;")
     def asList(self, array):
-        return list(array)
+        return list(array) if array is not None else []

@@ -75,10 +75,22 @@ class String(NativeClass):
     def replace(self, instance: str, before: str, after: str):
         return instance.replace(before, after, 1)
 
+    @native("replace", "(CC)Ljava/lang/String;")
+    def replace2(self, instance: str, before: int, after: int):
+        return instance.replace(chr(before), chr(after), 1)
+
     @native("indexOf", "(I)I")
     def indexOf(self, instance, v: int):
         c = chr(v)
         return instance.index(c) if c in instance else -1
+
+    @native("indexOf", "(Ljava/lang/String;)I")
+    def indexOf2(self, instance, substring):
+        return instance.index(substring) if substring in instance else -1
+
+    @native("charAt", "(I)C")
+    def charAt(self, instance, index):
+        return ord(instance[index])
 
     @native("lastIndexOf", "(I)I")
     def lastIndexOf(self, instance: str, v: int):
@@ -96,6 +108,14 @@ class String(NativeClass):
     @native("equalsIgnoreCase", "(Ljava/lang/String;)Z")
     def equalsIgnoreCase(self, instance, other):
         return instance.lower() == other.lower()
+
+    @native("length", "()I")
+    def length(self, instance):
+        return len(instance)
+
+    @native("getBytes", "()[B")
+    def getBytes(self, instance):
+        return instance.encode("utf-8")
 
 
 class StringBuilder(NativeClass):

@@ -20,4 +20,4 @@ class Locale(NativeClass):
 
     def __init__(self):
         super().__init__()
-        self.exposed_attributes.update({"ROOT": "root"})
+        self.exposed_attributes.update({"ROOT": "root", "US": "us", "ENGLISH": "en"})

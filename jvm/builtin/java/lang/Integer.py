@@ -11,6 +11,8 @@ Mod loader inspired by "Minecraft Forge" (https://github.com/MinecraftForge/Mine
 
 This project is not official by mojang and does not relate to it.
 """
+import math
+
 from mcpython import shared
 from jvm.Java import NativeClass, native
 
@@ -29,3 +31,15 @@ class Integer(NativeClass):
     @native("intValue", "()I")
     def intValue(self, instance):
         return instance
+
+    @native("toHexString", "(I)Ljava/lang/String;")
+    def toHexString(self, instance):
+        return hex(instance)
+
+    @native("parseInt", "(Ljava/lang/String;)I")
+    def parseInt(self, string):
+        return int(string)
+
+    @native("highestOneBit", "(I)I")
+    def highestOneBit(self, instance):
+        return len(bin(instance).removeprefix("0x").removeprefix("0"))

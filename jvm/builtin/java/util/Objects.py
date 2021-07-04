@@ -32,3 +32,7 @@ class Objects(NativeClass):
     @native("toString", "(Ljava/lang/Object;)Ljava/lang/String;", static=True)
     def toString(self, instance):
         return str(instance)
+
+    @native("equals", "(Ljava/lang/Object;Ljava/lang/Object;)Z")
+    def equals(self, a, b):
+        return a == b
