@@ -13,7 +13,7 @@ This project is not official by mojang and does not relate to it.
 """
 from jvm.Java import NativeClass, native
 from jvm.JavaExceptionStack import StackCollectingException
-from mcpython import logger
+from mcpython.engine import logger
 
 
 class String(NativeClass):

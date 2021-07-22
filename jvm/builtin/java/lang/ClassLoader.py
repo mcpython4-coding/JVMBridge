@@ -1,7 +1,7 @@
 from mcpython import shared, logger
 from jvm.Java import NativeClass, native
 import io
-import mcpython.ResourceLoader
+import mcpython.engine.ResourceLoader
 
 
 class ClassLoader(NativeClass):
@@ -14,7 +14,7 @@ class ClassLoader(NativeClass):
     @native("getResourceAsStream", "(Ljava/lang/String;)Ljava/io/InputStream;")
     def getResourceAsStream(self, instance, path: str):
         try:
-            return io.BytesIO(mcpython.ResourceLoader.read_raw(path))
+            return io.BytesIO(mcpython.engine.ResourceLoader.read_raw(path))
         except:
             logger.print_exception("reading exception")
             return io.BytesIO(bytes())

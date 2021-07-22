@@ -11,8 +11,8 @@ Mod loader inspired by "Minecraft Forge" (https://github.com/MinecraftForge/Mine
 
 This project is not official by mojang and does not relate to it.
 """
-import mcpython.ResourceLoader
-from mcpython import logger
+import mcpython.engine.ResourceLoader
+from mcpython.engine import logger
 from jvm.Java import AbstractJavaClass, NativeClass, native, JavaBytecodeClass
 
 
@@ -45,7 +45,7 @@ class Class(NativeClass):
 
     @native("getResourceAsStream", "(Ljava/lang/String;)Ljava/io/InputStream;")
     def getResourceAsStream(self, instance, path: str):
-        return mcpython.ResourceLoader.read_raw(path.removeprefix("/"))
+        return mcpython.engine.ResourceLoader.read_raw(path.removeprefix("/"))
 
     @native("getDeclaredFields", "()[Ljava/lang/reflect/Field;")
     def getDeclaredFields(self, instance):

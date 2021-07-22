@@ -14,7 +14,8 @@ This project is not official by mojang and does not relate to it.
 import traceback
 
 import mcpython.common.mod.ModLoader
-from mcpython import logger, shared
+from mcpython import shared
+from mcpython.engine import logger
 from jvm.Java import NativeClass, native
 from jvm.JavaExceptionStack import StackCollectingException
 from jvm.Runtime import Runtime

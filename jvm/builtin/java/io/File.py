@@ -13,7 +13,7 @@ This project is not official by mojang and does not relate to it.
 """
 import os
 
-from mcpython import logger
+from mcpython.engine import logger
 from mcpython import shared
 from jvm.Java import NativeClass, native
 

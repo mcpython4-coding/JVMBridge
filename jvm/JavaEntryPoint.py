@@ -24,9 +24,10 @@ from mcpython.common.mod.ModLoader import LoadingInterruptException, AbstractMod
 import mcpython.common.mod.Mod
 import jvm.Java
 import jvm.Runtime
-import mcpython.ResourceLoader
+import mcpython.engine.ResourceLoader
 import pyglet.app
-from mcpython import logger, shared
+from mcpython import shared
+from mcpython.engine import logger
 from jvm.Java import vm as java_jvm
 from jvm.JavaExceptionStack import StackCollectingException
 
@@ -36,7 +37,7 @@ java_jvm.init_bridge()
 
 # Replace java bytecode loader with ResourceLoader's lookup system
 jvm.Java.get_bytecode_of_class = (
-    lambda file: mcpython.ResourceLoader.read_raw(file.replace(".", "/") + ".class")
+    lambda file: mcpython.engine.ResourceLoader.read_raw(file.replace(".", "/") + ".class")
 )
 # jvm.Java.info = lambda text: logger.println("[JAVA][INFO]", text)
 jvm.Java.warn = lambda text: logger.println("[JAVA][WARN]", text)
