@@ -15,6 +15,16 @@ from mcpython import shared
 from jvm.Java import NativeClass, native
 
 
+class SharedConstants(NativeClass):
+    NAME = "net/minecraft/util/SharedConstants"
+
+    def __init__(self):
+        super().__init__()
+        self.exposed_attributes.update({
+            "field_240856_c_": None,
+        })
+
+
 class ResourceLocation(NativeClass):
     NAME = "net/minecraft/util/ResourceLocation"
 

@@ -1,4 +1,5 @@
-from mcpython import shared, logger
+from mcpython import shared
+from mcpython.engine import logger
 from jvm.Java import NativeClass, native
 import io
 import mcpython.engine.ResourceLoader

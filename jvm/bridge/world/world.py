@@ -152,6 +152,16 @@ class Feature(NativeClass):
         return instance
 
 
+class IFeatureConfig(NativeClass):
+    NAME = "net/minecraft/world/gen/feature/IFeatureConfig"
+
+    def __init__(self):
+        super().__init__()
+        self.exposed_attributes.update({
+            "field_202429_e": None,
+        })
+
+
 class ConfiguredFeature(NativeClass):
     NAME = "net/minecraft/world/gen/feature/ConfiguredFeature"
 
@@ -184,6 +194,7 @@ class Placement(NativeClass):
         self.exposed_attributes.update(
             {
                 "field_215022_h": 0,
+                "field_242904_h": 1,
             }
         )
 
@@ -192,6 +203,10 @@ class Placement(NativeClass):
         "(Lnet/minecraft/world/gen/placement/IPlacementConfig;)Lnet/minecraft/world/gen/placement/ConfiguredPlacement;",
     )
     def func_227446_a_(self, instance, config):
+        pass
+
+    @native("<init>", "(Lcom/mojang/serialization/Codec;)V")
+    def init(self, *_):
         pass
 
 
@@ -203,8 +218,37 @@ class IPlacementConfig(NativeClass):
         self.exposed_attributes.update({"field_202468_e": None})
 
 
+class NoPlacementConfig(NativeClass):
+    NAME = "net/minecraft/world/gen/placement/NoPlacementConfig"
+
+    def __init__(self):
+        super().__init__()
+        self.exposed_attributes.update({
+            "field_236555_a_": None,
+            "field_236556_b_": None,
+        })
+
+
+class ConfiguredPlacement(NativeClass):
+    NAME = "net/minecraft/world/gen/placement/ConfiguredPlacement"
+
+    @native("func_227228_a_",
+            "(Lnet/minecraft/world/gen/placement/ConfiguredPlacement;)Lnet/minecraft/world/gen/placement/ConfiguredPlacement;")
+    def func_227228_a_(self, instance):
+        return instance
+
+
 class Biome(NativeClass):
     NAME = "net/minecraft/world/biome/Biome"
+
+
+class BiomeAmbience__GrassColorModifier(NativeClass):
+    NAME = "net/minecraft/world/biome/BiomeAmbience$GrassColorModifier"
+
+    @native("create",
+            "(Ljava/lang/String;Ljava/lang/String;Lnet/minecraft/world/biome/BiomeAmbience$GrassColorModifier$ColorModifier;)Lnet/minecraft/world/biome/BiomeAmbience$GrassColorModifier;")
+    def create(self, *_):
+        return self.create_instance()
 
 
 class Biome__Category(NativeClass):
@@ -370,6 +414,11 @@ class BiomeGenerationSettings__Builder(NativeClass):
 class GameRules(NativeClass):
     NAME = "net/minecraft/world/GameRules"
 
+    @native("func_234903_a_",
+            "(Ljava/lang/String;Lnet/minecraft/world/GameRules$Category;Lnet/minecraft/world/GameRules$RuleType;)Lnet/minecraft/world/GameRules$RuleKey;")
+    def func_234903_a_(self, *_):
+        pass
+
 
 class GameRules__Category(NativeClass):
     NAME = "net/minecraft/world/GameRules$Category"
@@ -413,12 +462,38 @@ class MobSpawnInfo__Builder(NativeClass):
     NAME = "net/minecraft/world/biome/MobSpawnInfo$Builder"
 
 
+class MobSpawnInfo__Spawners(NativeClass):
+    NAME = "net/minecraft/world/biome/MobSpawnInfo$Spawners"
+
+    @native("<init>", "(Lnet/minecraft/entity/EntityType;III)V")
+    def init(self, *_):
+        pass
+
+
+class EntitySpawnPlacementRegistry__PlacementType(NativeClass):
+    NAME = "net/minecraft/entity/EntitySpawnPlacementRegistry$PlacementType"
+
+    @native("create",
+            "(Ljava/lang/String;Lnet/minecraftforge/common/util/TriPredicate;)Lnet/minecraft/entity/EntitySpawnPlacementRegistry$PlacementType;")
+    def create(self, *_):
+        pass
+
+
 class ClientWorld(NativeClass):
     NAME = "net/minecraft/client/world/ClientWorld"
 
 
 class BiomeContainer(NativeClass):
     NAME = "net/minecraft/world/biome/BiomeContainer"
+
+
+class BiomeDictionary__Type(NativeClass):
+    NAME = "net/minecraftforge/common/BiomeDictionary$Type"
+
+    @native("getType",
+            "(Ljava/lang/String;[Lnet/minecraftforge/common/BiomeDictionary$Type;)Lnet/minecraftforge/common/BiomeDictionary$Type;")
+    def getType(self, *_):
+        pass
 
 
 class ChunkStatus(NativeClass):
@@ -606,3 +681,38 @@ class StructurePiece(NativeClass):
 
 class StrongholdPieces__Stronghold(NativeClass):
     NAME = "net/minecraft/world/gen/feature/structure/StrongholdPieces$Stronghold"
+
+
+class TrunkPlacerType(NativeClass):
+    NAME = "net/minecraft/world/gen/trunkplacer/TrunkPlacerType"
+
+    @native("<init>", "(Lcom/mojang/serialization/Codec;)V")
+    def init(self, *_):
+        pass
+
+
+class FoliagePlacerType(NativeClass):
+    NAME = "net/minecraft/world/gen/foliageplacer/FoliagePlacerType"
+
+    @native("<init>", "(Lcom/mojang/serialization/Codec;)V")
+    def init(self, *_):
+        pass
+
+    @native("setRegistryName",
+            "(Lnet/minecraft/util/ResourceLocation;)Lnet/minecraftforge/registries/IForgeRegistryEntry;")
+    def setRegistryName(self, instance, name):
+        return instance
+
+
+class TreeDecoratorType(NativeClass):
+    NAME = "net/minecraft/world/gen/treedecorator/TreeDecoratorType"
+
+    @native("<init>", "(Lcom/mojang/serialization/Codec;)V")
+    def init(self, *_):
+        pass
+
+    @native("setRegistryName",
+            "(Lnet/minecraft/util/ResourceLocation;)Lnet/minecraftforge/registries/IForgeRegistryEntry;")
+    def setRegistryName(self, instance, name):
+        return instance
+

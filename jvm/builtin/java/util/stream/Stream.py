@@ -81,3 +81,7 @@ class Stream(NativeClass):
     @native("noneMatch", "(Ljava/util/function/Predicate;)Z")
     def noneMatch(self, stream, predicate):
         return not any(predicate(e) for e in stream)
+
+    @native("mapToInt", "(Ljava/util/function/ToIntFunction;)Ljava/util/stream/IntStream;")
+    def mapToInt(self, *_):
+        return []

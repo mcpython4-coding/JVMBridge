@@ -14,7 +14,8 @@ This project is not official by mojang and does not relate to it.
 import re
 import traceback
 
-from mcpython import shared, logger
+from mcpython import shared
+from mcpython.engine import logger
 from jvm.Java import JavaMethod, NativeClass, native
 
 

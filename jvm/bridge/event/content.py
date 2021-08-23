@@ -953,6 +953,10 @@ class FarmlandBlock(Block):
 class WoodType(Block):
     NAME = "net/minecraft/block/WoodType"
 
+    @native("create", "(Ljava/lang/String;)Lnet/minecraft/block/WoodType;", static=True)
+    def create(self, *_):
+        return self.create_instance()
+
     def __init__(self):
         super().__init__()
         self.exposed_attributes.update({
@@ -1316,6 +1320,10 @@ class Items(NativeClass):
                 "field_221657_bQ": self.create_item("minecraft:torch"),
                 "field_151156_bN": None,
                 "field_234737_dp_": self.create_item("minecraft:soul_torch"),
+                "field_151014_N": None,
+                "field_151081_bc": None,
+                "field_151080_bb": None,
+                "field_185163_cU": None,
             }
         )
 
@@ -1452,6 +1460,10 @@ class Food__Builder(NativeClass):
     @native("func_221452_a", "(Lnet/minecraft/potion/EffectInstance;F)Lnet/minecraft/item/Food$Builder;")
     def func_221452_a(self, instance, effect, v):
         return instance
+
+    @native("func_221451_a", "()Lnet/minecraft/item/Food$Builder;")
+    def func_221451_a(self, *_):
+        pass
 
 
 class Food(NativeClass):
@@ -2097,7 +2109,8 @@ class EntityAttributeModifier__Operation(NativeClass):
         super().__init__()
         self.exposed_attributes.update(
             {
-                "ADDITION": "net/minecraft/entity/ai/attributes/AttributeModifier$Operation::ADDITION"
+                "ADDITION": "net/minecraft/entity/ai/attributes/AttributeModifier$Operation::ADDITION",
+                "MULTIPLY_BASE": "net/minecraft/entity/ai/attributes/AttributeModifier$Operation::MULTIPLY_BASE",
             }
         )
 
@@ -2111,6 +2124,7 @@ class EntityClassification(NativeClass):
             {
                 "MISC": 0,
                 "MONSTER": 1,
+                "CREATURE": 2,
             }
         )
 
@@ -2118,11 +2132,32 @@ class EntityClassification(NativeClass):
 class EntityType(NativeClass):
     NAME = "net/minecraft/entity/EntityType"
 
+    def __init__(self):
+        super().__init__()
+        self.exposed_attributes.update({
+            "field_200791_e": None,
+            "field_200748_an": None,
+            "field_200725_aD": None,
+            "field_200741_ag": None,
+            "field_200797_k": None,
+            "field_200759_ay": None,
+            "field_200794_h": None,
+            "field_200803_q": None,
+            "field_200749_ao": None,
+            "field_200743_ai": None,
+            "field_200792_f": None,
+        })
+
     @native(
         "setRegistryName",
         "(Ljava/lang/String;Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;",
     )
     def setRegistryName(self, instance, name):
+        return instance
+
+    @native("setRegistryName",
+            "(Lnet/minecraft/util/ResourceLocation;)Lnet/minecraftforge/registries/IForgeRegistryEntry;")
+    def setRegistryName2(self, instance, name):
         return instance
 
 
@@ -2162,6 +2197,11 @@ class EntityType__Builder(NativeClass):
     def setRegistryName(self, instance, namespace, name):
         return instance
 
+    @native("setRegistryName",
+            "(Lnet/minecraft/util/ResourceLocation;)Lnet/minecraftforge/registries/IForgeRegistryEntry;")
+    def setRegistryName2(self, instance, name):
+        return instance
+
     @native("setTrackingRange", "(I)Lnet/minecraft/entity/EntityType$Builder;")
     def setTrackingRange(self, instance, r: int):
         return instance
@@ -2181,6 +2221,14 @@ class EntityType__Builder(NativeClass):
     def func_220320_c(self, instance):
         return instance
 
+    @native("func_200706_c", "()Lnet/minecraft/entity/EntityType$Builder;")
+    def func_200706_c(self, instance):
+        return instance
+
+    @native("func_200705_b", "()Lnet/minecraft/entity/EntityType$Builder;")
+    def func_200705_b(self, instance):
+        return instance
+
 
 class Entity(NativeClass):
     NAME = "net/minecraft/entity/Entity"
@@ -2188,6 +2236,22 @@ class Entity(NativeClass):
     @native("func_70067_L", "()Z")
     def func_70067_L(self):
         return 0
+
+
+class SkeletonEntity(NativeClass):
+    NAME = "net/minecraft/entity/monster/SkeletonEntity"
+
+
+class ZombieEntity(NativeClass):
+    NAME = "net/minecraft/entity/monster/ZombieEntity"
+
+
+class EndermanEntity(NativeClass):
+    NAME = "net/minecraft/entity/monster/EndermanEntity"
+
+
+class SpiderEntity(NativeClass):
+    NAME = "net/minecraft/entity/monster/SpiderEntity"
 
 
 class ZombieVillagerEntity(Entity):

@@ -99,6 +99,7 @@ class ForgeRegistries(NativeClass):
             "POTION_TYPES": no_registry,
             "FEATURES": no_registry,
             "DECORATORS": no_registry,
+            "BIOMES": no_registry,
         }
 
 
@@ -129,6 +130,8 @@ class Registry(NativeClass):
             "field_212623_l": no_registry,
             "field_239704_ba_": no_registry,
             "field_239694_aZ_": no_registry,
+            "field_218362_C": no_registry,
+            "field_239701_aw_": no_registry,
         }
 
     @native(

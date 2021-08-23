@@ -66,6 +66,8 @@ class File(NativeClass):
 
     @native("mkdirs", "()Z")
     def mkdirs(self, instance):
+        if instance is None or instance.path is None: return 1
+
         os.makedirs(instance.path, exist_ok=True)
         return 1
 
