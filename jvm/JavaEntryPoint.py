@@ -20,7 +20,8 @@ Highly depends on code of that stuff, so don't use it without it
 import sys
 import traceback
 
-from mcpython.common.mod.ModLoader import LoadingInterruptException, AbstractModLoaderInstance, ModLoader
+from mcpython.common.mod.ModLoader import AbstractModLoaderInstance, ModLoader
+from mcpython.common.mod.util import LoadingInterruptException
 import mcpython.common.mod.Mod
 import jvm.Java
 import jvm.Runtime
@@ -108,7 +109,7 @@ class JavaMod(mcpython.common.mod.Mod.Mod):
         :param file: the file
         """
 
-        import mcpython.client.state.StateLoadingException
+        import mcpython.client.state.LoadingExceptionViewState
 
         cls = file.split(".")[0]
         try:
@@ -123,10 +124,10 @@ class JavaMod(mcpython.common.mod.Mod.Mod):
                 shared.window.set_caption("JavaFML JVM error")
 
                 try:
-                    import mcpython.client.state.StateLoadingException
+                    import mcpython.client.state.LoadingExceptionViewState
 
                     exception = e.format_exception()
-                    mcpython.client.state.StateLoadingException.error_occur(exception)
+                    mcpython.client.state.LoadingExceptionViewState.error_occur(exception)
                     logger.print_exception("raw exception trace")
                     logger.write_into_container(
                         "fatal FML error", exception.split("\n")
@@ -153,7 +154,7 @@ class JavaMod(mcpython.common.mod.Mod.Mod):
                 shared.window.set_caption("JavaFML JVM error")
 
                 try:
-                    mcpython.client.state.StateLoadingException.error_occur(
+                    mcpython.client.state.LoadingExceptionViewState.error_occur(
                         traceback.format_exc()
                     )
                 except:

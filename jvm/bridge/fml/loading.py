@@ -14,6 +14,7 @@ This project is not official by mojang and does not relate to it.
 import traceback
 
 import mcpython.common.mod.ModLoader
+import mcpython.common.mod.util
 from mcpython import shared
 from mcpython.engine import logger
 from jvm.Java import NativeClass, native
@@ -118,7 +119,7 @@ class Mod_EventBusSubscriber(NativeClass):
                         logger.print_exception(f"during annotation processing class {cls}")
                         print(e.format_exception())
 
-                        from mcpython.common.mod.ModLoader import LoadingInterruptException
+                        from mcpython.common.mod.util import LoadingInterruptException
                         raise LoadingInterruptException from None
 
                     runtime = Runtime()
@@ -128,23 +129,23 @@ class Mod_EventBusSubscriber(NativeClass):
                             method, *(arg_getter() if arg_getter is not None else tuple())
                         )
                     except StackCollectingException as e:
-                        import mcpython.client.state.StateLoadingException
+                        import mcpython.client.state.LoadingExceptionViewState
 
                         traceback.print_exc()
-                        mcpython.client.state.StateLoadingException.error_occur(
+                        mcpython.client.state.LoadingExceptionViewState.error_occur(
                             e.format_exception()
                         )
                         print(e.format_exception())
-                        raise mcpython.common.mod.ModLoader.LoadingInterruptException from None
+                        raise mcpython.common.mod.util.LoadingInterruptException from None
 
                     except:
-                        import mcpython.client.state.StateLoadingException
+                        import mcpython.client.state.LoadingExceptionViewState
 
-                        mcpython.client.state.StateLoadingException.error_occur(
+                        mcpython.client.state.LoadingExceptionViewState.error_occur(
                             traceback.format_exc()
                         )
                         traceback.print_exc()
-                        raise mcpython.common.mod.ModLoader.LoadingInterruptException from None
+                        raise mcpython.common.mod.util.LoadingInterruptException from None
 
 
 class Mod_EventBusSubscriber_Bus(NativeClass):
@@ -261,23 +262,23 @@ class EventBus(NativeClass):
                         method, *(arg_getter() if arg_getter is not None else tuple())
                     )
                 except StackCollectingException as e:
-                    import mcpython.client.state.StateLoadingException
+                    import mcpython.client.state.LoadingExceptionViewState
 
                     traceback.print_exc()
-                    mcpython.client.state.StateLoadingException.error_occur(
+                    mcpython.client.state.LoadingExceptionViewState.error_occur(
                         e.format_exception()
                     )
                     print(e.format_exception())
-                    raise mcpython.common.mod.ModLoader.LoadingInterruptException from None
+                    raise mcpython.common.mod.util.LoadingInterruptException from None
 
                 except:
-                    import mcpython.client.state.StateLoadingException
+                    import mcpython.client.state.LoadingExceptionViewState
 
-                    mcpython.client.state.StateLoadingException.error_occur(
+                    mcpython.client.state.LoadingExceptionViewState.error_occur(
                         traceback.format_exc()
                     )
                     traceback.print_exc()
-                    raise mcpython.common.mod.ModLoader.LoadingInterruptException from None
+                    raise mcpython.common.mod.util.LoadingInterruptException from None
         else:
             print("missing BRIDGE binding for", function, (function.name, function.signature))
 
@@ -315,21 +316,21 @@ class EventBus(NativeClass):
                         consumer, shared.registry.get_by_name("minecraft:block")
                     )
                 except StackCollectingException as e:
-                    import mcpython.client.state.StateLoadingException
+                    import mcpython.client.state.LoadingExceptionViewState
 
-                    mcpython.client.state.StateLoadingException.error_occur(
+                    mcpython.client.state.LoadingExceptionViewState.error_occur(
                         e.format_exception()
                     )
                     logger.write_into_container(e.format_exception())
-                    raise mcpython.common.mod.ModLoader.LoadingInterruptException from None
+                    raise mcpython.common.mod.util.LoadingInterruptException from None
                 except:
-                    import mcpython.client.state.StateLoadingException
+                    import mcpython.client.state.LoadingExceptionViewState
 
-                    mcpython.client.state.StateLoadingException.error_occur(
+                    mcpython.client.state.LoadingExceptionViewState.error_occur(
                         traceback.format_exc()
                     )
                     traceback.print_exc()
-                    raise mcpython.common.mod.ModLoader.LoadingInterruptException from None
+                    raise mcpython.common.mod.util.LoadingInterruptException from None
 
     @native(
         "addGenericListener",

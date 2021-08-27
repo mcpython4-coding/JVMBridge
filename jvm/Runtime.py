@@ -48,7 +48,7 @@ class Runtime:
         if callable(method) and not isinstance(
             method, jvm.Java.JavaMethod
         ):
-            from mcpython.common.mod.ModLoader import LoadingInterruptException
+            from mcpython.common.mod.util import LoadingInterruptException
 
             try:
                 return method(*args)
