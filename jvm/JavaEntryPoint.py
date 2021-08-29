@@ -13,6 +13,9 @@ This project is not official by mojang and does not relate to it.
 """
 import json
 
+import jvm.JavaVM
+import jvm.logging
+
 '''
 Integration point to mcpython's mod loader 
 Highly depends on code of that stuff, so don't use it without it
@@ -29,19 +32,19 @@ import mcpython.engine.ResourceLoader
 import pyglet.app
 from mcpython import shared
 from mcpython.engine import logger
-from jvm.Java import vm as java_jvm
+import jvm.api
 from jvm.JavaExceptionStack import StackCollectingException
 
-java_jvm.init_builtins()
-java_jvm.init_bridge()
+jvm.api.vm.init_builtins()
+jvm.api.vm.init_bridge()
 
 
 # Replace java bytecode loader with ResourceLoader's lookup system
-jvm.Java.get_bytecode_of_class = (
+jvm.JavaVM.get_bytecode_of_class = (
     lambda file: mcpython.engine.ResourceLoader.read_raw(file.replace(".", "/") + ".class")
 )
 # jvm.Java.info = lambda text: logger.println("[JAVA][INFO]", text)
-jvm.Java.warn = lambda text: logger.println("[JAVA][WARN]", text)
+jvm.logging.warn = lambda text: logger.println("[JAVA][WARN]", text)
 
 
 class JavaMod(mcpython.common.mod.Mod.Mod):
@@ -101,7 +104,7 @@ class JavaMod(mcpython.common.mod.Mod.Mod):
 
                 shared.CURRENT_EVENT_SUB = self.name
 
-                java_jvm.load_class(module, version=self.loader_version).prepare_use()
+                jvm.api.vm.load_class(module, version=self.loader_version).prepare_use()
 
     def load_mod_file(self, file: str):
         """
@@ -116,7 +119,7 @@ class JavaMod(mcpython.common.mod.Mod.Mod):
             # make sure that this is set!
             shared.CURRENT_EVENT_SUB = self.name
 
-            java_jvm.load_class(cls, version=self.loader_version)
+            jvm.api.vm.load_class(cls, version=self.loader_version)
 
         # StackCollectingException is something internal and contains more meta-data than the other exceptions
         except StackCollectingException as e:

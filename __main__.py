@@ -1,5 +1,6 @@
 import sys
 import jvm.Java
+import jvm.JavaVM
 import jvm.Runtime
 import zipfile
 import os
@@ -16,9 +17,9 @@ file = sys.argv[1]
 
 if zipfile.is_zipfile(file):
     f = zipfile.ZipFile(file)
-    jvm.Java.get_bytecode_of_class = lambda cls: f.read(cls+".class")
+    jvm.JavaVM.get_bytecode_of_class = lambda cls: f.read(cls + ".class")
 elif os.path.isdir(file):
-    jvm.Java.get_bytecode_of_class = lambda cls: open(file+"/"+cls+".class", mode="rb").read()
+    jvm.JavaVM.get_bytecode_of_class = lambda cls: open(file + "/" + cls + ".class", mode="rb").read()
 else:
     raise RuntimeError(f"{file} is no valid input file")
 

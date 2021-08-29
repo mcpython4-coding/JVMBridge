@@ -18,6 +18,9 @@ from abc import ABC
 import array
 
 import jvm.Java
+import jvm.JavaAttributes
+import jvm.logging
+import jvm.util
 from jvm.JavaExceptionStack import StackCollectingException
 import jvm.RuntimeModificationUtil
 
@@ -207,7 +210,7 @@ class Stack:
         # todo: is this really needed?
         self.method.class_file.prepare_use()
         if debugging:
-            jvm.Java.warn(f"launching method {self.method} with local vars {self.local_vars}")
+            jvm.logging.warn(f"launching method {self.method} with local vars {self.local_vars}")
 
         while self.cp != -1:
             instruction = self.code.decoded_code[self.cp]
@@ -226,13 +229,13 @@ class Stack:
                 )
 
             if debugging:
-                jvm.Java.warn(
+                jvm.logging.warn(
                     "instruction [info before invoke] " + str((self.cp, instruction))
                 )
-                jvm.Java.warn(
+                jvm.logging.warn(
                     f"stack ({len(self.stack)}): " + str(self.stack)[-300:]
                 )
-                jvm.Java.warn(
+                jvm.logging.warn(
                     f"local ({len(self.local_vars)}: " + str(self.local_vars)[:300]
                 )
 
@@ -259,7 +262,7 @@ class Stack:
                     ).add_trace(str(instruction[1])).add_trace(str(instruction[2]))
 
         if debugging:
-            jvm.Java.warn(
+            jvm.logging.warn(
                 ("finished method", self.method, self.return_value)
             )
 
@@ -357,7 +360,7 @@ class CPLinkedInstruction(OpcodeInstruction, ABC):
     def decode(
         cls, data: bytearray, index, class_file
     ) -> typing.Tuple[typing.Any, int]:
-        pointer = jvm.Java.U2.unpack(data[index : index + 2])[0] - 1
+        pointer = jvm.util.U2.unpack(data[index: index + 2])[0] - 1
         try:
             return (
                 class_file.cp[pointer],
@@ -389,7 +392,7 @@ class BytecodeRepr:
 
     MODIFICATION_ITERATIONS = []
 
-    def __init__(self, code: jvm.Java.CodeParser):
+    def __init__(self, code: jvm.JavaAttributes.CodeParser):
         self.code = code
 
         self.decoded_code: typing.List[
@@ -809,7 +812,7 @@ class BiPush(OpcodeInstruction):
     def decode(
         cls, data: bytearray, index, class_file
     ) -> typing.Tuple[typing.Any, int]:
-        return jvm.Java.U1_S.unpack(data[index : index + 1])[0], 2
+        return jvm.util.U1_S.unpack(data[index: index + 1])[0], 2
 
     @classmethod
     def invoke(cls, data: typing.Any, stack: Stack):
@@ -828,7 +831,7 @@ class SiPush(OpcodeInstruction):
     def decode(
         cls, data: bytearray, index, class_file
     ) -> typing.Tuple[typing.Any, int]:
-        return jvm.Java.U2_S.unpack(data[index : index + 2])[0], 3
+        return jvm.util.U2_S.unpack(data[index: index + 2])[0], 3
 
     @classmethod
     def invoke(cls, data: typing.Any, stack: Stack):
@@ -853,7 +856,7 @@ class LDC(OpcodeInstruction):
     @classmethod
     def invoke(cls, data: typing.Any, stack: Stack):
         stack.push(
-            jvm.Java.decode_cp_constant(
+            jvm.util.decode_cp_constant(
                 stack.method.class_file.cp[data - 1],
                 version=stack.method.class_file.internal_version,
             )
@@ -873,12 +876,12 @@ class LDC_W(OpcodeInstruction):
     def decode(
         cls, data: bytearray, index, class_file
     ) -> typing.Tuple[typing.Any, int]:
-        return jvm.Java.U2.unpack(data[index : index + 2])[0], 3
+        return jvm.util.U2.unpack(data[index: index + 2])[0], 3
 
     @classmethod
     def invoke(cls, data: typing.Any, stack: Stack):
         stack.push(
-            jvm.Java.decode_cp_constant(
+            jvm.util.decode_cp_constant(
                 stack.method.class_file.cp[data - 1],
                 version=stack.method.class_file.internal_version,
             )
@@ -948,7 +951,7 @@ class Load(OpcodeInstruction):
     def decode(
         cls, data: bytearray, index, class_file
     ) -> typing.Tuple[typing.Any, int]:
-        return jvm.Java.U1.unpack(data[index : index + 1])[0], 2
+        return jvm.util.U1.unpack(data[index: index + 1])[0], 2
 
     @classmethod
     def invoke(cls, data: typing.Any, stack: Stack):
@@ -1058,7 +1061,7 @@ class Store(OpcodeInstruction):
     def decode(
         cls, data: bytearray, index, class_file
     ) -> typing.Tuple[typing.Any, int]:
-        return jvm.Java.U1.unpack(data[index : index + 1])[0], 2
+        return jvm.util.U1.unpack(data[index: index + 1])[0], 2
 
     @classmethod
     def invoke(cls, data: typing.Any, stack: Stack):
@@ -1348,8 +1351,8 @@ class IINC(OpcodeInstruction):
         cls, data: bytearray, index, class_file
     ) -> typing.Tuple[typing.Any, int]:
         return (
-            data[index],
-            jvm.Java.U1_S.unpack(data[index + 1 : index + 2])[0],
+                   data[index],
+                   jvm.util.U1_S.unpack(data[index + 1: index + 2])[0],
         ), 3
 
     @classmethod
@@ -1367,7 +1370,7 @@ class CompareHelper(OpcodeInstruction, ABC):
     def decode(
         cls, data: bytearray, index, class_file
     ) -> typing.Tuple[typing.Any, int]:
-        return jvm.Java.U2_S.unpack(data[index: index + 2])[0], 3
+        return jvm.util.U2_S.unpack(data[index: index + 2])[0], 3
 
     @classmethod
     def code_reference_changer(
@@ -1820,8 +1823,8 @@ class InvokeInterface(CPLinkedInstruction):
     ) -> typing.Tuple[typing.Any, int]:
         return (
             class_file.cp[
-                jvm.Java.U2.unpack(data[index : index + 2])[0] - 1
-            ],
+                jvm.util.U2.unpack(data[index: index + 2])[0] - 1
+                ],
             data[index + 2],
         ), 5
 
@@ -1893,8 +1896,8 @@ class InvokeDynamic(CPLinkedInstruction):
         cls, data: bytearray, index, class_file
     ) -> typing.Tuple[typing.Any, int]:
         cp = class_file.cp[
-            jvm.Java.U2.unpack(data[index : index + 2])[0] - 1
-        ]
+            jvm.util.U2.unpack(data[index: index + 2])[0] - 1
+            ]
         boostrap = class_file.attributes["BootstrapMethods"][0].entries[cp[1]]
 
         # The type side for the execution
@@ -2159,7 +2162,7 @@ class NewArray(CPLinkedInstruction):
     def decode(
         cls, data: bytearray, index, class_file
     ) -> typing.Tuple[typing.Any, int]:
-        return jvm.Java.U1.unpack(data[index : index + 1])[0], 2
+        return jvm.util.U1.unpack(data[index: index + 1])[0], 2
 
     @classmethod
     def invoke(cls, data: typing.Any, stack: Stack):
@@ -2355,17 +2358,17 @@ class TableSwitch(OpcodeInstruction):
         while index % 4 != 0:
             index += 1
 
-        default = jvm.Java.pop_u4_s(data[index:])
+        default = jvm.util.pop_u4_s(data[index:])
         index += 4
 
-        low = jvm.Java.pop_u4_s(data[index:])
+        low = jvm.util.pop_u4_s(data[index:])
         index += 4
 
-        high = jvm.Java.pop_u4_s(data[index:])
+        high = jvm.util.pop_u4_s(data[index:])
         index += 4
 
         offsets = [
-            jvm.Java.pop_u4_s(data[index + i * 4 :])
+            jvm.util.pop_u4_s(data[index + i * 4:])
             for i in range(high - low + 1)
         ]
 
@@ -2471,17 +2474,17 @@ class LookupSwitch(OpcodeInstruction):
             index += 1
 
         # the static HEAD
-        default = jvm.Java.pop_u4_s(data[index:])
+        default = jvm.util.pop_u4_s(data[index:])
         index += 4
-        npairs = jvm.Java.pop_u4_s(data[index:])
+        npairs = jvm.util.pop_u4_s(data[index:])
         index += 4
 
         # And now, the key-value pairs
         try:
             pairs = {
-                jvm.Java.pop_u4_s(
+                jvm.util.pop_u4_s(
                     data[index + i * 8:]
-                ): jvm.Java.pop_u4_s(data[index + i * 8 + 4 :])
+                ): jvm.util.pop_u4_s(data[index + i * 8 + 4:])
                 for i in range(npairs)
             }
             index += npairs * 8

@@ -1,7 +1,8 @@
 import typing
 
+import jvm.api
 import jvm.Java
-from jvm.Java import AbstractJavaClass
+from jvm.api import AbstractJavaClass
 
 REGISTERED_NATIVES = set()
 
@@ -102,7 +103,7 @@ class Native(AbstractJavaClass):
         return f"JavaNative({self.name})"
 
 
-class NativeClassInstance(jvm.Java.AbstractJavaClassInstance):
+class NativeClassInstance(jvm.api.AbstractJavaClassInstance):
     def __init__(self, cls: Native):
         self.cls = cls
         self.fields = {name: None for name in cls.DYNAMIC_FIELD_KEYS}
