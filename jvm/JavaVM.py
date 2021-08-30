@@ -1,12 +1,14 @@
+import os
 import typing
 
-from jvm.builtinwrapper import NativeClass
+from jvm.builtinwrapper import handler as native_handler
 from jvm.api import DYNAMIC_NATIVES
 from jvm.logging import info
 from jvm.Java import JavaArrayManager
 from jvm.Java import JavaBytecodeClass
 from jvm.JavaExceptionStack import StackCollectingException
 import jvm.api
+from jvm.native_building import dumpClassCreationToFiles
 
 
 # And this can be wrapped into your own resource access (multiple directories, web download, whatever you want)
@@ -47,12 +49,6 @@ class JavaVM:
         while len(self.lazy_classes) > 0:
             version, name = self.lazy_classes.pop()
             self.get_class(name, version=version)
-
-    def init_builtins(self):
-        pass
-
-    def init_bridge(self):
-        pass
 
     def get_class(self, name: str, version=0) -> typing.Optional["AbstractJavaClass"]:
         """
@@ -95,22 +91,15 @@ class JavaVM:
             bytecode = get_bytecode_of_class(name)
         except FileNotFoundError:
             if DYNAMIC_NATIVES:
-
-                # A dynamic class created in the place of the FileNotFoundError
-                class Dynamic(NativeClass):
-                    NAME = name
+                native_handler.create_class(name, None)
 
                 print(
                     f"""
-Native Dynamic Builder: Class '{name}' (not found)
-Add into file and add to import list in natives:
-from mcpython import shared
-from jvm.Java import NativeClass, native
-
-
-class {name.split('/')[-1].replace('$', '__')}(NativeClass):
-    NAME = \"{name}\""""
+Native Dynamic Builder: Class '{name}' (not found) in version {version}
+Please add to the respective index file"""
                 )
+
+                dumpClassCreationToFiles(name, version)
 
                 return self.shared_classes[name]
 
@@ -148,13 +137,21 @@ class {name.split('/')[-1].replace('$', '__')}(NativeClass):
 
         return cls
 
-    def register_native(self, n: typing.Type["NativeClass"], version=None):
-        instance = n()
-        instance.internal_version = version
+    def register_direct(self, cls: jvm.api.AbstractJavaClass):
+        version = cls.internal_version
+
         if version is None:
-            self.shared_classes[n.NAME] = instance
+            self.shared_classes[cls.name] = cls
         else:
-            self.classes_by_version.setdefault(version, {})[n.NAME] = instance
+            self.classes_by_version.setdefault(version, {})[cls.name] = cls
+
+    def register_special(self, cls: jvm.api.AbstractJavaClass, name: str, version=...):
+        version = cls.internal_version if version is ... else version
+
+        if version is None:
+            self.shared_classes[name] = cls
+        else:
+            self.classes_by_version.setdefault(version, {})[name] = cls
 
     def get_method_of_nat(self, nat, version: typing.Any = 0):
         cls = nat[1][1][1]

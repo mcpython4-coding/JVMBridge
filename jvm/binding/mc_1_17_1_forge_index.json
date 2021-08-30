@@ -1,0 +1,53 @@
+{
+  "version attribute": "1.17.1",
+  "classes": {
+    "net/minecraftforge/fml/common/Mod": {
+      "wraps": "mcpython.common.mod.Mod:Mod",
+      "annotation": "report"
+    },
+    "net/minecraftforge/api/distmarker/Dist": {
+      "class type": "enum",
+      "annotation": "track",
+      "attributes": {
+        "CLIENT": {
+          "access": "static enum"
+        }
+      }
+    },
+    "net/minecraftforge/fml/common/Mod$EventBusSubscriber$Bus": {
+      "attributes": {
+        "FORGE": {
+          "access": "static"
+        },
+        "MOD": {}
+      }
+    },
+    "net/minecraftforge/fml/common/Mod$EventBusSubscriber": {
+      "annotation": "report"
+    },
+    "net/minecraftforge/eventbus/api/SubscribeEvent": {
+      "annotation": "report"
+    },
+    "net/minecraftforge/client/event/GuiScreenEvent$PotionShiftEvent": {
+      "methods": {
+        "setCanceled(Z)V": {
+          "no effect": true
+        }
+      }
+    },
+    "net/minecraftforge/registries/ObjectHolder": {
+      "annotation": "report"
+    },
+    "net/minecraftforge/api/distmarker/OnlyIn": {
+      "annotation": "report"
+    },
+    "net/minecraftforge/eventbus/api/Cancelable": {
+      "annotation": "report"
+    },
+    "net/minecraftforge/eventbus/api/Event": {},
+    "net/minecraftforge/client/event/RenderGameOverlayEvent": {}
+  },
+  "implementation": [
+    "forge/v1_17_1/event"
+  ]
+}

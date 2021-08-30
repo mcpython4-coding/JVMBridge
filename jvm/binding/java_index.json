@@ -1,0 +1,299 @@
+{
+  "annotations": {
+    "skip": [
+      "javax/annotation/Nullable",
+      "javax/annotation/Nonnull",
+      "java/lang/annotation/Documented",
+      "javax/annotation/meta/TypeQualifierDefault",
+      "javax/annotation/ParametersAreNonnullByDefault",
+      "org/jetbrains/annotations/NotNull",
+      "org/jetbrains/annotations/NonNls",
+      "org/jetbrains/annotations/Nullable",
+      "edu/umd/cs/findbugs/annotations/Nullable"
+    ],
+    "track": [
+      "java/lang/Deprecated",
+      "java/lang/annotation/Retention",
+      "java/lang/annotation/Target",
+      "java/lang/FunctionalInterface",
+      "java/lang/SafeVarargs",
+      "java/lang/annotation/Repeatable",
+      "javax/annotation/concurrent/Immutable",
+      "java/lang/annotation/Inherited",
+      "javax/annotation/CheckReturnValue"
+    ],
+    "report": [
+      "java/lang/annotation/Annotation",
+      "javax/annotation/CheckForNull",
+      "javax/annotation/meta/TypeQualifierNickname"
+    ]
+  },
+  "classes": {
+    "java/lang/Object": {
+      "wraps": ":object",
+      "methods": {
+        "<init>()V": {
+          "no effect": true
+        },
+        "getClass()Ljava/lang/Class;": {
+          "wraps": "cls if not isinstance(a0, jvm.api.AbstractJavaClass) else cls.get_class()"
+        }
+      }
+    },
+    "java/lang/Enum": {
+      "super": "java/lang/Class",
+      "methods": {
+        "<init>(Ljava/lang/String;I)V": {
+          "wraps": "a0.fields.update({'ordinal': a2})"
+        },
+        "ordinal()I": {
+          "wraps": "a0.fields['ordinal']"
+        }
+      },
+      "attributes": {
+        "ordinal": {}
+      }
+    },
+    "java/lang/annotation/RetentionPolicy": {
+      "class type": "enum",
+      "attributes": {
+        "RUNTIME": {
+          "access": "static enum"
+        },
+        "CLASS": {
+          "access": "static enum"
+        }
+      }
+    },
+    "java/lang/annotation/ElementType": {
+      "class type": "enum",
+      "attributes": {
+        "METHOD": {
+          "access": "static enum"
+        },
+        "FIELD": {
+          "access": "static enum"
+        },
+        "CONSTRUCTOR": {
+          "access": "static enum"
+        },
+        "TYPE": {
+          "access": "static enum"
+        },
+        "PACKAGE": {
+          "access": "static enum"
+        },
+        "PARAMETER": {
+          "access": "static enum"
+        },
+        "LOCAL_VARIABLE": {
+          "access": "static enum"
+        },
+        "TYPE_USE": {
+          "access": "static enum"
+        },
+        "TYPE_PARAMETER": {
+          "access": "static enum"
+        },
+        "ANNOTATION_TYPE": {
+          "access": "static enum"
+        }
+      }
+    },
+    "java/util/function/Supplier": {
+      "wraps": "typing:Callable"
+    },
+    "java/util/function/Predicate": {
+      "wraps": "typing:Callable"
+    },
+    "javax/annotation/meta/TypeQualifier": {},
+    "java/util/function/BiPredicate": {},
+    "java/util/HashMap": {
+      "wraps": ":dict",
+      "hard wrap": true,
+      "methods": {
+        "<init>()V": {
+          "no effect": true
+        },
+        "put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;": {
+          "wraps": "a0.setdefault(a1, a2)"
+        }
+      }
+    },
+    "java/util/Map": {
+      "wraps": ":dict",
+      "hard wrap": true,
+      "methods": {
+        "put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;": {
+          "wraps": "a0.setdefault(a1, a2)"
+        },
+        "computeIfAbsent(Ljava/lang/Object;Ljava/util/function/Function;)Ljava/lang/Object;": {}
+      }
+    },
+    "java/util/ArrayList": {
+      "wraps": ":list",
+      "hard wrap": true,
+      "methods": {
+        "<init>()V": {
+          "no effect": true
+        },
+        "add(Ljava/lang/Object;)Z": {
+          "wraps": "a0.underlying.append(a1) or True"
+        }
+      }
+    },
+    "java/util/HashSet": {
+      "wraps": ":set",
+      "methods": {
+        "<init>()V": {
+          "no effect": true
+        }
+      }
+    },
+    "java/util/TreeSet": {
+      "wraps": ":set",
+      "methods": {
+        "<init>()V": {
+          "no effect": true
+        },
+        "add(Ljava/lang/Object;)Z": {}
+      }
+    },
+    "java/util/ArrayDeque": {
+      "methods": {
+        "<init>()V": {
+          "no effect": true
+        },
+        "isEmpty()Z": {
+          "wraps": "True"
+        }
+      }
+    },
+    "java/util/Queue": {
+      "methods": {
+        "isEmpty()Z": {
+          "wraps": "True"
+        }
+      }
+    },
+    "java/lang/Comparable": {},
+    "java/io/Serializable": {},
+    "java/util/Comparator": {},
+    "java/lang/RuntimeException": {},
+    "java/lang/Error": {
+      "wraps": ":Exception"
+    },
+    "java/lang/Exception": {
+      "wraps": ":Exception"
+    },
+    "java/util/concurrent/atomic/AtomicIntegerFieldUpdater": {
+      "methods": {
+        "newUpdater(Ljava/lang/Class;Ljava/lang/String;)Ljava/util/concurrent/atomic/AtomicIntegerFieldUpdater;": {}
+      }
+    },
+    "java/util/concurrent/atomic/AtomicReferenceFieldUpdater": {
+      "methods": {
+        "newUpdater(Ljava/lang/Class;Ljava/lang/Class;Ljava/lang/String;)Ljava/util/concurrent/atomic/AtomicReferenceFieldUpdater;": {}
+      }
+    },
+    "java/lang/Cloneable": {},
+    "java/util/List": {
+      "wraps": ":list",
+      "hard wrap": true,
+      "methods": {
+        "add(Ljava/lang/Object;)Z": {
+          "wraps": "a0.underlying.append(a1) or True"
+        }
+      }
+    },
+    "java/lang/Boolean": {
+      "wraps": ":bool",
+      "methods": {
+        "booleanValue()Z": {
+          "wraps": "a0"
+        }
+      }
+    },
+    "java/util/Objects": {
+      "methods": {
+        "requireNonNull(Ljava/lang/Object;)Ljava/lang/Object;": {}
+      }
+    },
+    "java/util/UUID": {},
+    "java/lang/Integer": {
+      "wraps": ":int",
+      "methods": {
+        "toString(I)Ljava/lang/String;": {
+          "wraps": "str(a0)"
+        }
+      }
+    },
+    "java/lang/String": {
+      "methods": {
+        "equals(Ljava/lang/Object;)Z": {}
+      }
+    },
+    "java/text/DecimalFormat": {
+      "methods": {
+        "<init>(Ljava/lang/String;Ljava/text/DecimalFormatSymbols;)V": {},
+        "setRoundingMode(Ljava/math/RoundingMode;)V": {}
+      }
+    },
+    "java/util/Locale": {
+      "class type": "enum",
+      "attributes": {
+        "US": {
+          "access": "static enum"
+        }
+      }
+    },
+    "java/text/DecimalFormatSymbols": {
+      "methods": {
+        "getInstance(Ljava/util/Locale;)Ljava/text/DecimalFormatSymbols;": {}
+      }
+    },
+    "java/math/RoundingMode": {
+      "attributes": {
+        "DOWN": {}
+      }
+    },
+    "java/util/EnumMap": {
+      "methods": {
+        "<init>(Ljava/lang/Class;)V": {},
+        "computeIfAbsent(Ljava/lang/Object;Ljava/util/function/Function;)Ljava/lang/Object;": {}
+      }
+    },
+    "java/util/LinkedList": {
+      "methods": {
+        "<init>()V": {}
+      }
+    },
+    "java/lang/Class": {
+      "methods": {
+        "getName()Ljava/lang/String;": {}
+      }
+    },
+    "java/util/concurrent/atomic/AtomicInteger": {
+      "wraps": ":int",
+      "hard wrap": true,
+      "methods": {
+        "<init>(I)V": {
+          "wraps": "setattr(a0, 'underlying', a1)"
+        },
+        "getAndIncrement()I": {
+          "wraps": "setattr(a0, 'underlying', getattr(a0, 'underlying') + 1) or getattr(a0, 'underlying') - 1"
+        }
+      }
+    },
+    "java/util/Optional": {
+      "methods": {
+        "empty()Ljava/util/Optional;": {
+          "wraps": "None"
+        }
+      }
+    }
+  },
+  "implementation": [
+    "java.lang"
+  ]
+}

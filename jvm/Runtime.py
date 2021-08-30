@@ -18,6 +18,7 @@ from abc import ABC
 import array
 
 import jvm.Java
+import jvm.api
 import jvm.JavaAttributes
 import jvm.logging
 import jvm.util
@@ -72,6 +73,11 @@ class Runtime:
                 raise StackCollectingException(
                     f"Abstract method call onto {method} with args {args}; Code attribute not found"
                 )
+            except AttributeError:
+                if not isinstance(method, jvm.Java.JavaMethod):
+                    return method.invoke(args)
+                
+                raise
 
             method.code_repr = BytecodeRepr(code)
 
@@ -170,7 +176,7 @@ class Stack:
 
         import jvm.Java
 
-        self.vm = jvm.Java.vm
+        self.vm = jvm.api.vm
 
         self.runtime: Runtime = None
 
@@ -668,7 +674,7 @@ class Any2Int(OpcodeInstruction):
 @BytecodeRepr.register_instruction
 class Any2Long(Any2Int):
     # f2l
-    OPCODES = {0x8C, 0x85}
+    OPCODES = {0x8C, 0x85, 0x8F}
 
     @classmethod
     def validate_stack(cls, command_index, prepared_data: typing.Any, container: "BytecodeRepr", stack: VirtualStack):
@@ -1666,6 +1672,11 @@ class GetField(CPLinkedInstruction):
         try:
             stack.push(obj.get_field(name))
         except (KeyError, AttributeError):
+            if isinstance(obj.get_class(), jvm.Java.JavaBytecodeClass):
+                raise StackCollectingException(
+                    f"AttributeError: object {obj} (type {type(obj)}) has no attribute {name}"
+                ) from None
+
             try:
                 stack.push(getattr(obj, name))
             except (KeyError, AttributeError):
@@ -2327,7 +2338,7 @@ class Mul(OpcodeInstruction):
 
 @BytecodeRepr.register_instruction
 class NEG(OpcodeInstruction):
-    OPCODES = {0x76}
+    OPCODES = {0x76, 0x77}
 
     @classmethod
     def invoke(cls, data: typing.Any, stack: Stack):

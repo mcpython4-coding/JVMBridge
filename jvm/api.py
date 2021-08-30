@@ -1,7 +1,8 @@
 import sys
 import typing
 from abc import ABC
-
+from abc import ABCMeta
+from abc import abstractmethod
 
 vm = None
 
@@ -18,7 +19,7 @@ class AbstractJavaClass:
         self.interfaces: typing.List[
             typing.Callable[[], typing.Optional[AbstractJavaClass]]
         ] = []
-        self.internal_version = 0  # the internal version identifier
+        self.internal_version = None  # the internal version identifier
         self.vm = None  # the vm instance bound to
 
     def get_method(self, name: str, signature: str, inner=False):
@@ -64,3 +65,21 @@ class AbstractJavaClassInstance(ABC):
 
 
 DYNAMIC_NATIVES = "--fill-unknown-natives" in sys.argv
+
+
+class AbstractMethod(metaclass=ABCMeta):
+    def __init__(self):
+        self.class_file: AbstractJavaClass = None
+        self.name: str = None
+        self.signature: str = None
+        self.access = 0
+        self.code_repr = None
+
+    @abstractmethod
+    def invoke(self, args):
+        pass
+
+    @abstractmethod
+    def get_class(self):
+        pass
+

@@ -1,0 +1,12 @@
+{
+  "classes": {
+    "com/google/common/base/Preconditions": {
+      "methods": {
+        "checkNotNull(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;": {}
+      }
+    }
+  },
+  "implementation": [
+    "google.util.Preconditions"
+  ]
+}

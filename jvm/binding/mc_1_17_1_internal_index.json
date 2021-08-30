@@ -1,0 +1,10 @@
+{
+  "version attribute": "1.17.1",
+  "classes": {
+    "net/minecraft/client/Minecraft": {
+      "methods": {
+        "func_71410_x()Lnet/minecraft/client/Minecraft;": {}
+      }
+    }
+  }
+}

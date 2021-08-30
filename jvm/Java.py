@@ -20,8 +20,7 @@ import traceback
 import typing
 from jvm.api import AbstractJavaClass
 from jvm.api import AbstractJavaClassInstance
-from jvm.builtinwrapper import native
-from jvm.builtinwrapper import NativeClass
+from jvm.api import AbstractMethod
 from jvm.JavaAttributes import JavaAttributeTable
 from jvm.logging import info
 from jvm.util import DOUBLE
@@ -43,7 +42,22 @@ except ImportError:
     from JavaExceptionStack import StackCollectingException
 
 
-class ArrayBase(NativeClass):
+class ArrayBase(jvm.api.AbstractJavaClass):
+    def get_method(self, name: str, signature: str, inner=False):
+        return getattr(self, name)
+
+    def get_static_attribute(self, name: str, expected_type=None):
+        raise RuntimeError
+
+    def set_static_attribute(self, name: str, value):
+        raise RuntimeError
+
+    def inject_method(self, name: str, signature: str, method, force=True):
+        raise RuntimeError
+
+    def is_subclass_of(self, class_name: str) -> bool:
+        return False
+
     def __init__(self, depth: int, name: str, base_class: AbstractJavaClass):
         super().__init__()
         self.base_class = base_class
@@ -53,8 +67,8 @@ class ArrayBase(NativeClass):
     def create_instance(self):
         return []
 
-    @native("clone", "()Ljava/lang/Object;")
-    def clone(self, instance):
+    def clone(self, args):
+        instance, = args
         return instance.copy() if instance is not None else instance
 
 
@@ -109,12 +123,9 @@ class JavaField:
         return data
 
 
-class JavaMethod:
+class JavaMethod(AbstractMethod):
     def __init__(self):
-        self.class_file: "JavaBytecodeClass" = None
-        self.name: str = None
-        self.signature: str = None
-        self.access = 0
+        super().__init__()
         self.attributes = JavaAttributeTable(self)
 
         self.code_repr = None
@@ -191,6 +202,10 @@ class JavaBytecodeClass(AbstractJavaClass):
         self.is_annotation = False
         self.is_enum = False
         self.is_module = False
+
+    # todo: add to that object a marker!
+    def on_annotate(self, obj, args):
+        pass
 
     def from_bytes(self, data: bytearray):
         magic = pop_u4(data)

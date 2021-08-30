@@ -1,0 +1,14 @@
+{
+  "classes": {
+    "com/blamejared/crafttweaker/api/annotations/ZenRegister": {
+      "annotation": "track"
+    },
+    "org/openzen/zencode/java/ZenCodeType$Name": {
+      "annotation": "track"
+    },
+    "org/openzen/zencode/java/ZenCodeType$Method": {
+      "annotation": "track"
+    },
+    "com/blamejared/crafttweaker/api/managers/IRecipeManager": {}
+  }
+}

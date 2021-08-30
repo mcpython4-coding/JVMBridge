@@ -65,6 +65,8 @@
 [uuk]: fixed up COFHCore failing in its deferred registry system due to above behaviour miss-match
 [uuk]: Method.apply(Object, Object) was not working correctly leading into some issues
 [uuk]: made the vm ready for the new mod loader layout
+[uuk]: rewritten internal native system, using now json meta files as source definitions,
+       but also allowing python source code injection via an annotation API
 
 tasks to do [maybe moved away for later]:
 - minifier task should minify builtin & bridge library into each only one file
@@ -81,8 +83,8 @@ tasks to do [maybe moved away for later]:
 - make versions 1.13 and up all compatible with the code
 - split of instruction definitions from the Runtime system
 - add system to walk across code from outside
-- add instruction for invoking stack object directly and not across a java/util/function/... class call
-- all array/list/set/map stuff can be optimised directly into native code (-> special instructions)
+* - add instruction for invoking stack object directly and not across a java/util/function/... class call
+* - all array/list/set/map stuff can be optimised directly into native code (-> special instructions)
 - StackUnderflowException after an InvokeDynamic might be caused by it, so we need some special handling
 
 Currently testing:

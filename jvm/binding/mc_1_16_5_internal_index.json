@@ -1,0 +1,167 @@
+{
+  "version attribute": "1.16.5",
+  "annotations": {
+    "ignore": [
+      "mcp/MethodsReturnNonnullByDefault"
+    ]
+  },
+  "classes": {
+    "net/minecraft/item/crafting/IRecipe": {},
+    "net/minecraft/item/crafting/ICraftingRecipe": {},
+    "net/minecraft/item/crafting/SpecialRecipe": {},
+    "net/minecraft/util/DamageSource": {
+      "wraps": "mcpython.common.entity.DamageSource:DamageSource"
+    },
+    "net/minecraft/network/play/ServerPlayNetHandler": {},
+    "net/minecraft/util/IStringSerializable": {},
+    "net/minecraft/client/gui/screen/Screen": {},
+    "net/minecraft/client/gui/AbstractGui": {},
+    "net/minecraft/inventory/container/SmithingTableContainer": {},
+    "net/minecraft/item/ArrowItem": {},
+    "net/minecraft/util/ResourceLocation": {
+      "methods": {
+        "<init>(Ljava/lang/String;Ljava/lang/String;)V": {
+          "wraps": "setattr(a0, 'name', a1+':'+a2)"
+        },
+        "<init>(Ljava/lang/String;)V": {}
+      }
+    },
+    "net/minecraft/util/Direction": {
+      "class type": "enum",
+      "methods": {
+        "values()[Lnet/minecraft/util/Direction;": {
+          "wraps": "list(filter(lambda e: e.startswith(cls.name), cls.static_attributes.values()))"
+        }
+      },
+      "attributes": {
+        "NORTH": {
+          "access": "static enum"
+        },
+        "EAST": {
+          "access": "static enum"
+        },
+        "SOUTH": {
+          "access": "static enum"
+        },
+        "WEST": {
+          "access": "static enum"
+        }
+      }
+    },
+    "net/minecraft/item/ItemStack": {
+      "wraps": "mcpython.common.container.ResourceStack:ItemStack",
+      "hard wrap": true,
+      "methods": {
+        "<init>(Lnet/minecraft/util/IItemProvider;)V": {
+          "no effect": true
+        }
+      }
+    },
+    "net/minecraft/item/Items": {
+      "attributes": {
+        "field_190931_a": {},
+        "field_151038_n": {},
+        "field_151053_p": {},
+        "field_151039_o": {}
+      }
+    },
+    "net/minecraft/resources/IResourceManagerReloadListener": {},
+    "net/minecraft/inventory/container/Container": {},
+    "net/minecraft/tileentity/TileEntity": {},
+    "net/minecraft/item/BowItem": {},
+    "net/minecraft/item/AxeItem": {},
+    "net/minecraft/item/SwordItem": {},
+    "net/minecraft/item/Item": {},
+    "net/minecraft/client/renderer/tileentity/ItemStackTileEntityRenderer": {},
+    "net/minecraft/client/particle/IParticleFactory": {},
+    "net/minecraft/client/particle/SpriteTexturedParticle": {},
+    "net/minecraft/item/BlockItem": {},
+    "net/minecraft/world/gen/feature/structure/StructurePiece": {},
+    "net/minecraft/block/AbstractBlock": {},
+    "net/minecraft/tileentity/ITickableTileEntity": {},
+    "net/minecraft/potion/Effect": {},
+    "net/minecraft/block/Block": {},
+    "net/minecraft/util/Util": {
+      "methods": {
+        "func_200696_a(Ljava/lang/Object;Ljava/util/function/Consumer;)Ljava/lang/Object;": {}
+      }
+    },
+    "net/minecraft/util/registry/WorldGenRegistries": {
+      "attributes": {
+        "field_243657_i": {}
+      }
+    },
+    "net/minecraft/world/biome/Biomes": {
+      "attributes": {
+        "field_150575_M": {},
+        "field_203618_X": {},
+        "field_203617_W": {},
+        "field_203614_T": {},
+        "field_203615_U": {},
+        "field_76771_b": {},
+        "field_203616_V": {},
+        "field_76776_l": {},
+        "field_203619_Y": {},
+        "field_203620_Z": {}
+      }
+    },
+    "net/minecraft/util/registry/Registry": {
+      "methods": {
+        "func_243576_d(Lnet/minecraft/util/RegistryKey;)Ljava/lang/Object;": {},
+        "func_148757_b(Ljava/lang/Object;)I": {}
+      }
+    },
+    "net/minecraft/client/Minecraft": {
+      "methods": {
+        "func_71410_x()Lnet/minecraft/client/Minecraft;": {
+          "wraps": "cls.create_instance()"
+        }
+      },
+      "attributes": {
+        "field_71439_g": {
+          "access": "static"
+        }
+      }
+    },
+    "net/minecraft/block/Blocks": {
+      "attributes": {
+        "field_150340_R": {}
+      }
+    },
+    "com/mojang/util/UUIDTypeAdapter": {
+      "methods": {
+        "<init>()V": {
+          "no effect": true
+        }
+      }
+    },
+    "net/minecraft/item/ItemGroup": {
+      "methods": {
+        "<init>(Ljava/lang/String;)V": {
+          "no effect": true
+        }
+      }
+    },
+    "net/minecraft/util/text/TranslationTextComponent": {},
+    "net/minecraft/nbt/CompoundNBT": {},
+    "net/minecraft/client/renderer/RenderTypeBuffers": {
+      "methods": {
+        "<init>()V": {
+          "no effect": true
+        },
+        "func_228487_b_()Lnet/minecraft/client/renderer/IRenderTypeBuffer$Impl;": {
+          "no effect": true
+        }
+      }
+    },
+    "net/minecraft/util/Tuple": {
+      "wraps": ":tuple",
+      "hard wrap": true,
+      "methods": {
+        "<init>(Ljava/lang/Object;Ljava/lang/Object;)V": {
+          "wraps": "setattr(a0, 'underlying', (a1, a2))"
+        }
+      }
+    }
+  }
+}

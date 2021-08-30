@@ -1,200 +1,422 @@
+"""
+How are natives defined?
+
+Natives are listed in "index" files defining which classes exists and what they provide.
+
+Annotation handle types:
+- "skip": don't core
+- "track": mark the annotated object with the given annotation
+- "report": report it to an event handler
+
+Structure:
+    - version attribute: some attribute passed to all classes handled by this, default to global space
+    - annotations:
+        <annotation handle type> -> affected class list
+    - classes:
+        <class name> ->
+            - super[: which class this extends from
+            - class type: the class type, defaults to a normal class, arrival are also "enum", "interface" and "abstract"
+            - wraps: some python class this is wrapping, first module, than after a ":" the path in the module,
+                builtin python's start with a ':'
+            - hard wrap: if the object hard wraps that object, meaning we need a instance of it for work
+            - mapping: A list of other names of this class
+            - annotation: some annotation type this class provide, see above for possible values
+            - attributes: <attr name> ->
+                - access: some access modifier
+                - expected type: some expected type
+                - mapping: a list of other names of this attribute
+            - methods: "<method name><method signature>" ->
+                - access
+                - mapping: a list of other names of this method
+                - no effect: set if the method body should be empty, so nothing should happen on invocation
+                - default result: if no effect is set, this can be a custom non-null value returned
+                - wraps: optionally, a format-able string with aN as arg placeholders
+
+    - implementation:
+        Module & directory list
+"""
+import importlib
+import json
+import os
+import traceback
 import typing
-from abc import ABC
 
-from jvm.api import AbstractJavaClass
-from jvm.api import AbstractJavaClassInstance
-from jvm.api import DYNAMIC_NATIVES
 import jvm.api
-from jvm.JavaExceptionStack import StackCollectingException
+from jvm.api import AbstractJavaClass
+
+from .native_building import addClassAttribute, addMethod
+
+try:
+    from mcpython import shared
+except ImportError:
+    shared = None
 
 
-class NativeClass(AbstractJavaClass, ABC):
-    NAME = None
-    EXPOSED_VERSIONS: typing.Optional[set] = None
+class NoMethod(jvm.api.AbstractMethod):
+    def __init__(self, class_file, name: str, signature: str):
+        super().__init__()
+        self.class_file = class_file
+        self.name = name
+        self.signature = signature
 
-    ALLOW_FUNCTION_ADDITION = True
+    def invoke(self, args):
+        print(f"[BUILTIN][WARN] method {self} was invoked without implementation")
 
-    @classmethod
-    def __init_subclass__(cls, **kwargs):
-        if cls.NAME is not None:
+    def get_class(self):
+        return self.class_file
 
-            if cls.EXPOSED_VERSIONS is None:
-                jvm.api.vm.register_native(cls)
-            else:
-                # todo: add flag to share native
-                for version in cls.EXPOSED_VERSIONS:
-                    jvm.api.vm.register_native(cls, version)
+    def __repr__(self):
+        return f"UndefinedBuiltinMethod({self.class_file.name}:{self.name}{self.signature})"
 
+
+class WrappedMethod(jvm.api.AbstractMethod):
+    def __init__(self, class_file, name: str, signature: str, wrapped: typing.Callable):
+        super().__init__()
+        self.class_file = class_file
+        self.name = name
+        self.signature = signature
+        self.wrapped = wrapped
+
+    def invoke(self, args):
+        result = self.wrapped(*args)
+        if self.signature[-1] == "Z":
+            result = int(result) if isinstance(result, bool) else 0
+        return result
+
+    def get_class(self):
+        return self.class_file
+
+    def __repr__(self):
+        return f"ImplementedBuiltinMethod({self.class_file.name}:{self.name}{self.signature}@{self.wrapped})"
+
+
+class NativeClass(jvm.api.AbstractJavaClass):
     def __init__(self):
         super().__init__()
-        self.vm = jvm.api.vm
-        self.name = self.NAME
 
-        self.exposed_attributes = {}
-        self.exposed_methods = {}
-        self.parent = self.__class__.__bases__[0]
-        self.injected_methods = []
+        self.super_class = []
+        self.method_table = {}
+        self.static_attributes = {}
 
-        self.children: typing.List[AbstractJavaClass] = []
+        self.dynamic_attribute_keys = set()
 
-        for key, value in self.__class__.__dict__.items():
-            if hasattr(value, "native_name"):
-                method = getattr(self, key)
+        self.attribute_mapping = {}
+        self.method_mapping = {}
 
-                if not callable(method):
-                    raise StackCollectingException(
-                        f"in native: {self.name}: assigned method {value.native_name} cannot be assigned to native as something dynamic overides it later"
-                    )
+        self.report_annotations = -1
 
-                self.exposed_methods.setdefault(
-                    (value.native_name, value.native_signature), method
-                )
+        self.enum_obj_counter = 0
 
-        if not isinstance(self.parent, NativeClass):
-            self.parent = None
-        else:
-            self.parent.children.append(self)
-
-            for injected in self.parent.injected_methods:
-                self.inject_method(*injected, force=False)
-
-    def inject_method(self, name: str, signature: str, method, force=True):
-        if force or (name, signature) in self.exposed_methods:
-            self.exposed_methods[(name, signature)] = method
-
-        for child in self.children:
-            child.inject_method(name, signature, method, force=False)
-
-        self.injected_methods.append((name, signature, method))
+    def __repr__(self):
+        return f"NativeClass({self.name}@{hex(id(self))[2:]})"
 
     def get_method(self, name: str, signature: str, inner=False):
-        try:
-            return self.exposed_methods[(name, signature)]
-        except KeyError:
-            try:
-                m = (
-                    self.parent.get_method(name, signature, inner=True)
-                    if self.parent is not None
-                    else None
-                )
+        identifier = name + signature
 
-                if m is None:
-                    for interface in self.interfaces:
-                        m = interface.get_method(name, signature, inner=True)
-                        if m is not None:
-                            return m
+        if identifier in self.method_mapping:
+            identifier = self.method_mapping[identifier]
+            name, signature = identifier.split("(")
+            signature = "(" + signature
 
-                else:
-                    return m
+        if identifier not in self.method_table:
+            addMethod(self.name, self.internal_version, identifier)
 
-            except StackCollectingException as e:
-                e.add_trace(f"not found up at {self.name}")
-                raise
+        return self.method_table.setdefault(identifier, NoMethod(self, name, signature))
 
-        if DYNAMIC_NATIVES and self.ALLOW_FUNCTION_ADDITION:
-
-            @native(name, signature)
-            def dynamic(*_):
-                pass
-
-            self.exposed_methods[(name, signature)] = dynamic
-
-            print(
-                f"""
-Native Dynamic Builder: Class {self.name}
-Method {name} with signature {signature}
-Add:
-    @native(\"{name}\", \"{signature}\")
-    def {name.removeprefix("<").removesuffix(">").replace("$", "__")}(self, *_):
-        pass"""
-            )
-
-            return dynamic
-
-        raise StackCollectingException(
-            f"class {self.name} has no method named '{name}' with signature {signature}"
-        ).add_trace(str(self)).add_trace(
-            str(list(self.exposed_methods.keys()))
-        ) from None
+    def map_attribute_name(self, name: str):
+        return name if name not in self.attribute_mapping else self.attribute_mapping[name]
 
     def get_static_attribute(self, name: str, expected_type=None):
-        if name not in self.exposed_attributes:
-            if DYNAMIC_NATIVES:
-                print(
-                    f"""
-Native Dynamic Builder: Class {self.name}
-Static attribute {name}"""
-                )
-                self.exposed_attributes[name] = None
-                return
+        name = self.map_attribute_name(name)
 
-            raise StackCollectingException(
-                f"unknown static attribute '{name}' of class '{self.name}' (expected type: {expected_type})"
-            )
+        if name not in self.static_attributes:
+            print(f"[NATIVE] class {self.name} is missing attribute {name}")
 
-        return self.exposed_attributes[name]
+            addClassAttribute(self.name, self.internal_version, name)
+
+            return self.static_attributes.setdefault(name, None)
+
+        return self.static_attributes[name]
 
     def set_static_attribute(self, name: str, value):
-        self.exposed_attributes[name] = value
+        name = self.map_attribute_name(name)
+
+        if name not in self.static_attributes:
+            print(f"[NATIVE] class {self.name} is missing attribute {name}")
+
+            addClassAttribute(self.name, self.internal_version, name)
+
+        self.static_attributes[name] = value
 
     def create_instance(self):
         return NativeClassInstance(self)
 
+    def inject_method(self, name: str, signature: str, method, force=True):
+        self.method_table[name+signature] = method
+
+    def is_subclass_of(self, class_name: str) -> bool:
+        return class_name == self.name or any(cls.is_subclass_of(class_name) for cls in self.super_class)
+
+    def on_annotate(self, obj, args):
+        if self.report_annotations == -1:
+            print(f"{self} cannot be used as an annotation with args {args} on {obj}")
+            return
+
+        if callable(self.report_annotations):
+            self.report_annotations(self, obj, args)
+
+    def set_method(self, signature: str, method: jvm.api.AbstractMethod, force=False):
+        if force or signature not in self.method_table:
+            self.method_table[signature] = method
+
     def __repr__(self):
-        return f"NativeClass({self.NAME})"
-
-    def is_subclass_of(self, class_name: str):
-        return self.name == class_name
-
-    def iter_over_instance(self, instance) -> typing.Iterable:
-        raise StackCollectingException(f"unable to iterate over {instance}")
-
-    def get_custom_info(self, instance) -> str:
-        return ""
+        return f"NativeClass(name={self.name},bound_version={self.internal_version})"
 
 
-class NativeClassInstance(AbstractJavaClassInstance):
-    def __init__(self, native_class: "NativeClass"):
-        self.native_class = native_class
-        self.fields = {key: None for key in native_class.get_dynamic_field_keys()}
+class PyObjWrappingClass(NativeClass):
+    def __init__(self, wrapped_type: typing.Type):
+        super().__init__()
+        self.wrapped_type = wrapped_type
+
+    def create_instance(self):
+        return self.wrapped_type()
+
+
+class NativeClassInstance(jvm.api.AbstractJavaClassInstance):
+    def __init__(self, cls: NativeClass):
+        self.cls = cls
+
+        self.fields = {e: None for e in cls.dynamic_attribute_keys}
 
     def get_field(self, name: str):
+        name = self.cls.map_attribute_name(name)
+
         return self.fields[name]
 
     def set_field(self, name: str, value):
+        name = self.cls.map_attribute_name(name)
+
+        if name not in self.fields: raise KeyError(name)
+
         self.fields[name] = value
 
     def get_method(self, name: str, signature: str):
-        return self.native_class.get_method(name, signature)
+        return self.cls.get_method(name, signature)
 
-    def get_class(self):
-        return self.native_class
+    def get_class(self) -> AbstractJavaClass:
+        return self.cls
 
     def __repr__(self):
-        c = self.native_class.get_custom_info(self)
-        return f"NativeClassInstance(of={self.native_class},id={hex(id(self))}"+(",custom="+c if c is not None else c)+")"
-
-    def __hash__(self):
-        return id(self) if not hasattr(self.native_class, "get_hash") else self.native_class.get_hash(self)
+        return f"NativeClassInstance@{hex(id(self))[2:]}(of={self.cls})"
 
 
-def native(name: str, signature: str, static=False):
-    def setup(m):
+class PyObjWrappingClassInstance(jvm.api.AbstractJavaClassInstance):
+    def __init__(self, cls: PyObjWrappingClass, underlying):
+        self.cls = cls
+        self.underlying = underlying
 
-        if signature[-1] == "Z":
-            # todo: do this with bytecode manipulation
-            def method(*args):
-                r = m(*args)
-                r = int(r) if r is not None else 0
-                return r
+        self.special_fields = {}
+
+    def get_field(self, name: str):
+        name = self.cls.map_attribute_name(name)
+
+        return self.special_fields[name] if name in self.special_fields else getattr(self.underlying, name)
+
+    def set_field(self, name: str, value):
+        name = self.cls.map_attribute_name(name)
+
+        if hasattr(self.underlying, name):
+            setattr(self.underlying, name, value)
         else:
-            method = m
+            self.special_fields[name] = value
 
-        method.native_name = name
-        method.native_signature = signature
-        method.access = 0x1101 | (
-            0 if not static else 0x0008
-        )  # public native synthetic (static)
-        return method
+    def get_method(self, name: str, signature: str):
+        return self.cls.get_method(name, signature)
 
-    return setup
+    def get_class(self) -> AbstractJavaClass:
+        return self.cls
+
+
+class BuiltinHandler:
+    def __init__(self):
+        self.classes: typing.Dict[typing.Any, typing.Dict[str, NativeClass]] = {}
+        self.class_creation_binds = {}
+
+    def create_class(self, name: str, version=None, class_type=NativeClass, class_creation_args=tuple()) -> NativeClass:
+        if name in self.classes.setdefault(version, {}): return self.classes[version][name]
+        if name in self.classes.setdefault(None, {}): return self.classes[None][name]
+
+        cls = class_type(*class_creation_args)
+        cls.name = name
+        cls.internal_version = version
+
+        self.classes[version][name] = cls
+
+        jvm.api.vm.register_direct(cls)
+
+        return cls
+
+    def bind_method(self, cls: str, name: str = None, signature: str = None, version=None):
+        if name is None:
+            cls, e = cls.split(":")
+            name = e.split("(")[0]
+            signature = "("+e.split("(")[1]
+
+        cls = self.create_class(cls, version)
+
+        def bind(function):
+            bound = WrappedMethod(cls, name, signature, function)
+
+            cls.set_method(name+signature, bound, True)
+
+            return function
+
+        return bind
+
+    def bind_class_creation(self, cls: str, version=None) -> typing.Callable[[typing.Callable[[NativeClass], None]], typing.Callable[[NativeClass], None]]:
+        def bind(function: typing.Callable[[NativeClass], None]):
+            self.class_creation_binds.setdefault((cls, version), []).append(function)
+            return function
+
+        return bind
+
+    def bind_class_annotation(self, name: str, version=None) -> typing.Callable[[typing.Callable], typing.Callable]:
+        def bind(function: typing.Callable[[NativeClass], None]):
+            cls = self.create_class(name, version)
+            cls.report_annotations = function
+            return function
+
+        return bind
+
+
+handler = BuiltinHandler()
+
+
+def parseAnnotationType(cls: NativeClass, t):
+    if cls.report_annotations != -1: return
+
+    if t == "skip":
+        cls.report_annotations = 1
+    elif t == "track":
+        cls.report_annotations = 1
+    else:
+        cls.report_annotations = 2
+
+
+def parse_wrap(text: str):
+    if text.startswith(":"):
+        import builtins
+        return getattr(builtins, text[1:])
+    else:
+        module = importlib.import_module(text.split(":")[0])
+        parts = text.split(":")[1].split(".")
+        for e in parts:
+            module = getattr(module, e)
+        return module
+
+
+def create_method_based_on_wrap(cls, name, signature, code):
+    def execute(*args):
+        local = {
+            f"a{i}": e for i, e in enumerate(args)
+        } | {"cls": cls, "shared": shared}
+        return eval(code, globals(), local)
+
+    return WrappedMethod(cls, name, signature, execute)
+
+
+def load_index_file(file: str):
+    try:
+        data: dict = json.load(open(file))
+    except:
+        raise RuntimeError(file)
+
+    version = data.setdefault("version attribute", None)
+
+    for name, d in data.setdefault("classes", {}).items():
+        if "hard wrap" in d and d["hard wrap"]:
+            cls = handler.create_class(name, version, class_type=PyObjWrappingClass, class_creation_args=(parse_wrap(d["wraps"]),))
+        else:
+            cls = handler.create_class(name, version)
+
+        if "mapping" in d:
+            for class_name in d["mapping"]:
+                jvm.api.vm.register_special(cls, class_name)
+
+        cls.super_class += d.setdefault("super", [])
+
+        if "annotation" in d:
+            parseAnnotationType(cls, d["annotation"])
+
+        for attr_name, e in d.setdefault("attributes", {}).items():
+            if "static" in e.setdefault("access", ""):
+                if "enum" in e["access"]:
+                    cls.static_attributes[attr_name] = f"{cls.name}::EnumElement<{cls.enum_obj_counter}>::{attr_name}"
+                    cls.enum_obj_counter += 1
+                else:
+                    cls.static_attributes[attr_name] = None
+            else:
+                cls.dynamic_attribute_keys.add(attr_name)
+
+            if "mapping" in e:
+                for n in e["mapping"]:
+                    cls.attribute_mapping[n] = attr_name
+
+        for signature, e in d.setdefault("methods", {}).items():
+            a, b = signature.split("(")
+
+            if "wraps" in e:
+
+                method = create_method_based_on_wrap(cls, a, "("+b, e["wraps"])
+
+            elif e.setdefault("no effect", False):
+                result = e.setdefault("default result", None)
+                method = WrappedMethod(cls, a, "("+b, lambda *_: result)
+            else:
+                method = NoMethod(cls, a, "("+b)
+
+            cls.set_method(signature, method)
+
+            if "mapping" in e:
+                for n in e["mapping"]:
+                    cls.method_mapping[(n+"("+signature.split("(")[1:])] = signature
+
+        if (name, version) in handler.class_creation_binds:
+            for method in handler.class_creation_binds.pop((name, version)):
+                method(cls)
+
+    for t, d in data.setdefault("annotations", {}).items():
+        for cls in d:
+            cls = handler.create_class(cls, version)
+            parseAnnotationType(cls, t)
+
+    local = os.path.dirname(__file__)+"/binding"
+
+    for file in data.setdefault("implementation", []):
+        if file.endswith("/"):
+            for root, _, files in os.walk(local+"/"+file[:-1]):
+                for f in files:
+                    with open(os.path.join(root, f)) as fa:
+                        data = fa.read()
+
+                    try:
+                        exec(data)
+                    except:
+                        print(f"in file: {f}")
+                        traceback.print_exc()
+        else:
+            importlib.import_module("jvm.binding."+file.replace("/", "."))
+
+
+def load_implementations():
+    pass
+
+
+def load_default_indexes():
+    local = os.path.dirname(__file__)+"/binding"
+
+    for file in os.listdir(local):
+        if file.endswith(".json"):
+            load_index_file(local+"/"+file)
+
+    load_implementations()

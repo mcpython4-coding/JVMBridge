@@ -1,0 +1,226 @@
+{
+  "version attribute": "1.16.5",
+  "annotations": {
+    "skip": [
+      "net/minecraftforge/api/distmarker/OnlyIn"
+    ]
+  },
+  "classes": {
+    "net/minecraftforge/fml/common/Mod": {
+      "wraps": "mcpython.common.mod.Mod:Mod",
+      "annotation": "report"
+    },
+    "net/minecraftforge/api/distmarker/Dist": {
+      "class type": "enum",
+      "attributes": {
+        "CLIENT": {
+          "access": "static enum"
+        }
+      }
+    },
+    "net/minecraftforge/eventbus/api/SubscribeEvent": {
+      "annotation": "report"
+    },
+    "net/minecraftforge/common/util/INBTSerializable": {},
+    "net/minecraftforge/fluids/capability/IFluidHandler": {},
+    "net/minecraftforge/items/IItemHandlerModifiable": {},
+    "net/minecraftforge/fluids/capability/IFluidHandlerItem": {},
+    "net/minecraftforge/fluids/IFluidTank": {},
+    "net/minecraftforge/common/crafting/IShapedRecipe": {},
+    "net/minecraftforge/eventbus/api/EventPriority": {
+      "class type": "enum",
+      "attributes": {
+        "LOWEST": {
+          "access": "static enum"
+        },
+        "HIGH": {
+          "access": "static enum"
+        },
+        "HIGHEST": {
+          "access": "static enum"
+        },
+        "NORMAL": {}
+      }
+    },
+    "net/minecraftforge/fml/common/Mod$EventBusSubscriber$Bus": {
+      "class type": "enum",
+      "attributes": {
+        "MOD": {
+          "access": "static enum"
+        },
+        "FORGE": {
+          "access": "static enum"
+        }
+      }
+    },
+    "net/minecraftforge/fml/common/Mod$EventBusSubscriber": {
+      "annotation": "report"
+    },
+    "net/minecraftforge/common/capabilities/CapabilityInject": {},
+    "net/minecraftforge/registries/ObjectHolder": {
+      "annotation": "report"
+    },
+    "net/minecraftforge/common/util/TriPredicate": {},
+    "net/minecraftforge/common/ToolType": {
+      "class type": "enum",
+      "attributes": {
+        "SHOVEL": {
+          "access": "static enum"
+        },
+        "AXE": {
+          "access": "static enum"
+        },
+        "PICKAXE": {
+          "access": "static enum"
+        }
+      }
+    },
+    "net/minecraftforge/common/extensions/IForgeItem": {},
+    "net/minecraftforge/eventbus/api/Cancelable": {
+      "annotation": "track"
+    },
+    "net/minecraftforge/eventbus/api/Event": {},
+    "net/minecraftforge/registries/ForgeRegistryEntry": {},
+    "net/minecraftforge/registries/IForgeRegistryEntry": {},
+    "net/minecraftforge/event/entity/player/PlayerEvent": {},
+    "net/minecraftforge/event/entity/living/LivingEvent": {},
+    "net/minecraftforge/eventbus/api/Event$HasResult": {},
+    "net/minecraftforge/energy/IEnergyStorage": {},
+    "net/minecraftforge/items/IItemHandler": {},
+    "net/minecraftforge/forgespi/language/IModLanguageProvider": {},
+    "net/minecraftforge/forgespi/language/IModLanguageProvider$IModLanguageLoader": {},
+    "net/minecraftforge/common/ForgeConfigSpec$Builder": {
+      "methods": {
+        "<init>()V": {
+          "no effect": true
+        },
+        "configure(Ljava/util/function/Function;)Lorg/apache/commons/lang3/tuple/Pair;": {
+          "wraps": "(None, None)"
+        },
+        "push(Ljava/lang/String;)Lnet/minecraftforge/common/ForgeConfigSpec$Builder;": {
+          "wraps": "a0"
+        },
+        "comment(Ljava/lang/String;)Lnet/minecraftforge/common/ForgeConfigSpec$Builder;": {
+          "wraps": "a0"
+        },
+        "defineInRange(Ljava/lang/String;III)Lnet/minecraftforge/common/ForgeConfigSpec$IntValue;": {
+          "wraps": "a0"
+        },
+        "pop()Lnet/minecraftforge/common/ForgeConfigSpec$Builder;": {
+          "wraps": "a0"
+        },
+        "define(Ljava/lang/String;Z)Lnet/minecraftforge/common/ForgeConfigSpec$BooleanValue;": {
+          "wraps": "a0"
+        },
+        "build()Lnet/minecraftforge/common/ForgeConfigSpec;": {
+          "wraps": "cls.vm.get_class('net/minecraftforge/common/ForgeConfigSpec', version=cls.internal_version).create_instance()"
+        }
+      }
+    },
+    "net/minecraftforge/common/ForgeConfigSpec$BooleanValue": {},
+    "net/minecraftforge/common/crafting/CraftingHelper": {},
+    "net/minecraftforge/fml/DistExecutor": {
+      "methods": {
+        "unsafeRunForDist(Ljava/util/function/Supplier;Ljava/util/function/Supplier;)Ljava/lang/Object;": {
+          "wraps": "a0() == (a1() if shared.IS_CLIENT else None)"
+        }
+      }
+    },
+    "net/minecraftforge/fml/network/NetworkRegistry$ChannelBuilder": {
+      "methods": {
+        "named(Lnet/minecraft/util/ResourceLocation;)Lnet/minecraftforge/fml/network/NetworkRegistry$ChannelBuilder;": {
+          "wraps": "a0"
+        },
+        "clientAcceptedVersions(Ljava/util/function/Predicate;)Lnet/minecraftforge/fml/network/NetworkRegistry$ChannelBuilder;": {
+          "wraps": "a0"
+        },
+        "serverAcceptedVersions(Ljava/util/function/Predicate;)Lnet/minecraftforge/fml/network/NetworkRegistry$ChannelBuilder;)": {
+          "wraps": "a0"
+        },
+        "networkProtocolVersion(Ljava/util/function/Supplier;)Lnet/minecraftforge/fml/network/NetworkRegistry$ChannelBuilder;)": {
+          "wraps": "a0"
+        },
+        "serverAcceptedVersions(Ljava/util/function/Predicate;)Lnet/minecraftforge/fml/network/NetworkRegistry$ChannelBuilder;": {
+          "wraps": "a0"
+        },
+        "networkProtocolVersion(Ljava/util/function/Supplier;)Lnet/minecraftforge/fml/network/NetworkRegistry$ChannelBuilder;": {
+          "wraps": "a0"
+        },
+        "simpleChannel()Lnet/minecraftforge/fml/network/simple/SimpleChannel;": {
+          "wraps": "cls.vm.get_class('net/minecraftforge/fml/network/simple/SimpleChannel', version=cls.internal_version).create_instance()"
+        }
+      }
+    },
+    "net/minecraftforge/fml/network/simple/SimpleChannel": {
+      "methods": {
+        "registerMessage(ILjava/lang/Class;Ljava/util/function/BiConsumer;Ljava/util/function/Function;Ljava/util/function/BiConsumer;)Lnet/minecraftforge/fml/network/simple/IndexedMessageCodec$MessageHandler;": {}
+      }
+    },
+    "net/minecraftforge/fml/loading/FMLEnvironment": {},
+    "net/minecraftforge/fml/ModLoadingContext": {
+      "methods": {
+        "get()Lnet/minecraftforge/fml/ModLoadingContext;": {
+          "wraps": "None"
+        },
+        "registerExtensionPoint(Lnet/minecraftforge/fml/ExtensionPoint;Ljava/util/function/Supplier;)V": {
+          "no effect": true
+        }
+      }
+    },
+    "net/minecraftforge/fml/ExtensionPoint": {
+      "class type": "enum",
+      "attributes": {
+        "DISPLAYTEST": {
+          "access": "static enum"
+        }
+      }
+    },
+    "net/minecraftforge/common/capabilities/CapabilityManager": {
+      "attributes": {
+        "INSTANCE": {
+          "access": "static"
+        }
+      }
+    },
+    "net/minecraftforge/common/MinecraftForge": {
+      "attributes": {
+        "EVENT_BUS": {
+          "access": "static"
+        }
+      }
+    },
+    "net/minecraftforge/eventbus/api/IEventBus": {
+      "methods": {
+        "register(Ljava/lang/Object;)V": {
+          "no effect": true
+        }
+      }
+    },
+    "net/minecraftforge/fml/ModList": {},
+    "net/minecraftforge/fml/InterModComms": {},
+    "net/minecraftforge/fml/network/NetworkRegistry": {
+      "methods": {
+        "newSimpleChannel(Lnet/minecraft/util/ResourceLocation;Ljava/util/function/Supplier;Ljava/util/function/Predicate;Ljava/util/function/Predicate;)Lnet/minecraftforge/fml/network/simple/SimpleChannel;": {
+          "wraps": "cls.vm.get_class('net/minecraftforge/fml/network/simple/SimpleChannel').create_instance()"
+        }
+      }
+    },
+    "net/minecraftforge/client/event/RenderGameOverlayEvent$Post": {
+      "methods": {
+        "getMatrixStack()Lcom/mojang/blaze3d/matrix/MatrixStack;": {
+          "wraps": "cls.vm.get_class('com/mojang/blaze3d/matrix/MatrixStack').create_instance()"
+        }
+      }
+    },
+    "net/minecraftforge/client/event/RenderWorldLastEvent": {
+      "methods": {
+        "getMatrixStack()Lcom/mojang/blaze3d/matrix/MatrixStack;": {
+          "wraps": "cls.vm.get_class('com/mojang/blaze3d/matrix/MatrixStack').create_instance()"
+        },
+        "getPartialTicks()F": {
+          "wraps": "0.05"
+        }
+      }
+    }
+  }
+}

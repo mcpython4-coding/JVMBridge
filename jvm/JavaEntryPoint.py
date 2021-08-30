@@ -34,9 +34,27 @@ from mcpython import shared
 from mcpython.engine import logger
 import jvm.api
 from jvm.JavaExceptionStack import StackCollectingException
+import jvm.builtinwrapper
 
-jvm.api.vm.init_builtins()
-jvm.api.vm.init_bridge()
+
+FORGE_VERSION_NUMBER_TO_MC = {
+    36: "1.16.5",
+    35: "1.16.5",
+    34: "1.16.5",
+    33: "1.16.5",
+    32: "1.16.5",
+    31: "1.16.5",
+    30: "1.17.1",
+    28: "1.16.5",
+    26: "1.16.5",
+    25: "1.17.1",
+    24: "1.16.5",
+    14: "1.16.5",
+    2: "1.16.5",
+}
+
+
+jvm.builtinwrapper.load_default_indexes()
 
 
 # Replace java bytecode loader with ResourceLoader's lookup system
@@ -104,7 +122,7 @@ class JavaMod(mcpython.common.mod.Mod.Mod):
 
                 shared.CURRENT_EVENT_SUB = self.name
 
-                jvm.api.vm.load_class(module, version=self.loader_version).prepare_use()
+                jvm.api.vm.load_class(module, version=FORGE_VERSION_NUMBER_TO_MC[self.loader_version]).prepare_use()
 
     def load_mod_file(self, file: str):
         """
@@ -119,7 +137,7 @@ class JavaMod(mcpython.common.mod.Mod.Mod):
             # make sure that this is set!
             shared.CURRENT_EVENT_SUB = self.name
 
-            jvm.api.vm.load_class(cls, version=self.loader_version)
+            jvm.api.vm.load_class(cls, version=FORGE_VERSION_NUMBER_TO_MC[self.loader_version])
 
         # StackCollectingException is something internal and contains more meta-data than the other exceptions
         except StackCollectingException as e:
@@ -235,3 +253,4 @@ class JavaModLoader(AbstractModLoaderInstance):
 
 ModLoader.TOML_LOADERS["javafml"] = JavaModLoader
 ModLoader.TOML_LOADERS["kotori_scala"] = JavaModLoader
+ModLoader.TOML_LOADERS["kotlinforforge"] = JavaModLoader
