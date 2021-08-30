@@ -147,7 +147,8 @@
       "methods": {
         "<init>()V": {
           "no effect": true
-        }
+        },
+        "<init>(Ljava/util/Collection;)V": {}
       }
     },
     "java/util/TreeSet": {
@@ -270,7 +271,9 @@
     },
     "java/lang/Class": {
       "methods": {
-        "getName()Ljava/lang/String;": {}
+        "getName()Ljava/lang/String;": {},
+        "forName(Ljava/lang/String;)Ljava/lang/Class;": {},
+        "getField(Ljava/lang/String;)Ljava/lang/reflect/Field;": {}
       }
     },
     "java/util/concurrent/atomic/AtomicInteger": {
@@ -290,6 +293,16 @@
         "empty()Ljava/util/Optional;": {
           "wraps": "None"
         }
+      }
+    },
+    "java/lang/reflect/Field": {
+      "methods": {
+        "get(Ljava/lang/Object;)Ljava/lang/Object;": {}
+      }
+    },
+    "java/util/Arrays": {
+      "methods": {
+        "asList([Ljava/lang/Object;)Ljava/util/List;": {}
       }
     }
   },

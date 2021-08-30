@@ -7,6 +7,107 @@ from abc import abstractmethod
 vm = None
 
 
+class AbstractRuntime(metaclass=ABCMeta):
+    @abstractmethod
+    def spawn_stack(self):
+        pass
+
+    @abstractmethod
+    def run_method(self, method, args):
+        pass
+
+    @classmethod
+    @abstractmethod
+    def get_arg_parts_of(cls, method):
+        pass
+
+    @abstractmethod
+    def parse_args_from_stack(self, method, stack, static):
+        pass
+
+
+class AbstractStack(metaclass=ABCMeta):
+    def __init__(self):
+        self.local_vars = []
+        self.stack = []
+        self.registers = [None, None, None]
+
+        self.cp = 0
+
+        self.code = None
+        self.method = None
+
+        self.vm = vm
+
+        self.runtime: typing.Optional[AbstractRuntime] = None
+
+        self.return_value = None
+
+        self.code: typing.Optional[AbstractBytecodeContainer] = None
+
+    @abstractmethod
+    def pop(self):
+        pass
+
+    @abstractmethod
+    def push(self, value):
+        pass
+
+    @abstractmethod
+    def seek(self):
+        pass
+
+    @abstractmethod
+    def end(self, value=None):
+        pass
+
+    @abstractmethod
+    def run(self):
+        """
+        Runs the data on this stack
+        """
+        pass
+
+    def pop_expect_type(self, *type_name: str):
+        pass
+
+    def visit(self):
+        pass
+
+    def branch(self, offset):
+        pass
+
+    def check(self) -> bool:
+        pass
+
+
+class AbstractBytecodeContainer(metaclass=ABCMeta):
+    OPCODES: typing.Dict[int, typing.Type["BaseInstruction"]] = {}
+
+    @classmethod
+    def register_instruction(cls, instr):
+        from jvm.Instructions import OpcodeInstruction
+
+        if issubclass(instr, OpcodeInstruction):
+            for opcode in instr.OPCODES:
+                cls.OPCODES[opcode] = instr
+
+        return instr
+
+    def __init__(self):
+        self.code = None
+        self.decoded_code = []
+
+    @abstractmethod
+    def prepare_stack(self, stack):
+        """
+        Helper method for setting up the stack for execution of this code block
+
+        todo: do some more stuff here
+        """
+        pass
+
+
 class AbstractJavaClass:
     """
     Abstract base class for java classes handled by the vm
@@ -83,3 +184,40 @@ class AbstractMethod(metaclass=ABCMeta):
     def get_class(self):
         pass
 
+
+class BaseInstruction(ABC):
+    """
+    Every instruction has to implement this, everything else does not matter
+    """
+
+    @classmethod
+    def invoke(cls, data: typing.Any, stack: AbstractStack) -> bool:
+        raise NotImplementedError
+
+    @classmethod
+    def validate(cls, command_index, prepared_data: typing.Any, container: AbstractBytecodeContainer):
+        pass
+
+    @classmethod
+    def validate_stack(cls, command_index, prepared_data: typing.Any, container: AbstractBytecodeContainer, stack: AbstractStack):
+        pass
+
+    @classmethod
+    def optimiser_iteration(
+        cls,
+        container: AbstractBytecodeContainer,
+        prepared_data: typing.Any,
+        instruction_index: int,
+    ):
+        pass
+
+    @classmethod
+    def code_reference_changer(
+        cls,
+        container: AbstractBytecodeContainer,
+        prepared_data: typing.Any,
+        instruction_index: int,
+        old_index: int,
+        checker: typing.Callable[[int], int],
+    ):
+        pass

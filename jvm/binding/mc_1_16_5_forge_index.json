@@ -39,7 +39,8 @@
         "HIGHEST": {
           "access": "static enum"
         },
-        "NORMAL": {}
+        "NORMAL": {},
+        "LOW": {}
       }
     },
     "net/minecraftforge/fml/common/Mod$EventBusSubscriber$Bus": {
@@ -221,6 +222,7 @@
           "wraps": "0.05"
         }
       }
-    }
+    },
+    "net/minecraftforge/client/event/GuiScreenEvent$DrawScreenEvent$Post": {}
   }
 }

@@ -1,5 +1,7 @@
 import typing
 
+import jvm.Instructions
+
 
 class AbstractCodeModifier:
     MUST_CHECK_DIRECT_AFTER = False
@@ -72,7 +74,7 @@ def create_method_relocator(address_in: typing.Tuple[str, str, str], address_out
     matcher = InvokeInstructionMatcher(*address_in)
 
     def inject_method(container: jvm.Runtime.BytecodeRepr, address: int):
-        container.decoded_code[address] = (jvm.Runtime.InvokeVirtual if target_type is not None else target_type, [10, [7, [1, address_out[0]]], [12, [1, address_out[1]], [1, address_out[2]]]], 3)
+        container.decoded_code[address] = (jvm.Instructions.InvokeVirtual if target_type is not None else target_type, [10, [7, [1, address_out[0]]], [12, [1, address_out[1]], [1, address_out[2]]]], 3)
 
-    return CodeSingleInstructionHitModifier(jvm.Runtime.InvokeVirtual if ground_type is None else ground_type, inject_method, checker=matcher, **config)
+    return CodeSingleInstructionHitModifier(jvm.Instructions.InvokeVirtual if ground_type is None else ground_type, inject_method, checker=matcher, **config)
 

@@ -162,6 +162,7 @@
           "wraps": "setattr(a0, 'underlying', (a1, a2))"
         }
       }
-    }
+    },
+    "net/minecraft/loot/LootTables": {}
   }
 }

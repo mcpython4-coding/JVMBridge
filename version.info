@@ -67,6 +67,8 @@
 [uuk]: made the vm ready for the new mod loader layout
 [uuk]: rewritten internal native system, using now json meta files as source definitions,
        but also allowing python source code injection via an annotation API
+[uuk]: moved instruction definitions to separate file
+[uuk]: added more abstract base classes for extending the current system with own implementations
 
 tasks to do [maybe moved away for later]:
 - minifier task should minify builtin & bridge library into each only one file
