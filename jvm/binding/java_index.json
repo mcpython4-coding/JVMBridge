@@ -20,7 +20,8 @@
       "java/lang/annotation/Repeatable",
       "javax/annotation/concurrent/Immutable",
       "java/lang/annotation/Inherited",
-      "javax/annotation/CheckReturnValue"
+      "javax/annotation/CheckReturnValue",
+      "javax/annotation/Nonnegative"
     ],
     "report": [
       "java/lang/annotation/Annotation",
@@ -62,7 +63,8 @@
         },
         "CLASS": {
           "access": "static enum"
-        }
+        },
+        "SOURCE": {}
       }
     },
     "java/lang/annotation/ElementType": {
@@ -179,7 +181,13 @@
     },
     "java/lang/Comparable": {},
     "java/io/Serializable": {},
-    "java/util/Comparator": {},
+    "java/util/Comparator": {
+      "methods": {
+        "comparing(Ljava/util/function/Function;)Ljava/util/Comparator;": {},
+        "reversed()Ljava/util/Comparator;": {},
+        "thenComparing(Ljava/util/function/Function;)Ljava/util/Comparator;": {}
+      }
+    },
     "java/lang/RuntimeException": {},
     "java/lang/Error": {
       "wraps": ":Exception"
@@ -204,6 +212,9 @@
       "methods": {
         "add(Ljava/lang/Object;)Z": {
           "wraps": "a0.underlying.append(a1) or True"
+        },
+        "stream()Ljava/util/stream/Stream;": {
+          "wraps": "iter(a0)"
         }
       }
     },
@@ -226,12 +237,18 @@
       "methods": {
         "toString(I)Ljava/lang/String;": {
           "wraps": "str(a0)"
+        },
+        "valueOf(I)Ljava/lang/Integer;": {
+          "wraps": "a0"
         }
       }
     },
     "java/lang/String": {
       "methods": {
-        "equals(Ljava/lang/Object;)Z": {}
+        "equals(Ljava/lang/Object;)Z": {},
+        "getBytes(Ljava/nio/charset/Charset;)[B": {
+          "wraps": "a0.encode('utf-8')"
+        }
       }
     },
     "java/text/DecimalFormat": {
@@ -304,6 +321,44 @@
       "methods": {
         "asList([Ljava/lang/Object;)Ljava/util/List;": {}
       }
+    },
+    "java/util/Random": {
+      "methods": {
+        "<init>()V": {
+          "no effect": true
+        },
+        "nextInt(I)I": {
+          "wraps": "__import__('random').randint(0, a1-1)"
+        }
+      }
+    },
+    "java/util/stream/Stream": {
+      "methods": {
+        "map(Ljava/util/function/Function;)Ljava/util/stream/Stream;": {
+          "wraps": "(a1(e) for e in a0)"
+        },
+        "collect(Ljava/util/stream/Collector;)Ljava/lang/Object;": {
+          "wraps": "a[1](a[0])"
+        }
+      }
+    },
+    "java/util/stream/Collectors": {
+      "methods": {
+        "joining(Ljava/lang/CharSequence;)Ljava/util/stream/Collector;": {
+          "wraps": "lambda stream: a[0].join(stream)"
+        }
+      }
+    },
+    "java/nio/charset/StandardCharsets": {
+      "class type": "enum",
+      "attributes": {
+        "UTF_8": {
+          "access": "static enum"
+        }
+      }
+    },
+    "java/beans/ConstructorProperties": {
+      "annotation": "track"
     }
   },
   "implementation": [

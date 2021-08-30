@@ -69,6 +69,7 @@
        but also allowing python source code injection via an annotation API
 [uuk]: moved instruction definitions to separate file
 [uuk]: added more abstract base classes for extending the current system with own implementations
+[uuk]: added infrastructure to transform java bytecode to python bytecode
 
 tasks to do [maybe moved away for later]:
 - minifier task should minify builtin & bridge library into each only one file

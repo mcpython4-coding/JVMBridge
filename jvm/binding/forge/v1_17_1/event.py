@@ -27,6 +27,8 @@ EventType2EventStage = {
     "(Lnet/minecraftforge/client/event/ModelBakeEvent;)V": ("stage:model:model_bake", lambda e: [None], 0),
 
     "(Lnet/minecraftforge/event/TagsUpdatedEvent;)V": None,
+    "(Lnet/minecraftforge/client/event/RecipesUpdatedEvent;)V": None,
+    "(Lnet/minecraftforge/event/LootTableLoadEvent;)V": None,
 
     "(Lnet/minecraftforge/client/event/RenderGameOverlayEvent;)V": ("render:draw:2d:overlay", lambda e: [None], 1),
     "(Lnet/minecraftforge/client/event/RenderGameOverlayEvent$Pre;)V": ("render:draw:2d:overlay", lambda e: [None], 1),
@@ -50,6 +52,14 @@ EventType2EventStage = {
     "(Lnet/minecraftforge/event/entity/player/PlayerInteractEvent$LeftClickBlock;)V": None,
     "(Lnet/minecraftforge/event/entity/player/PlayerInteractEvent$LeftClickEmpty;)V": None,
     "(Lnet/minecraftforge/client/event/InputEvent$MouseScrollEvent;)V": None,
+    "(Lnet/minecraftforge/event/entity/player/PlayerInteractEvent$RightClickItem;)V": None,
+    "(Lnet/minecraftforge/event/entity/player/AttackEntityEvent;)V": None,
+    "(Lnet/minecraftforge/client/event/GuiScreenEvent$MouseDragEvent$Pre;)V": None,
+    "(Lnet/minecraftforge/client/event/GuiScreenEvent$MouseScrollEvent$Pre;)V": None,
+    "(Lnet/minecraftforge/client/event/GuiScreenEvent$MouseClickedEvent;)V": None,
+    "(Lnet/minecraftforge/client/event/GuiScreenEvent$MouseReleasedEvent;)V": None,
+    "(Lnet/minecraftforge/client/event/GuiScreenEvent$KeyboardCharTypedEvent;)V": None,
+    "(Lnet/minecraftforge/client/event/GuiScreenEvent$KeyboardKeyPressedEvent;)V": None,
 
     "(Lnet/minecraftforge/event/world/BlockEvent$EntityPlaceEvent;)V": None,
     "(Lnet/minecraftforge/event/world/BlockEvent$BreakEvent;)V": None,
@@ -57,6 +67,7 @@ EventType2EventStage = {
     "(Lnet/minecraftforge/client/event/DrawHighlightEvent$HighlightBlock;)V": None,
 
     "(Lnet/minecraftforge/event/entity/player/ItemTooltipEvent;)V": None,
+    "(Lnet/minecraftforge/client/event/RenderTooltipEvent$Pre;)V": None,
     "(Lnet/minecraftforge/event/entity/player/PlayerEvent$PlayerLoggedInEvent;)V": None,
     "(Lnet/minecraftforge/client/event/RenderPlayerEvent;)V": None,
     "(Lnet/minecraftforge/client/event/RenderPlayerEvent$Pre;)V": None,
@@ -72,6 +83,10 @@ EventType2EventStage = {
     "(Lnet/minecraftforge/client/event/GuiScreenEvent$InitGuiEvent;)V": None,
     "(Lnet/minecraftforge/event/entity/EntityJoinWorldEvent;)V": None,
     "(Lnet/minecraftforge/event/entity/player/PlayerEvent$PlayerLoggedOutEvent;)V": None,
+    "(Lnet/minecraftforge/client/event/ClientChatReceivedEvent;)V": None,
+    "(Lnet/minecraftforge/event/entity/player/PlayerContainerEvent$Open;)V": None,
+    "(Lnet/minecraftforge/event/entity/player/EntityItemPickupEvent;)V": None,
+    "(Lnet/minecraftforge/event/entity/player/PlayerEvent$ItemSmeltedEvent;)V": None,
 
     "(Lnet/minecraftforge/client/event/ParticleFactoryRegisterEvent;)V": None,
     "(Lnet/minecraftforge/event/AttachCapabilitiesEvent;)V": None,
@@ -85,6 +100,7 @@ EventType2EventStage = {
     "(Lnet/minecraftforge/event/entity/player/PlayerEvent$HarvestCheck;)V": None,
     "(Lnet/minecraftforge/event/entity/player/PlayerEvent$BreakSpeed;)V": None,
     "(Lnet/minecraftforge/event/entity/player/PlayerEvent$ItemCraftedEvent;)V": None,
+    "(Lnet/minecraftforge/event/entity/player/PlayerEvent$PlayerRespawnEvent;)V": None,
 
     "(Lnet/minecraftforge/event/world/WorldEvent$Load;)V": None,
     "(Lnet/minecraftforge/event/world/ChunkEvent$Load;)V": None,
@@ -94,6 +110,10 @@ EventType2EventStage = {
     "(Lnet/minecraftforge/event/world/WorldEvent$Save;)V": None,
     "(Lnet/minecraftforge/event/world/WorldEvent$Unload;)V": None,
     "(Lnet/minecraftforge/fml/event/server/FMLServerStartedEvent;)V": None,
+    "(Lnet/minecraftforge/client/event/ClientPlayerNetworkEvent$LoggedInEvent;)V": None,
+    "(Lnet/minecraftforge/event/world/ChunkDataEvent$Save;)V": None,
+    "(Lnet/minecraftforge/event/world/ChunkDataEvent$Load;)V": None,
+    "(Lnet/minecraftforge/fml/event/server/FMLServerAboutToStartEvent;)V": None,
 }
 
 
@@ -122,6 +142,7 @@ def subscribeToEvent(cls, obj, args):
             except:
                 if shared.IS_CLIENT:
                     import mcpython.client.state.LoadingExceptionViewState
+                    traceback.print_exc()
                     mcpython.client.state.LoadingExceptionViewState.error_occur(traceback.format_exc())
 
                 raise LoadingInterruptException

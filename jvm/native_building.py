@@ -24,6 +24,12 @@ def className2File(name: str, version) -> typing.Optional[str]:
     elif name.startswith("it/unimi/dsi/fastutil"):
         return local+"/binding/fastutil_index.json"
 
+    elif name.startswith("org/apache/commons/"):
+        return local + "/binding/apache_util.json"
+
+    elif name.startswith("io/netty/"):
+        return local + "/binding/netty_index.json"
+
     if version is None: return
 
     if name.startswith("net/minecraft/") or name.startswith("com/mojang/"):

@@ -67,19 +67,22 @@ class Runtime(AbstractRuntime):
                 )
 
         if method.code_repr is None:
-            try:
-                code = method.attributes["Code"][0]
-            except KeyError:
-                raise StackCollectingException(
-                    f"Abstract method call onto {method} with args {args}; Code attribute not found"
-                )
-            except AttributeError:
-                if not isinstance(method, jvm.Java.JavaMethod):
-                    return method.invoke(args)
+            if isinstance(method, jvm.Java.JavaMethod):
+                try:
+                    code = method.attributes["Code"][0]
+                except KeyError:
+                    raise StackCollectingException(
+                        f"Abstract method call onto {method} with args {args}; Code attribute not found"
+                    )
+                except AttributeError:
+                    if not isinstance(method, jvm.Java.JavaMethod):
+                        return method.invoke(args)
 
-                raise
+                    raise
 
-            method.code_repr = BytecodeRepr(code)
+                method.code_repr = BytecodeRepr(code)
+            else:
+                return method.invoke(args)
 
         stack = self.spawn_stack()
 
@@ -236,7 +239,7 @@ class Stack(AbstractStack):
                 raise
             except:
                 if isinstance(self.method, jvm.Java.JavaMethod):
-                    self.method.print_stats()
+                    self.method.print_stats(current=self.cp)
                 raise StackCollectingException(
                     f"Implementation-wise during invoking {instruction[0].__name__} in {self.method} [index: {self.cp}]"
                 ).add_trace(str(instruction[1])).add_trace(str(instruction[2]))
@@ -307,7 +310,9 @@ class BytecodeRepr(AbstractBytecodeContainer):
 
     def __init__(self, code: jvm.JavaAttributes.CodeParser):
         super().__init__()
+
         self.code = code
+        self.method: jvm.Java.JavaMethod = code.table.parent
 
         self.decoded_code: typing.List[
             typing.Optional[typing.Tuple[BaseInstruction, typing.Any, int]]
@@ -448,12 +453,21 @@ class BytecodeRepr(AbstractBytecodeContainer):
 
             stack.visit()
 
-    def print_stats(self):
+    def print_stats(self, current=None):
         print(f"ByteCodeRepr stats of {self}")
         print(f"code entries: {len(self.decoded_code)}")
-        for i, e in enumerate(self.decoded_code):
-            if e is not None:
-                print(f" - {i}: {e[0].__name__}({repr(e[1]).removeprefix('(').removesuffix(')')})")
+
+        if current is None:
+            for i, e in enumerate(self.decoded_code):
+                if e is not None:
+                    print(f" - {i}: {e[0].__name__}({repr(e[1]).removeprefix('(').removesuffix(')')})")
+        else:
+            for i, e in enumerate(self.decoded_code):
+                if e is not None:
+                    if e == current:
+                        print(f"-> - {i}: {e[0].__name__}({repr(e[1]).removeprefix('(').removesuffix(')')})")
+                    else:
+                        print(f"   - {i}: {e[0].__name__}({repr(e[1]).removeprefix('(').removesuffix(')')})")
 
     def exchange_jump_offsets(self, begin_section: int, end_section: int, replace_section: typing.List, reference_reworker=lambda address, start, old_end, new_end: 0):
         """

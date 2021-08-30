@@ -1,3 +1,4 @@
+import dis
 import sys
 import typing
 from abc import ABC
@@ -98,6 +99,8 @@ class AbstractBytecodeContainer(metaclass=ABCMeta):
         self.code = None
         self.decoded_code = []
 
+        self.method: typing.Optional[AbstractMethod] = None
+
     @abstractmethod
     def prepare_stack(self, stack):
         """
@@ -185,6 +188,26 @@ class AbstractMethod(metaclass=ABCMeta):
         pass
 
 
+class PyBytecodeBuilder:
+    def __init__(self):
+        self.instruction_sequence = []
+
+    def add_instruction(self, instruction_opcode: int, instruction_data=None):
+        pass
+
+    def add_name(self, name: str) -> int:
+        pass
+
+    def add_const(self, const):
+        pass
+
+    def add_comparator(self, comp: str) -> int:
+        pass
+
+    def real_from_offset(self, offset: int) -> int:
+        pass
+
+
 class BaseInstruction(ABC):
     """
     Every instruction has to implement this, everything else does not matter
@@ -220,4 +243,8 @@ class BaseInstruction(ABC):
         old_index: int,
         checker: typing.Callable[[int], int],
     ):
+        pass
+
+    @classmethod
+    def prepare_python_bytecode_instructions(cls, command_index, prepared_data: typing.Any, container: AbstractBytecodeContainer, builder: PyBytecodeBuilder):
         pass

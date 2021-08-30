@@ -14,7 +14,14 @@
     },
     "net/minecraft/network/play/ServerPlayNetHandler": {},
     "net/minecraft/util/IStringSerializable": {},
-    "net/minecraft/client/gui/screen/Screen": {},
+    "net/minecraft/client/gui/screen/Screen": {
+      "methods": {
+        "<init>(Lnet/minecraft/util/text/ITextComponent;)V": {
+          "no effect": true
+        },
+        "func_231173_s_()Z": {}
+      }
+    },
     "net/minecraft/client/gui/AbstractGui": {},
     "net/minecraft/inventory/container/SmithingTableContainer": {},
     "net/minecraft/item/ArrowItem": {},
@@ -23,7 +30,10 @@
         "<init>(Ljava/lang/String;Ljava/lang/String;)V": {
           "wraps": "setattr(a0, 'name', a1+':'+a2)"
         },
-        "<init>(Ljava/lang/String;)V": {}
+        "<init>(Ljava/lang/String;)V": {},
+        "networkProtocolVersion(Ljava/util/function/Supplier;)Lnet/minecraftforge/fml/network/NetworkRegistry$ChannelBuilder;": {
+          "wraps": "cls.vm.get_class('net/minecraftforge/fml/network/NetworkRegistry$ChannelBuilder').create_instance()"
+        }
       }
     },
     "net/minecraft/util/Direction": {
@@ -80,7 +90,11 @@
     "net/minecraft/block/AbstractBlock": {},
     "net/minecraft/tileentity/ITickableTileEntity": {},
     "net/minecraft/potion/Effect": {},
-    "net/minecraft/block/Block": {},
+    "net/minecraft/block/Block": {
+      "methods": {
+        "func_208617_a(DDDDDD)Lnet/minecraft/util/math/shapes/VoxelShape;": {}
+      }
+    },
     "net/minecraft/util/Util": {
       "methods": {
         "func_200696_a(Ljava/lang/Object;Ljava/util/function/Consumer;)Ljava/lang/Object;": {}
@@ -163,6 +177,29 @@
         }
       }
     },
-    "net/minecraft/loot/LootTables": {}
+    "net/minecraft/loot/LootTables": {},
+    "net/minecraft/util/text/StringTextComponent": {
+      "methods": {
+        "<init>(Ljava/lang/String;)V": {
+          "no effect": true
+        }
+      }
+    },
+    "net/minecraft/state/BooleanProperty": {
+      "methods": {
+        "func_177716_a(Ljava/lang/String;)Lnet/minecraft/state/BooleanProperty;": {}
+      }
+    },
+    "net/minecraft/util/math/shapes/VoxelShapes": {
+      "methods": {
+        "func_216384_a(Lnet/minecraft/util/math/shapes/VoxelShape;[Lnet/minecraft/util/math/shapes/VoxelShape;)Lnet/minecraft/util/math/shapes/VoxelShape;": {}
+      }
+    },
+    "net/minecraft/network/datasync/DataSerializers": {
+      "methods": {},
+      "attributes": {
+        "field_187192_b": {}
+      }
+    }
   }
 }

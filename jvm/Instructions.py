@@ -1,11 +1,14 @@
 import array
 import copy
+import dis
 import typing
 from abc import ABC
+from jvm.util import PyOpcodes
 
 import jvm.Java
 import jvm.util
 from jvm.api import BaseInstruction, AbstractRuntime, AbstractBytecodeContainer, AbstractStack
+from jvm.api import PyBytecodeBuilder
 from jvm.JavaExceptionStack import StackCollectingException
 
 
@@ -54,6 +57,10 @@ class NoOp(OpcodeInstruction):
     def invoke(cls, data: typing.Any, stack: AbstractStack) -> bool:
         pass
 
+    @classmethod
+    def prepare_python_bytecode_instructions(cls, command_index, prepared_data: typing.Any, container: AbstractBytecodeContainer, builder: PyBytecodeBuilder):
+        builder.add_instruction(PyOpcodes.NOP)
+
 
 @AbstractBytecodeContainer.register_instruction
 class NoOpPop(OpcodeInstruction):
@@ -67,6 +74,10 @@ class NoOpPop(OpcodeInstruction):
     @classmethod
     def validate_stack(cls, command_index, prepared_data: typing.Any, container: AbstractBytecodeContainer, stack: AbstractStack):
         stack.pop()
+        
+    @classmethod
+    def prepare_python_bytecode_instructions(cls, command_index, prepared_data: typing.Any, container: AbstractBytecodeContainer, builder: PyBytecodeBuilder):
+        builder.add_instruction(PyOpcodes.POP_TOP)
 
 
 @AbstractBytecodeContainer.register_instruction
@@ -84,6 +95,13 @@ class Any2Byte(OpcodeInstruction):
         stack.pop()
         stack.push("B")
 
+    @classmethod
+    def prepare_python_bytecode_instructions(cls, command_index, prepared_data: typing.Any, container: AbstractBytecodeContainer, builder: PyBytecodeBuilder):
+        builder.add_instruction(PyOpcodes.LOAD_NAME, builder.add_name("bytes"))
+        builder.add_instruction(PyOpcodes.ROT_TWO)
+        builder.add_instruction(PyOpcodes.BUILD_LIST, 1)
+        builder.add_instruction(PyOpcodes.CALL_FUNCTION, 1)
+
 
 @AbstractBytecodeContainer.register_instruction
 class Any2Float(OpcodeInstruction):
@@ -99,6 +117,12 @@ class Any2Float(OpcodeInstruction):
     def validate_stack(cls, command_index, prepared_data: typing.Any, container: AbstractBytecodeContainer, stack: AbstractStack):
         stack.pop()
         stack.push("F")
+
+    @classmethod
+    def prepare_python_bytecode_instructions(cls, command_index, prepared_data: typing.Any, container: AbstractBytecodeContainer, builder: PyBytecodeBuilder):
+        builder.add_instruction(PyOpcodes.LOAD_NAME, builder.add_name("float"))
+        builder.add_instruction(PyOpcodes.ROT_TWO)
+        builder.add_instruction(PyOpcodes.CALL_FUNCTION, 1)
 
 
 @AbstractBytecodeContainer.register_instruction
@@ -127,6 +151,12 @@ class Any2Int(OpcodeInstruction):
         stack.pop()
         stack.push("I")
 
+    @classmethod
+    def prepare_python_bytecode_instructions(cls, command_index, prepared_data: typing.Any, container: AbstractBytecodeContainer, builder: PyBytecodeBuilder):
+        builder.add_instruction(PyOpcodes.LOAD_NAME, builder.add_name("int"))
+        builder.add_instruction(PyOpcodes.ROT_TWO)
+        builder.add_instruction(PyOpcodes.CALL_FUNCTION, 1)
+
 
 @AbstractBytecodeContainer.register_instruction
 class Any2Long(Any2Int):
@@ -154,6 +184,10 @@ class ConstPush(OpcodeInstruction, ABC):
     @classmethod
     def validate_stack(cls, command_index, prepared_data: typing.Any, container: AbstractBytecodeContainer, stack: AbstractStack):
         stack.push(cls.PUSH_TYPE)
+
+    @classmethod
+    def prepare_python_bytecode_instructions(cls, command_index, prepared_data: typing.Any, container: AbstractBytecodeContainer, builder: PyBytecodeBuilder):
+        builder.add_instruction(PyOpcodes.LOAD_CONST, builder.add_const(cls.PUSHES))
 
 
 @AbstractBytecodeContainer.register_instruction
@@ -278,6 +312,10 @@ class BiPush(OpcodeInstruction):
     def validate_stack(cls, command_index, prepared_data: typing.Any, container: AbstractBytecodeContainer, stack: AbstractStack):
         stack.push("B")
 
+    @classmethod
+    def prepare_python_bytecode_instructions(cls, command_index, prepared_data: typing.Any, container: AbstractBytecodeContainer, builder: PyBytecodeBuilder):
+        builder.add_instruction(PyOpcodes.LOAD_CONST, builder.add_const(bytes([prepared_data])))
+
 
 @AbstractBytecodeContainer.register_instruction
 class SiPush(OpcodeInstruction):
@@ -297,6 +335,11 @@ class SiPush(OpcodeInstruction):
     def validate_stack(cls, command_index, prepared_data: typing.Any, container: AbstractBytecodeContainer,
                        stack: AbstractStack):
         stack.push("S")
+
+    @classmethod
+    def prepare_python_bytecode_instructions(cls, command_index, prepared_data: typing.Any,
+                                             container: AbstractBytecodeContainer, builder: PyBytecodeBuilder):
+        builder.add_instruction(PyOpcodes.LOAD_CONST, builder.add_const(prepared_data))
 
 
 @AbstractBytecodeContainer.register_instruction
@@ -323,6 +366,13 @@ class LDC(OpcodeInstruction):
                        stack: AbstractStack):
         stack.push(None)  # todo: add type
 
+    @classmethod
+    def prepare_python_bytecode_instructions(cls, command_index, prepared_data: typing.Any, container: AbstractBytecodeContainer, builder: PyBytecodeBuilder):
+        builder.add_instruction(PyOpcodes.LOAD_CONST, builder.add_const(jvm.util.decode_cp_constant(
+            container.method.class_file.cp[prepared_data - 1],
+            version=container.method.class_file.internal_version,
+        )))
+
 
 @AbstractBytecodeContainer.register_instruction
 class LDC_W(OpcodeInstruction):
@@ -348,6 +398,14 @@ class LDC_W(OpcodeInstruction):
                        stack: AbstractStack):
         stack.push(None)  # todo: add type
 
+    @classmethod
+    def prepare_python_bytecode_instructions(cls, command_index, prepared_data: typing.Any,
+                                             container: AbstractBytecodeContainer, builder: PyBytecodeBuilder):
+        builder.add_instruction(PyOpcodes.LOAD_CONST, builder.add_const(jvm.util.decode_cp_constant(
+            container.method.class_file.cp[prepared_data - 1],
+            version=container.method.class_file.internal_version,
+        )))
+
 
 @AbstractBytecodeContainer.register_instruction
 class ArrayLoad(OpcodeInstruction):
@@ -371,6 +429,11 @@ class ArrayLoad(OpcodeInstruction):
         stack.pop_expect_type("i", "j")
         stack.pop()
         stack.push(None)  # todo: add type here
+
+    @classmethod
+    def prepare_python_bytecode_instructions(cls, command_index, prepared_data: typing.Any,
+                                             container: AbstractBytecodeContainer, builder: PyBytecodeBuilder):
+        builder.add_instruction(PyOpcodes.BINARY_SUBSCR)
 
 
 @AbstractBytecodeContainer.register_instruction
@@ -398,6 +461,11 @@ class ArrayStore(OpcodeInstruction):
         stack.pop_expect_type("i", "j")
         stack.pop()
 
+    @classmethod
+    def prepare_python_bytecode_instructions(cls, command_index, prepared_data: typing.Any, container: AbstractBytecodeContainer, builder: PyBytecodeBuilder):
+        builder.add_instruction(PyOpcodes.ROT_THREE)
+        builder.add_instruction(PyOpcodes.STORE_SUBSCR)
+
 
 @AbstractBytecodeContainer.register_instruction
 class Load(OpcodeInstruction):
@@ -424,6 +492,10 @@ class Load(OpcodeInstruction):
     def validate_stack(cls, command_index, prepared_data: typing.Any, container: AbstractBytecodeContainer, stack: AbstractStack):
         stack.push(None)
 
+    @classmethod
+    def prepare_python_bytecode_instructions(cls, command_index, prepared_data: typing.Any, container: AbstractBytecodeContainer, builder: PyBytecodeBuilder):
+        builder.add_instruction(PyOpcodes.LOAD_FAST, prepared_data)
+
 
 @AbstractBytecodeContainer.register_instruction
 class Load0(OpcodeInstruction):
@@ -444,6 +516,11 @@ class Load0(OpcodeInstruction):
     def validate_stack(cls, command_index, prepared_data: typing.Any, container: AbstractBytecodeContainer,
                        stack: AbstractStack):
         stack.push(None)
+
+    @classmethod
+    def prepare_python_bytecode_instructions(cls, command_index, prepared_data: typing.Any,
+                                             container: AbstractBytecodeContainer, builder: PyBytecodeBuilder):
+        builder.add_instruction(PyOpcodes.LOAD_FAST, 0)
 
 
 @AbstractBytecodeContainer.register_instruction
@@ -466,6 +543,11 @@ class Load1(OpcodeInstruction):
                        stack: AbstractStack):
         stack.push(None)
 
+    @classmethod
+    def prepare_python_bytecode_instructions(cls, command_index, prepared_data: typing.Any,
+                                             container: AbstractBytecodeContainer, builder: PyBytecodeBuilder):
+        builder.add_instruction(PyOpcodes.LOAD_FAST, 1)
+
 
 @AbstractBytecodeContainer.register_instruction
 class Load2(OpcodeInstruction):
@@ -487,6 +569,11 @@ class Load2(OpcodeInstruction):
                        stack: AbstractStack):
         stack.push(None)
 
+    @classmethod
+    def prepare_python_bytecode_instructions(cls, command_index, prepared_data: typing.Any,
+                                             container: AbstractBytecodeContainer, builder: PyBytecodeBuilder):
+        builder.add_instruction(PyOpcodes.LOAD_FAST, 2)
+
 
 @AbstractBytecodeContainer.register_instruction
 class Load3(OpcodeInstruction):
@@ -507,6 +594,11 @@ class Load3(OpcodeInstruction):
     def validate_stack(cls, command_index, prepared_data: typing.Any, container: AbstractBytecodeContainer,
                        stack: AbstractStack):
         stack.push(None)
+
+    @classmethod
+    def prepare_python_bytecode_instructions(cls, command_index, prepared_data: typing.Any,
+                                             container: AbstractBytecodeContainer, builder: PyBytecodeBuilder):
+        builder.add_instruction(PyOpcodes.LOAD_FAST, 3)
 
 
 @AbstractBytecodeContainer.register_instruction
@@ -535,6 +627,11 @@ class Store(OpcodeInstruction):
                        stack: AbstractStack):
         stack.pop()
 
+    @classmethod
+    def prepare_python_bytecode_instructions(cls, command_index, prepared_data: typing.Any,
+                                             container: AbstractBytecodeContainer, builder: PyBytecodeBuilder):
+        builder.add_instruction(PyOpcodes.STORE_FAST, prepared_data)
+
 
 @AbstractBytecodeContainer.register_instruction
 class Store0(OpcodeInstruction):
@@ -555,6 +652,11 @@ class Store0(OpcodeInstruction):
     def validate_stack(cls, command_index, prepared_data: typing.Any, container: AbstractBytecodeContainer,
                        stack: AbstractStack):
         stack.pop()
+
+    @classmethod
+    def prepare_python_bytecode_instructions(cls, command_index, prepared_data: typing.Any,
+                                             container: AbstractBytecodeContainer, builder: PyBytecodeBuilder):
+        builder.add_instruction(PyOpcodes.STORE_FAST, 0)
 
 
 @AbstractBytecodeContainer.register_instruction
@@ -577,6 +679,11 @@ class Store1(OpcodeInstruction):
                        stack: AbstractStack):
         stack.pop()
 
+    @classmethod
+    def prepare_python_bytecode_instructions(cls, command_index, prepared_data: typing.Any,
+                                             container: AbstractBytecodeContainer, builder: PyBytecodeBuilder):
+        builder.add_instruction(PyOpcodes.STORE_FAST, 1)
+
 
 @AbstractBytecodeContainer.register_instruction
 class Store2(OpcodeInstruction):
@@ -597,6 +704,11 @@ class Store2(OpcodeInstruction):
     def validate_stack(cls, command_index, prepared_data: typing.Any, container: AbstractBytecodeContainer,
                        stack: AbstractStack):
         stack.pop()
+
+    @classmethod
+    def prepare_python_bytecode_instructions(cls, command_index, prepared_data: typing.Any,
+                                             container: AbstractBytecodeContainer, builder: PyBytecodeBuilder):
+        builder.add_instruction(PyOpcodes.STORE_FAST, 2)
 
 
 @AbstractBytecodeContainer.register_instruction
@@ -619,6 +731,11 @@ class Store3(OpcodeInstruction):
                        stack: AbstractStack):
         stack.pop()
 
+    @classmethod
+    def prepare_python_bytecode_instructions(cls, command_index, prepared_data: typing.Any,
+                                             container: AbstractBytecodeContainer, builder: PyBytecodeBuilder):
+        builder.add_instruction(PyOpcodes.STORE_FAST, 3)
+
 
 @AbstractBytecodeContainer.register_instruction
 class POP(OpcodeInstruction):
@@ -632,6 +749,10 @@ class POP(OpcodeInstruction):
     def validate_stack(cls, command_index, prepared_data: typing.Any, container: AbstractBytecodeContainer,
                        stack: AbstractStack):
         stack.pop()
+
+    @classmethod
+    def prepare_python_bytecode_instructions(cls, command_index, prepared_data: typing.Any, container: AbstractBytecodeContainer, builder: PyBytecodeBuilder):
+        builder.add_instruction(PyOpcodes.POP_TOP)
 
 
 @AbstractBytecodeContainer.register_instruction
@@ -649,6 +770,11 @@ class DUP(OpcodeInstruction):
         t = stack.pop()
         stack.push(t)
         stack.push(t)
+
+    @classmethod
+    def prepare_python_bytecode_instructions(cls, command_index, prepared_data: typing.Any,
+                                             container: AbstractBytecodeContainer, builder: PyBytecodeBuilder):
+        builder.add_instruction(PyOpcodes.DUP_TOP)
 
 
 @AbstractBytecodeContainer.register_instruction
@@ -669,6 +795,12 @@ class DUP_X1(OpcodeInstruction):
         stack.push(b)
         stack.push(a)
 
+    @classmethod
+    def prepare_python_bytecode_instructions(cls, command_index, prepared_data: typing.Any,
+                                             container: AbstractBytecodeContainer, builder: PyBytecodeBuilder):
+        builder.add_instruction(PyOpcodes.DUP_TOP)
+        builder.add_instruction(PyOpcodes.ROT_THREE)
+
 
 @AbstractBytecodeContainer.register_instruction
 class ADD(OpcodeInstruction):
@@ -684,6 +816,10 @@ class ADD(OpcodeInstruction):
         a = stack.pop()
         stack.pop_expect_type(a)
         stack.push(a)
+
+    @classmethod
+    def prepare_python_bytecode_instructions(cls, command_index, prepared_data: typing.Any, container: AbstractBytecodeContainer, builder: PyBytecodeBuilder):
+        builder.add_instruction(PyOpcodes.BINARY_ADD)
 
 
 @AbstractBytecodeContainer.register_instruction
@@ -701,6 +837,11 @@ class SUB(OpcodeInstruction):
         stack.pop_expect_type(a)
         stack.push(a)
 
+    @classmethod
+    def prepare_python_bytecode_instructions(cls, command_index, prepared_data: typing.Any,
+                                             container: AbstractBytecodeContainer, builder: PyBytecodeBuilder):
+        builder.add_instruction(PyOpcodes.BINARY_SUBTRACT)
+
 
 @AbstractBytecodeContainer.register_instruction
 class IDIV(OpcodeInstruction):
@@ -716,6 +857,11 @@ class IDIV(OpcodeInstruction):
         a = stack.pop()
         stack.pop_expect_type(a)
         stack.push(a)
+
+    @classmethod
+    def prepare_python_bytecode_instructions(cls, command_index, prepared_data: typing.Any,
+                                             container: AbstractBytecodeContainer, builder: PyBytecodeBuilder):
+        builder.add_instruction(PyOpcodes.BINARY_FLOOR_DIVIDE)
 
 
 @AbstractBytecodeContainer.register_instruction
@@ -733,6 +879,11 @@ class FDIV(OpcodeInstruction):
         stack.pop_expect_type(a)
         stack.push(a)
 
+    @classmethod
+    def prepare_python_bytecode_instructions(cls, command_index, prepared_data: typing.Any,
+                                             container: AbstractBytecodeContainer, builder: PyBytecodeBuilder):
+        builder.add_instruction(PyOpcodes.BINARY_TRUE_DIVIDE)
+
 
 @AbstractBytecodeContainer.register_instruction
 class SHL(OpcodeInstruction):
@@ -748,6 +899,11 @@ class SHL(OpcodeInstruction):
         a = stack.pop()
         stack.pop_expect_type(a)
         stack.push(a)
+
+    @classmethod
+    def prepare_python_bytecode_instructions(cls, command_index, prepared_data: typing.Any,
+                                             container: AbstractBytecodeContainer, builder: PyBytecodeBuilder):
+        builder.add_instruction(PyOpcodes.BINARY_LSHIFT)
 
 
 @AbstractBytecodeContainer.register_instruction
@@ -765,6 +921,11 @@ class SHR(OpcodeInstruction):
         stack.pop_expect_type(a)
         stack.push(a)
 
+    @classmethod
+    def prepare_python_bytecode_instructions(cls, command_index, prepared_data: typing.Any,
+                                             container: AbstractBytecodeContainer, builder: PyBytecodeBuilder):
+        builder.add_instruction(PyOpcodes.BINARY_RSHIFT)
+
 
 @AbstractBytecodeContainer.register_instruction
 class AND(OpcodeInstruction):
@@ -781,6 +942,11 @@ class AND(OpcodeInstruction):
         stack.pop_expect_type(a)
         stack.push(a)
 
+    @classmethod
+    def prepare_python_bytecode_instructions(cls, command_index, prepared_data: typing.Any,
+                                             container: AbstractBytecodeContainer, builder: PyBytecodeBuilder):
+        builder.add_instruction(PyOpcodes.BINARY_AND)
+
 
 @AbstractBytecodeContainer.register_instruction
 class OR(OpcodeInstruction):
@@ -796,6 +962,11 @@ class OR(OpcodeInstruction):
         a = stack.pop()
         stack.pop_expect_type(a)
         stack.push(a)
+
+    @classmethod
+    def prepare_python_bytecode_instructions(cls, command_index, prepared_data: typing.Any,
+                                             container: AbstractBytecodeContainer, builder: PyBytecodeBuilder):
+        builder.add_instruction(PyOpcodes.BINARY_OR)
 
 
 @AbstractBytecodeContainer.register_instruction
@@ -820,10 +991,18 @@ class IINC(OpcodeInstruction):
         if prepared_data[0] >= container.code.max_locals:
             raise StackCollectingException(f"local var index {prepared_data[0]} out of range")
 
+    @classmethod
+    def prepare_python_bytecode_instructions(cls, command_index, prepared_data: typing.Any,
+                                             container: AbstractBytecodeContainer, builder: PyBytecodeBuilder):
+        builder.add_instruction(PyOpcodes.LOAD_FAST, prepared_data[0])
+        builder.add_instruction(PyOpcodes.LOAD_CONST, builder.add_const(prepared_data[1]))
+        builder.add_instruction(PyOpcodes.INPLACE_ADD)
+        builder.add_instruction(PyOpcodes.STORE_FAST, prepared_data[0])
+
 
 @AbstractBytecodeContainer.register_instruction
 class CompareTwo(OpcodeInstruction):
-    OPCODES = {0x94}
+    OPCODES = {0x94, 0x95, 0x96, 0x97, 0x98}
 
     @classmethod
     def invoke(cls, data: typing.Any, stack: AbstractStack):
@@ -841,6 +1020,25 @@ class CompareTwo(OpcodeInstruction):
         a = stack.pop()
         stack.pop_expect_type(a)
         stack.push("i")
+
+    @classmethod
+    def prepare_python_bytecode_instructions(cls, command_index, prepared_data: typing.Any,
+                                             container: AbstractBytecodeContainer, builder: PyBytecodeBuilder):
+        builder.add_instruction(PyOpcodes.DUP_TOP_TWO)
+        builder.add_instruction(PyOpcodes.COMPARE_OP, builder.add_comparator("=="))
+        builder.add_instruction(PyOpcodes.POP_JUMP_IF_FALSE, builder.real_from_offset(6))
+
+        builder.add_instruction(PyOpcodes.LOAD_CONST, builder.add_const(0))
+        builder.add_instruction(PyOpcodes.JUMP_ABSOLUTE, builder.real_from_offset(16))
+
+        builder.add_instruction(PyOpcodes.DUP_TOP_TWO)
+        builder.add_instruction(PyOpcodes.COMPARE_OP, builder.add_comparator(">"))
+        builder.add_instruction(PyOpcodes.POP_JUMP_IF_FALSE, builder.real_from_offset(6))
+
+        builder.add_instruction(PyOpcodes.LOAD_CONST, builder.add_const(1))
+        builder.add_instruction(PyOpcodes.JUMP_ABSOLUTE, builder.real_from_offset(4))
+
+        builder.add_instruction(PyOpcodes.LOAD_CONST, builder.add_const(-1))
 
 
 class CompareHelper(OpcodeInstruction, ABC):
@@ -899,7 +1097,7 @@ class IfLT(DoubleCompare):
 
 @AbstractBytecodeContainer.register_instruction
 class IfGT(DoubleCompare):
-    OPCODES = {0x98}
+    OPCODES = {0xA3}
 
     @classmethod
     def invoke(cls, data: typing.Any, stack: AbstractStack) -> bool:
@@ -1122,7 +1320,7 @@ class GetField(CPLinkedInstruction):
         try:
             stack.push(obj.get_field(name))
         except (KeyError, AttributeError):
-            if isinstance(obj.get_class(), jvm.Java.JavaBytecodeClass):
+            if hasattr(obj, "get_class") and isinstance(obj.get_class(), jvm.Java.JavaBytecodeClass):
                 raise StackCollectingException(
                     f"AttributeError: object {obj} (type {type(obj)}) has no attribute {name}"
                 ) from None

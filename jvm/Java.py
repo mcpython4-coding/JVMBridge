@@ -164,11 +164,11 @@ class JavaMethod(AbstractMethod):
 
         return data
 
-    def print_stats(self):
+    def print_stats(self, current=None):
         print(f"method {repr(self)}")
 
         if self.code_repr is not None:
-            self.code_repr.print_stats()
+            self.code_repr.print_stats(current=current)
 
 
 class JavaBytecodeClass(AbstractJavaClass):

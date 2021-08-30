@@ -4,6 +4,21 @@
       "methods": {
         "checkNotNull(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;": {}
       }
+    },
+    "com/google/common/collect/Multiset$Entry": {
+      "methods": {
+        "getCount()I": {}
+      }
+    },
+    "com/google/common/annotations/Beta": {
+      "annotation": "skip"
+    },
+    "com/google/common/collect/Lists": {
+      "methods": {
+        "newLinkedList()Ljava/util/LinkedList;": {
+          "wraps": "list()"
+        }
+      }
     }
   },
   "implementation": [

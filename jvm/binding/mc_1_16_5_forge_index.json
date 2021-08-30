@@ -15,6 +15,14 @@
       "attributes": {
         "CLIENT": {
           "access": "static enum"
+        },
+        "DEDICATED_SERVER": {
+          "access": "static enum"
+        }
+      },
+      "methods": {
+        "isClient()Z": {
+          "wraps": "CLIENT in a[0]"
         }
       }
     },
@@ -39,8 +47,12 @@
         "HIGHEST": {
           "access": "static enum"
         },
-        "NORMAL": {},
-        "LOW": {}
+        "NORMAL": {
+          "access": "static enum"
+        },
+        "LOW": {
+          "access": "static enum"
+        }
       }
     },
     "net/minecraftforge/fml/common/Mod$EventBusSubscriber$Bus": {
@@ -149,6 +161,9 @@
         },
         "simpleChannel()Lnet/minecraftforge/fml/network/simple/SimpleChannel;": {
           "wraps": "cls.vm.get_class('net/minecraftforge/fml/network/simple/SimpleChannel', version=cls.internal_version).create_instance()"
+        },
+        "eventNetworkChannel()Lnet/minecraftforge/fml/network/event/EventNetworkChannel;": {
+          "wraps": "cls.vm.get_class('net/minecraftforge/fml/network/event/EventNetworkChannel').create_instance()"
         }
       }
     },
@@ -157,7 +172,11 @@
         "registerMessage(ILjava/lang/Class;Ljava/util/function/BiConsumer;Ljava/util/function/Function;Ljava/util/function/BiConsumer;)Lnet/minecraftforge/fml/network/simple/IndexedMessageCodec$MessageHandler;": {}
       }
     },
-    "net/minecraftforge/fml/loading/FMLEnvironment": {},
+    "net/minecraftforge/fml/loading/FMLEnvironment": {
+      "attributes": {
+        "dist": {}
+      }
+    },
     "net/minecraftforge/fml/ModLoadingContext": {
       "methods": {
         "get()Lnet/minecraftforge/fml/ModLoadingContext;": {
@@ -181,6 +200,11 @@
         "INSTANCE": {
           "access": "static"
         }
+      },
+      "methods": {
+        "register(Ljava/lang/Class;Lnet/minecraftforge/common/capabilities/Capability$IStorage;Ljava/util/concurrent/Callable;)V": {
+          "no effect": true
+        }
       }
     },
     "net/minecraftforge/common/MinecraftForge": {
@@ -197,7 +221,17 @@
         }
       }
     },
-    "net/minecraftforge/fml/ModList": {},
+    "net/minecraftforge/fml/ModList": {
+      "methods": {
+        "get()Lnet/minecraftforge/fml/ModList;": {
+          "wraps": "shard.mod_loader",
+          "access": "static"
+        },
+        "getModFileById(Ljava/lang/String;)Lnet/minecraftforge/fml/loading/moddiscovery/ModFileInfo;": {
+          "wraps": "shared.mod_loader[a1].container"
+        }
+      }
+    },
     "net/minecraftforge/fml/InterModComms": {},
     "net/minecraftforge/fml/network/NetworkRegistry": {
       "methods": {
@@ -223,6 +257,30 @@
         }
       }
     },
-    "net/minecraftforge/client/event/GuiScreenEvent$DrawScreenEvent$Post": {}
+    "net/minecraftforge/client/event/GuiScreenEvent$DrawScreenEvent$Post": {},
+    "net/minecraftforge/client/event/RenderTooltipEvent$PostText": {},
+    "net/minecraftforge/fml/loading/moddiscovery/ModFileInfo": {
+      "wraps": "mcpython.common.mod.ModLoader:ModContainer",
+      "methods": {
+        "getMods()Ljava/util/List;": {
+          "wraps": "a0.loaded_mods"
+        }
+      }
+    },
+    "net/minecraftforge/fml/network/event/EventNetworkChannel": {
+      "methods": {
+        "addListener(Ljava/util/function/Consumer;)V": {
+          "no effect": true
+        }
+      }
+    },
+    "net/minecraftforge/fml/config/$Type": {
+      "class type": "enum",
+      "attributes": {
+        "CLIENT": {
+          "access": "static enum"
+        }
+      }
+    }
   }
 }

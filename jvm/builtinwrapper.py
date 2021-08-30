@@ -59,8 +59,13 @@ class NoMethod(jvm.api.AbstractMethod):
         self.name = name
         self.signature = signature
 
+        self.warned = False
+
     def invoke(self, args):
-        print(f"[BUILTIN][WARN] method {self} was invoked without implementation")
+
+        if not self.warned:
+            print(f"[BUILTIN][WARN] method {self} was invoked without implementation")
+            self.warned = True
 
     def get_class(self):
         return self.class_file
@@ -106,6 +111,8 @@ class NativeClass(jvm.api.AbstractJavaClass):
         self.report_annotations = -1
 
         self.enum_obj_counter = 0
+
+        self.vm = jvm.api.vm
 
     def __repr__(self):
         return f"NativeClass({self.name}@{hex(id(self))[2:]})"
