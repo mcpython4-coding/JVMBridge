@@ -116,9 +116,6 @@ class NativeClass(jvm.api.AbstractJavaClass):
 
         self.vm = jvm.api.vm
 
-    def __repr__(self):
-        return f"NativeClass({self.name}@{hex(id(self))[2:]})"
-
     def get_method(self, name: str, signature: str, inner=False):
         identifier = name + signature
 
@@ -141,7 +138,7 @@ class NativeClass(jvm.api.AbstractJavaClass):
         if name not in self.static_attributes:
             print(f"[NATIVE] class {self.name} is missing attribute {name}")
 
-            addClassAttribute(self.name, self.internal_version, name)
+            addClassAttribute(self.name, self.internal_version, name, static=True)
 
             return self.static_attributes.setdefault(name, None)
 
@@ -179,7 +176,7 @@ class NativeClass(jvm.api.AbstractJavaClass):
             self.method_table[signature] = method
 
     def __repr__(self):
-        return f"NativeClass(name={self.name},bound_version={self.internal_version})"
+        return f"NativeClass@{hex(id(self))[2:]}(name={self.name},bound_version={self.internal_version})"
 
 
 class PyObjWrappingClass(NativeClass):
@@ -218,7 +215,7 @@ class NativeClassInstance(jvm.api.AbstractJavaClassInstance):
         return self.cls
 
     def __repr__(self):
-        return f"NativeClassInstance@{hex(id(self))[2:]}(of={self.cls})"
+        return f"NativeClassInstance@{hex(id(self))[2:]}(of={self.cls},fields={self.fields})"
 
 
 class PyObjWrappingClassInstance(jvm.api.AbstractJavaClassInstance):

@@ -56,7 +56,7 @@ def dumpClassCreationToFiles(name: str, version):
         simplejson.dump(data, f, indent="  ", sort_keys=True)
 
 
-def addClassAttribute(cls_name: str, version, attr_name: str):
+def addClassAttribute(cls_name: str, version, attr_name: str, static=False):
     file = className2File(cls_name, version)
 
     if file is None: return
@@ -64,7 +64,12 @@ def addClassAttribute(cls_name: str, version, attr_name: str):
     with open(file) as f:
         data = simplejson.load(f)
 
-    data.setdefault("classes", {}).setdefault(cls_name, {}).setdefault("attributes", {})[attr_name] = {}
+    config = {}
+
+    if static:
+        config["access"] = "static"
+
+    data.setdefault("classes", {}).setdefault(cls_name, {}).setdefault("attributes", {})[attr_name] = config
 
     with open(file, mode="w") as f:
         simplejson.dump(data, f, indent="  ")

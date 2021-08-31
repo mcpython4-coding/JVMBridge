@@ -74,7 +74,8 @@
         },
         "ordinal()I": {
           "wraps": "a0.fields['ordinal']"
-        }
+        },
+        "name()Ljava/lang/String;": {}
       },
       "super": "java/lang/Class"
     },
@@ -91,6 +92,12 @@
         },
         "valueOf(I)Ljava/lang/Integer;": {
           "wraps": "a0"
+        },
+        "intValue()I": {
+          "wraps": "a0"
+        },
+        "equals(Ljava/lang/Object;)Z": {
+          "wraps": "a0 == a1"
         }
       },
       "wraps": ":int"
@@ -106,12 +113,24 @@
       },
       "wraps": ":object"
     },
-    "java/lang/RuntimeException": {},
+    "java/lang/RuntimeException": {
+      "attributes": {
+        "message": {}
+      },
+      "methods": {
+        "<init>(Ljava/lang/String;)V": {
+          "wraps": "a0.fields.update({'message': a1})"
+        }
+      }
+    },
     "java/lang/String": {
       "methods": {
         "equals(Ljava/lang/Object;)Z": {},
         "getBytes(Ljava/nio/charset/Charset;)[B": {
           "wraps": "a0.encode('utf-8')"
+        },
+        "format(Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;": {
+          "wraps": "a0 % tuple(a1)"
         }
       }
     },
@@ -170,6 +189,13 @@
     "java/lang/reflect/Field": {
       "methods": {
         "get(Ljava/lang/Object;)Ljava/lang/Object;": {}
+      }
+    },
+    "java/lang/reflect/Method": {
+      "methods": {
+        "accept(Ljava/lang/Object;)V": {
+          "wraps": "a0(a1)"
+        }
       }
     },
     "java/math/RoundingMode": {
@@ -307,6 +333,9 @@
         },
         "stream()Ljava/util/stream/Stream;": {
           "wraps": "iter(a0) if isinstance(a0, list) else iter(a0.underlying)"
+        },
+        "get(I)Ljava/lang/Object;": {
+          "wraps": "a0[a1]"
         }
       },
       "wraps": ":list"
@@ -331,11 +360,30 @@
         "get(Ljava/lang/Object;)Ljava/lang/Object;": {
           "wraps": "a0[a1]"
         },
+        "isEmpty()Z": {
+          "wraps": "len(a0) == 0"
+        },
         "put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;": {
           "wraps": "a0.setdefault(a1, a2)"
+        },
+        "size()I": {
+          "wraps": "len(a0)"
+        },
+        "entrySet()Ljava/util/Set;": {
+          "wraps": "list(a0.items())"
         }
       },
       "wraps": ":dict"
+    },
+    "java/util/Map$Entry": {
+      "methods": {
+        "getValue()Ljava/lang/Object;": {
+          "wraps": "a0[1]"
+        },
+        "getKey()Ljava/lang/Object;": {
+          "wraps": "a0[0]"
+        }
+      }
     },
     "java/util/Objects": {
       "methods": {
@@ -368,12 +416,28 @@
     },
     "java/util/Set": {
       "methods": {
-        "iterator()Ljava/util/Iterator;": {}
+        "iterator()Ljava/util/Iterator;": {
+          "wraps": "iter(a0)"
+        },
+        "forEach(Ljava/util/function/Consumer;)V": {
+          "wraps": "list(map(a1, a0)) == 0"
+        },
+        "stream()Ljava/util/stream/Stream;": {
+          "wraps": "iter(a0)"
+        }
       }
     },
     "java/util/TreeMap": {
       "methods": {
-        "entrySet()Ljava/util/Set;": {},
+        "containsKey(Ljava/lang/Object;)Z": {
+          "wraps": "a1 in a0"
+        },
+        "entrySet()Ljava/util/Set;": {
+          "wraps": "list(a0.items())"
+        },
+        "get(Ljava/lang/Object;)Ljava/lang/Object;": {
+          "wraps": "a0[a1]"
+        },
         "put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;": {
           "wraps": "a0.setdefault(a1, a2)"
         }
@@ -412,6 +476,13 @@
       }
     },
     "java/util/function/BiPredicate": {},
+    "java/util/function/Consumer": {
+      "methods": {
+        "accept(Ljava/lang/Object;)V": {
+          "wraps": "a0(a1)"
+        }
+      }
+    },
     "java/util/function/Predicate": {
       "wraps": "typing:Callable"
     },
@@ -427,6 +498,9 @@
     },
     "java/util/stream/Stream": {
       "methods": {
+        "allMatch(Ljava/util/function/Predicate;)Z": {
+          "wraps": "all(map(a1, a0))"
+        },
         "collect(Ljava/util/stream/Collector;)Ljava/lang/Object;": {
           "wraps": "a[1](a[0])"
         },

@@ -2,9 +2,7 @@
   "classes": {
     "com/google/gson/Gson": {
       "methods": {
-        "fromJson(Ljava/lang/String;Ljava/lang/reflect/Type;)Ljava/lang/Object;": {
-          "wraps": "a2.create_instance()"
-        },
+        "fromJson(Ljava/lang/String;Ljava/lang/reflect/Type;)Ljava/lang/Object;": {},
         "toJson(Ljava/lang/Object;)Ljava/lang/String;": {
           "wraps": "json.dumps(a1) if isinstance(a1, (str, int, float, list, dict)) else ''"
         }

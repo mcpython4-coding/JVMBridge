@@ -1,18 +1,66 @@
 {
-  "version attribute": "1.17.1",
   "classes": {
-    "net/minecraftforge/fml/common/Mod": {
-      "wraps": "mcpython.common.mod.Mod:Mod",
-      "annotation": "report"
-    },
     "net/minecraftforge/api/distmarker/Dist": {
-      "class type": "enum",
       "annotation": "track",
       "attributes": {
         "CLIENT": {
           "access": "static enum"
         }
+      },
+      "class type": "enum"
+    },
+    "net/minecraftforge/api/distmarker/OnlyIn": {
+      "annotation": "report"
+    },
+    "net/minecraftforge/client/event/GuiScreenEvent$PotionShiftEvent": {
+      "methods": {
+        "setCanceled(Z)V": {
+          "no effect": true
+        }
       }
+    },
+    "net/minecraftforge/client/event/RenderGameOverlayEvent": {},
+    "net/minecraftforge/common/BiomeManager$BiomeType": {
+      "attributes": {
+        "COOL": {
+          "access": "static"
+        },
+        "DESERT": {
+          "access": "static"
+        },
+        "ICY": {
+          "access": "static"
+        },
+        "WARM": {
+          "access": "static"
+        }
+      }
+    },
+    "net/minecraftforge/common/world/ForgeWorldType": {
+      "methods": {
+        "<init>(Lnet/minecraftforge/common/world/ForgeWorldType$IBasicChunkGeneratorFactory;)V": {}
+      }
+    },
+    "net/minecraftforge/eventbus/api/Cancelable": {
+      "annotation": "report"
+    },
+    "net/minecraftforge/eventbus/api/Event": {},
+    "net/minecraftforge/eventbus/api/SubscribeEvent": {
+      "annotation": "report"
+    },
+    "net/minecraftforge/fml/DistExecutor": {
+      "methods": {
+        "runForDist(Ljava/util/function/Supplier;Ljava/util/function/Supplier;)Ljava/lang/Object;": {
+          "wraps": "a0() if shared.IS_CLIENT else a1()"
+        }
+      }
+    },
+    "net/minecraftforge/fml/common/Mod": {
+      "annotation": "report",
+      "wraps": "mcpython.common.mod.Mod:Mod"
+    },
+    "net/minecraftforge/fml/common/Mod$EventBusSubscriber": {
+      "annotation": "report"
     },
     "net/minecraftforge/fml/common/Mod$EventBusSubscriber$Bus": {
       "attributes": {
@@ -24,32 +72,26 @@
         }
       }
     },
-    "net/minecraftforge/fml/common/Mod$EventBusSubscriber": {
-      "annotation": "report"
-    },
-    "net/minecraftforge/eventbus/api/SubscribeEvent": {
-      "annotation": "report"
-    },
-    "net/minecraftforge/client/event/GuiScreenEvent$PotionShiftEvent": {
+    "net/minecraftforge/fmllegacy/RegistryObject": {
       "methods": {
-        "setCanceled(Z)V": {
-          "no effect": true
+        "of(Lnet/minecraft/resources/ResourceLocation;Lnet/minecraftforge/registries/IForgeRegistry;)Lnet/minecraftforge/fmllegacy/RegistryObject;": {
+          "access": "static",
+          "wraps": "None if a1 is None else a2.get(a0 if isinstance(a0, str) else a0.name)"
         }
       }
     },
-    "net/minecraftforge/registries/ObjectHolder": {
-      "annotation": "report"
-    },
-    "net/minecraftforge/api/distmarker/OnlyIn": {
-      "annotation": "report"
-    },
-    "net/minecraftforge/eventbus/api/Cancelable": {
-      "annotation": "report"
-    },
-    "net/minecraftforge/eventbus/api/Event": {},
-    "net/minecraftforge/client/event/RenderGameOverlayEvent": {},
     "net/minecraftforge/registries/ForgeRegistries": {
       "attributes": {
+        "BIOMES": {
+          "access": "static",
+          "default value": "shared.biome_handler"
+        },
+        "DECORATORS": {
+          "access": "static"
+        },
+        "FEATURES": {
+          "access": "static"
+        },
         "ITEMS": {
           "access": "static",
           "default value": "shared.registry.get_by_name('minecraft:item')"
@@ -57,13 +99,10 @@
         "SOUND_EVENTS": {
           "access": "static"
         },
-        "FEATURES": {
-          "access": "static"
-        },
-        "DECORATORS": {
-          "access": "static"
-        },
         "SURFACE_BUILDERS": {
+          "access": "static"
+        },
+        "WORLD_CARVERS": {
           "access": "static"
         }
       }
@@ -75,21 +114,12 @@
         }
       }
     },
-    "net/minecraftforge/fmllegacy/RegistryObject": {
-      "methods": {
-        "of(Lnet/minecraft/resources/ResourceLocation;Lnet/minecraftforge/registries/IForgeRegistry;)Lnet/minecraftforge/fmllegacy/RegistryObject;": {
-          "access": "static",
-          "wraps": "None if a1 is None else a2.get(a0 if isinstance(a0, str) else a0.name)"
-        }
-      }
-    },
-    "net/minecraftforge/common/world/ForgeWorldType": {
-      "methods": {
-        "<init>(Lnet/minecraftforge/common/world/ForgeWorldType$IBasicChunkGeneratorFactory;)V": {}
-      }
+    "net/minecraftforge/registries/ObjectHolder": {
+      "annotation": "report"
     }
   },
   "implementation": [
     "forge/v1_17_1/event"
-  ]
+  ],
+  "version attribute": "1.17.1"
 }

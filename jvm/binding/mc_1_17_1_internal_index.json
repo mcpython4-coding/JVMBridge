@@ -46,13 +46,33 @@
       "class type": "enum"
     },
     "net/minecraft/core/Registry": {
+      "attributes": {
+        "f_122885_": {
+          "access": "static"
+        }
+      },
       "methods": {
         "m_122965_(Lnet/minecraft/core/Registry;Lnet/minecraft/resources/ResourceLocation;Ljava/lang/Object;)Ljava/lang/Object;": {}
       }
     },
     "net/minecraft/core/particles/ParticleTypes": {
       "attributes": {
+        "f_123757_": {
+          "access": "static"
+        },
         "f_123790_": {
+          "access": "static"
+        },
+        "f_123810_": {
+          "access": "static"
+        },
+        "f_175830_": {
+          "access": "static"
+        },
+        "f_123762_": {
+          "access": "static"
+        },
+        "f_175833_": {
           "access": "static"
         }
       }
@@ -62,15 +82,22 @@
         "f_123859_": {
           "access": "static"
         },
+        "f_123860_": {
+          "access": "static"
+        },
         "f_123861_": {
           "access": "static"
         }
+      },
+      "methods": {
+        "m_123880_(Lnet/minecraft/core/Registry;Lnet/minecraft/resources/ResourceLocation;Ljava/lang/Object;)Ljava/lang/Object;": {}
       }
     },
     "net/minecraft/data/worldgen/BiomeDefaultFeatures": {
       "methods": {
         "m_126765_(Lnet/minecraft/world/level/biome/BiomeGenerationSettings$Builder;)V": {},
         "m_126771_(Lnet/minecraft/world/level/biome/BiomeGenerationSettings$Builder;)V": {},
+        "m_126773_(Lnet/minecraft/world/level/biome/BiomeGenerationSettings$Builder;)V": {},
         "m_126777_(Lnet/minecraft/world/level/biome/BiomeGenerationSettings$Builder;)V": {},
         "m_126790_(Lnet/minecraft/world/level/biome/BiomeGenerationSettings$Builder;)V": {},
         "m_126798_(Lnet/minecraft/world/level/biome/BiomeGenerationSettings$Builder;)V": {},
@@ -80,7 +107,24 @@
         "m_126818_(Lnet/minecraft/world/level/biome/BiomeGenerationSettings$Builder;)V": {},
         "m_126820_(Lnet/minecraft/world/level/biome/BiomeGenerationSettings$Builder;)V": {},
         "m_126822_(Lnet/minecraft/world/level/biome/BiomeGenerationSettings$Builder;)V": {},
+        "m_126824_(Lnet/minecraft/world/level/biome/BiomeGenerationSettings$Builder;)V": {},
         "m_176857_(Lnet/minecraft/world/level/biome/BiomeGenerationSettings$Builder;)V": {}
+      }
+    },
+    "net/minecraft/data/worldgen/Carvers": {
+      "attributes": {
+        "f_126853_": {
+          "access": "static"
+        },
+        "f_176865_": {
+          "access": "static"
+        },
+        "f_176866_": {
+          "access": "static"
+        },
+        "f_176867_": {
+          "access": "static"
+        }
       }
     },
     "net/minecraft/data/worldgen/Features": {
@@ -103,10 +147,43 @@
         "f_126879_": {
           "access": "static"
         },
+        "f_126890_": {
+          "access": "static"
+        },
+        "f_126893_": {
+          "access": "static"
+        },
+        "f_126894_": {
+          "access": "static"
+        },
+        "f_126895_": {
+          "access": "static"
+        },
+        "f_126904_": {
+          "access": "static"
+        },
+        "f_126906_": {
+          "access": "static"
+        },
+        "f_126907_": {
+          "access": "static"
+        },
+        "f_126908_": {
+          "access": "static"
+        },
         "f_126909_": {
           "access": "static"
         },
         "f_126910_": {
+          "access": "static"
+        },
+        "f_126916_": {
+          "access": "static"
+        },
+        "f_126918_": {
+          "access": "static"
+        },
+        "f_126931_": {
           "access": "static"
         },
         "f_126946_": {
@@ -124,7 +201,52 @@
         "f_126954_": {
           "access": "static"
         },
+        "f_126970_": {
+          "access": "static"
+        },
+        "f_126978_": {
+          "access": "static"
+        },
+        "f_126979_": {
+          "access": "static"
+        },
+        "f_126981_": {
+          "access": "static"
+        },
+        "f_126983_": {
+          "access": "static"
+        },
+        "f_126984_": {
+          "access": "static"
+        },
+        "f_126986_": {
+          "access": "static"
+        },
+        "f_126987_": {
+          "access": "static"
+        },
+        "f_126988_": {
+          "access": "static"
+        },
+        "f_127012_": {
+          "access": "static"
+        },
         "f_127021_": {
+          "access": "static"
+        },
+        "f_127038_": {
+          "access": "static"
+        },
+        "f_127039_": {
+          "access": "static"
+        },
+        "f_127046_": {
+          "access": "static"
+        },
+        "f_127049_": {
+          "access": "static"
+        },
+        "f_127051_": {
           "access": "static"
         },
         "f_176900_": {
@@ -136,7 +258,79 @@
         "f_176907_": {
           "access": "static"
         },
-        "f_126906_": {
+        "f_126925_": {
+          "access": "static"
+        },
+        "f_126926_": {
+          "access": "static"
+        },
+        "f_176884_": {
+          "access": "static"
+        },
+        "f_176885_": {
+          "access": "static"
+        },
+        "f_176886_": {
+          "access": "static"
+        },
+        "f_176887_": {
+          "access": "static"
+        },
+        "f_176888_": {
+          "access": "static"
+        },
+        "f_176929_": {
+          "access": "static"
+        },
+        "f_176890_": {
+          "access": "static"
+        },
+        "f_176925_": {
+          "access": "static"
+        },
+        "f_176926_": {
+          "access": "static"
+        },
+        "f_176892_": {
+          "access": "static"
+        },
+        "f_176893_": {
+          "access": "static"
+        },
+        "f_176894_": {
+          "access": "static"
+        },
+        "f_176895_": {
+          "access": "static"
+        },
+        "f_176896_": {
+          "access": "static"
+        },
+        "f_176897_": {
+          "access": "static"
+        },
+        "f_176898_": {
+          "access": "static"
+        },
+        "f_176899_": {
+          "access": "static"
+        },
+        "f_176913_": {
+          "access": "static"
+        },
+        "f_176914_": {
+          "access": "static"
+        },
+        "f_176915_": {
+          "access": "static"
+        },
+        "f_176916_": {
+          "access": "static"
+        },
+        "f_176920_": {
+          "access": "static"
+        },
+        "f_176927_": {
           "access": "static"
         }
       }
@@ -183,19 +377,67 @@
         "f_127234_": {
           "access": "static"
         },
+        "f_127235_": {
+          "access": "static"
+        },
         "f_127236_": {
+          "access": "static"
+        },
+        "f_127237_": {
+          "access": "static"
+        },
+        "f_127238_": {
+          "access": "static"
+        },
+        "f_127239_": {
           "access": "static"
         },
         "f_127240_": {
           "access": "static"
         },
+        "f_127242_": {
+          "access": "static"
+        },
+        "f_127243_": {
+          "access": "static"
+        },
+        "f_127245_": {
+          "access": "static"
+        },
         "f_127247_": {
+          "access": "static"
+        },
+        "f_127248_": {
+          "access": "static"
+        },
+        "f_127253_": {
+          "access": "static"
+        },
+        "f_127254_": {
           "access": "static"
         },
         "f_127256_": {
           "access": "static"
         },
+        "f_127257_": {
+          "access": "static"
+        },
+        "f_127258_": {
+          "access": "static"
+        },
+        "f_127260_": {
+          "access": "static"
+        },
+        "f_127261_": {
+          "access": "static"
+        },
+        "f_127262_": {
+          "access": "static"
+        },
         "f_127263_": {
+          "access": "static"
+        },
+        "f_127264_": {
           "access": "static"
         }
       }
@@ -207,7 +449,18 @@
         },
         "f_127285_": {
           "access": "static"
+        },
+        "f_127290_": {
+          "access": "static"
+        },
+        "f_127296_": {
+          "access": "static"
         }
+      }
+    },
+    "net/minecraft/resources/ResourceKey": {
+      "methods": {
+        "m_135785_(Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraft/resources/ResourceKey;": {}
       }
     },
     "net/minecraft/resources/ResourceLocation": {
@@ -220,11 +473,56 @@
         }
       }
     },
+    "net/minecraft/sounds/Musics": {
+      "methods": {
+        "m_11653_(Lnet/minecraft/sounds/SoundEvent;)Lnet/minecraft/sounds/Music;": {}
+      }
+    },
     "net/minecraft/sounds/SoundEvent": {
       "methods": {
         "<init>(Lnet/minecraft/resources/ResourceLocation;)V": {},
         "setRegistryName(Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
           "wraps": "a0"
+        }
+      }
+    },
+    "net/minecraft/sounds/SoundEvents": {
+      "attributes": {
+        "f_11954_": {
+          "access": "static"
+        },
+        "f_11848_": {
+          "access": "static"
+        },
+        "f_144243_": {
+          "access": "static"
+        },
+        "f_11795_": {
+          "access": "static"
+        },
+        "f_11742_": {
+          "access": "static"
+        },
+        "f_12431_": {
+          "access": "static"
+        },
+        "f_12007_": {
+          "access": "static"
+        },
+        "f_12060_": {
+          "access": "static"
+        },
+        "f_12113_": {
+          "access": "static"
+        },
+        "f_12325_": {
+          "access": "static"
+        },
+        "f_11901_": {
+          "access": "static"
+        },
+        "f_12272_": {
+          "access": "static"
         }
       }
     },
@@ -262,6 +560,11 @@
         "m_146271_(Ljava/lang/Object;I)Lnet/minecraft/util/random/SimpleWeightedRandomList$Builder;": {}
       }
     },
+    "net/minecraft/util/valueproviders/ConstantFloat": {
+      "methods": {
+        "m_146458_(F)Lnet/minecraft/util/valueproviders/ConstantFloat;": {}
+      }
+    },
     "net/minecraft/util/valueproviders/ConstantInt": {
       "methods": {
         "m_146483_(I)Lnet/minecraft/util/valueproviders/ConstantInt;": {}
@@ -287,7 +590,22 @@
         "f_147034_": {
           "access": "static"
         },
+        "f_147035_": {
+          "access": "static"
+        },
         "f_147039_": {
+          "access": "static"
+        },
+        "f_20452_": {
+          "access": "static"
+        },
+        "f_20457_": {
+          "access": "static"
+        },
+        "f_20458_": {
+          "access": "static"
+        },
+        "f_20459_": {
           "access": "static"
         },
         "f_20466_": {
@@ -302,6 +620,9 @@
         "f_20481_": {
           "access": "static"
         },
+        "f_20482_": {
+          "access": "static"
+        },
         "f_20489_": {
           "access": "static"
         },
@@ -311,19 +632,46 @@
         "f_20495_": {
           "access": "static"
         },
+        "f_20499_": {
+          "access": "static"
+        },
         "f_20501_": {
+          "access": "static"
+        },
+        "f_20504_": {
+          "access": "static"
+        },
+        "f_20505_": {
+          "access": "static"
+        },
+        "f_20507_": {
+          "access": "static"
+        },
+        "f_20508_": {
           "access": "static"
         },
         "f_20510_": {
           "access": "static"
         },
+        "f_20514_": {
+          "access": "static"
+        },
         "f_20516_": {
+          "access": "static"
+        },
+        "f_20517_": {
+          "access": "static"
+        },
+        "f_20519_": {
           "access": "static"
         },
         "f_20520_": {
           "access": "static"
         },
         "f_20524_": {
+          "access": "static"
+        },
+        "f_20525_": {
           "access": "static"
         },
         "f_20526_": {
@@ -338,6 +686,9 @@
         "f_20555_": {
           "access": "static"
         },
+        "f_20556_": {
+          "access": "static"
+        },
         "f_20557_": {
           "access": "static"
         },
@@ -347,7 +698,31 @@
         "f_20559_": {
           "access": "static"
         },
+        "f_20560_": {
+          "access": "static"
+        },
         "f_20566_": {
+          "access": "static"
+        },
+        "f_20453_": {
+          "access": "static"
+        },
+        "f_20468_": {
+          "access": "static"
+        },
+        "f_20531_": {
+          "access": "static"
+        },
+        "f_20511_": {
+          "access": "static"
+        },
+        "f_20456_": {
+          "access": "static"
+        },
+        "f_20497_": {
+          "access": "static"
+        },
+        "f_20554_": {
           "access": "static"
         }
       }
@@ -465,16 +840,29 @@
       },
       "super": "net/minecraft/world/item/Item"
     },
+    "net/minecraft/world/level/biome/AmbientAdditionsSettings": {
+      "methods": {
+        "<init>(Lnet/minecraft/sounds/SoundEvent;D)V": {}
+      }
+    },
     "net/minecraft/world/level/biome/AmbientMoodSettings": {
       "attributes": {
         "f_47387_": {
           "access": "static"
         }
+      },
+      "methods": {
+        "<init>(Lnet/minecraft/sounds/SoundEvent;IID)V": {}
       }
     },
     "net/minecraft/world/level/biome/AmbientParticleSettings": {
       "methods": {
         "<init>(Lnet/minecraft/core/particles/ParticleOptions;F)V": {}
+      }
+    },
+    "net/minecraft/world/level/biome/Biome": {
+      "methods": {
+        "setRegistryName(Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {}
       }
     },
     "net/minecraft/world/level/biome/Biome$BiomeBuilder": {
@@ -499,20 +887,50 @@
         "BEACH": {
           "access": "static enum"
         },
+        "DESERT": {
+          "access": "static"
+        },
+        "EXTREME_HILLS": {
+          "access": "static"
+        },
         "FOREST": {
           "access": "static enum"
         },
         "ICY": {
           "access": "static enum"
         },
+        "JUNGLE": {
+          "access": "static"
+        },
+        "NETHER": {
+          "access": "static"
+        },
         "NONE": {
           "access": "static enum"
+        },
+        "PLAINS": {
+          "access": "static"
+        },
+        "SAVANNA": {
+          "access": "static"
+        },
+        "SWAMP": {
+          "access": "static enum"
+        },
+        "TAIGA": {
+          "access": "static"
+        },
+        "UNDERGROUND": {
+          "access": "static"
         }
       },
       "class type": "enum"
     },
     "net/minecraft/world/level/biome/Biome$Precipitation": {
       "attributes": {
+        "NONE": {
+          "access": "static"
+        },
         "RAIN": {
           "access": "static enum"
         },
@@ -528,6 +946,7 @@
           "no effect": true
         },
         "m_47831_()Lnet/minecraft/world/level/biome/BiomeGenerationSettings;": {},
+        "m_47839_(Lnet/minecraft/world/level/levelgen/GenerationStep$Carving;Lnet/minecraft/world/level/levelgen/carver/ConfiguredWorldCarver;)Lnet/minecraft/world/level/biome/BiomeGenerationSettings$Builder;": {},
         "m_47842_(Lnet/minecraft/world/level/levelgen/GenerationStep$Decoration;Lnet/minecraft/world/level/levelgen/feature/ConfiguredFeature;)Lnet/minecraft/world/level/biome/BiomeGenerationSettings$Builder;": {
           "wraps": "a0"
         },
@@ -544,13 +963,16 @@
         "<init>()V": {},
         "m_48018_()Lnet/minecraft/world/level/biome/BiomeSpecialEffects;": {},
         "m_48019_(I)Lnet/minecraft/world/level/biome/BiomeSpecialEffects$Builder;": {},
+        "m_48023_(Lnet/minecraft/sounds/SoundEvent;)Lnet/minecraft/world/level/biome/BiomeSpecialEffects$Builder;": {},
+        "m_48025_(Lnet/minecraft/world/level/biome/AmbientAdditionsSettings;)Lnet/minecraft/world/level/biome/BiomeSpecialEffects$Builder;": {},
         "m_48027_(Lnet/minecraft/world/level/biome/AmbientMoodSettings;)Lnet/minecraft/world/level/biome/BiomeSpecialEffects$Builder;": {},
+        "m_48029_(Lnet/minecraft/world/level/biome/AmbientParticleSettings;)Lnet/minecraft/world/level/biome/BiomeSpecialEffects$Builder;": {},
         "m_48034_(I)Lnet/minecraft/world/level/biome/BiomeSpecialEffects$Builder;": {},
         "m_48037_(I)Lnet/minecraft/world/level/biome/BiomeSpecialEffects$Builder;": {},
         "m_48040_(I)Lnet/minecraft/world/level/biome/BiomeSpecialEffects$Builder;": {},
         "m_48043_(I)Lnet/minecraft/world/level/biome/BiomeSpecialEffects$Builder;": {},
         "m_48045_(I)Lnet/minecraft/world/level/biome/BiomeSpecialEffects$Builder;": {},
-        "m_48029_(Lnet/minecraft/world/level/biome/AmbientParticleSettings;)Lnet/minecraft/world/level/biome/BiomeSpecialEffects$Builder;": {}
+        "m_48021_(Lnet/minecraft/sounds/Music;)Lnet/minecraft/world/level/biome/BiomeSpecialEffects$Builder;": {}
       }
     },
     "net/minecraft/world/level/biome/Biomes": {
@@ -659,6 +1081,9 @@
         "f_50055_": {
           "access": "static"
         },
+        "f_50062_": {
+          "access": "static"
+        },
         "f_50069_": {
           "access": "static"
         },
@@ -707,6 +1132,9 @@
         "f_50122_": {
           "access": "static"
         },
+        "f_50125_": {
+          "access": "static"
+        },
         "f_50127_": {
           "access": "static"
         },
@@ -719,6 +1147,9 @@
         "f_50191_": {
           "access": "static"
         },
+        "f_50195_": {
+          "access": "static"
+        },
         "f_50196_": {
           "access": "static"
         },
@@ -728,10 +1159,61 @@
         "f_50262_": {
           "access": "static"
         },
+        "f_50287_": {
+          "access": "static"
+        },
+        "f_50288_": {
+          "access": "static"
+        },
+        "f_50289_": {
+          "access": "static"
+        },
+        "f_50290_": {
+          "access": "static"
+        },
+        "f_50291_": {
+          "access": "static"
+        },
+        "f_50292_": {
+          "access": "static"
+        },
+        "f_50293_": {
+          "access": "static"
+        },
+        "f_50294_": {
+          "access": "static"
+        },
+        "f_50295_": {
+          "access": "static"
+        },
+        "f_50296_": {
+          "access": "static"
+        },
+        "f_50297_": {
+          "access": "static"
+        },
+        "f_50298_": {
+          "access": "static"
+        },
+        "f_50299_": {
+          "access": "static"
+        },
+        "f_50300_": {
+          "access": "static"
+        },
+        "f_50301_": {
+          "access": "static"
+        },
+        "f_50302_": {
+          "access": "static"
+        },
         "f_50334_": {
           "access": "static"
         },
         "f_50352_": {
+          "access": "static"
+        },
+        "f_50354_": {
           "access": "static"
         },
         "f_50355_": {
@@ -752,6 +1234,9 @@
         "f_50360_": {
           "access": "static"
         },
+        "f_50394_": {
+          "access": "static"
+        },
         "f_50440_": {
           "access": "static"
         },
@@ -761,10 +1246,16 @@
         "f_50493_": {
           "access": "static"
         },
+        "f_50546_": {
+          "access": "static"
+        },
         "f_50571_": {
           "access": "static"
         },
         "f_50599_": {
+          "access": "static"
+        },
+        "f_50669_": {
           "access": "static"
         },
         "f_50730_": {
@@ -806,15 +1297,31 @@
         "m_6908_()Ljava/util/Collection;": {}
       }
     },
+    "net/minecraft/world/level/levelgen/GenerationStep$Carving": {
+      "attributes": {
+        "AIR": {
+          "access": "static"
+        }
+      }
+    },
     "net/minecraft/world/level/levelgen/GenerationStep$Decoration": {
       "attributes": {
         "LAKES": {
+          "access": "static"
+        },
+        "LOCAL_MODIFICATIONS": {
+          "access": "static"
+        },
+        "UNDERGROUND_DECORATION": {
           "access": "static"
         },
         "UNDERGROUND_ORES": {
           "access": "static"
         },
         "VEGETAL_DECORATION": {
+          "access": "static"
+        },
+        "SURFACE_STRUCTURES": {
           "access": "static"
         }
       }
@@ -823,7 +1330,36 @@
       "methods": {
         "m_158921_()Lnet/minecraft/world/level/levelgen/VerticalAnchor;": {},
         "m_158922_(I)Lnet/minecraft/world/level/levelgen/VerticalAnchor;": {},
-        "m_158929_()Lnet/minecraft/world/level/levelgen/VerticalAnchor;": {}
+        "m_158929_()Lnet/minecraft/world/level/levelgen/VerticalAnchor;": {},
+        "m_158930_(I)Lnet/minecraft/world/level/levelgen/VerticalAnchor;": {}
+      }
+    },
+    "net/minecraft/world/level/levelgen/carver/CarverDebugSettings": {
+      "methods": {
+        "m_159136_(ZLnet/minecraft/world/level/block/state/BlockState;)Lnet/minecraft/world/level/levelgen/carver/CarverDebugSettings;": {}
+      }
+    },
+    "net/minecraft/world/level/levelgen/carver/CaveCarverConfiguration": {
+      "attributes": {
+        "f_159154_": {
+          "access": "static"
+        }
+      },
+      "methods": {
+        "<init>(FLnet/minecraft/world/level/levelgen/heightproviders/HeightProvider;Lnet/minecraft/util/valueproviders/FloatProvider;Lnet/minecraft/world/level/levelgen/VerticalAnchor;ZLnet/minecraft/world/level/levelgen/carver/CarverDebugSettings;Lnet/minecraft/util/valueproviders/FloatProvider;Lnet/minecraft/util/valueproviders/FloatProvider;Lnet/minecraft/util/valueproviders/FloatProvider;)V": {}
+      }
+    },
+    "net/minecraft/world/level/levelgen/carver/CaveWorldCarver": {
+      "methods": {
+        "<init>(Lcom/mojang/serialization/Codec;)V": {},
+        "setRegistryName(Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {},
+        "m_65063_(Lnet/minecraft/world/level/levelgen/carver/CarverConfiguration;)Lnet/minecraft/world/level/levelgen/carver/ConfiguredWorldCarver;": {}
+      }
+    },
+    "net/minecraft/world/level/levelgen/carver/WorldCarver": {
+      "methods": {
+        "setRegistryName(Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {},
+        "m_65063_(Lnet/minecraft/world/level/levelgen/carver/CarverConfiguration;)Lnet/minecraft/world/level/levelgen/carver/ConfiguredWorldCarver;": {}
       }
     },
     "net/minecraft/world/level/levelgen/feature/AbstractFlowerFeature": {
@@ -1034,6 +1570,11 @@
         "<init>(Lnet/minecraft/util/random/SimpleWeightedRandomList$Builder;)V": {}
       }
     },
+    "net/minecraft/world/level/levelgen/heightproviders/BiasedToBottomHeight": {
+      "methods": {
+        "m_161931_(Lnet/minecraft/world/level/levelgen/VerticalAnchor;Lnet/minecraft/world/level/levelgen/VerticalAnchor;I)Lnet/minecraft/world/level/levelgen/heightproviders/BiasedToBottomHeight;": {}
+      }
+    },
     "net/minecraft/world/level/levelgen/placement/CaveDecoratorConfiguration": {
       "methods": {
         "<init>(Lnet/minecraft/world/level/levelgen/placement/CaveSurface;I)V": {}
@@ -1110,15 +1651,8 @@
       }
     },
     "net/minecraft/world/level/levelgen/surfacebuilders/SurfaceBuilder": {
-      "methods": {
-        "<init>(Lcom/mojang/serialization/Codec;)V": {},
-        "setRegistryName(Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {}
-      },
       "attributes": {
-        "f_75214_": {
-          "access": "static"
-        },
-        "f_75201_": {
+        "f_75198_": {
           "access": "static"
         },
         "f_75199_": {
@@ -1127,22 +1661,29 @@
         "f_75200_": {
           "access": "static"
         },
-        "f_75198_": {
+        "f_75201_": {
           "access": "static"
         },
         "f_75208_": {
           "access": "static"
+        },
+        "f_75214_": {
+          "access": "static"
         }
+      },
+      "methods": {
+        "<init>(Lcom/mojang/serialization/Codec;)V": {},
+        "setRegistryName(Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {}
       }
     },
     "net/minecraft/world/level/levelgen/surfacebuilders/SurfaceBuilderBaseConfiguration": {
-      "methods": {
-        "<init>(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/block/state/BlockState;)V": {}
-      },
       "attributes": {
         "f_75241_": {
           "access": "static"
         }
+      },
+      "methods": {
+        "<init>(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/block/state/BlockState;)V": {}
       }
     },
     "net/minecraft/world/level/material/FlowingFluid": {

@@ -431,7 +431,7 @@ class JavaBytecodeClass(AbstractJavaClass):
         return JavaClassInstance(self)
 
     def __repr__(self):
-        return f"JavaBytecodeClass({self.name},access={bin(self.access)},parent={self.parent()},interfaces=[{', '.join(repr(e()) for e in self.interfaces)}])"
+        return f"JavaBytecodeClass@{hex(id(self))[2:]}({self.name},access={bin(self.access)},parent={self.parent()},interfaces=[{', '.join(repr(e()) for e in self.interfaces)}])"
 
     def get_dynamic_field_keys(self):
         return self.dynamic_field_keys | self.parent().get_dynamic_field_keys()
@@ -620,7 +620,7 @@ class JavaClassInstance(AbstractJavaClassInstance):
         return self.class_file.get_method(name, signature)
 
     def __repr__(self):
-        return f"JavaByteCodeClassInstance(of={self.class_file},fields={self.fields})"
+        return f"JavaByteCodeClassInstance@{hex(id(self))[2:]}(of={self.class_file},fields={self.fields})"
 
     def get_class(self):
         return self.class_file

@@ -6,7 +6,20 @@
           "wraps": "open(a0 if isinstance(a0, str) else a0.fields['path']).read()"
         },
         "write(Ljava/io/File;Ljava/lang/CharSequence;)V": {
-          "wraps": "os.makedirs(os.path.dirname(a0 if isinstance(a0, str) else a0.fields['path'])) == open(a0 if isinstance(a0, str) else a0.fields['path'], mode='w').write(a1)"
+          "wraps": "os.makedirs(os.path.dirname(a0 if isinstance(a0, str) else a0.fields['path']), exist_ok=True) == open(a0 if isinstance(a0, str) else a0.fields['path'], mode='w').write(a1)"
+        }
+      }
+    },
+    "org/apache/commons/lang3/tuple/Pair": {
+      "methods": {
+        "getValue()Ljava/lang/Object;": {
+          "wraps": "a0[1]"
+        },
+        "of(Ljava/lang/Object;Ljava/lang/Object;)Lorg/apache/commons/lang3/tuple/Pair;": {
+          "wraps": "(a0, a1)"
+        },
+        "getKey()Ljava/lang/Object;": {
+          "wraps": "a0[0]"
         }
       }
     }

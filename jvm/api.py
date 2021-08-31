@@ -135,7 +135,7 @@ class AbstractJavaClass:
     def set_static_attribute(self, name: str, value):
         raise NotImplementedError
 
-    def create_instance(self):
+    def create_instance(self) -> "AbstractJavaClassInstance":
         raise NotImplementedError
 
     def inject_method(self, name: str, signature: str, method, force=True):

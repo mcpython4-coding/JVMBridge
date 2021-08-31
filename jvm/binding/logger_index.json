@@ -2,14 +2,21 @@
   "classes": {
     "org/apache/logging/log4j/LogManager": {
       "methods": {
-        "getLogger(Ljava/lang/String;)Lorg/apache/logging/log4j/Logger;": {
-          "wraps": "cls.get_class('org/apache/logging/log4j/Logger', version=cls.internal_version).create_instance()"
+        "getLogger()Lorg/apache/logging/log4j/Logger;": {
+          "wraps": "cls.vm.get_class('org/apache/logging/log4j/Logger', version=cls.internal_version).create_instance()"
         },
         "getLogger(Ljava/lang/Class;)Lorg/apache/logging/log4j/Logger;": {
-          "wraps": "cls.get_class('org/apache/logging/log4j/Logger', version=cls.internal_version).create_instance()"
+          "wraps": "cls.vm.get_class('org/apache/logging/log4j/Logger', version=cls.internal_version).create_instance()"
         },
-        "getLogger()Lorg/apache/logging/log4j/Logger;": {
-          "wraps": "cls.get_class('org/apache/logging/log4j/Logger', version=cls.internal_version).create_instance()"
+        "getLogger(Ljava/lang/String;)Lorg/apache/logging/log4j/Logger;": {
+          "wraps": "cls.vm.get_class('org/apache/logging/log4j/Logger', version=cls.internal_version).create_instance()"
+        }
+      }
+    },
+    "org/apache/logging/log4j/Logger": {
+      "methods": {
+        "debug(Ljava/lang/String;)V": {
+          "wraps": "print('[FML][DEBUG]', a1)"
         }
       }
     }
