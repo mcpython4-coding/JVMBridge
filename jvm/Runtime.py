@@ -203,7 +203,14 @@ class Stack(AbstractStack):
         if debugging:
             jvm.logging.warn(f"launching method {self.method} with local vars {self.local_vars}")
 
+        history = []
+
         while self.cp != -1:
+            history.append(self.cp)
+
+            if len(history) > 20:
+                history.pop(0)
+
             instruction = self.code.decoded_code[self.cp]
 
             if instruction is None:
@@ -233,6 +240,12 @@ class Stack(AbstractStack):
             try:
                 result = instruction[0].invoke(instruction[1], self)
             except StackCollectingException as e:
+                # This exception MAY be caused by a wrong InvokeDynamic reference (missing static attribute)
+                if e.text == "StackUnderflowException":
+                    for cp in history:
+                        if self.code.decoded_code[cp][0].__name__ == "LambdaInvokeDynamic":
+                            e.add_trace(f"after InvokeDynamic on {self.code.decoded_code[cp]}")
+
                 e.add_trace(
                     f"during invoking {instruction[0]} in {self.method} [index: {self.cp}]"
                 )

@@ -1,3 +1,37 @@
 {
-
+  "classes": {
+    "com/google/gson/Gson": {
+      "methods": {
+        "fromJson(Ljava/lang/String;Ljava/lang/reflect/Type;)Ljava/lang/Object;": {
+          "wraps": "print(a0, a1, a2)"
+        },
+        "toJson(Ljava/lang/Object;)Ljava/lang/String;": {
+          "wraps": "json.dumps(a1)"
+        }
+      }
+    },
+    "com/google/gson/GsonBuilder": {
+      "methods": {
+        "<init>()V": {
+          "no effect": true
+        },
+        "create()Lcom/google/gson/Gson;": {
+          "wraps": "cls.vm.get_class('com/google/gson/Gson').create_instance()"
+        },
+        "setPrettyPrinting()Lcom/google/gson/GsonBuilder;": {
+          "wraps": "a0"
+        }
+      }
+    },
+    "com/google/gson/reflect/TypeToken": {
+      "methods": {
+        "<init>()V": {
+          "no effect": true
+        },
+        "getType()Ljava/lang/reflect/Type;": {
+          "no effect": true
+        }
+      }
+    }
+  }
 }

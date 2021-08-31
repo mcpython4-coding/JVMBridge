@@ -7,7 +7,7 @@ local = os.path.dirname(__file__)
 
 
 def className2File(name: str, version) -> typing.Optional[str]:
-    version = version.replace(".", "_") if version is not None else None
+    version = version.replace(".", "_") if isinstance(version, str) else None
 
     if name.startswith('java/') or name.startswith('javax/'):
         return local+"/binding/java_index.json"
@@ -53,7 +53,7 @@ def dumpClassCreationToFiles(name: str, version):
     data.setdefault("classes", {})[name] = {}
 
     with open(file, mode="w") as f:
-        simplejson.dump(data, f, indent="  ")
+        simplejson.dump(data, f, indent="  ", sort_keys=True)
 
 
 def addClassAttribute(cls_name: str, version, attr_name: str):

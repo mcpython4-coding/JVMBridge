@@ -1,5 +1,10 @@
 {
   "annotations": {
+    "report": [
+      "java/lang/annotation/Annotation",
+      "javax/annotation/CheckForNull",
+      "javax/annotation/meta/TypeQualifierNickname"
+    ],
     "skip": [
       "javax/annotation/Nullable",
       "javax/annotation/Nonnull",
@@ -22,27 +27,47 @@
       "java/lang/annotation/Inherited",
       "javax/annotation/CheckReturnValue",
       "javax/annotation/Nonnegative"
-    ],
-    "report": [
-      "java/lang/annotation/Annotation",
-      "javax/annotation/CheckForNull",
-      "javax/annotation/meta/TypeQualifierNickname"
     ]
   },
   "classes": {
-    "java/lang/Object": {
-      "wraps": ":object",
+    "java/beans/ConstructorProperties": {
+      "annotation": "track"
+    },
+    "java/io/File": {
       "methods": {
-        "<init>()V": {
-          "no effect": true
+        "<init>(Ljava/io/File;Ljava/lang/String;)V": {
+          "wraps": "a0.fields.update({'path': shared.home + '/' + a1 + '/' + a2})"
         },
-        "getClass()Ljava/lang/Class;": {
-          "wraps": "cls if not isinstance(a0, jvm.api.AbstractJavaClass) else cls.get_class()"
+        "exists()Z": {
+          "wraps": "__import__('os').path.exists(a0.fields['path'] if not isinstance(a0, str) else a0)"
         }
       }
     },
+    "java/io/Serializable": {},
+    "java/lang/Boolean": {
+      "methods": {
+        "booleanValue()Z": {
+          "wraps": "a0"
+        },
+        "valueOf(Z)Ljava/lang/Boolean;": {
+          "wraps": "a0"
+        }
+      },
+      "wraps": ":bool"
+    },
+    "java/lang/Class": {
+      "methods": {
+        "forName(Ljava/lang/String;)Ljava/lang/Class;": {},
+        "getField(Ljava/lang/String;)Ljava/lang/reflect/Field;": {},
+        "getName()Ljava/lang/String;": {}
+      }
+    },
+    "java/lang/Cloneable": {},
+    "java/lang/Comparable": {},
     "java/lang/Enum": {
-      "super": "java/lang/Class",
+      "attributes": {
+        "ordinal": {}
+      },
       "methods": {
         "<init>(Ljava/lang/String;I)V": {
           "wraps": "a0.fields.update({'ordinal': a2})"
@@ -51,35 +76,60 @@
           "wraps": "a0.fields['ordinal']"
         }
       },
-      "attributes": {
-        "ordinal": {}
-      }
+      "super": "java/lang/Class"
     },
-    "java/lang/annotation/RetentionPolicy": {
-      "class type": "enum",
-      "attributes": {
-        "RUNTIME": {
-          "access": "static enum"
+    "java/lang/Error": {
+      "wraps": ":Exception"
+    },
+    "java/lang/Exception": {
+      "wraps": ":Exception"
+    },
+    "java/lang/Integer": {
+      "methods": {
+        "toString(I)Ljava/lang/String;": {
+          "wraps": "str(a0)"
         },
-        "CLASS": {
-          "access": "static enum"
+        "valueOf(I)Ljava/lang/Integer;": {
+          "wraps": "a0"
+        }
+      },
+      "wraps": ":int"
+    },
+    "java/lang/Object": {
+      "methods": {
+        "<init>()V": {
+          "no effect": true
         },
-        "SOURCE": {}
+        "getClass()Ljava/lang/Class;": {
+          "wraps": "cls if not isinstance(a0, jvm.api.AbstractJavaClass) else cls.get_class()"
+        }
+      },
+      "wraps": ":object"
+    },
+    "java/lang/RuntimeException": {},
+    "java/lang/String": {
+      "methods": {
+        "equals(Ljava/lang/Object;)Z": {},
+        "getBytes(Ljava/nio/charset/Charset;)[B": {
+          "wraps": "a0.encode('utf-8')"
+        }
       }
     },
     "java/lang/annotation/ElementType": {
-      "class type": "enum",
       "attributes": {
-        "METHOD": {
-          "access": "static enum"
-        },
-        "FIELD": {
+        "ANNOTATION_TYPE": {
           "access": "static enum"
         },
         "CONSTRUCTOR": {
           "access": "static enum"
         },
-        "TYPE": {
+        "FIELD": {
+          "access": "static enum"
+        },
+        "LOCAL_VARIABLE": {
+          "access": "static enum"
+        },
+        "METHOD": {
           "access": "static enum"
         },
         "PACKAGE": {
@@ -88,78 +138,76 @@
         "PARAMETER": {
           "access": "static enum"
         },
-        "LOCAL_VARIABLE": {
-          "access": "static enum"
-        },
-        "TYPE_USE": {
+        "TYPE": {
           "access": "static enum"
         },
         "TYPE_PARAMETER": {
           "access": "static enum"
         },
-        "ANNOTATION_TYPE": {
+        "TYPE_USE": {
           "access": "static enum"
         }
+      },
+      "class type": "enum"
+    },
+    "java/lang/annotation/RetentionPolicy": {
+      "attributes": {
+        "CLASS": {
+          "access": "static enum"
+        },
+        "RUNTIME": {
+          "access": "static enum"
+        },
+        "SOURCE": {}
+      },
+      "class type": "enum"
+    },
+    "java/lang/invoke/StringConcatFactory": {
+      "methods": {
+        "makeConcatWithConstants(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/invoke/CallSite;": {}
       }
     },
-    "java/util/function/Supplier": {
-      "wraps": "typing:Callable"
-    },
-    "java/util/function/Predicate": {
-      "wraps": "typing:Callable"
-    },
-    "javax/annotation/meta/TypeQualifier": {},
-    "java/util/function/BiPredicate": {},
-    "java/util/HashMap": {
-      "wraps": ":dict",
-      "hard wrap": true,
+    "java/lang/reflect/Field": {
       "methods": {
-        "<init>()V": {
-          "no effect": true
-        },
-        "put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;": {
-          "wraps": "a0.setdefault(a1, a2)"
+        "get(Ljava/lang/Object;)Ljava/lang/Object;": {}
+      }
+    },
+    "java/math/RoundingMode": {
+      "attributes": {
+        "DOWN": {}
+      }
+    },
+    "java/nio/charset/StandardCharsets": {
+      "attributes": {
+        "UTF_8": {
+          "access": "static enum"
+        }
+      },
+      "class type": "enum"
+    },
+    "java/nio/file/Path": {
+      "methods": {
+        "toFile()Ljava/io/File;": {
+          "wraps": "a0"
         }
       }
     },
-    "java/util/Map": {
-      "wraps": ":dict",
-      "hard wrap": true,
+    "java/nio/file/Paths": {
       "methods": {
-        "put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;": {
-          "wraps": "a0.setdefault(a1, a2)"
-        },
-        "computeIfAbsent(Ljava/lang/Object;Ljava/util/function/Function;)Ljava/lang/Object;": {}
-      }
-    },
-    "java/util/ArrayList": {
-      "wraps": ":list",
-      "hard wrap": true,
-      "methods": {
-        "<init>()V": {
-          "no effect": true
-        },
-        "add(Ljava/lang/Object;)Z": {
-          "wraps": "a0.underlying.append(a1) or True"
+        "get(Ljava/lang/String;[Ljava/lang/String;)Ljava/nio/file/Path;": {
+          "wraps": "a0 + '/' + '/'.join(a1)"
         }
       }
     },
-    "java/util/HashSet": {
-      "wraps": ":set",
+    "java/text/DecimalFormat": {
       "methods": {
-        "<init>()V": {
-          "no effect": true
-        },
-        "<init>(Ljava/util/Collection;)V": {}
+        "<init>(Ljava/lang/String;Ljava/text/DecimalFormatSymbols;)V": {},
+        "setRoundingMode(Ljava/math/RoundingMode;)V": {}
       }
     },
-    "java/util/TreeSet": {
-      "wraps": ":set",
+    "java/text/DecimalFormatSymbols": {
       "methods": {
-        "<init>()V": {
-          "no effect": true
-        },
-        "add(Ljava/lang/Object;)Z": {}
+        "getInstance(Ljava/util/Locale;)Ljava/text/DecimalFormatSymbols;": {}
       }
     },
     "java/util/ArrayDeque": {
@@ -172,107 +220,38 @@
         }
       }
     },
-    "java/util/Queue": {
+    "java/util/ArrayList": {
+      "hard wrap": true,
       "methods": {
-        "isEmpty()Z": {
-          "wraps": "True"
+        "<init>()V": {
+          "no effect": true
+        },
+        "add(Ljava/lang/Object;)Z": {
+          "wraps": "a0.underlying.append(a1) or True"
+        }
+      },
+      "wraps": ":list"
+    },
+    "java/util/Arrays": {
+      "methods": {
+        "asList([Ljava/lang/Object;)Ljava/util/List;": {}
+      }
+    },
+    "java/util/Collection": {
+      "methods": {
+        "contains(Ljava/lang/Object;)Z": {
+          "wraps": "a1 in a0"
+        },
+        "iterator()Ljava/util/Iterator;": {
+          "wraps": "iter(a0)"
         }
       }
     },
-    "java/lang/Comparable": {},
-    "java/io/Serializable": {},
     "java/util/Comparator": {
       "methods": {
         "comparing(Ljava/util/function/Function;)Ljava/util/Comparator;": {},
         "reversed()Ljava/util/Comparator;": {},
         "thenComparing(Ljava/util/function/Function;)Ljava/util/Comparator;": {}
-      }
-    },
-    "java/lang/RuntimeException": {},
-    "java/lang/Error": {
-      "wraps": ":Exception"
-    },
-    "java/lang/Exception": {
-      "wraps": ":Exception"
-    },
-    "java/util/concurrent/atomic/AtomicIntegerFieldUpdater": {
-      "methods": {
-        "newUpdater(Ljava/lang/Class;Ljava/lang/String;)Ljava/util/concurrent/atomic/AtomicIntegerFieldUpdater;": {}
-      }
-    },
-    "java/util/concurrent/atomic/AtomicReferenceFieldUpdater": {
-      "methods": {
-        "newUpdater(Ljava/lang/Class;Ljava/lang/Class;Ljava/lang/String;)Ljava/util/concurrent/atomic/AtomicReferenceFieldUpdater;": {}
-      }
-    },
-    "java/lang/Cloneable": {},
-    "java/util/List": {
-      "wraps": ":list",
-      "hard wrap": true,
-      "methods": {
-        "add(Ljava/lang/Object;)Z": {
-          "wraps": "a0.underlying.append(a1) or True"
-        },
-        "stream()Ljava/util/stream/Stream;": {
-          "wraps": "iter(a0)"
-        }
-      }
-    },
-    "java/lang/Boolean": {
-      "wraps": ":bool",
-      "methods": {
-        "booleanValue()Z": {
-          "wraps": "a0"
-        }
-      }
-    },
-    "java/util/Objects": {
-      "methods": {
-        "requireNonNull(Ljava/lang/Object;)Ljava/lang/Object;": {}
-      }
-    },
-    "java/util/UUID": {},
-    "java/lang/Integer": {
-      "wraps": ":int",
-      "methods": {
-        "toString(I)Ljava/lang/String;": {
-          "wraps": "str(a0)"
-        },
-        "valueOf(I)Ljava/lang/Integer;": {
-          "wraps": "a0"
-        }
-      }
-    },
-    "java/lang/String": {
-      "methods": {
-        "equals(Ljava/lang/Object;)Z": {},
-        "getBytes(Ljava/nio/charset/Charset;)[B": {
-          "wraps": "a0.encode('utf-8')"
-        }
-      }
-    },
-    "java/text/DecimalFormat": {
-      "methods": {
-        "<init>(Ljava/lang/String;Ljava/text/DecimalFormatSymbols;)V": {},
-        "setRoundingMode(Ljava/math/RoundingMode;)V": {}
-      }
-    },
-    "java/util/Locale": {
-      "class type": "enum",
-      "attributes": {
-        "US": {
-          "access": "static enum"
-        }
-      }
-    },
-    "java/text/DecimalFormatSymbols": {
-      "methods": {
-        "getInstance(Ljava/util/Locale;)Ljava/text/DecimalFormatSymbols;": {}
-      }
-    },
-    "java/math/RoundingMode": {
-      "attributes": {
-        "DOWN": {}
       }
     },
     "java/util/EnumMap": {
@@ -281,28 +260,86 @@
         "computeIfAbsent(Ljava/lang/Object;Ljava/util/function/Function;)Ljava/lang/Object;": {}
       }
     },
+    "java/util/HashMap": {
+      "hard wrap": true,
+      "methods": {
+        "<init>()V": {
+          "no effect": true
+        },
+        "put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;": {
+          "wraps": "a0.setdefault(a1, a2)"
+        }
+      },
+      "wraps": ":dict"
+    },
+    "java/util/HashSet": {
+      "methods": {
+        "<init>()V": {
+          "no effect": true
+        },
+        "<init>(Ljava/util/Collection;)V": {}
+      },
+      "wraps": ":set"
+    },
+    "java/util/Iterator": {
+      "methods": {
+        "hasNext()Z": {
+          "wraps": "len(list(__import__('copy').copy(a0))) > 0"
+        },
+        "next()Ljava/lang/Object;": {
+          "wraps": "next(a0)"
+        }
+      }
+    },
     "java/util/LinkedList": {
       "methods": {
         "<init>()V": {}
       }
     },
-    "java/lang/Class": {
-      "methods": {
-        "getName()Ljava/lang/String;": {},
-        "forName(Ljava/lang/String;)Ljava/lang/Class;": {},
-        "getField(Ljava/lang/String;)Ljava/lang/reflect/Field;": {}
-      }
-    },
-    "java/util/concurrent/atomic/AtomicInteger": {
-      "wraps": ":int",
+    "java/util/List": {
       "hard wrap": true,
       "methods": {
-        "<init>(I)V": {
-          "wraps": "setattr(a0, 'underlying', a1)"
+        "add(Ljava/lang/Object;)Z": {
+          "wraps": "(a0.underlying.append(a1) if not isinstance(a0, list) else a0.append(a1)) or True"
         },
-        "getAndIncrement()I": {
-          "wraps": "setattr(a0, 'underlying', getattr(a0, 'underlying') + 1) or getattr(a0, 'underlying') - 1"
+        "iterator()Ljava/util/Iterator;": {
+          "wraps": "iter(a0) if isinstance(a0, list) else iter(a0.underlying)"
+        },
+        "stream()Ljava/util/stream/Stream;": {
+          "wraps": "iter(a0) if isinstance(a0, list) else iter(a0.underlying)"
         }
+      },
+      "wraps": ":list"
+    },
+    "java/util/Locale": {
+      "attributes": {
+        "US": {
+          "access": "static enum"
+        }
+      },
+      "class type": "enum"
+    },
+    "java/util/Map": {
+      "hard wrap": true,
+      "methods": {
+        "computeIfAbsent(Ljava/lang/Object;Ljava/util/function/Function;)Ljava/lang/Object;": {
+          "wraps": "a0.setdefault(a1, a2()) if a1 not in a0 else a0[a1]"
+        },
+        "containsKey(Ljava/lang/Object;)Z": {
+          "wraps": "a1 in a0"
+        },
+        "get(Ljava/lang/Object;)Ljava/lang/Object;": {
+          "wraps": "a0[a1]"
+        },
+        "put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;": {
+          "wraps": "a0.setdefault(a1, a2)"
+        }
+      },
+      "wraps": ":dict"
+    },
+    "java/util/Objects": {
+      "methods": {
+        "requireNonNull(Ljava/lang/Object;)Ljava/lang/Object;": {}
       }
     },
     "java/util/Optional": {
@@ -312,14 +349,11 @@
         }
       }
     },
-    "java/lang/reflect/Field": {
+    "java/util/Queue": {
       "methods": {
-        "get(Ljava/lang/Object;)Ljava/lang/Object;": {}
-      }
-    },
-    "java/util/Arrays": {
-      "methods": {
-        "asList([Ljava/lang/Object;)Ljava/util/List;": {}
+        "isEmpty()Z": {
+          "wraps": "True"
+        }
       }
     },
     "java/util/Random": {
@@ -332,15 +366,51 @@
         }
       }
     },
-    "java/util/stream/Stream": {
+    "java/util/TreeMap": {
       "methods": {
-        "map(Ljava/util/function/Function;)Ljava/util/stream/Stream;": {
-          "wraps": "(a1(e) for e in a0)"
-        },
-        "collect(Ljava/util/stream/Collector;)Ljava/lang/Object;": {
-          "wraps": "a[1](a[0])"
+        "put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;": {
+          "wraps": "a0.setdefault(a1, a2)"
         }
       }
+    },
+    "java/util/TreeSet": {
+      "methods": {
+        "<init>()V": {
+          "no effect": true
+        },
+        "add(Ljava/lang/Object;)Z": {}
+      },
+      "wraps": ":set"
+    },
+    "java/util/UUID": {},
+    "java/util/concurrent/atomic/AtomicInteger": {
+      "hard wrap": true,
+      "methods": {
+        "<init>(I)V": {
+          "wraps": "setattr(a0, 'underlying', a1)"
+        },
+        "getAndIncrement()I": {
+          "wraps": "setattr(a0, 'underlying', getattr(a0, 'underlying') + 1) or getattr(a0, 'underlying') - 1"
+        }
+      },
+      "wraps": ":int"
+    },
+    "java/util/concurrent/atomic/AtomicIntegerFieldUpdater": {
+      "methods": {
+        "newUpdater(Ljava/lang/Class;Ljava/lang/String;)Ljava/util/concurrent/atomic/AtomicIntegerFieldUpdater;": {}
+      }
+    },
+    "java/util/concurrent/atomic/AtomicReferenceFieldUpdater": {
+      "methods": {
+        "newUpdater(Ljava/lang/Class;Ljava/lang/Class;Ljava/lang/String;)Ljava/util/concurrent/atomic/AtomicReferenceFieldUpdater;": {}
+      }
+    },
+    "java/util/function/BiPredicate": {},
+    "java/util/function/Predicate": {
+      "wraps": "typing:Callable"
+    },
+    "java/util/function/Supplier": {
+      "wraps": "typing:Callable"
     },
     "java/util/stream/Collectors": {
       "methods": {
@@ -349,19 +419,20 @@
         }
       }
     },
-    "java/nio/charset/StandardCharsets": {
-      "class type": "enum",
-      "attributes": {
-        "UTF_8": {
-          "access": "static enum"
+    "java/util/stream/Stream": {
+      "methods": {
+        "collect(Ljava/util/stream/Collector;)Ljava/lang/Object;": {
+          "wraps": "a[1](a[0])"
+        },
+        "map(Ljava/util/function/Function;)Ljava/util/stream/Stream;": {
+          "wraps": "(a1(e) for e in a0)"
         }
       }
     },
-    "java/beans/ConstructorProperties": {
-      "annotation": "track"
-    }
+    "javax/annotation/meta/TypeQualifier": {}
   },
   "implementation": [
-    "java.lang"
+    "java.lang",
+    "java.util"
   ]
 }

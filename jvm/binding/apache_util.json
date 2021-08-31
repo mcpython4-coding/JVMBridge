@@ -1,3 +1,14 @@
 {
-
+  "classes": {
+    "org/apache/commons/io/FileUtils": {
+      "methods": {
+        "readFileToString(Ljava/io/File;)Ljava/lang/String;": {
+          "wraps": "open(a0 if isinstance(a0, str) else a0.fields['path']).read()"
+        },
+        "write(Ljava/io/File;Ljava/lang/CharSequence;)V": {
+          "wraps": "os.makedirs(os.path.dirname(a0 if isinstance(a0, str) else a0.fields['path'])) == open(a0 if isinstance(a0, str) else a0.fields['path'], mode='w').write(a1)"
+        }
+      }
+    }
+  }
 }

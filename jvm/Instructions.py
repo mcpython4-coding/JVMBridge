@@ -1315,7 +1315,7 @@ class GetField(CPLinkedInstruction):
         obj = stack.pop()
 
         if obj is None:
-            raise StackCollectingException("NullPointerException: object is None")
+            raise StackCollectingException("NullPointerException: object is None").add_trace(data)
 
         try:
             stack.push(obj.get_field(name))

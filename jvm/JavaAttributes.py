@@ -254,6 +254,37 @@ class RuntimeAnnotationsParser(AbstractAttributeParser):
         return data
 
 
+class NestHostParser(AbstractAttributeParser):
+    def __init__(self):
+        self.host = None
+
+    def parse(self, table: "JavaAttributeTable", data: bytearray):
+        self.host = table.class_file.cp[pop_u2(data) - 1][1][1]
+
+    def dump(self, table: "JavaAttributeTable") -> bytearray:
+        return table.class_file.ensure_data([7, [1, self.host]])
+
+
+class NestMembersParser(AbstractAttributeParser):
+    def __init__(self):
+        self.classes = []
+
+    def parse(self, table: "JavaAttributeTable", data: bytearray):
+        self.classes += [
+            table.class_file.cp[pop_u2(data) - 1][1][1]
+            for _ in range(pop_u2(data))
+        ]
+
+    def dump(self, table: "JavaAttributeTable") -> bytearray:
+        return U2.pack(len(self.classes)) + sum(
+            (
+                table.class_file.ensure_data([7, [1, e]])
+                for e in self.classes
+            ),
+            bytearray()
+        )
+
+
 class JavaAttributeTable:
     ATTRIBUTES_NEED_PARSING = {
         "ConstantValue",
@@ -285,6 +316,8 @@ class JavaAttributeTable:
         "StackMapTable": StackMapTableParser,
         "RuntimeVisibleAnnotations": RuntimeAnnotationsParser,
         "RuntimeInvisibleAnnotations": RuntimeAnnotationsParser,
+        "NestHost": NestHostParser,
+        "NestMembers": NestMembersParser,
     }
 
     def __init__(self, parent):

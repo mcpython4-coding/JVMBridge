@@ -19,7 +19,9 @@
         "FORGE": {
           "access": "static"
         },
-        "MOD": {}
+        "MOD": {
+          "access": "static"
+        }
       }
     },
     "net/minecraftforge/fml/common/Mod$EventBusSubscriber": {
@@ -45,7 +47,47 @@
       "annotation": "report"
     },
     "net/minecraftforge/eventbus/api/Event": {},
-    "net/minecraftforge/client/event/RenderGameOverlayEvent": {}
+    "net/minecraftforge/client/event/RenderGameOverlayEvent": {},
+    "net/minecraftforge/registries/ForgeRegistries": {
+      "attributes": {
+        "ITEMS": {
+          "access": "static",
+          "default value": "shared.registry.get_by_name('minecraft:item')"
+        },
+        "SOUND_EVENTS": {
+          "access": "static"
+        },
+        "FEATURES": {
+          "access": "static"
+        },
+        "DECORATORS": {
+          "access": "static"
+        },
+        "SURFACE_BUILDERS": {
+          "access": "static"
+        }
+      }
+    },
+    "net/minecraftforge/registries/IForgeRegistry": {
+      "methods": {
+        "register(Lnet/minecraftforge/registries/IForgeRegistryEntry;)V": {
+          "no effect": true
+        }
+      }
+    },
+    "net/minecraftforge/fmllegacy/RegistryObject": {
+      "methods": {
+        "of(Lnet/minecraft/resources/ResourceLocation;Lnet/minecraftforge/registries/IForgeRegistry;)Lnet/minecraftforge/fmllegacy/RegistryObject;": {
+          "access": "static",
+          "wraps": "None if a1 is None else a2.get(a0 if isinstance(a0, str) else a0.name)"
+        }
+      }
+    },
+    "net/minecraftforge/common/world/ForgeWorldType": {
+      "methods": {
+        "<init>(Lnet/minecraftforge/common/world/ForgeWorldType$IBasicChunkGeneratorFactory;)V": {}
+      }
+    }
   },
   "implementation": [
     "forge/v1_17_1/event"

@@ -6,6 +6,8 @@ from mcpython import shared
 from mcpython.common.mod.util import LoadingInterruptException
 from mcpython.engine.event.EventHandler import PUBLIC_EVENT_BUS
 
+from jvm.JavaExceptionStack import StackCollectingException
+
 
 EventType2EventStage = {
     "(Lnet/minecraftforge/fml/event/lifecycle/FMLCommonSetupEvent;)V": ("stage:mod:init", lambda e: [None], 0),
@@ -87,6 +89,8 @@ EventType2EventStage = {
     "(Lnet/minecraftforge/event/entity/player/PlayerContainerEvent$Open;)V": None,
     "(Lnet/minecraftforge/event/entity/player/EntityItemPickupEvent;)V": None,
     "(Lnet/minecraftforge/event/entity/player/PlayerEvent$ItemSmeltedEvent;)V": None,
+    "(Lnet/minecraftforge/client/event/EntityViewRenderEvent$FogDensity;)V": None,
+    "(Lnet/minecraftforge/client/event/EntityViewRenderEvent$FogColors;)V": None,
 
     "(Lnet/minecraftforge/client/event/ParticleFactoryRegisterEvent;)V": None,
     "(Lnet/minecraftforge/event/AttachCapabilitiesEvent;)V": None,
@@ -139,6 +143,16 @@ def subscribeToEvent(cls, obj, args):
 
             try:
                 obj.invoke(arg_producer(a))
+
+            except StackCollectingException as error:
+                if shared.IS_CLIENT:
+                    import mcpython.client.state.LoadingExceptionViewState
+                    traceback.print_exc()
+                    print(error.format_exception())
+                    mcpython.client.state.LoadingExceptionViewState.error_occur(error.format_exception())
+
+                raise LoadingInterruptException
+
             except:
                 if shared.IS_CLIENT:
                     import mcpython.client.state.LoadingExceptionViewState

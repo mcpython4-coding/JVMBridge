@@ -25,6 +25,7 @@ Structure:
                 - access: some access modifier
                 - expected type: some expected type
                 - mapping: a list of other names of this attribute
+                - default value: a value to insert, eval()-ed
             - methods: "<method name><method signature>" ->
                 - access
                 - mapping: a list of other names of this method
@@ -43,6 +44,7 @@ import typing
 
 import jvm.api
 from jvm.api import AbstractJavaClass
+from .JavaExceptionStack import StackCollectingException
 
 from .native_building import addClassAttribute, addMethod
 
@@ -327,7 +329,13 @@ def create_method_based_on_wrap(cls, name, signature, code):
         local = {
             f"a{i}": e for i, e in enumerate(args)
         } | {"cls": cls, "shared": shared}
-        return eval(code, globals(), local)
+        try:
+            return eval(code, globals(), local)
+        except StackCollectingException as e:
+            e.add_trace(code)
+            raise
+        except Exception as e:
+            raise StackCollectingException(f"During invoking eval() for {cls.name}:{name}{signature}").add_trace(e).add_trace(code).add_trace(args) from None
 
     return WrappedMethod(cls, name, signature, execute)
 
@@ -361,7 +369,12 @@ def load_index_file(file: str):
                     cls.static_attributes[attr_name] = f"{cls.name}::EnumElement<{cls.enum_obj_counter}>::{attr_name}"
                     cls.enum_obj_counter += 1
                 else:
-                    cls.static_attributes[attr_name] = None
+                    if "default value" in e:
+                        value = eval(e["default value"], globals())
+                    else:
+                        value = None
+
+                    cls.static_attributes[attr_name] = value
             else:
                 cls.dynamic_attribute_keys.add(attr_name)
 
@@ -381,6 +394,14 @@ def load_index_file(file: str):
                 method = WrappedMethod(cls, a, "("+b, lambda *_: result)
             else:
                 method = NoMethod(cls, a, "("+b)
+
+            access = e.setdefault("access", "")
+
+            if "static" in access:
+                method.access |= 0x0008
+
+            if "abstract" in access:
+                method.access |= 0x0400
 
             cls.set_method(signature, method)
 
