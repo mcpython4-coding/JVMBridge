@@ -193,6 +193,8 @@ class PyObjWrappingClass(NativeClass):
 
 class NativeClassInstance(jvm.api.AbstractJavaClassInstance):
     def __init__(self, cls: NativeClass):
+        super().__init__()
+
         self.cls = cls
 
         self.fields = {e: None for e in cls.dynamic_attribute_keys}
@@ -221,15 +223,15 @@ class NativeClassInstance(jvm.api.AbstractJavaClassInstance):
 
 class PyObjWrappingClassInstance(jvm.api.AbstractJavaClassInstance):
     def __init__(self, cls: PyObjWrappingClass, underlying):
+        super().__init__()
+
         self.cls = cls
         self.underlying = underlying
-
-        self.special_fields = {}
 
     def get_field(self, name: str):
         name = self.cls.map_attribute_name(name)
 
-        return self.special_fields[name] if name in self.special_fields else getattr(self.underlying, name)
+        return self.fields[name] if name in self.fields else getattr(self.underlying, name)
 
     def set_field(self, name: str, value):
         name = self.cls.map_attribute_name(name)
@@ -237,7 +239,7 @@ class PyObjWrappingClassInstance(jvm.api.AbstractJavaClassInstance):
         if hasattr(self.underlying, name):
             setattr(self.underlying, name, value)
         else:
-            self.special_fields[name] = value
+            self.fields[name] = value
 
     def get_method(self, name: str, signature: str):
         return self.cls.get_method(name, signature)

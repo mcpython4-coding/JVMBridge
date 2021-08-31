@@ -3,10 +3,10 @@
     "com/google/gson/Gson": {
       "methods": {
         "fromJson(Ljava/lang/String;Ljava/lang/reflect/Type;)Ljava/lang/Object;": {
-          "wraps": "print(a0, a1, a2)"
+          "wraps": "a2.create_instance()"
         },
         "toJson(Ljava/lang/Object;)Ljava/lang/String;": {
-          "wraps": "json.dumps(a1)"
+          "wraps": "json.dumps(a1) if isinstance(a1, (str, int, float, list, dict)) else ''"
         }
       }
     },
@@ -24,14 +24,20 @@
       }
     },
     "com/google/gson/reflect/TypeToken": {
+      "attributes": {
+        "rawType": {},
+        "type": {},
+        "hashCode": {}
+      },
       "methods": {
-        "<init>()V": {
-          "no effect": true
-        },
+        "<init>()V": {},
         "getType()Ljava/lang/reflect/Type;": {
-          "no effect": true
+          "wraps": "a0.fields['type']"
         }
       }
     }
-  }
+  },
+  "implementation": [
+    "google.gson"
+  ]
 }

@@ -61,6 +61,11 @@ class JavaVM:
         if self.simulation: return
 
         name = name.replace(".", "/")
+
+        # Is the name L...;?
+        if name.endswith(";"):
+            name = name[1:-1]
+
         if name in self.shared_classes:
             cls = self.shared_classes[name]
         elif name in self.classes_by_version.setdefault(version, {}):

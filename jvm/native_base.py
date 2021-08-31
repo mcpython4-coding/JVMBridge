@@ -105,6 +105,8 @@ class Native(AbstractJavaClass):
 
 class NativeClassInstance(jvm.api.AbstractJavaClassInstance):
     def __init__(self, cls: Native):
+        super().__init__()
+
         self.cls = cls
         self.fields = {name: None for name in cls.DYNAMIC_FIELD_KEYS}
 

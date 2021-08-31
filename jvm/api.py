@@ -155,6 +155,9 @@ class AbstractJavaClass:
 
 
 class AbstractJavaClassInstance(ABC):
+    def __init__(self):
+        self.fields = {}
+
     def get_field(self, name: str):
         raise NotImplementedError
 

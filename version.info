@@ -72,6 +72,7 @@
 [uuk]: added infrastructure to transform java bytecode to python bytecode
 [uuk]: added NestHost and NestMembers attribute parsers
 [uuk]: added more support for java 16 and mc 1.17.1
+[uuk]: added parser for the Signature attribute
 
 tasks to do [maybe moved away for later]:
 - minifier task should minify builtin & bridge library into each only one file

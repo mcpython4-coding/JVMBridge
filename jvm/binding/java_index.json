@@ -366,8 +366,14 @@
         }
       }
     },
+    "java/util/Set": {
+      "methods": {
+        "iterator()Ljava/util/Iterator;": {}
+      }
+    },
     "java/util/TreeMap": {
       "methods": {
+        "entrySet()Ljava/util/Set;": {},
         "put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;": {
           "wraps": "a0.setdefault(a1, a2)"
         }

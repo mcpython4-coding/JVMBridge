@@ -611,6 +611,8 @@ class JavaClassInstance(AbstractJavaClassInstance):
     """
 
     def __init__(self, class_file: JavaBytecodeClass):
+        super().__init__()
+
         self.class_file = class_file
         self.fields = {name: None for name in class_file.get_dynamic_field_keys()}
 
@@ -618,7 +620,7 @@ class JavaClassInstance(AbstractJavaClassInstance):
         return self.class_file.get_method(name, signature)
 
     def __repr__(self):
-        return f"JavaByteCodeClassInstance(of={self.class_file})"
+        return f"JavaByteCodeClassInstance(of={self.class_file},fields={self.fields})"
 
     def get_class(self):
         return self.class_file

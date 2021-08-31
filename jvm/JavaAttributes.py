@@ -285,6 +285,17 @@ class NestMembersParser(AbstractAttributeParser):
         )
 
 
+class SignatureParser(AbstractAttributeParser):
+    def __init__(self):
+        self.signature = None
+
+    def parse(self, table: "JavaAttributeTable", data: bytearray):
+        self.signature = table.class_file.cp[pop_u2(data) - 1][1]
+
+    def dump(self, table: "JavaAttributeTable") -> bytearray:
+        return table.class_file.ensure_data([1, self.signature])
+
+
 class JavaAttributeTable:
     ATTRIBUTES_NEED_PARSING = {
         "ConstantValue",
@@ -318,6 +329,7 @@ class JavaAttributeTable:
         "RuntimeInvisibleAnnotations": RuntimeAnnotationsParser,
         "NestHost": NestHostParser,
         "NestMembers": NestMembersParser,
+        "Signature": SignatureParser,
     }
 
     def __init__(self, parent):
