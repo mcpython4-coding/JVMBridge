@@ -1,0 +1,92 @@
+{
+  "classes": {
+    "mcp/MethodsReturnNonnullByDefault": {
+      "annotation": "track"
+    },
+    "net/minecraft/block/Block": {},
+    "net/minecraft/block/BlockAnvil": {},
+    "net/minecraft/block/BlockFalling": {},
+    "net/minecraft/block/BlockFire": {},
+    "net/minecraft/block/state/IBlockState": {},
+    "net/minecraft/client/audio/ITickableSound": {},
+    "net/minecraft/client/audio/PositionedSound": {},
+    "net/minecraft/client/gui/FontRenderer": {},
+    "net/minecraft/client/particle/Particle": {},
+    "net/minecraft/client/particle/ParticleBubble": {},
+    "net/minecraft/client/particle/ParticleDrip": {},
+    "net/minecraft/client/renderer/block/model/ItemOverrideList": {},
+    "net/minecraft/client/renderer/block/statemap/StateMapperBase": {},
+    "net/minecraft/client/renderer/entity/Render": {},
+    "net/minecraft/client/renderer/entity/RenderSnowball": {},
+    "net/minecraft/client/renderer/entity/layers/LayerRenderer": {},
+    "net/minecraft/client/renderer/tileentity/TileEntityItemStackRenderer": {},
+    "net/minecraft/client/renderer/tileentity/TileEntitySpecialRenderer": {},
+    "net/minecraft/command/CommandBase": {},
+    "net/minecraft/enchantment/Enchantment": {},
+    "net/minecraft/entity/item/EntityFallingBlock": {},
+    "net/minecraft/entity/item/EntityTNTPrimed": {},
+    "net/minecraft/entity/projectile/EntityThrowable": {},
+    "net/minecraft/inventory/IInventory": {},
+    "net/minecraft/inventory/ISidedInventory": {},
+    "net/minecraft/item/Item": {},
+    "net/minecraft/item/ItemTool": {},
+    "net/minecraft/item/crafting/ShieldRecipes$Decoration": {},
+    "net/minecraft/tileentity/TileEntity": {},
+    "net/minecraft/util/BlockRenderLayer": {},
+    "net/minecraft/util/EnumFacing": {
+      "attributes": {
+        "DOWN": {
+          "access": "static enum"
+        },
+        "EAST": {
+          "access": "static enum"
+        },
+        "NORTH": {
+          "access": "static enum"
+        },
+        "SOUTH": {
+          "access": "static enum"
+        },
+        "UP": {
+          "access": "static enum"
+        },
+        "WEST": {
+          "access": "static enum"
+        },
+        "field_176754_o": {
+          "access": "static",
+          "default value": "cls.get_enum_values()"
+        }
+      },
+      "class type": "enum"
+    },
+    "net/minecraft/util/IStringSerializable": {},
+    "net/minecraft/util/ITickable": {},
+    "net/minecraft/util/NonNullList": {
+      "attributes": {
+        "underlying": {}
+      },
+      "methods": {
+        "<init>(Ljava/util/List;Ljava/lang/Object;)V": {
+          "wraps": "a0.fields.update({'underlying': a1})"
+        },
+        "add(Ljava/lang/Object;)Z": {
+          "wraps": "a0.fields['underlying'].append(a1) != -1"
+        }
+      }
+    },
+    "net/minecraft/util/math/BlockPos": {
+      "attributes": {
+        "X": {},
+        "Y": {},
+        "Z": {}
+      },
+      "methods": {
+        "<init>(III)V": {
+          "wraps": "a0.fields.update({'X': a1, 'Y': a2, 'Z': a3})"
+        }
+      }
+    }
+  },
+  "version attribute": "1.12.2"
+}

@@ -8,9 +8,17 @@
         "checkNotNull(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;": {}
       }
     },
+    "com/google/common/base/Predicate": {},
     "com/google/common/base/Suppliers": {
       "methods": {
         "memoize(Lcom/google/common/base/Supplier;)Lcom/google/common/base/Supplier;": {}
+      }
+    },
+    "com/google/common/cache/CacheBuilder": {
+      "methods": {
+        "build()Lcom/google/common/cache/Cache;": {},
+        "maximumSize(J)Lcom/google/common/cache/CacheBuilder;": {},
+        "newBuilder()Lcom/google/common/cache/CacheBuilder;": {}
       }
     },
     "com/google/common/collect/HashMultimap": {
@@ -53,16 +61,19 @@
         "copyOf(Ljava/util/Map;)Lcom/google/common/collect/ImmutableMap;": {
           "wraps": "a0.copy()"
         },
-        "isEmpty()Z": {
-          "wraps": "len(a0) == 0"
-        },
         "entrySet()Lcom/google/common/collect/ImmutableSet;": {
           "wraps": "list(a0.items())"
+        },
+        "isEmpty()Z": {
+          "wraps": "len(a0) == 0"
         }
       }
     },
     "com/google/common/collect/ImmutableSet": {
       "methods": {
+        "iterator()Lcom/google/common/collect/UnmodifiableIterator;": {
+          "wraps": "iter(a0)"
+        },
         "of(Ljava/lang/Object;)Lcom/google/common/collect/ImmutableSet;": {
           "wraps": "{a0}"
         },
@@ -71,9 +82,6 @@
         },
         "of(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;)Lcom/google/common/collect/ImmutableSet;": {
           "wraps": "{a0, a1, a2, a3, a4, a5} | set(a6)"
-        },
-        "iterator()Lcom/google/common/collect/UnmodifiableIterator;": {
-          "wraps": "iter(a0)"
         },
         "stream()Ljava/util/stream/Stream;": {
           "wraps": "iter(a0)"
@@ -95,13 +103,13 @@
         "newHashMap()Ljava/util/HashMap;": {
           "wraps": "{}"
         },
+        "newHashMap(Ljava/util/Map;)Ljava/util/HashMap;": {
+          "wraps": "a0.copy()"
+        },
         "newTreeMap()Ljava/util/TreeMap;": {
           "wraps": "{}"
         },
         "newTreeMap(Ljava/util/SortedMap;)Ljava/util/TreeMap;": {
-          "wraps": "a0.copy()"
-        },
-        "newHashMap(Ljava/util/Map;)Ljava/util/HashMap;": {
           "wraps": "a0.copy()"
         }
       }

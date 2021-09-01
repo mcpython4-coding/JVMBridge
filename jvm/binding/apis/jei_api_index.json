@@ -1,0 +1,10 @@
+{
+  "classes": {
+    "mezz/jei/api/JEIPlugin": {
+      "annotation": "track"
+    },
+    "mezz/jei/api/IModPlugin": {
+      "annotation": "track"
+    }
+  }
+}

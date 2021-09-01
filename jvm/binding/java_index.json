@@ -30,6 +30,11 @@
     ]
   },
   "classes": {
+    "java/awt/Rectangle": {
+      "methods": {
+        "<init>(IIII)V": {}
+      }
+    },
     "java/beans/ConstructorProperties": {
       "annotation": "track"
     },
@@ -58,6 +63,7 @@
     "java/lang/Class": {
       "methods": {
         "forName(Ljava/lang/String;)Ljava/lang/Class;": {},
+        "getEnumConstants()[Ljava/lang/Object;": {},
         "getField(Ljava/lang/String;)Ljava/lang/reflect/Field;": {},
         "getName()Ljava/lang/String;": {}
       }
@@ -72,10 +78,10 @@
         "<init>(Ljava/lang/String;I)V": {
           "wraps": "a0.fields.update({'ordinal': a2})"
         },
+        "name()Ljava/lang/String;": {},
         "ordinal()I": {
           "wraps": "a0.fields['ordinal']"
-        },
-        "name()Ljava/lang/String;": {}
+        }
       },
       "super": "java/lang/Class"
     },
@@ -87,17 +93,17 @@
     },
     "java/lang/Integer": {
       "methods": {
+        "equals(Ljava/lang/Object;)Z": {
+          "wraps": "a0 == a1"
+        },
+        "intValue()I": {
+          "wraps": "a0"
+        },
         "toString(I)Ljava/lang/String;": {
           "wraps": "str(a0)"
         },
         "valueOf(I)Ljava/lang/Integer;": {
           "wraps": "a0"
-        },
-        "intValue()I": {
-          "wraps": "a0"
-        },
-        "equals(Ljava/lang/Object;)Z": {
-          "wraps": "a0 == a1"
         }
       },
       "wraps": ":int"
@@ -126,11 +132,11 @@
     "java/lang/String": {
       "methods": {
         "equals(Ljava/lang/Object;)Z": {},
-        "getBytes(Ljava/nio/charset/Charset;)[B": {
-          "wraps": "a0.encode('utf-8')"
-        },
         "format(Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;": {
           "wraps": "a0 % tuple(a1)"
+        },
+        "getBytes(Ljava/nio/charset/Charset;)[B": {
+          "wraps": "a0.encode('utf-8')"
         }
       }
     },
@@ -273,6 +279,19 @@
         }
       }
     },
+    "java/util/Collections": {
+      "methods": {
+        "addAll(Ljava/util/Collection;[Ljava/lang/Object;)Z": {
+          "wraps": "(a0 if isinstance(a0, list) else a0.fields['underlying']).extend(a1)"
+        },
+        "emptyList()Ljava/util/List;": {
+          "wraps": "[]"
+        },
+        "shuffle(Ljava/util/List;)V": {
+          "wraps": "__import__('random').shuffle(a0 if isinstance(a0, list) else a0.fields['underlying'])"
+        }
+      }
+    },
     "java/util/Comparator": {
       "methods": {
         "comparing(Ljava/util/function/Function;)Ljava/util/Comparator;": {},
@@ -328,14 +347,14 @@
         "add(Ljava/lang/Object;)Z": {
           "wraps": "(a0.underlying.append(a1) if not isinstance(a0, list) else a0.append(a1)) or True"
         },
+        "get(I)Ljava/lang/Object;": {
+          "wraps": "a0[a1]"
+        },
         "iterator()Ljava/util/Iterator;": {
           "wraps": "iter(a0) if isinstance(a0, list) else iter(a0.underlying)"
         },
         "stream()Ljava/util/stream/Stream;": {
           "wraps": "iter(a0) if isinstance(a0, list) else iter(a0.underlying)"
-        },
-        "get(I)Ljava/lang/Object;": {
-          "wraps": "a0[a1]"
         }
       },
       "wraps": ":list"
@@ -357,6 +376,9 @@
         "containsKey(Ljava/lang/Object;)Z": {
           "wraps": "a1 in a0"
         },
+        "entrySet()Ljava/util/Set;": {
+          "wraps": "list(a0.items())"
+        },
         "get(Ljava/lang/Object;)Ljava/lang/Object;": {
           "wraps": "a0[a1]"
         },
@@ -368,20 +390,17 @@
         },
         "size()I": {
           "wraps": "len(a0)"
-        },
-        "entrySet()Ljava/util/Set;": {
-          "wraps": "list(a0.items())"
         }
       },
       "wraps": ":dict"
     },
     "java/util/Map$Entry": {
       "methods": {
-        "getValue()Ljava/lang/Object;": {
-          "wraps": "a0[1]"
-        },
         "getKey()Ljava/lang/Object;": {
           "wraps": "a0[0]"
+        },
+        "getValue()Ljava/lang/Object;": {
+          "wraps": "a0[1]"
         }
       }
     },
@@ -416,11 +435,11 @@
     },
     "java/util/Set": {
       "methods": {
-        "iterator()Ljava/util/Iterator;": {
-          "wraps": "iter(a0)"
-        },
         "forEach(Ljava/util/function/Consumer;)V": {
           "wraps": "list(map(a1, a0)) == 0"
+        },
+        "iterator()Ljava/util/Iterator;": {
+          "wraps": "iter(a0)"
         },
         "stream()Ljava/util/stream/Stream;": {
           "wraps": "iter(a0)"
@@ -453,6 +472,11 @@
       "wraps": ":set"
     },
     "java/util/UUID": {},
+    "java/util/concurrent/ConcurrentLinkedQueue": {
+      "methods": {
+        "<init>()V": {}
+      }
+    },
     "java/util/concurrent/atomic/AtomicInteger": {
       "hard wrap": true,
       "methods": {
@@ -483,6 +507,7 @@
         }
       }
     },
+    "java/util/function/Function": {},
     "java/util/function/Predicate": {
       "wraps": "typing:Callable"
     },

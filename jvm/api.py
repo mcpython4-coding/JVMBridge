@@ -120,11 +120,26 @@ class AbstractJavaClass:
         self.name: str = None  # the class name
         self.file_source: str = None  # a path to the file this class was loaded from
         self.parent = None  # the parent of the class
+        self.is_public = True
+        self.is_final = False
+        self.is_special_super = False
+        self.is_interface = False
+        self.is_abstract = False
+        self.is_synthetic = False
+        self.is_annotation = False
+        self.is_enum = False
+        self.is_module = False
+
         self.interfaces: typing.List[
             typing.Callable[[], typing.Optional[AbstractJavaClass]]
         ] = []
         self.internal_version = None  # the internal version identifier
         self.vm = None  # the vm instance bound to
+
+        self.enum_fields = []
+
+    def get_enum_values(self):
+        return [self.get_static_attribute(e) for e in self.enum_fields]
 
     def get_method(self, name: str, signature: str, inner=False):
         raise NotImplementedError

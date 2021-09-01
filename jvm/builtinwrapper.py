@@ -54,6 +54,11 @@ except ImportError:
     shared = None
 
 
+CLASS_ACCESS_NAMES = [
+    "public", "final", "interface", "abstract", "synthetic", "annotation", "module"
+]
+
+
 class NoMethod(jvm.api.AbstractMethod):
     def __init__(self, class_file, name: str, signature: str):
         super().__init__()
@@ -361,15 +366,21 @@ def load_index_file(file: str):
 
         if "annotation" in d:
             parseAnnotationType(cls, d["annotation"])
+            cls.is_annotation = True
 
         for attr_name, e in d.setdefault("attributes", {}).items():
+            if not isinstance(e, dict):
+                raise ValueError(cls, attr_name)
+
             if "static" in e.setdefault("access", ""):
                 if "enum" in e["access"]:
                     cls.static_attributes[attr_name] = f"{cls.name}::EnumElement<{cls.enum_obj_counter}>::{attr_name}"
+                    cls.enum_fields.append(attr_name)
                     cls.enum_obj_counter += 1
+                    cls.is_enum = True
                 else:
                     if "default value" in e:
-                        value = eval(e["default value"], globals())
+                        value = eval(e["default value"], globals(), locals())
                     else:
                         value = None
 
@@ -412,6 +423,11 @@ def load_index_file(file: str):
             for method in handler.class_creation_binds.pop((name, version)):
                 method(cls)
 
+        if "access" in d:
+            for key in CLASS_ACCESS_NAMES:
+                if f" {key} " in d["access"]:
+                    setattr(cls, f"is_{key}", True)
+
     for t, d in data.setdefault("annotations", {}).items():
         for cls in d:
             cls = handler.create_class(cls, version)
@@ -432,18 +448,24 @@ def load_index_file(file: str):
                         print(f"in file: {f}")
                         traceback.print_exc()
         else:
-            importlib.import_module("jvm.binding."+file.replace("/", "."))
+            importlib.import_module("jvm.binding.impl."+file.replace("/", "."))
 
 
 def load_implementations():
     pass
 
 
+def load_indexes_from_dir(directory: str):
+    for file in os.listdir(directory):
+        if file.endswith(".json"):
+            load_index_file(directory+"/"+file)
+
+
 def load_default_indexes():
     local = os.path.dirname(__file__)+"/binding"
-
-    for file in os.listdir(local):
-        if file.endswith(".json"):
-            load_index_file(local+"/"+file)
+    load_indexes_from_dir(local)
+    load_indexes_from_dir(local+"/apis")
+    load_indexes_from_dir(local+"/libs")
+    load_indexes_from_dir(local+"/core")
 
     load_implementations()

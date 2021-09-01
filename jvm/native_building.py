@@ -72,7 +72,7 @@ def addClassAttribute(cls_name: str, version, attr_name: str, static=False):
     data.setdefault("classes", {}).setdefault(cls_name, {}).setdefault("attributes", {})[attr_name] = config
 
     with open(file, mode="w") as f:
-        simplejson.dump(data, f, indent="  ")
+        simplejson.dump(data, f, indent="  ", sort_keys=True)
 
 
 def addMethod(cls_name: str, version, signature: str):
@@ -86,5 +86,5 @@ def addMethod(cls_name: str, version, signature: str):
     data.setdefault("classes", {}).setdefault(cls_name, {}).setdefault("methods", {})[signature] = {}
 
     with open(file, mode="w") as f:
-        simplejson.dump(data, f, indent="  ")
+        simplejson.dump(data, f, indent="  ", sort_keys=True)
 

@@ -1,0 +1,82 @@
+{
+  "classes": {
+    "net/minecraftforge/common/capabilities/ICapabilityProvider": {},
+    "net/minecraftforge/common/util/EnumHelper": {
+      "methods": {
+        "addEnchantmentType(Ljava/lang/String;Lcom/google/common/base/Predicate;)Lnet/minecraft/enchantment/EnumEnchantmentType;": {}
+      }
+    },
+    "net/minecraftforge/common/util/INBTSerializable": {},
+    "net/minecraftforge/energy/IEnergyStorage": {},
+    "net/minecraftforge/event/entity/EntityEvent": {},
+    "net/minecraftforge/fml/common/API": {
+      "annotation": "track"
+    },
+    "net/minecraftforge/fml/common/Mod": {
+      "annotation": "track"
+    },
+    "net/minecraftforge/fml/common/Mod$EventBusSubscriber": {
+      "annotation": "track"
+    },
+    "net/minecraftforge/fml/common/Mod$EventHandler": {
+      "annotation": "track"
+    },
+    "net/minecraftforge/fml/common/Optional$Interface": {
+      "annotation": "track"
+    },
+    "net/minecraftforge/fml/common/Optional$InterfaceList": {
+      "annotation": "track"
+    },
+    "net/minecraftforge/fml/common/Optional$Method": {
+      "annotation": "track"
+    },
+    "net/minecraftforge/fml/common/eventhandler/Cancelable": {
+      "annotation": "track"
+    },
+    "net/minecraftforge/fml/common/eventhandler/Event": {},
+    "net/minecraftforge/fml/common/eventhandler/EventPriority": {
+      "attributes": {
+        "HIGH": {
+          "access": "static"
+        },
+        "HIGHEST": {
+          "access": "static enum"
+        },
+        "LOW": {
+          "access": "static"
+        },
+        "LOWEST": {
+          "access": "static"
+        },
+        "NORMAL": {
+          "access": "static"
+        }
+      },
+      "class type": "enum"
+    },
+    "net/minecraftforge/fml/common/eventhandler/SubscribeEvent": {
+      "annotation": "track"
+    },
+    "net/minecraftforge/fml/common/network/NetworkCheckHandler": {
+      "annotation": "track"
+    },
+    "net/minecraftforge/fml/common/network/simpleimpl/IMessage": {},
+    "net/minecraftforge/fml/relauncher/Side": {
+      "attributes": {
+        "CLIENT": {
+          "access": "static enum"
+        },
+        "SERVER": {
+          "access": "static"
+        }
+      },
+      "class type": "enum"
+    },
+    "net/minecraftforge/fml/relauncher/SideOnly": {
+      "annotation": "track"
+    },
+    "net/minecraftforge/registries/IForgeRegistryEntry": {},
+    "net/minecraftforge/registries/IForgeRegistryEntry$Impl": {}
+  },
+  "version attribute": "1.12.2"
+}

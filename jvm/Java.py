@@ -186,9 +186,6 @@ class JavaBytecodeClass(AbstractJavaClass):
         self.methods = {}
         self.fields = {}
 
-        # can hold a list of fields
-        self.enum_fields: typing.Optional[typing.List[JavaField]] = None
-
         self.dynamic_field_keys = set()
         self.static_field_values = {}
         self.attributes = JavaAttributeTable(self)
@@ -197,16 +194,6 @@ class JavaBytecodeClass(AbstractJavaClass):
         self.on_instance_creation = []
 
         self.class_init_complete = False
-
-        self.is_public = True
-        self.is_final = False
-        self.is_special_super = False
-        self.is_interface = False
-        self.is_abstract = False
-        self.is_synthetic = False
-        self.is_annotation = False
-        self.is_enum = False
-        self.is_module = False
 
     # todo: add to that object a marker!
     def on_annotate(self, obj, args):
@@ -302,15 +289,12 @@ class JavaBytecodeClass(AbstractJavaClass):
             for _ in range(pop_u2(data))
         ]
 
-        if self.is_enum:
-            self.enum_fields = []
-
         for _ in range(pop_u2(data)):
             field = JavaField()
             field.from_data(self, data)
 
             if field.access & 0x4000:
-                self.enum_fields.append(field)
+                self.enum_fields.append(field.name)
 
             self.fields[field.name] = field
 

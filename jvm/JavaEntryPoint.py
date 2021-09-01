@@ -15,6 +15,7 @@ import json
 
 import jvm.JavaVM
 import jvm.logging
+from mcpython.common.mod.ModLoader import ModContainer
 
 '''
 Integration point to mcpython's mod loader 
@@ -39,6 +40,7 @@ import jvm.builtinwrapper
 
 FORGE_VERSION_NUMBER_TO_MC = {
     37: "1.17.1",
+    "1.12.2": "1.12.2",
 }
 
 
@@ -239,6 +241,32 @@ class JavaModLoader(AbstractModLoaderInstance):
                     )
 
 
+class McModInfoLoader(AbstractModLoaderInstance):
+    # mcmod.info
+    @classmethod
+    def match_container_loader(cls, container: ModContainer) -> bool:
+        return container.resource_access.is_in_path("mcmod.info")
+
+    def on_select(self):
+        data = json.loads(
+            self.container.resource_access.read_raw("mcmod.info").decode("utf-8")
+        )
+
+        self.raw_data = data
+        self.load_from_data(data)
+
+    def load_from_data(self, data: dict):
+        for entry in data:
+            mod = JavaMod(entry["modid"], tuple(int(e) for e in entry["version"].split(".")))
+            mod.add_load_default_resources()
+            mod.loader_version = entry["mcversion"]
+            mod.resource_access = self.container.resource_access
+            mod.container = self.container
+
+            shared.mod_loader(entry["modid"], "stage:mod:init")(mod.load_underlying_classes)
+
+
 ModLoader.TOML_LOADERS["javafml"] = JavaModLoader
 ModLoader.TOML_LOADERS["kotori_scala"] = JavaModLoader
 ModLoader.TOML_LOADERS["kotlinforforge"] = JavaModLoader
+ModLoader.KNOWN_MOD_LOADERS.append(McModInfoLoader)

@@ -1,0 +1,10 @@
+{
+  "classes": {
+    "com/brandon3055/projectintelligence/api/ModPlugin": {
+      "annotation": "track"
+    },
+    "com/brandon3055/projectintelligence/api/IModPlugin": {
+      "access": "abstract interface"
+    }
+  }
+}

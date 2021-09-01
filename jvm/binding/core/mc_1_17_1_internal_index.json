@@ -2,8 +2,12 @@
   "classes": {
     "com/mojang/serialization/Codec": {
       "methods": {
-        "fieldOf(Ljava/lang/String;)Lcom/mojang/serialization/MapCodec;": {},
-        "stable()Lcom/mojang/serialization/Codec;": {}
+        "fieldOf(Ljava/lang/String;)Lcom/mojang/serialization/MapCodec;": {
+          "wraps": "cls.vm.get_class(\"com/mojang/serialization/MapCodec\", version=cls.internal_version)"
+        },
+        "stable()Lcom/mojang/serialization/Codec;": {
+          "wraps": "a0"
+        }
       }
     },
     "com/mojang/serialization/MapCodec": {
@@ -888,10 +892,10 @@
           "access": "static enum"
         },
         "DESERT": {
-          "access": "static"
+          "access": "static enum"
         },
         "EXTREME_HILLS": {
-          "access": "static"
+          "access": "static enum"
         },
         "FOREST": {
           "access": "static enum"
@@ -900,28 +904,28 @@
           "access": "static enum"
         },
         "JUNGLE": {
-          "access": "static"
+          "access": "static enum"
         },
         "NETHER": {
-          "access": "static"
+          "access": "static enum"
         },
         "NONE": {
           "access": "static enum"
         },
         "PLAINS": {
-          "access": "static"
+          "access": "static enum"
         },
         "SAVANNA": {
-          "access": "static"
+          "access": "static enum"
         },
         "SWAMP": {
           "access": "static enum"
         },
         "TAIGA": {
-          "access": "static"
+          "access": "static enum"
         },
         "UNDERGROUND": {
-          "access": "static"
+          "access": "static enum"
         }
       },
       "class type": "enum"
@@ -929,7 +933,7 @@
     "net/minecraft/world/level/biome/Biome$Precipitation": {
       "attributes": {
         "NONE": {
-          "access": "static"
+          "access": "static enum"
         },
         "RAIN": {
           "access": "static enum"
@@ -1300,31 +1304,33 @@
     "net/minecraft/world/level/levelgen/GenerationStep$Carving": {
       "attributes": {
         "AIR": {
-          "access": "static"
+          "access": "static enum"
         }
-      }
+      },
+      "class type": "enum"
     },
     "net/minecraft/world/level/levelgen/GenerationStep$Decoration": {
       "attributes": {
         "LAKES": {
-          "access": "static"
+          "access": "static enum"
         },
         "LOCAL_MODIFICATIONS": {
-          "access": "static"
+          "access": "static enum"
         },
         "UNDERGROUND_DECORATION": {
-          "access": "static"
+          "access": "static enum"
         },
         "UNDERGROUND_ORES": {
-          "access": "static"
+          "access": "static enum"
         },
         "VEGETAL_DECORATION": {
-          "access": "static"
+          "access": "static enum"
         },
         "SURFACE_STRUCTURES": {
-          "access": "static"
+          "access": "static enum"
         }
-      }
+      },
+      "class type": "enum"
     },
     "net/minecraft/world/level/levelgen/VerticalAnchor": {
       "methods": {
@@ -1702,5 +1708,8 @@
       }
     }
   },
-  "version attribute": "1.17.1"
+  "version attribute": "1.17.1",
+  "implementation": [
+    "mc.1_17_1.util"
+  ]
 }
