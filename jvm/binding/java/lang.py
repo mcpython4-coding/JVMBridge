@@ -5,7 +5,7 @@ import jvm.exceptions
 @builtin_handler.bind_method("java/lang/Objects:requireNonNull(Ljava/lang/Object;)Ljava/lang/Object;")
 def requireNonNull(obj):
     if obj is None:
-        raise jvm.exceptions.NullPointerException
+        raise jvm.exceptions.NullPointerException("Encountered 'null', expected non-null; See trace for what is null")
 
     return obj
 
@@ -15,6 +15,7 @@ def name(self):
     if isinstance(self, str):
         return self.split("::")[-1]
 
+    # todo: add a better lookup method!
     if hasattr(self, "get_class"):
         cls = self.get_class()
 

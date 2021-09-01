@@ -8,6 +8,7 @@ from jvm.Java import JavaArrayManager
 from jvm.Java import JavaBytecodeClass
 from jvm.JavaExceptionStack import StackCollectingException
 import jvm.api
+from jvm.api import AbstractJavaClass
 from jvm.native_building import dumpClassCreationToFiles
 
 
@@ -34,10 +35,10 @@ class JavaVM:
     def __init__(self):
         self.debugged_methods = set()
         self.shared_classes: typing.Dict[
-            str, typing.Union["AbstractJavaClass", typing.Type]
+            str, typing.Union[AbstractJavaClass, typing.Type]
         ] = {}
         self.classes_by_version: typing.Dict[
-            typing.Hashable, typing.Dict[str, "AbstractJavaClass"]
+            typing.Hashable, typing.Dict[str, AbstractJavaClass]
         ] = {}
         self.lazy_classes: typing.Set[typing.Tuple[typing.Any, str]] = set()
 
@@ -50,7 +51,7 @@ class JavaVM:
             version, name = self.lazy_classes.pop()
             self.get_class(name, version=version)
 
-    def get_class(self, name: str, version=0) -> typing.Optional["AbstractJavaClass"]:
+    def get_class(self, name: str, version=0) -> typing.Optional[AbstractJavaClass]:
         """
         Looks up a specific class in the internal class loader array, and loads it from bytecode if not arrival
         :param name: the name of the class
@@ -63,7 +64,7 @@ class JavaVM:
         name = name.replace(".", "/")
 
         # Is the name L...;?
-        if name.endswith(";"):
+        if name.endswith(";") and not name.startswith("["):
             name = name[1:-1]
 
         if name in self.shared_classes:
@@ -87,10 +88,10 @@ class JavaVM:
 
     def load_class(
         self, name: str, version: typing.Any = 0, shared=False
-    ) -> "AbstractJavaClass":
+    ) -> AbstractJavaClass:
         name = name.replace(".", "/")
         if name.startswith("["):
-            return self.array_helper.get(name)
+            return self.array_helper.get(name, version=version)
 
         try:
             bytecode = get_bytecode_of_class(name)

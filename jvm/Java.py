@@ -21,6 +21,7 @@ import typing
 from jvm.api import AbstractJavaClass
 from jvm.api import AbstractJavaClassInstance
 from jvm.api import AbstractMethod
+from jvm.builtinwrapper import WrappedMethod
 from jvm.JavaAttributes import JavaAttributeTable
 from jvm.logging import info
 from jvm.util import DOUBLE
@@ -43,32 +44,36 @@ except ImportError:
 
 
 class ArrayBase(jvm.api.AbstractJavaClass):
-    def get_method(self, name: str, signature: str, inner=False):
-        return getattr(self, name)
-
-    def get_static_attribute(self, name: str, expected_type=None):
-        raise RuntimeError
-
-    def set_static_attribute(self, name: str, value):
-        raise RuntimeError
-
-    def inject_method(self, name: str, signature: str, method, force=True):
-        raise RuntimeError
-
-    def is_subclass_of(self, class_name: str) -> bool:
-        return False
-
     def __init__(self, depth: int, name: str, base_class: AbstractJavaClass):
         super().__init__()
+        self.methods = {
+            ("clone", "()Ljava/lang/Object;"): WrappedMethod(self, "clone", "()Ljava/lang/Object;", self.clone)
+        }
+        self.attributes = {}
+
         self.base_class = base_class
         self.depth = depth
         self.name = name
 
+    def get_method(self, name: str, signature: str, inner=False):
+        return self.methods[(name, signature)]
+
+    def get_static_attribute(self, name: str, expected_type=None):
+        return self.attributes.setdefault(name, 0)
+
+    def set_static_attribute(self, name: str, value):
+        self.attributes[name] = value
+
+    def inject_method(self, name: str, signature: str, method, force=True):
+        self.methods[(name, signature)] = method
+
+    def is_subclass_of(self, class_name: str) -> bool:
+        return False
+
     def create_instance(self):
         return []
 
-    def clone(self, args):
-        instance, = args
+    def clone(self, instance):
         return instance.copy() if instance is not None else instance
 
 
