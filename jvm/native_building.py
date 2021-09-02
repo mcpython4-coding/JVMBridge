@@ -13,33 +13,33 @@ def className2File(name: str, version) -> typing.Optional[str]:
         return local+"/binding/java_index.json"
 
     elif name.startswith("org/apache/logging"):
-        return local+"/binding/logger_index.json"
+        return local+"/binding/libs/logger_index.json"
 
     elif name.startswith("com/google/gson/"):
-        return local+"/binding/gson_index.json"
+        return local+"/binding/libs/gson_index.json"
 
     elif name.startswith("com/google/"):
-        return local+"/binding/google_util_index.json"
+        return local+"/binding/libs/google_util_index.json"
 
     elif name.startswith("it/unimi/dsi/fastutil"):
-        return local+"/binding/fastutil_index.json"
+        return local+"/binding/libs/fastutil_index.json"
 
     elif name.startswith("org/apache/commons/"):
-        return local + "/binding/apache_util.json"
+        return local + "/binding/libs/apache_util.json"
 
     elif name.startswith("io/netty/"):
-        return local + "/binding/netty_index.json"
+        return local + "/binding/libs/netty_index.json"
 
     if version is None: return
 
     if name.startswith("net/minecraft/") or name.startswith("com/mojang/"):
-        return local+f"/binding/mc_{version}_internal_index.json"
+        return local+f"/binding/core/mc_{version}_internal_index.json"
 
     elif name.startswith("net/minecraftforge/"):
-        return local + f"/binding/mc_{version}_forge_index.json"
+        return local + f"/binding/core/mc_{version}_forge_index.json"
 
     elif name.startswith("org/spongepowered/asm/mixin/"):
-        return local + f"/binding/mc_{version}_mixin_index.json"
+        return local + f"/binding/libs/mc_{version}_mixin_index.json"
 
 
 def dumpClassCreationToFiles(name: str, version):

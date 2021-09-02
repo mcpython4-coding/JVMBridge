@@ -142,7 +142,7 @@ def subscribeToEvent(cls, obj, args):
             shared.CURRENT_EVENT_SUB = modname
 
             try:
-                obj.invoke(arg_producer(a))
+                obj.invoke(*arg_producer(a))
 
             except StackCollectingException as error:
                 if shared.IS_CLIENT:
@@ -166,6 +166,7 @@ def subscribeToEvent(cls, obj, args):
         elif target_id == 1:
             PUBLIC_EVENT_BUS.subscribe(event_name, handle_event)
 
-    else:
-        print(f"[FML][WARN] mod {modname} is subscribing for event {obj.signature}, which is not arrival in data set")
+    elif obj.signature.startswith("(Lnet/minecraftforge"):
+        print(f"[FML][WARN] mod '{modname}' is subscribing for event {obj.signature}, which is not arrival in data set")
+        EventType2EventStage[obj.signature] = None
 

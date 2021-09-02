@@ -344,6 +344,23 @@ def create_method_based_on_wrap(cls, name, signature, code):
     return WrappedMethod(cls, name, signature, execute)
 
 
+def create_exec_based_method_on_wrap(cls, name, signature, code):
+    def execute(*args):
+        local = {
+            f"a{i}": e for i, e in enumerate(args)
+        } | {"cls": cls, "shared": shared, "result": None}
+        try:
+            exec(code, globals(), local)
+            return local["result"]
+        except StackCollectingException as e:
+            e.add_trace(code)
+            raise
+        except Exception as e:
+            raise StackCollectingException(f"During invoking eval() for {cls.name}:{name}{signature}").add_trace(e).add_trace(code).add_trace(args) from None
+
+    return WrappedMethod(cls, name, signature, execute)
+
+
 def load_index_file(file: str):
     try:
         data: dict = json.load(open(file))
@@ -396,8 +413,10 @@ def load_index_file(file: str):
             a, b = signature.split("(")
 
             if "wraps" in e:
-
-                method = create_method_based_on_wrap(cls, a, "("+b, e["wraps"])
+                if "method" not in e:
+                    method = create_method_based_on_wrap(cls, a, "("+b, e["wraps"])
+                else:
+                    method = create_exec_based_method_on_wrap(cls, a, "("+b, e["wraps"])
 
             elif e.setdefault("no effect", False):
                 result = e.setdefault("default result", None)

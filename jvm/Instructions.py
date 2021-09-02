@@ -886,6 +886,22 @@ class FDIV(OpcodeInstruction):
 
 
 @AbstractBytecodeContainer.register_instruction
+class LRem(OpcodeInstruction):
+    OPCODES = {0x71}
+
+    @classmethod
+    def invoke(cls, data: typing.Any, stack: AbstractStack):
+        b, a = stack.pop(), stack.pop()
+        stack.push(int(a - (a / b) * b))
+
+    @classmethod
+    def validate_stack(cls, command_index, prepared_data: typing.Any, container: AbstractBytecodeContainer, stack: AbstractStack):
+        a = stack.pop()
+        stack.pop_expect_type(a)
+        stack.push(a)
+
+
+@AbstractBytecodeContainer.register_instruction
 class SHL(OpcodeInstruction):
     OPCODES = {0x78}
 

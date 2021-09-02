@@ -8,6 +8,7 @@
     "net/minecraft/block/BlockFalling": {},
     "net/minecraft/block/BlockFire": {},
     "net/minecraft/block/state/IBlockState": {},
+    "net/minecraft/client/Minecraft": {},
     "net/minecraft/client/audio/ITickableSound": {},
     "net/minecraft/client/audio/PositionedSound": {},
     "net/minecraft/client/gui/FontRenderer": {},
@@ -26,6 +27,7 @@
     "net/minecraft/entity/item/EntityFallingBlock": {},
     "net/minecraft/entity/item/EntityTNTPrimed": {},
     "net/minecraft/entity/projectile/EntityThrowable": {},
+    "net/minecraft/inventory/EntityEquipmentSlot": {},
     "net/minecraft/inventory/IInventory": {},
     "net/minecraft/inventory/ISidedInventory": {},
     "net/minecraft/item/Item": {},
@@ -72,6 +74,10 @@
         },
         "add(Ljava/lang/Object;)Z": {
           "wraps": "a0.fields['underlying'].append(a1) != -1"
+        },
+        "removeRange(II)V": {
+          "method": "exec",
+          "wraps": "del a0.fields['underlying'][a1:a2]"
         }
       }
     },
@@ -84,6 +90,13 @@
       "methods": {
         "<init>(III)V": {
           "wraps": "a0.fields.update({'X': a1, 'Y': a2, 'Z': a3})"
+        }
+      }
+    },
+    "net/minecraft/world/WorldProvider": {
+      "methods": {
+        "getDimension()I": {
+          "wraps": "shared.world.get_active_dimension()"
         }
       }
     }

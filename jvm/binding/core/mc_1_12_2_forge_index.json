@@ -12,6 +12,16 @@
     "net/minecraftforge/fml/common/API": {
       "annotation": "track"
     },
+    "net/minecraftforge/fml/common/FMLCommonHandler": {
+      "methods": {
+        "instance()Lnet/minecraftforge/fml/common/FMLCommonHandler;": {
+          "wraps": "cls.create_instance()"
+        },
+        "getMinecraftServerInstance()Lnet/minecraft/server/MinecraftServer;": {
+          "wraps": "None"
+        }
+      }
+    },
     "net/minecraftforge/fml/common/Mod": {
       "annotation": "track"
     },
@@ -57,6 +67,14 @@
     "net/minecraftforge/fml/common/eventhandler/SubscribeEvent": {
       "annotation": "track"
     },
+    "net/minecraftforge/fml/common/gameevent/TickEvent$Phase": {
+      "attributes": {
+        "END": {
+          "access": "static enum"
+        }
+      },
+      "class type": "enum"
+    },
     "net/minecraftforge/fml/common/network/NetworkCheckHandler": {
       "annotation": "track"
     },
@@ -78,5 +96,8 @@
     "net/minecraftforge/registries/IForgeRegistryEntry": {},
     "net/minecraftforge/registries/IForgeRegistryEntry$Impl": {}
   },
+  "implementation": [
+    "forge.v1_12_2.event"
+  ],
   "version attribute": "1.12.2"
 }

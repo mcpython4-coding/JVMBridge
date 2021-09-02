@@ -113,6 +113,9 @@
         "<init>()V": {
           "no effect": true
         },
+        "get()Ljava/lang/Object;": {
+          "wraps": "a0"
+        },
         "getClass()Ljava/lang/Class;": {
           "wraps": "cls if not isinstance(a0, jvm.api.AbstractJavaClass) else cls.get_class()"
         }
@@ -126,6 +129,9 @@
       "methods": {
         "<init>(Ljava/lang/String;)V": {
           "wraps": "a0.fields.update({'message': a1})"
+        },
+        "printStackTrace()V": {
+          "wraps": "print(a0.fields['message'])"
         }
       }
     },
@@ -137,6 +143,41 @@
         },
         "getBytes(Ljava/nio/charset/Charset;)[B": {
           "wraps": "a0.encode('utf-8')"
+        }
+      }
+    },
+    "java/lang/StringBuilder": {
+      "attributes": {
+        "underlying": {}
+      },
+      "methods": {
+        "<init>()V": {
+          "wraps": "a0.fields.update({'underlying': []})"
+        },
+        "append(I)Ljava/lang/StringBuilder;": {
+          "wraps": "a0 if a0.fields['underlying'].append(str(a1)) else a0"
+        },
+        "append(Ljava/lang/Object;)Ljava/lang/StringBuilder;": {
+          "wraps": "a0 if a0.fields['underlying'].append(str(a1)) else a0"
+        },
+        "append(Ljava/lang/String;)Ljava/lang/StringBuilder;": {
+          "wraps": "a0 if a0.fields['underlying'].append(a1) else a0"
+        },
+        "toString()Ljava/lang/String;": {
+          "wraps": "''.join(a0.fields['underlying'])"
+        }
+      }
+    },
+    "java/lang/ThreadLocal": {
+      "methods": {
+        "<init>()V": {
+          "no effect": true
+        },
+        "get()Ljava/lang/Object;": {
+          "wraps": "a0"
+        },
+        "withInitial(Ljava/util/function/Supplier;)Ljava/lang/ThreadLocal;": {
+          "wraps": "a0()"
         }
       }
     },
@@ -326,6 +367,16 @@
       },
       "wraps": ":set"
     },
+    "java/util/IdentityHashMap": {
+      "methods": {
+        "<init>()V": {
+          "no effect": true
+        },
+        "forEach(Ljava/util/function/BiConsumer;)V": {
+          "wraps": "list(map(a1, a0.items())) if isinstance(a0, dict) else None"
+        }
+      }
+    },
     "java/util/Iterator": {
       "methods": {
         "hasNext()Z": {
@@ -352,6 +403,9 @@
         },
         "iterator()Ljava/util/Iterator;": {
           "wraps": "iter(a0) if isinstance(a0, list) else iter(a0.underlying)"
+        },
+        "size()I": {
+          "wraps": "len(a0)"
         },
         "stream()Ljava/util/stream/Stream;": {
           "wraps": "iter(a0) if isinstance(a0, list) else iter(a0.underlying)"
@@ -472,6 +526,16 @@
       "wraps": ":set"
     },
     "java/util/UUID": {},
+    "java/util/WeakHashMap": {
+      "methods": {
+        "<init>()V": {
+          "no effect": true
+        },
+        "computeIfAbsent(Ljava/lang/Object;Ljava/util/function/Function;)Ljava/lang/Object;": {
+          "wraps": "(a0.setdefault(a1, a2()) if a1 not in a0 else a0[a1]) if isinstance(a0, dict) else a2()"
+        }
+      }
+    },
     "java/util/concurrent/ConcurrentLinkedQueue": {
       "methods": {
         "<init>()V": {}
