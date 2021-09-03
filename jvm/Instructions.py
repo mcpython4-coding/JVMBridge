@@ -1339,14 +1339,14 @@ class GetField(CPLinkedInstruction):
             if hasattr(obj, "get_class") and isinstance(obj.get_class(), jvm.Java.JavaBytecodeClass):
                 raise StackCollectingException(
                     f"AttributeError: object {obj} (type {type(obj)}) has no attribute {name}"
-                ) from None
+                ).add_trace(data) from None
 
             try:
                 stack.push(getattr(obj, name))
             except (KeyError, AttributeError):
                 raise StackCollectingException(
                     f"AttributeError: object {obj} (type {type(obj)}) has no attribute {name}"
-                ) from None
+                ).add_trace(data) from None
 
     @classmethod
     def validate_stack(cls, command_index, prepared_data: typing.Any, container: AbstractBytecodeContainer, stack: AbstractStack):

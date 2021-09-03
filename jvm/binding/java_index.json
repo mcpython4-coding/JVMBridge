@@ -346,6 +346,13 @@
         "computeIfAbsent(Ljava/lang/Object;Ljava/util/function/Function;)Ljava/lang/Object;": {}
       }
     },
+    "java/util/EnumSet": {
+      "methods": {
+        "noneOf(Ljava/lang/Class;)Ljava/util/EnumSet;": {
+          "wraps": "set()"
+        }
+      }
+    },
     "java/util/HashMap": {
       "hard wrap": true,
       "methods": {
@@ -525,7 +532,13 @@
       },
       "wraps": ":set"
     },
-    "java/util/UUID": {},
+    "java/util/UUID": {
+      "methods": {
+        "fromString(Ljava/lang/String;)Ljava/util/UUID;": {
+          "wraps": "__import__('uuid').UUID(a0)"
+        }
+      }
+    },
     "java/util/WeakHashMap": {
       "methods": {
         "<init>()V": {
@@ -598,7 +611,12 @@
         }
       }
     },
-    "javax/annotation/meta/TypeQualifier": {}
+    "javax/annotation/OverridingMethodsMustInvokeSuper": {
+      "annotation": "track"
+    },
+    "javax/annotation/meta/TypeQualifier": {
+      "annotation": "track"
+    }
   },
   "implementation": [
     "java.lang",

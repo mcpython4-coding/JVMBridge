@@ -1,4 +1,3 @@
-import dis
 import sys
 import typing
 from abc import ABC
@@ -265,4 +264,40 @@ class BaseInstruction(ABC):
 
     @classmethod
     def prepare_python_bytecode_instructions(cls, command_index, prepared_data: typing.Any, container: AbstractBytecodeContainer, builder: PyBytecodeBuilder):
+        pass
+
+
+class AbstractJavaVM(metaclass=ABCMeta):
+    @abstractmethod
+    def get_class(self, name, version):
+        """
+        Looks up a specific class in the internal class loader array, and loads it from bytecode if not arrival
+        :param name: the name of the class
+        :param version: the version to load in, as like a "ClassLoader" instance
+        :return: the class, or None on some error
+        """
+        pass
+
+    @abstractmethod
+    def load_lazy(self):
+        pass
+
+    @abstractmethod
+    def get_lazy_class(self, name, version):
+        pass
+
+    @abstractmethod
+    def load_class(self, name, version, shared):
+        pass
+
+    @abstractmethod
+    def register_direct(self, cls):
+        pass
+
+    @abstractmethod
+    def register_special(self, cls, name, version):
+        pass
+
+    @abstractmethod
+    def walk_across_classes(self) -> typing.Iterator[AbstractJavaClass]:
         pass

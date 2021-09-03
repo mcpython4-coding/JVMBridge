@@ -38,10 +38,15 @@
       "attributes": {
         "CAPTURE_FAILHARD": {
           "access": "static enum"
+        },
+        "CAPTURE_FAILSOFT": {
+          "access": "static enum"
         }
       }
     },
-    "org/spongepowered/asm/mixin/injection/ModifyVariable": {},
+    "org/spongepowered/asm/mixin/injection/ModifyVariable": {
+      "annotation": "report"
+    },
     "org/spongepowered/asm/mixin/injection/ModifyConstant": {
       "annotation": "report"
     },

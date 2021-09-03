@@ -9,6 +9,12 @@ from mcpython.engine.event.EventHandler import PUBLIC_EVENT_BUS
 from jvm.JavaExceptionStack import StackCollectingException
 
 
+CLIENT_TICK_EVENT = jvm.api.vm.get_class("net/minecraftforge/event/TickEvent$ClientTickEvent", version="1.16.5").create_instance()
+CLIENT_TICK_EVENT.fields["wasCanceled"] = 0
+
+RENDER_TICK_EVENT = jvm.api.vm.get_class("net/minecraftforge/event/TickEvent$RenderTickEvent", version="1.16.5").create_instance()
+
+
 EventType2EventStage = {
     "(Lnet/minecraftforge/fml/event/lifecycle/FMLCommonSetupEvent;)V": ("stage:mod:init", lambda e: [None], 0),
     "(Lnet/minecraftforge/client/event/GuiScreenEvent$PotionShiftEvent;)V": ("stage:post", lambda e: [None], 0),
@@ -31,20 +37,23 @@ EventType2EventStage = {
     "(Lnet/minecraftforge/event/TagsUpdatedEvent;)V": None,
     "(Lnet/minecraftforge/client/event/RecipesUpdatedEvent;)V": None,
     "(Lnet/minecraftforge/event/LootTableLoadEvent;)V": None,
+    "(Lnet/minecraftforge/fml/network/NetworkEvent$ClientCustomPayloadEvent;)V": None,
+    "(Lnet/minecraftforge/fml/network/NetworkEvent$ServerCustomPayloadEvent;)V": None,
 
-    "(Lnet/minecraftforge/client/event/RenderGameOverlayEvent;)V": ("render:draw:2d:overlay", lambda e: [None], 1),
-    "(Lnet/minecraftforge/client/event/RenderGameOverlayEvent$Pre;)V": ("render:draw:2d:overlay", lambda e: [None], 1),
-    "(Lnet/minecraftforge/client/event/RenderGameOverlayEvent$Post;)V": ("render:draw:2d:overlay", lambda e: [None], 1),
-    "(Lnet/minecraftforge/client/event/RenderWorldLastEvent;)V": ("render:draw:post:cleanup", lambda e: [None], 1),
-    "(Lnet/minecraftforge/client/event/GuiScreenEvent$DrawScreenEvent$Post;)V": ("render:draw:2d:overlay", lambda e: [None], 1),
-    "(Lnet/minecraftforge/client/event/GuiScreenEvent$DrawScreenEvent;)V": ("render:draw:2d:overlay", lambda e: [None], 1),
-    "(Lnet/minecraftforge/client/event/GuiContainerEvent$DrawForeground;)V": ("render:draw:2d:overlay", lambda e: [None], 1),
-    "(Lnet/minecraftforge/client/event/RenderTooltipEvent$PostText;)V": ("render:draw:2d:overlay", lambda e: [None], 1),
+    "(Lnet/minecraftforge/client/event/RenderGameOverlayEvent;)V": None,  # ("render:draw:2d:overlay", lambda e: [None], 1),
+    "(Lnet/minecraftforge/client/event/RenderGameOverlayEvent$Pre;)V": None,  # ("render:draw:2d:overlay", lambda e: [None], 1),
+    "(Lnet/minecraftforge/client/event/RenderGameOverlayEvent$Post;)V": None,  # ("render:draw:2d:overlay", lambda e: [None], 1),
+    "(Lnet/minecraftforge/client/event/RenderWorldLastEvent;)V": None,  # ("render:draw:post:cleanup", lambda e: [None], 1),
+    "(Lnet/minecraftforge/client/event/GuiScreenEvent$DrawScreenEvent$Post;)V": None,  # ("render:draw:2d:overlay", lambda e: [None], 1),
+    "(Lnet/minecraftforge/client/event/GuiScreenEvent$DrawScreenEvent;)V": None,  # ("render:draw:2d:overlay", lambda e: [None], 1),
+    "(Lnet/minecraftforge/client/event/GuiContainerEvent$DrawForeground;)V": None,  # ("render:draw:2d:overlay", lambda e: [None], 1),
+    "(Lnet/minecraftforge/client/event/RenderTooltipEvent$PostText;)V": None,  # ("render:draw:2d:overlay", lambda e: [None], 1),
+    "(Lnet/minecraftforge/client/event/GuiScreenEvent$DrawScreenEvent$Pre;)V": None,
 
     "(Lnet/minecraftforge/event/TickEvent$ServerTickEvent;)V": ("tickhandler:general", lambda e: [None], 1),
-    "(Lnet/minecraftforge/event/TickEvent$RenderTickEvent;)V": ("tickhandler:general", lambda e: [None], 1),
+    "(Lnet/minecraftforge/event/TickEvent$RenderTickEvent;)V": ("tickhandler:general", lambda e: [RENDER_TICK_EVENT], 1),
     "(Lnet/minecraftforge/event/TickEvent$PlayerTickEvent;)V": ("tickhandler:general", lambda e: [None], 1),
-    "(Lnet/minecraftforge/event/TickEvent$ClientTickEvent;)V": ("tickhandler:general", lambda e: [None], 1),
+    "(Lnet/minecraftforge/event/TickEvent$ClientTickEvent;)V": ("tickhandler:general", lambda e: [CLIENT_TICK_EVENT], 1),
     "(Lnet/minecraftforge/event/TickEvent$WorldTickEvent;)V": ("tickhandler:general", lambda e: [None], 1),
 
     "(Lnet/minecraftforge/client/event/InputEvent$MouseInputEvent;)V": None,
@@ -62,9 +71,14 @@ EventType2EventStage = {
     "(Lnet/minecraftforge/client/event/GuiScreenEvent$MouseReleasedEvent;)V": None,
     "(Lnet/minecraftforge/client/event/GuiScreenEvent$KeyboardCharTypedEvent;)V": None,
     "(Lnet/minecraftforge/client/event/GuiScreenEvent$KeyboardKeyPressedEvent;)V": None,
+    "(Lnet/minecraftforge/event/entity/player/PlayerInteractEvent;)V": None,
+    "(Lnet/minecraftforge/client/event/GuiScreenEvent$MouseClickedEvent$Pre;)V": None,
+    "(Lnet/minecraftforge/event/entity/player/PlayerEvent$StartTracking;)V": None,
 
     "(Lnet/minecraftforge/event/world/BlockEvent$EntityPlaceEvent;)V": None,
     "(Lnet/minecraftforge/event/world/BlockEvent$BreakEvent;)V": None,
+    "(Lnet/minecraftforge/event/entity/living/LivingDropsEvent;)V": None,
+    "(Lnet/minecraftforge/event/entity/living/LootingLevelEvent;)V": None,
 
     "(Lnet/minecraftforge/client/event/DrawHighlightEvent$HighlightBlock;)V": None,
 
@@ -105,6 +119,7 @@ EventType2EventStage = {
     "(Lnet/minecraftforge/event/entity/player/PlayerEvent$BreakSpeed;)V": None,
     "(Lnet/minecraftforge/event/entity/player/PlayerEvent$ItemCraftedEvent;)V": None,
     "(Lnet/minecraftforge/event/entity/player/PlayerEvent$PlayerRespawnEvent;)V": None,
+    "(Lnet/minecraftforge/event/entity/player/PlayerXpEvent$PickupXp;)V": None,
 
     "(Lnet/minecraftforge/event/world/WorldEvent$Load;)V": None,
     "(Lnet/minecraftforge/event/world/ChunkEvent$Load;)V": None,
@@ -118,6 +133,7 @@ EventType2EventStage = {
     "(Lnet/minecraftforge/event/world/ChunkDataEvent$Save;)V": None,
     "(Lnet/minecraftforge/event/world/ChunkDataEvent$Load;)V": None,
     "(Lnet/minecraftforge/fml/event/server/FMLServerAboutToStartEvent;)V": None,
+    "(Lnet/minecraftforge/event/world/ChunkEvent$Unload;)V": None,
 }
 
 

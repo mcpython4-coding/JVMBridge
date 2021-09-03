@@ -3,6 +3,9 @@
     "mezz/jei/api/JEIPlugin": {
       "annotation": "track"
     },
+    "mezz/jei/api/JeiPlugin": {
+      "annotation": "track"
+    },
     "mezz/jei/api/IModPlugin": {
       "annotation": "track"
     }

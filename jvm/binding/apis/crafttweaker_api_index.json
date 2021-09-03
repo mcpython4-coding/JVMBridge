@@ -9,6 +9,18 @@
     "org/openzen/zencode/java/ZenCodeType$Method": {
       "annotation": "track"
     },
-    "com/blamejared/crafttweaker/api/managers/IRecipeManager": {}
+    "com/blamejared/crafttweaker/api/managers/IRecipeManager": {},
+    "com/blamejared/crafttweaker_annotations/annotations/Document": {
+      "annotation": "track"
+    },
+    "com/blamejared/crafttweaker_annotations/annotations/NativeTypeRegistration": {
+      "annotation": "track"
+    },
+    "org/openzen/zencode/java/ZenCodeType$Caster": {
+      "annotation": "track"
+    },
+    "org/openzen/zencode/java/ZenCodeType$Expansion": {
+      "annotation": "track"
+    }
   }
 }

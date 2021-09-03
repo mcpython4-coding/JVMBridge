@@ -12,14 +12,20 @@
     },
     "org/apache/commons/lang3/tuple/Pair": {
       "methods": {
+        "getKey()Ljava/lang/Object;": {
+          "wraps": "a0[0]"
+        },
+        "getLeft()Ljava/lang/Object;": {
+          "wraps": "a0[0]"
+        },
+        "getRight()Ljava/lang/Object;": {
+          "wraps": "a0[1]"
+        },
         "getValue()Ljava/lang/Object;": {
           "wraps": "a0[1]"
         },
         "of(Ljava/lang/Object;Ljava/lang/Object;)Lorg/apache/commons/lang3/tuple/Pair;": {
           "wraps": "(a0, a1)"
-        },
-        "getKey()Ljava/lang/Object;": {
-          "wraps": "a0[0]"
         }
       }
     }

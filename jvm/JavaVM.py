@@ -1,5 +1,6 @@
-import os
 import typing
+
+from jvm.api import AbstractJavaVM
 
 from jvm.builtinwrapper import handler as native_handler
 from jvm.api import DYNAMIC_NATIVES
@@ -19,7 +20,7 @@ def get_bytecode_of_class(class_name: str):
         return f.read()
 
 
-class JavaVM:
+class JavaVM(AbstractJavaVM):
     """
     The java VM, as specified by https://docs.oracle.com/javase/specs/index.html
 
@@ -45,6 +46,11 @@ class JavaVM:
         self.array_helper = JavaArrayManager(self)
 
         self.simulation = False
+
+    def walk_across_classes(self) -> typing.Iterator[AbstractJavaClass]:
+        yield from self.shared_classes.values()
+        for l in self.classes_by_version.values():
+            yield from l.values()
 
     def load_lazy(self):
         while len(self.lazy_classes) > 0:
