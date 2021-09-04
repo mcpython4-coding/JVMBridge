@@ -94,9 +94,11 @@ tasks to do [maybe moved away for later]:
 * - add instruction for invoking stack object directly and not across a java/util/function/... class call
 * - all array/list/set/map stuff can be optimised directly into native code (-> special instructions)
 - StackUnderflowException after an InvokeDynamic might be caused by it, so we need some special handling
+    (Currently, a simple instruction lookup is performed)
 
 Currently testing:
 AllTheMods6 version 1.6.13
+AllOfFabric
 
 What to do with this:
 - make it load all mods [yes, including the ones requiring scala loading extension]

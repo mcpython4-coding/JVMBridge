@@ -1,3 +1,4 @@
 {
+  "__info": "Allows mcpython to lookup this before mod loading, so things work in the way we want them to work!",
   "importDirect": ["jvm.JavaEntryPoint"]
 }
