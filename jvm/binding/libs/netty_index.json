@@ -1,3 +1,8 @@
 {
-
+  "classes": {
+    "io/netty/channel/ChannelHandler$Sharable": {
+      "annotation": "track"
+    },
+    "io/netty/channel/SimpleChannelInboundHandler": {}
+  }
 }

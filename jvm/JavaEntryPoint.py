@@ -261,9 +261,10 @@ class McModInfoLoader(AbstractModLoaderInstance):
 
     def load_from_data(self, data: dict):
         for entry in data:
-            mod = JavaMod(entry["modid"], tuple(int(e) for e in entry["version"].split(".")))
+            v = entry["version"].split("-")[-1]
+            mod = JavaMod(entry["modid"], tuple(int(e) for e in v.split(".")))
             mod.add_load_default_resources()
-            mod.loader_version = entry["mcversion"]
+            mod.loader_version = entry["mcversion"].split("-")[0]
             mod.resource_access = self.container.resource_access
             mod.container = self.container
 

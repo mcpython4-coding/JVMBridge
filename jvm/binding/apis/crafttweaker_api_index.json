@@ -1,13 +1,19 @@
 {
   "classes": {
     "com/blamejared/crafttweaker/api/annotations/ZenRegister": {
-      "annotation": "track"
+      "annotation": "track",
+      "mapping": [
+        "crafttweaker/annotations/ZenRegister"
+      ]
     },
     "org/openzen/zencode/java/ZenCodeType$Name": {
       "annotation": "track"
     },
     "org/openzen/zencode/java/ZenCodeType$Method": {
-      "annotation": "track"
+      "annotation": "track",
+      "mapping": [
+        "stanhebben/zenscript/annotations/ZenMethod"
+      ]
     },
     "com/blamejared/crafttweaker/api/managers/IRecipeManager": {},
     "com/blamejared/crafttweaker_annotations/annotations/Document": {
@@ -20,6 +26,31 @@
       "annotation": "track"
     },
     "org/openzen/zencode/java/ZenCodeType$Expansion": {
+      "annotation": "track",
+      "mapping": [
+        "stanhebben/zenscript/annotations/ZenExpansion"
+      ]
+    },
+    "stanhebben/zenscript/annotations/ZenClass": {
+      "annotation": "track"
+    },
+    "crafttweaker/annotations/BracketHandler": {
+      "annotation": "track"
+    },
+    "crafttweaker/zenscript/IBracketHandler": {
+    },
+    "stanhebben/zenscript/annotations/ZenGetter": {
+      "annotation": "track"
+    },
+    "stanhebben/zenscript/annotations/OperatorType": {
+      "class type": "enum",
+      "attributes": {
+        "MUL": {
+          "access": "static enum"
+        }
+      }
+    },
+    "stanhebben/zenscript/annotations/ZenOperator": {
       "annotation": "track"
     }
   }

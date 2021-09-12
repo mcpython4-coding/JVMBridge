@@ -824,7 +824,7 @@ class ADD(OpcodeInstruction):
 
 @AbstractBytecodeContainer.register_instruction
 class SUB(OpcodeInstruction):
-    OPCODES = {0x66, 0x64, 0x67}
+    OPCODES = {0x66, 0x64, 0x67, 0x65}
 
     @classmethod
     def invoke(cls, data: typing.Any, stack: AbstractStack):

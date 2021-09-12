@@ -30,6 +30,7 @@
     },
     "com/google/common/collect/ImmutableList": {
       "methods": {
+        "iterator()Lcom/google/common/collect/UnmodifiableIterator;": {},
         "of(Ljava/lang/Object;)Lcom/google/common/collect/ImmutableList;": {
           "wraps": "(a0,)"
         },

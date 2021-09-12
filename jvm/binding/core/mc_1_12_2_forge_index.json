@@ -1,6 +1,24 @@
 {
   "classes": {
+    "net/minecraftforge/client/model/ModelLoader": {
+      "methods": {
+        "setCustomStateMapper(Lnet/minecraft/block/Block;Lnet/minecraft/client/renderer/block/statemap/IStateMapper;)V": {
+          "no effect": true
+        }
+      }
+    },
+    "net/minecraftforge/client/model/animation/FastTESR": {},
+    "net/minecraftforge/common/MinecraftForge": {
+      "attributes": {
+        "EVENT_BUS": {
+          "access": "static"
+        }
+      }
+    },
     "net/minecraftforge/common/capabilities/ICapabilityProvider": {},
+    "net/minecraftforge/common/config/Config": {
+      "annotation": "track"
+    },
     "net/minecraftforge/common/util/EnumHelper": {
       "methods": {
         "addEnchantmentType(Ljava/lang/String;Lcom/google/common/base/Predicate;)Lnet/minecraft/enchantment/EnumEnchantmentType;": {}
@@ -9,16 +27,17 @@
     "net/minecraftforge/common/util/INBTSerializable": {},
     "net/minecraftforge/energy/IEnergyStorage": {},
     "net/minecraftforge/event/entity/EntityEvent": {},
+    "net/minecraftforge/fml/client/registry/ClientRegistry": {},
     "net/minecraftforge/fml/common/API": {
       "annotation": "track"
     },
     "net/minecraftforge/fml/common/FMLCommonHandler": {
       "methods": {
-        "instance()Lnet/minecraftforge/fml/common/FMLCommonHandler;": {
-          "wraps": "cls.create_instance()"
-        },
         "getMinecraftServerInstance()Lnet/minecraft/server/MinecraftServer;": {
           "wraps": "None"
+        },
+        "instance()Lnet/minecraftforge/fml/common/FMLCommonHandler;": {
+          "wraps": "cls.create_instance()"
         }
       }
     },
@@ -44,6 +63,11 @@
       "annotation": "track"
     },
     "net/minecraftforge/fml/common/eventhandler/Event": {},
+    "net/minecraftforge/fml/common/eventhandler/EventBus": {
+      "methods": {
+        "register(Ljava/lang/Object;)V": {}
+      }
+    },
     "net/minecraftforge/fml/common/eventhandler/EventPriority": {
       "attributes": {
         "HIGH": {
@@ -79,6 +103,19 @@
       "annotation": "track"
     },
     "net/minecraftforge/fml/common/network/simpleimpl/IMessage": {},
+    "net/minecraftforge/fml/relauncher/IFMLLoadingPlugin": {},
+    "net/minecraftforge/fml/relauncher/IFMLLoadingPlugin$MCVersion": {
+      "annotation": "track"
+    },
+    "net/minecraftforge/fml/relauncher/IFMLLoadingPlugin$Name": {
+      "annotation": "track"
+    },
+    "net/minecraftforge/fml/relauncher/IFMLLoadingPlugin$SortingIndex": {
+      "annotation": "track"
+    },
+    "net/minecraftforge/fml/relauncher/IFMLLoadingPlugin$TransformerExclusions": {
+      "annotation": "track"
+    },
     "net/minecraftforge/fml/relauncher/Side": {
       "attributes": {
         "CLIENT": {
