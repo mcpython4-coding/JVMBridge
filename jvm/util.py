@@ -1,6 +1,25 @@
 import struct
+import typing
+
 import jvm.api
-import opcode
+import zipfile
+
+
+class FileJarAccess:
+    def __init__(self):
+        self.sources: typing.List[zipfile.ZipFile] = []
+
+    def bind(self):
+        import jvm.JavaVM
+        jvm.JavaVM.get_bytecode_of_class = self.get_bytes
+
+    def get_bytes(self, file: str):
+        if not file.endswith(".class"):
+            file += ".class"
+
+        for source in self.sources:
+            return source.read(file)
+
 
 U1 = struct.Struct("!B")
 U1_S = struct.Struct("!b")

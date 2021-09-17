@@ -144,18 +144,18 @@ def subscribeToEvent(cls, obj: jvm.api.AbstractMethod, args):
 
             except StackCollectingException as error:
                 if shared.IS_CLIENT:
-                    import mcpython.client.state.LoadingExceptionViewState
+                    import mcpython.common.state.LoadingExceptionViewState
                     traceback.print_exc()
                     print(error.format_exception())
-                    mcpython.client.state.LoadingExceptionViewState.error_occur(error.format_exception())
+                    mcpython.common.state.LoadingExceptionViewState.error_occur(error.format_exception())
 
                 raise LoadingInterruptException
 
             except:
                 if shared.IS_CLIENT:
-                    import mcpython.client.state.LoadingExceptionViewState
+                    import mcpython.common.state.LoadingExceptionViewState
                     traceback.print_exc()
-                    mcpython.client.state.LoadingExceptionViewState.error_occur(traceback.format_exc())
+                    mcpython.common.state.LoadingExceptionViewState.error_occur(traceback.format_exc())
 
                 raise LoadingInterruptException
 

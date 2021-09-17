@@ -21,7 +21,6 @@ from mcpython.common.mod.ModLoader import ModContainer
 Integration point to mcpython's mod loader 
 Highly depends on code of that stuff, so don't use it without it
 '''
-import sys
 import traceback
 
 from mcpython.common.mod.ModLoader import AbstractModLoaderInstance, ModLoader
@@ -124,7 +123,7 @@ class JavaMod(mcpython.common.mod.Mod.Mod):
         :param file: the file
         """
 
-        import mcpython.client.state.LoadingExceptionViewState
+        import mcpython.common.state.LoadingExceptionViewState
 
         cls = file.split(".")[0]
         try:
@@ -139,10 +138,10 @@ class JavaMod(mcpython.common.mod.Mod.Mod):
                 shared.window.set_caption("JavaFML JVM error")
 
                 try:
-                    import mcpython.client.state.LoadingExceptionViewState
+                    import mcpython.common.state.LoadingExceptionViewState
 
                     exception = e.format_exception()
-                    mcpython.client.state.LoadingExceptionViewState.error_occur(exception)
+                    mcpython.common.state.LoadingExceptionViewState.error_occur(exception)
                     logger.print_exception("raw exception trace")
                     logger.write_into_container(
                         "fatal FML error", exception.split("\n")
@@ -169,7 +168,7 @@ class JavaMod(mcpython.common.mod.Mod.Mod):
                 shared.window.set_caption("JavaFML JVM error")
 
                 try:
-                    mcpython.client.state.LoadingExceptionViewState.error_occur(
+                    mcpython.common.state.LoadingExceptionViewState.error_occur(
                         traceback.format_exc()
                     )
                 except:
