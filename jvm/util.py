@@ -13,12 +13,21 @@ class FileJarAccess:
         import jvm.JavaVM
         jvm.JavaVM.get_bytecode_of_class = self.get_bytes
 
+    def add_jar(self, file: str):
+        self.sources.append(zipfile.ZipFile(file))
+        return self
+
     def get_bytes(self, file: str):
         if not file.endswith(".class"):
             file += ".class"
 
         for source in self.sources:
-            return source.read(file)
+            try:
+                return source.read(file)
+            except KeyError:
+                pass
+
+        raise FileNotFoundError
 
 
 U1 = struct.Struct("!B")
@@ -241,4 +250,45 @@ class PyOpcodes:
     SET_UPDATE = 163
     DICT_MERGE = 164
     DICT_UPDATE = 165
+
+
+def get_arg_parts_of(
+    method,
+) -> typing.Iterator[str]:
+    if hasattr(method, "signature"):
+        signature = method.signature
+    elif hasattr(method, "native_signature"):
+        signature = method.native_signature
+    elif isinstance(method, str):
+        signature = method
+    else:
+        raise ValueError(method)
+
+    if not signature.startswith("("):
+        raise RuntimeError
+
+    v = signature.removeprefix("(").split(")")[0]
+    i = 0
+    start = 0
+
+    try:
+        while i < len(v):
+            is_array = False
+
+            if v[i] == "[":
+                is_array = True
+
+            if v[i] == "L":
+                i = v.index(";", i) + 1
+                yield v[start:i], False
+            else:
+                i += 1
+                if not is_array:
+                    yield v[start:i], v[i - 1] in "DJ"
+
+            if not is_array:
+                start = i
+    except:
+        raise RuntimeError(f"cannot parse argument list {signature}")
+
 

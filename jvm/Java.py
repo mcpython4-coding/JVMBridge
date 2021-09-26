@@ -311,7 +311,7 @@ class JavaBytecodeClass(AbstractJavaClass):
 
         self.attributes.from_data(self, data)
 
-    def get_method(self, name: str, signature: str, inner=False):
+    def get_method(self, name: str, signature: str, inner=False) -> JavaMethod:
         des = (name, signature)
         if des in self.methods:
             return self.methods[des]

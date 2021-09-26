@@ -47,7 +47,7 @@ FORGE_VERSION_NUMBER_TO_MC = {
 }
 
 
-jvm.builtinwrapper.load_default_indexes()
+jvm.builtinwrapper.load_default_indexes(mcpython=True)
 
 
 # Replace java bytecode loader with ResourceLoader's lookup system

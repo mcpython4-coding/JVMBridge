@@ -48,6 +48,11 @@
         }
       }
     },
+    "java/io/PrintStream": {
+      "methods": {
+        "println(Ljava/lang/String;)V": {}
+      }
+    },
     "java/io/Serializable": {},
     "java/lang/Boolean": {
       "methods": {
@@ -62,11 +67,22 @@
     },
     "java/lang/Class": {
       "methods": {
+        "desiredAssertionStatus()Z": {
+          "wraps": "True"
+        },
         "forName(Ljava/lang/String;)Ljava/lang/Class;": {},
+        "getClassLoader()Ljava/lang/ClassLoader;": {},
         "getEnumConstants()[Ljava/lang/Object;": {},
         "getField(Ljava/lang/String;)Ljava/lang/reflect/Field;": {},
-        "getName()Ljava/lang/String;": {},
+        "getName()Ljava/lang/String;": {
+          "wraps": "a0.name"
+        },
         "newInstance()Ljava/lang/Object;": {}
+      }
+    },
+    "java/lang/ClassLoader": {
+      "methods": {
+        "getSystemResources(Ljava/lang/String;)Ljava/util/Enumeration;": {}
       }
     },
     "java/lang/Cloneable": {},
@@ -91,6 +107,13 @@
     },
     "java/lang/Exception": {
       "wraps": ":Exception"
+    },
+    "java/lang/InheritableThreadLocal": {
+      "methods": {
+        "<init>()V": {
+          "no effect": true
+        }
+      }
     },
     "java/lang/Integer": {
       "methods": {
@@ -139,6 +162,9 @@
     "java/lang/String": {
       "methods": {
         "equals(Ljava/lang/Object;)Z": {},
+        "equalsIgnoreCase(Ljava/lang/String;)Z": {
+          "wraps": "a0.lower() == a1.lower()"
+        },
         "format(Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;": {
           "wraps": "a0 % tuple(a1)"
         },
@@ -166,6 +192,19 @@
         },
         "toString()Ljava/lang/String;": {
           "wraps": "''.join(a0.fields['underlying'])"
+        }
+      }
+    },
+    "java/lang/System": {
+      "attributes": {
+        "err": {
+          "access": "static"
+        }
+      },
+      "methods": {
+        "getProperty(Ljava/lang/String;)Ljava/lang/String;": {},
+        "setProperty(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;": {
+          "access": "static"
         }
       }
     },
@@ -284,6 +323,16 @@
         "getInstance(Ljava/util/Locale;)Ljava/text/DecimalFormatSymbols;": {}
       }
     },
+    "java/time/Duration": {
+      "methods": {
+        "ofMillis(J)Ljava/time/Duration;": {
+          "wraps": "a0"
+        },
+        "toNanos()J": {
+          "wraps": "round(a0 * 1000)"
+        }
+      }
+    },
     "java/util/ArrayDeque": {
       "methods": {
         "<init>()V": {
@@ -360,6 +409,12 @@
         }
       }
     },
+    "java/util/Enumeration": {
+      "methods": {
+        "hasMoreElements()Z": {},
+        "nextElement()Ljava/lang/Object;": {}
+      }
+    },
     "java/util/HashMap": {
       "hard wrap": true,
       "methods": {
@@ -406,6 +461,12 @@
         }
       }
     },
+    "java/util/LinkedHashSet": {
+      "methods": {
+        "<init>()V": {},
+        "add(Ljava/lang/Object;)Z": {}
+      }
+    },
     "java/util/LinkedList": {
       "methods": {
         "<init>()V": {}
@@ -420,6 +481,7 @@
         "get(I)Ljava/lang/Object;": {
           "wraps": "a0[a1]"
         },
+        "isEmpty()Z": {},
         "iterator()Ljava/util/Iterator;": {
           "wraps": "iter(a0) if isinstance(a0, list) else iter(a0.underlying)"
         },
@@ -513,8 +575,17 @@
         }
       }
     },
+    "java/util/ServiceLoader": {
+      "methods": {
+        "iterator()Ljava/util/Iterator;": {
+          "wraps": "tuple()"
+        },
+        "load(Ljava/lang/Class;)Ljava/util/ServiceLoader;": {}
+      }
+    },
     "java/util/Set": {
       "methods": {
+        "add(Ljava/lang/Object;)Z": {},
         "forEach(Ljava/util/function/Consumer;)V": {
           "wraps": "list(map(a1, a0)) == 0"
         },
@@ -568,9 +639,25 @@
         }
       }
     },
+    "java/util/concurrent/ConcurrentHashMap": {
+      "methods": {
+        "<init>()V": {
+          "no effect": true
+        }
+      }
+    },
     "java/util/concurrent/ConcurrentLinkedQueue": {
       "methods": {
-        "<init>()V": {}
+        "<init>()V": {
+          "no effect": true
+        }
+      }
+    },
+    "java/util/concurrent/LinkedBlockingQueue": {
+      "methods": {
+        "<init>()V": {
+          "no effect": true
+        }
       }
     },
     "java/util/concurrent/atomic/AtomicInteger": {

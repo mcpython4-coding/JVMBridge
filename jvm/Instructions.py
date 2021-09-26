@@ -438,7 +438,7 @@ class ArrayLoad(OpcodeInstruction):
 
 @AbstractBytecodeContainer.register_instruction
 class ArrayStore(OpcodeInstruction):
-    OPCODES = {0x53, 0x4F, 0x50, 0x54, 0x52, 0x51}
+    OPCODES = {0x53, 0x4F, 0x50, 0x54, 0x52, 0x51, 0x55}
 
     @classmethod
     def invoke(cls, data: typing.Any, stack: AbstractStack):

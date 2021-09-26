@@ -43,6 +43,7 @@ import traceback
 import typing
 
 import jvm.api
+import jvm.util
 from jvm.api import AbstractJavaClass
 from .JavaExceptionStack import StackCollectingException
 
@@ -88,9 +89,17 @@ class WrappedMethod(jvm.api.AbstractMethod):
         self.name = name
         self.signature = signature
         self.wrapped = wrapped
+        self.argument_count = len(tuple(jvm.util.get_arg_parts_of(self)))
 
     def invoke(self, args):
-        result = self.wrapped(*args)
+        try:
+            result = self.wrapped(*args)
+        except StackCollectingException as e:
+            e.add_trace("during invoking built-in").add_trace(self).add_trace(args)
+            raise
+        except:
+            raise StackCollectingException("during invoking built-in").add_trace(self).add_trace(args)
+
         if self.signature[-1] == "Z":
             result = int(result) if isinstance(result, bool) else 0
         return result
@@ -480,11 +489,13 @@ def load_indexes_from_dir(directory: str):
             load_index_file(directory+"/"+file)
 
 
-def load_default_indexes():
+def load_default_indexes(mcpython=False):
     local = os.path.dirname(__file__)+"/binding"
     load_indexes_from_dir(local)
-    load_indexes_from_dir(local+"/apis")
     load_indexes_from_dir(local+"/libs")
-    load_indexes_from_dir(local+"/core")
+
+    if mcpython:
+        load_indexes_from_dir(local + "/core")
+        load_indexes_from_dir(local + "/apis")
 
     load_implementations()
