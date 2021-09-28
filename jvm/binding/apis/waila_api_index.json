@@ -1,9 +1,0 @@
-{
-  "classes": {
-    "mcp/mobius/waila/api/WailaPlugin": {
-      "annotation": "track"
-    },
-    "mcp/mobius/waila/api/IWailaPlugin": {},
-    "mcp/mobius/waila/api/IComponentProvider": {}
-  }
-}

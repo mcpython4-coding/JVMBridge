@@ -44,11 +44,7 @@ class Runtime(AbstractRuntime):
         self.stacks.append(stack)
         return stack
 
-    def run_method(
-        self,
-        method: typing.Union[jvm.Java.JavaMethod, typing.Callable],
-        *args,
-    ):
+    def run_method(self, method: typing.Union[jvm.Java.JavaMethod, typing.Callable], *args, stack=None):
         if callable(method) and not isinstance(
             method, jvm.Java.JavaMethod
         ):
@@ -82,7 +78,7 @@ class Runtime(AbstractRuntime):
 
                 method.code_repr = BytecodeRepr(code)
             else:
-                return method.invoke(args)
+                return method.invoke(args, stack=stack)
 
         stack = self.spawn_stack()
 
@@ -109,6 +105,9 @@ class Runtime(AbstractRuntime):
             signature = method
         else:
             raise ValueError(method)
+
+        if signature is None:
+            raise RuntimeError(method)
 
         if not signature.startswith("("):
             raise StackCollectingException(f"invalid signature: {signature}")

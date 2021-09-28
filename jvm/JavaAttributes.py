@@ -149,7 +149,7 @@ class ElementValue:
             cls = jvm.api.vm.get_class(cls_name, version=table.class_file.internal_version)
 
             if cls is not None:
-                self.data = cls.get_static_attribute(attr_name, "ENUM-ENTRY")
+                self.data = cls.get_static_attribute(attr_name, "enum")
 
         elif tag == "c":
             self.data = table.class_file.cp[pop_u2(data) - 1]

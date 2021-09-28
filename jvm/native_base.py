@@ -79,7 +79,7 @@ class Native(AbstractJavaClass):
 
         return self.static_fields[name]
 
-    def set_static_attribute(self, name: str, value):
+    def set_static_attribute(self, name: str, value, descriptor=None):
         if name in self.SETTERS:
             self.SETTERS[name](value)
             return
@@ -125,7 +125,7 @@ class NativeClassInstance(jvm.api.AbstractJavaClassInstance):
     def get_method(self, name: str, signature: str):
         return self.cls.get_method(name, signature)
 
-    def get_class(self) -> AbstractJavaClass:
+    def get_real_class(self) -> AbstractJavaClass:
         return self.cls
 
 
@@ -205,7 +205,7 @@ class MappedNative(Native):
 
         return self.static_fields[name]
 
-    def set_static_attribute(self, name: str, value):
+    def set_static_attribute(self, name: str, value, descriptor=None):
         if name in self.FIELD_MAPPING: name = self.FIELD_MAPPING[name]
 
         self.static_fields[name] = value

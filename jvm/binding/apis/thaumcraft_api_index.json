@@ -1,7 +1,0 @@
-{
-  "classes": {
-    "thaumcraft/api/crafting/IInfusionStabiliser": {
-      "access": "abstract interface"
-    }
-  }
-}

@@ -1426,7 +1426,7 @@ class InvokeVirtual(CPLinkedInstruction):
                     if hasattr(method, "__name__") and method.__name__ == "dynamic" and (not method_before.access & 0x0400 if hasattr(method_before, "access") else True):
                         method = method_before
 
-        stack.push(stack.runtime.run_method(method, *args))
+        stack.push(stack.runtime.run_method(method, *args, stack=stack))
 
 
 @AbstractBytecodeContainer.register_instruction
@@ -1451,7 +1451,7 @@ class InvokeSpecial(CPLinkedInstruction):
             data, version=stack.method.class_file.internal_version
         )
         result = stack.runtime.run_method(
-            method, *stack.runtime.parse_args_from_stack(method, stack, False)
+            method, *stack.runtime.parse_args_from_stack(method, stack, False), stack=stack,
         )
         method_name = (method.name if hasattr(method, "name") else method.native_name)
         if method_name not in (
@@ -1479,7 +1479,7 @@ class InvokeStatic(CPLinkedInstruction):
         )
         stack.push(
             stack.runtime.run_method(
-                method, *stack.runtime.parse_args_from_stack(method, stack, static=True)
+                method, *stack.runtime.parse_args_from_stack(method, stack, static=True), stack=stack,
             )
         )
 
@@ -1538,7 +1538,7 @@ class InvokeInterface(CPLinkedInstruction):
                 method = args.pop(0)
 
         try:
-            stack.push(stack.runtime.run_method(method, *args))
+            stack.push(stack.runtime.run_method(method, *args, stack=stack))
         except StackCollectingException as e:
             e.add_trace(f"during invoking interface {method} with {args}")
 

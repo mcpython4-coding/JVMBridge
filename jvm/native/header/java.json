@@ -1,0 +1,399 @@
+[
+  {
+    "name": "java/lang/annotation/ElementType",
+    "attributes": {
+      "TYPE": {
+        "descriptor": "enum",
+        "access": 8
+      },
+      "METHOD": {
+        "descriptor": "enum",
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/lang/annotation/RetentionPolicy",
+    "attributes": {
+      "CLASS": {
+        "descriptor": "enum",
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "javax/annotation/meta/TypeQualifierDefault"
+  },
+  {
+    "name": "java/lang/Object",
+    "methods": {
+      "<init>()V": {
+        "access": 8
+      },
+      "containsProperty(Ljava/lang/String;)Z": {
+        "access": 8
+      },
+      "getProperty(Ljava/lang/String;)Ljava/lang/String;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/lang/annotation/Annotation"
+  },
+  {
+    "name": "java/lang/annotation/Retention"
+  },
+  {
+    "name": "javax/annotation/Nullable"
+  },
+  {
+    "name": "java/util/Properties",
+    "methods": {
+      "<init>()V": {
+        "access": 8
+      },
+      "entrySet()Ljava/util/Set;": {
+        "access": 8
+      },
+      "containsKey(Ljava/lang/Object;)Z": {
+        "access": 8
+      },
+      "<init>(MAP)V": {
+        "access": 1
+      }
+    }
+  },
+  {
+    "name": "java/lang/System",
+    "methods": {
+      "getSecurityManager()Ljava/lang/SecurityManager;": {
+        "access": 8
+      },
+      "getProperties()Ljava/util/Properties;": {
+        "access": 8
+      },
+      "getProperty(Ljava/lang/String;)Ljava/lang/String;": {
+        "access": 8
+      },
+      "arraycopy(Ljava/lang/Object;ILjava/lang/Object;II)V": {
+        "access": 8
+      },
+      "containsProperty(Ljava/lang/String;)Z": {
+        "access": 1
+      }
+    }
+  },
+  {
+    "name": "java/security/PrivilegedAction",
+    "methods": {
+      "run()Ljava/lang/Object;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/lang/Thread",
+    "methods": {
+      "currentThread()Ljava/lang/Thread;": {
+        "access": 8
+      },
+      "getContextClassLoader()Ljava/lang/ClassLoader;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/lang/Class",
+    "methods": {
+      "getClassLoader()Ljava/lang/ClassLoader;": {
+        "access": 8
+      },
+      "forName(Ljava/lang/String;)Ljava/lang/Class;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/lang/ClassLoader",
+    "methods": {
+      "getSystemClassLoader()Ljava/lang/ClassLoader;": {
+        "access": 8
+      },
+      "getResources(Ljava/lang/String;)Ljava/util/Enumeration;": {
+        "access": 8
+      },
+      "<init>()V": {
+        "access": 0
+      },
+      "getParent()Ljava/lang/ClassLoader;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/util/LinkedHashSet",
+    "methods": {
+      "<init>()V": {
+        "access": 8
+      },
+      "size()I": {
+        "access": 8
+      },
+      "<init>(I)V": {
+        "access": 8
+      },
+      "iterator()Ljava/util/Iterator;": {
+        "access": 8
+      },
+      "add(Ljava/lang/Object;)Z": {
+        "access": 8
+      },
+      "toArray([Ljava/lang/Object;)[Ljava/lang/Object;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/util/Collection",
+    "methods": {
+      "size()I": {
+        "access": 8
+      },
+      "iterator()Ljava/util/Iterator;": {
+        "access": 8
+      },
+      "add(Ljava/lang/Object;)Z": {
+        "access": 8
+      },
+      "toArray([Ljava/lang/Object;)[Ljava/lang/Object;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/util/Iterator",
+    "methods": {
+      "hasNext()Z": {
+        "access": 8
+      },
+      "next()Ljava/lang/Object;": {
+        "access": 8
+      },
+      "<init>(ITERABLE)V": {
+        "access": 1
+      }
+    }
+  },
+  {
+    "name": "java/lang/SecurityManager",
+    "methods": {
+      "checkPermission(Ljava/security/Permission;)V": {
+        "access": 8
+      },
+      "<init>()V": {
+        "access": 0
+      }
+    }
+  },
+  {
+    "name": "java/lang/RuntimePermission",
+    "methods": {
+      "<init>(Ljava/lang/String;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/security/AccessController",
+    "methods": {
+      "doPrivileged(Ljava/security/PrivilegedAction;)Ljava/lang/Object;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/util/Enumeration",
+    "methods": {
+      "hasMoreElements()Z": {
+        "access": 8
+      },
+      "nextElement()Ljava/lang/Object;": {
+        "access": 8
+      },
+      "<init>()V": {
+        "access": 0
+      }
+    }
+  },
+  {
+    "name": "java/util/TreeSet",
+    "methods": {
+      "<init>(Ljava/util/Comparator;)V": {
+        "access": 8
+      },
+      "<init>(Ljava/util/Comperator;)V": {
+        "access": 1
+      },
+      "add(Ljava/lang/Object;)Z": {
+        "access": 8
+      },
+      "iterator()Ljava/util/Iterator;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/util/concurrent/ConcurrentHashMap",
+    "methods": {
+      "<init>()V": {
+        "access": 8
+      },
+      "clear()V": {
+        "access": 8
+      },
+      "containsKey(Ljava/lang/Object;)Z": {
+        "access": 8
+      },
+      "get(Ljava/lang/Object;)Ljava/lang/Object;": {
+        "access": 8
+      },
+      "putIfAbsent(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/util/Set",
+    "methods": {
+      "iterator()Ljava/util/Iterator;": {
+        "access": 8
+      },
+      "<init>()V": {
+        "access": 0
+      },
+      "add(Ljava/lang/Object;)Z": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/util/ServiceLoader",
+    "methods": {
+      "load(Ljava/lang/Class;Ljava/lang/ClassLoader;)Ljava/util/ServiceLoader;": {
+        "access": 8
+      },
+      "iterator()Ljava/util/Iterator;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/util/Map",
+    "methods": {
+      "clear()V": {
+        "access": 8
+      },
+      "containsKey(Ljava/lang/Object;)Z": {
+        "access": 8
+      },
+      "get(Ljava/lang/Object;)Ljava/lang/Object;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/lang/Deprecated"
+  },
+  {
+    "name": "java/util/concurrent/ConcurrentMap",
+    "methods": {
+      "get(Ljava/lang/Object;)Ljava/lang/Object;": {
+        "access": 8
+      },
+      "putIfAbsent(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/io/Serializable"
+  },
+  {
+    "name": "java/lang/ThreadLocal",
+    "methods": {
+      "<init>()V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/lang/Boolean",
+    "methods": {
+      "valueOf(Z)Ljava/lang/Boolean;": {
+        "access": 8
+      },
+      "booleanValue()Z": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/lang/String",
+    "methods": {
+      "split(Ljava/lang/String;)[Ljava/lang/String;": {
+        "access": 8
+      },
+      "toLowerCase()Ljava/lang/String;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/util/regex/Pattern",
+    "methods": {
+      "compile(Ljava/lang/String;)Ljava/util/regex/Pattern;": {
+        "access": 8
+      },
+      "matcher(Ljava/lang/CharSequence;)Ljava/util/regex/Matcher;": {
+        "access": 8
+      },
+      "compile(PATTERN)V": {
+        "access": 1
+      },
+      "<init>(PATTERN)V": {
+        "access": 0
+      }
+    }
+  },
+  {
+    "name": "java/util/ArrayList",
+    "methods": {
+      "<init>()V": {
+        "access": 8
+      },
+      "add(Ljava/lang/Object;)Z": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/util/regex/Matcher",
+    "methods": {
+      "find()Z": {
+        "access": 8
+      },
+      "group(I)Ljava/lang/String;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/util/List",
+    "methods": {
+      "add(Ljava/lang/Object;)Z": {
+        "access": 8
+      }
+    }
+  }
+]

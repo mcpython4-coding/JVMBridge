@@ -13,7 +13,7 @@ class AbstractRuntime(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def run_method(self, method, args):
+    def run_method(self, method, *args, stack=None):
         pass
 
     @classmethod
@@ -146,7 +146,7 @@ class AbstractJavaClass:
     def get_static_attribute(self, name: str, expected_type=None):
         raise NotImplementedError
 
-    def set_static_attribute(self, name: str, value):
+    def set_static_attribute(self, name: str, value, descriptor=None):
         raise NotImplementedError
 
     def create_instance(self) -> "AbstractJavaClassInstance":
@@ -171,6 +171,7 @@ class AbstractJavaClass:
 class AbstractJavaClassInstance(ABC):
     def __init__(self):
         self.fields = {}
+        self.rebound_type = None
 
     def get_field(self, name: str):
         raise NotImplementedError
@@ -178,11 +179,18 @@ class AbstractJavaClassInstance(ABC):
     def set_field(self, name: str, value):
         raise NotImplementedError
 
-    def get_method(self, name: str, signature: str):
-        raise NotImplementedError
+    def get_method(self, name: str, signature: str) -> "AbstractMethod":
+        return self.get_class().get_method(name, signature)
 
     def get_class(self) -> AbstractJavaClass:
+        return self.rebound_type or self.get_real_class()
+
+    def get_real_class(self) -> AbstractJavaClass:
         raise NotImplementedError
+
+    def init(self, signature: str, *args, stack=None):
+        self.get_method("<init>", signature).invoke([self]+list(args), stack=stack)
+        return self
 
 
 DYNAMIC_NATIVES = "--fill-unknown-natives" in sys.argv
@@ -197,7 +205,7 @@ class AbstractMethod(metaclass=ABCMeta):
         self.code_repr = None
 
     @abstractmethod
-    def invoke(self, args):
+    def invoke(self, args, stack=None):
         pass
 
     @abstractmethod

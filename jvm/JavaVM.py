@@ -2,7 +2,7 @@ import typing
 
 from jvm.api import AbstractJavaVM
 
-from jvm.builtinwrapper import handler as native_handler
+from jvm.natives import manager as native_manager
 from jvm.api import DYNAMIC_NATIVES
 from jvm.logging import info
 from jvm.Java import JavaArrayManager
@@ -103,21 +103,22 @@ class JavaVM(AbstractJavaVM):
             bytecode = get_bytecode_of_class(name)
         except FileNotFoundError:
             if DYNAMIC_NATIVES:
-                native_handler.create_class(name, None)
-
-                print(
-                    f"""
-Native Dynamic Builder: Class '{name}' (not found) in version {version}
-Please add to the respective index file"""
-                )
-
-                dumpClassCreationToFiles(name, version)
-
-                return self.shared_classes[name]
+                return self.create_native(name, version)
 
             raise StackCollectingException(f"class file source for '{name}' not found!").add_trace(f"class loader version annotation: {version}") from None
 
         return self.load_class_from_bytecode(name, bytecode, version=version, shared=shared)
+
+    def create_native(self, name: str, version):
+        head = native_manager.get_header_for_cls(name)
+
+        if head is None:
+            raise StackCollectingException(f"class file source for '{name}' not found!").add_trace(
+                f"class loader version annotation: {version}") from None
+
+        cls = head.create_class(name)
+        self.shared_classes[name] = cls
+        return cls
 
     def load_class_from_bytecode(self, name: str, bytecode: bytes, version=None, shared=False, prepare=True):
         info("loading java class '" + name + "'")

@@ -1,7 +1,0 @@
-{
-  "classes": {
-    "buildcraft/api/tools/IToolWrench": {
-      "access": "abstract interface"
-    }
-  }
-}

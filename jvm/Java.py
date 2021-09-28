@@ -21,7 +21,7 @@ import typing
 from jvm.api import AbstractJavaClass
 from jvm.api import AbstractJavaClassInstance
 from jvm.api import AbstractMethod
-from jvm.builtinwrapper import WrappedMethod
+from jvm.natives import NativeMethod
 from jvm.JavaAttributes import JavaAttributeTable
 from jvm.logging import info
 from jvm.util import DOUBLE
@@ -47,7 +47,7 @@ class ArrayBase(jvm.api.AbstractJavaClass):
     def __init__(self, depth: int, name: str, base_class: AbstractJavaClass):
         super().__init__()
         self.methods = {
-            ("clone", "()Ljava/lang/Object;"): WrappedMethod(self, "clone", "()Ljava/lang/Object;", self.clone)
+            ("clone", "()Ljava/lang/Object;"): NativeMethod(self, "clone", "()Ljava/lang/Object;", self.clone)
         }
         self.attributes = {}
 
@@ -61,7 +61,7 @@ class ArrayBase(jvm.api.AbstractJavaClass):
     def get_static_attribute(self, name: str, expected_type=None):
         return self.attributes.setdefault(name, 0)
 
-    def set_static_attribute(self, name: str, value):
+    def set_static_attribute(self, name: str, value, descriptor=None):
         self.attributes[name] = value
 
     def inject_method(self, name: str, signature: str, method, force=True):
@@ -145,11 +145,11 @@ class JavaMethod(AbstractMethod):
     def __repr__(self):
         return f"JavaMethod(name='{self.name}',signature='{self.signature}',access='{bin(self.access)}',class='{self.class_file.name}')"
 
-    def invoke(self, *args):
+    def invoke(self, args, stack=None):
         import jvm.Runtime
 
         runtime = jvm.Runtime.Runtime()
-        return runtime.run_method(self, *args)
+        return runtime.run_method(self, )
 
     def get_class(self):
         return self.class_file.vm.get_class(
@@ -157,7 +157,7 @@ class JavaMethod(AbstractMethod):
         )
 
     def __call__(self, *args):
-        return self.invoke(*args)
+        return self.invoke()
 
     def dump(self) -> bytearray:
         data = bytearray()
@@ -354,7 +354,7 @@ class JavaBytecodeClass(AbstractJavaClass):
                 f"class {self.name} has no attribute {name} (class instance: {self})"
             ) from None
 
-    def set_static_attribute(self, name: str, value):
+    def set_static_attribute(self, name: str, value, descriptor=None):
         self.static_field_values[name] = value
 
     def bake(self):
@@ -611,7 +611,7 @@ class JavaClassInstance(AbstractJavaClassInstance):
     def __repr__(self):
         return f"JavaByteCodeClassInstance@{hex(id(self))[2:]}(of={self.class_file},fields={self.fields})"
 
-    def get_class(self):
+    def get_real_class(self):
         return self.class_file
 
     def get_field(self, name: str):
