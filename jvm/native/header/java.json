@@ -35,6 +35,15 @@
       },
       "getProperty(Ljava/lang/String;)Ljava/lang/String;": {
         "access": 8
+      },
+      "isEnabled(Lorg/apache/logging/log4j/Level;Lorg/apache/logging/log4j/Marker;Ljava/lang/String;Ljava/lang/Throwable;)Z": {
+        "access": 8
+      },
+      "isEnabled(Lorg/apache/logging/log4j/Level;Lorg/apache/logging/log4j/Marker;Ljava/lang/Object;Ljava/lang/Throwable;)Z": {
+        "access": 8
+      },
+      "newMessage(Ljava/lang/String;)Lorg/apache/logging/log4j/message/Message;": {
+        "access": 8
       }
     }
   },
@@ -82,6 +91,12 @@
       "containsProperty(Ljava/lang/String;)Z": {
         "access": 1
       }
+    },
+    "attributes": {
+      "err": {
+        "descriptor": "Ljava/io/PrintStream;",
+        "access": 8
+      }
     }
   },
   {
@@ -110,6 +125,15 @@
         "access": 8
       },
       "forName(Ljava/lang/String;)Ljava/lang/Class;": {
+        "access": 8
+      },
+      "getName()Ljava/lang/String;": {
+        "access": 8
+      },
+      "asSubclass(Ljava/lang/Class;)Ljava/lang/Class;": {
+        "access": 8
+      },
+      "newInstance()Ljava/lang/Object;": {
         "access": 8
       }
     }
@@ -167,6 +191,9 @@
         "access": 8
       },
       "toArray([Ljava/lang/Object;)[Ljava/lang/Object;": {
+        "access": 8
+      },
+      "isEmpty()Z": {
         "access": 8
       }
     }
@@ -260,6 +287,9 @@
       },
       "putIfAbsent(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;": {
         "access": 8
+      },
+      "put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;": {
+        "access": 8
       }
     }
   },
@@ -299,6 +329,9 @@
       },
       "get(Ljava/lang/Object;)Ljava/lang/Object;": {
         "access": 8
+      },
+      "put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;": {
+        "access": 8
       }
     }
   },
@@ -324,6 +357,12 @@
     "methods": {
       "<init>()V": {
         "access": 8
+      },
+      "get()Ljava/lang/Object;": {
+        "access": 8
+      },
+      "set(Ljava/lang/Object;)V": {
+        "access": 8
       }
     }
   },
@@ -345,6 +384,9 @@
         "access": 8
       },
       "toLowerCase()Ljava/lang/String;": {
+        "access": 8
+      },
+      "lastIndexOf(Ljava/lang/String;)I": {
         "access": 8
       }
     }
@@ -385,6 +427,9 @@
       },
       "group(I)Ljava/lang/String;": {
         "access": 8
+      },
+      "<init>(MATCH)V": {
+        "access": 1
       }
     }
   },
@@ -392,6 +437,155 @@
     "name": "java/util/List",
     "methods": {
       "add(Ljava/lang/Object;)Z": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/util/Comparator"
+  },
+  {
+    "name": "javax/servlet/Servlet"
+  },
+  {
+    "name": "java/lang/Integer",
+    "methods": {
+      "parseInt(Ljava/lang/String;)I": {
+        "access": 8
+      },
+      "valueOf(I)Ljava/lang/Integer;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/util/concurrent/CopyOnWriteArrayList",
+    "methods": {
+      "<init>()V": {
+        "access": 8
+      },
+      "size()I": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/util/concurrent/locks/ReentrantReadWriteLock",
+    "methods": {
+      "<init>()V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/util/concurrent/ConcurrentLinkedQueue",
+    "methods": {
+      "<init>()V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/util/concurrent/locks/ReentrantLock",
+    "methods": {
+      "<init>()V": {
+        "access": 8
+      },
+      "lockInterruptibly()V": {
+        "access": 8
+      },
+      "unlock()V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/lang/CharSequence",
+    "methods": {
+      "length()I": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/lang/Enum",
+    "methods": {
+      "<init>(Ljava/lang/String;I)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/util/EnumSet",
+    "methods": {
+      "allOf(Ljava/lang/Class;)Ljava/util/EnumSet;": {
+        "access": 8
+      },
+      "iterator()Ljava/util/Iterator;": {
+        "access": 8
+      },
+      "<init>(SOURCE)V": {
+        "access": 1
+      }
+    }
+  },
+  {
+    "name": "java/lang/IllegalStateException",
+    "methods": {
+      "<init>(Ljava/lang/String;)V": {
+        "access": 8
+      }
+    },
+    "exposed_attributes": [
+      "message"
+    ]
+  },
+  {
+    "name": "java/lang/StringBuilder",
+    "methods": {
+      "<init>()V": {
+        "access": 8
+      },
+      "append(Ljava/lang/String;)Ljava/lang/StringBuilder;": {
+        "access": 8
+      },
+      "toString()Ljava/lang/String;": {
+        "access": 8
+      },
+      "<init>()V@java/lang/StringBuilder": {
+        "access": 1
+      }
+    }
+  },
+  {
+    "name": "java/lang/Comparable"
+  },
+  {
+    "name": "java/util/TreeMap",
+    "methods": {
+      "<init>()V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/util/HashSet",
+    "methods": {
+      "<init>()V": {
+        "access": 8
+      },
+      "isEmpty()Z": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/util/concurrent/locks/Lock",
+    "methods": {
+      "lockInterruptibly()V": {
+        "access": 8
+      },
+      "unlock()V": {
         "access": 8
       }
     }

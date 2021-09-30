@@ -21,7 +21,11 @@ class NativeMethod(jvm.api.AbstractMethod):
         self.bound = False
 
     def invoke(self, args, stack=None):
-        return self.underlying(self, stack, *args)
+        try:
+            return self.underlying(self, stack, *args)
+        except:
+            print("during native", self)
+            raise
 
     def get_class(self):
         return self.cls
@@ -35,6 +39,8 @@ class NativeClass(jvm.api.AbstractJavaClass):
         super().__init__()
         self.header = header
         self.name = name
+
+        self.exposed_fields: typing.List[str] = []
 
         self.methods: typing.Dict[str, NativeMethod] = {}
         self.static_attributes: typing.Dict[str, typing.Any] = {}
@@ -90,6 +96,9 @@ class NativeClass(jvm.api.AbstractJavaClass):
                     lambda m, *_: print("error native does not exists", m),
                 )
 
+        if "exposed_attributes" in data:
+            self.exposed_fields = data["exposed_attributes"]
+
     def create_attribute(self, name: str, descriptor: str, access: int):
         cls_data: dict = self.header.data[self.header.name2index[self.name]]
         cls_data.setdefault("attributes", {}).setdefault(name, {"descriptor": descriptor, "access": access})
@@ -139,7 +148,8 @@ class NativeClassInstance(jvm.api.AbstractJavaClassInstance):
         return self.cls.get_method(name, signature, static=False)
     
     def __repr__(self):
-        return f"NativeClassInstance@{self.get_class().name}"+(f"@@{self.get_real_class().name}" if self.rebound_type else "")+"()"
+        exposed = [self.get_field(name) for name in self.cls.exposed_fields]
+        return f"NativeClassInstance@{self.get_class().name}"+(f"@@{self.get_real_class().name}" if self.rebound_type else "")+"("+",".join(exposed)+")"
 
 
 class NativeHeader:

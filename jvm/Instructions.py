@@ -778,6 +778,35 @@ class DUP(OpcodeInstruction):
 
 
 @AbstractBytecodeContainer.register_instruction
+class DUP2(OpcodeInstruction):
+    OPCODES = {0x5C}
+    # todo: check for double & long!
+
+    @classmethod
+    def invoke(cls, data: typing.Any, stack: AbstractStack):
+        v1 = stack.pop()
+        v2 = stack.pop()
+        stack.push(v2)
+        stack.push(v1)
+        stack.push(v2)
+        stack.push(v1)
+
+    @classmethod
+    def validate_stack(cls, command_index, prepared_data: typing.Any, container: AbstractBytecodeContainer, stack: AbstractStack):
+        v1 = stack.pop()
+        v2 = stack.pop()
+        stack.push(v2)
+        stack.push(v1)
+        stack.push(v2)
+        stack.push(v1)
+
+    @classmethod
+    def prepare_python_bytecode_instructions(cls, command_index, prepared_data: typing.Any,
+                                             container: AbstractBytecodeContainer, builder: PyBytecodeBuilder):
+        builder.add_instruction(PyOpcodes.DUP_TOP)  # todo: do real opcode here!
+
+
+@AbstractBytecodeContainer.register_instruction
 class DUP_X1(OpcodeInstruction):
     OPCODES = {0x5A}
 
@@ -1899,7 +1928,7 @@ class AThrow(OpcodeInstruction):
         exception = stack.pop()
         stack.stack.clear()
         stack.push(exception)
-        raise StackCollectingException("User raised exception", base=exception).add_trace(exception)
+        raise StackCollectingException("User raised exception: "+str(exception), base=exception).add_trace(exception)
 
     @classmethod
     def validate_stack(cls, command_index, prepared_data: typing.Any, container: AbstractBytecodeContainer, stack: AbstractStack):
