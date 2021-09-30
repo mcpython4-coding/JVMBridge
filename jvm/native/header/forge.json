@@ -132,5 +132,8 @@
         "access": 8
       }
     }
+  },
+  {
+    "name": "net/minecraftforge/common/property/IUnlistedProperty"
   }
 ]

@@ -11,6 +11,11 @@ import jvm.api
 
 
 class NativeMethod(jvm.api.AbstractMethod):
+    """
+    Wrapper implementation of a NativeMethod wrapping a python implemented
+    method. See @bind_native() for binding a method to a native method
+    """
+
     def __init__(self, cls: jvm.api.AbstractJavaClass, name: str, signature: str, underlying: typing.Callable, access: int = 1):
         super().__init__()
         self.cls = cls
@@ -20,11 +25,11 @@ class NativeMethod(jvm.api.AbstractMethod):
         self.access = access
         self.bound = False
 
-    def invoke(self, args, stack=None):
+    def invoke(self, args: typing.Iterable, stack=None):
         try:
             return self.underlying(self, stack, *args)
         except:
-            print("during native", self)
+            print("during native", self, "with", args)
             raise
 
     def get_class(self):
@@ -35,6 +40,12 @@ class NativeMethod(jvm.api.AbstractMethod):
 
 
 class NativeClass(jvm.api.AbstractJavaClass):
+    """
+    A class in the JVM instance
+    Bound from outside to the respective JVM instances
+    Can be deserialized from a header file
+    """
+
     def __init__(self, header: "NativeHeader", name: str):
         super().__init__()
         self.header = header
@@ -247,4 +258,8 @@ def bind_native(cls_name: str, action: str):
         return function
 
     return bind
+
+
+def bind_annotation(cls_name: str):
+    return bind_native(cls_name, "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V")
 

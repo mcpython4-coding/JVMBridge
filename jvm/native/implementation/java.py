@@ -5,7 +5,20 @@ import threading
 import jvm.api
 from jvm.api import AbstractMethod
 from jvm.api import AbstractStack
-from jvm.natives import bind_native
+from jvm.natives import bind_native, bind_annotation
+
+
+@bind_annotation("javax/annotation/Nullable")
+@bind_annotation("javax/annotation/Nonnull")
+@bind_annotation("java/lang/annotation/Target")
+@bind_annotation("java/lang/annotation/Retention")
+@bind_annotation("java/lang/Deprecated")
+@bind_annotation("java/lang/FunctionalInterface")
+@bind_annotation("java/lang/SafeVarargs")
+@bind_annotation("javax/annotation/ParametersAreNonnullByDefault")
+@bind_annotation("javax/annotation/meta/TypeQualifierDefault")
+def noAnnotation(method, stack, target, args):
+    pass
 
 
 @bind_native("java/lang/Object", "<init>()V")
