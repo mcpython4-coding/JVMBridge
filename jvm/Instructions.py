@@ -838,7 +838,10 @@ class ADD(OpcodeInstruction):
     @classmethod
     def invoke(cls, data: typing.Any, stack: AbstractStack):
         b, a = stack.pop(), stack.pop()
-        stack.push(a + b)
+        try:
+            stack.push(a + b)
+        except TypeError:
+            raise
 
     @classmethod
     def validate_stack(cls, command_index, prepared_data: typing.Any, container: AbstractBytecodeContainer, stack: AbstractStack):

@@ -189,10 +189,18 @@ class NativeHeader:
 
 
 class NativeManager:
-    DEFAULT_HEADER_FILES = ["java"]
+    DEFAULT_HEADER_FILES = ["java", "forge", "mc", "ct_api", "netty", "jei"]
     MATCHER2HEADER: typing.Dict[str, str] = {
         "java/": "java",
         "javax/": "java",
+        "net/minecraftforge/": "forge",
+        "mcp/": "forge",
+        "net/minecraft/": "mc",
+        "com/mojang/": "mc",
+        "stanhebben/zenscript/": "ct_api",
+        "crafttweaker/": "ct_api",
+        "io/netty/": "netty",
+        "mezz/jei/": "jei",
     }
 
     def __init__(self):

@@ -233,7 +233,7 @@ class Stack(AbstractStack):
                     f"stack ({len(self.stack)}): " + str(self.stack)[-300:]
                 )
                 jvm.logging.warn(
-                    f"local ({len(self.local_vars)}: " + str(self.local_vars)[:300]
+                    f"local ({len(self.local_vars)}): " + str(self.local_vars)[:300]
                 )
 
             try:

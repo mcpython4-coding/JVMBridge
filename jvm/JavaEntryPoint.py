@@ -34,7 +34,7 @@ from mcpython import shared
 from mcpython.engine import logger
 import jvm.api
 from jvm.JavaExceptionStack import StackCollectingException
-import jvm.builtinwrapper
+import jvm.natives
 
 
 FORGE_VERSION_NUMBER_TO_MC = {
@@ -47,7 +47,7 @@ FORGE_VERSION_NUMBER_TO_MC = {
 }
 
 
-jvm.builtinwrapper.load_default_indexes(mcpython=True)
+jvm.natives.manager.load_files()
 
 
 # Replace java bytecode loader with ResourceLoader's lookup system

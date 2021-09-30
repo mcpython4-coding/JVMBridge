@@ -1,0 +1,32 @@
+[
+  {
+    "name": "stanhebben/zenscript/annotations/ZenClass"
+  },
+  {
+    "name": "crafttweaker/annotations/ZenRegister"
+  },
+  {
+    "name": "stanhebben/zenscript/annotations/ZenMethod"
+  },
+  {
+    "name": "crafttweaker/annotations/BracketHandler"
+  },
+  {
+    "name": "stanhebben/zenscript/annotations/ZenGetter"
+  },
+  {
+    "name": "stanhebben/zenscript/annotations/OperatorType",
+    "attributes": {
+      "MUL": {
+        "descriptor": "enum",
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "stanhebben/zenscript/annotations/ZenOperator"
+  },
+  {
+    "name": "stanhebben/zenscript/annotations/ZenExpansion"
+  }
+]

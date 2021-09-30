@@ -9,6 +9,10 @@
       "METHOD": {
         "descriptor": "enum",
         "access": 8
+      },
+      "FIELD": {
+        "descriptor": "enum",
+        "access": 8
       }
     }
   },
@@ -16,6 +20,10 @@
     "name": "java/lang/annotation/RetentionPolicy",
     "attributes": {
       "CLASS": {
+        "descriptor": "enum",
+        "access": 8
+      },
+      "RUNTIME": {
         "descriptor": "enum",
         "access": 8
       }
@@ -363,6 +371,9 @@
       },
       "set(Ljava/lang/Object;)V": {
         "access": 8
+      },
+      "initialValue()Ljava/lang/Object;": {
+        "access": 0
       }
     }
   },
@@ -589,5 +600,20 @@
         "access": 8
       }
     }
+  },
+  {
+    "name": "javax/annotation/Nonnull"
+  },
+  {
+    "name": "java/lang/FunctionalInterface"
+  },
+  {
+    "name": "javax/annotation/ParametersAreNonnullByDefault"
+  },
+  {
+    "name": "java/lang/annotation/Target"
+  },
+  {
+    "name": "java/lang/SafeVarargs"
   }
 ]

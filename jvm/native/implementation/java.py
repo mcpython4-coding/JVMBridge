@@ -12,7 +12,7 @@ from jvm.natives import bind_native
 @bind_native("java/util/Properties", "<init>()V")
 @bind_native("java/lang/SecurityManager", "<init>()V")
 @bind_native("java/lang/ClassLoader", "<init>()V")
-@bind_native("java/lang/ThreadLocal", "<init>()V")
+@bind_native("java/lang/ThreadLocal", "initialValue()Ljava/lang/Object;")
 @bind_native("java/lang/ClassLoader", "getParent()Ljava/lang/ClassLoader;")
 def noAction(method, stack, this):
     pass
@@ -142,6 +142,7 @@ class MapLike:
     @bind_native("java/util/concurrent/ConcurrentHashMap", "<init>()V")
     @bind_native("java/util/TreeMap", "<init>()V")
     @bind_native("java/util/Properties", "<init>()V")
+    @bind_native("java/lang/ThreadLocal", "<init>()V")
     def init(method, stack, this):
         this.underlying = {}
 
@@ -178,6 +179,18 @@ class MapLike:
     def put(method, stack, this, key, value):
         this.underlying[key] = value
         return value
+
+    @staticmethod
+    @bind_native("java/lang/ThreadLocal", "get()Ljava/lang/Object;")
+    def get(method, stack, this):
+        if "value " not in this.underlying:
+            this.underlying["value"] = this.get_method("initialValue", "()Ljava/lang/Object;").invoke([this])
+        return this.underlying["value"]
+
+    @staticmethod
+    @bind_native("java/lang/ThreadLocal", "set(Ljava/lang/Object;)V")
+    def set(method, stack, this, value):
+        this.underlying["value"] = value
 
 
 class QueueLike:

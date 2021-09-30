@@ -1,0 +1,71 @@
+[
+  {
+    "name": "net/minecraftforge/fml/relauncher/IFMLLoadingPlugin$Name"
+  },
+  {
+    "name": "net/minecraftforge/fml/relauncher/IFMLLoadingPlugin$MCVersion"
+  },
+  {
+    "name": "net/minecraftforge/fml/relauncher/IFMLLoadingPlugin$TransformerExclusions"
+  },
+  {
+    "name": "net/minecraftforge/fml/relauncher/IFMLLoadingPlugin$SortingIndex"
+  },
+  {
+    "name": "net/minecraftforge/fml/relauncher/Side",
+    "attributes": {
+      "CLIENT": {
+        "descriptor": "enum",
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraftforge/fml/relauncher/SideOnly"
+  },
+  {
+    "name": "net/minecraftforge/fml/common/eventhandler/SubscribeEvent"
+  },
+  {
+    "name": "net/minecraftforge/fml/common/Mod$EventBusSubscriber"
+  },
+  {
+    "name": "net/minecraftforge/fml/common/eventhandler/EventPriority",
+    "attributes": {
+      "HIGHEST": {
+        "descriptor": "enum",
+        "access": 8
+      },
+      "LOWEST": {
+        "descriptor": "enum",
+        "access": 8
+      },
+      "LOW": {
+        "descriptor": "enum",
+        "access": 8
+      },
+      "HIGH": {
+        "descriptor": "enum",
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraftforge/fml/common/Optional$Method"
+  },
+  {
+    "name": "net/minecraftforge/common/config/Config"
+  },
+  {
+    "name": "net/minecraftforge/fml/common/Optional$Interface"
+  },
+  {
+    "name": "net/minecraftforge/fml/common/Mod"
+  },
+  {
+    "name": "net/minecraftforge/fml/common/Mod$EventHandler"
+  },
+  {
+    "name": "mcp/MethodsReturnNonnullByDefault"
+  }
+]

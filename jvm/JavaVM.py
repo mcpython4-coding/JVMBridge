@@ -179,5 +179,5 @@ class JavaVM(AbstractJavaVM):
 
 jvm.api.vm = JavaVM()
 # jvm.api.vm.debug_method("com/enderio/core/client/handlers/ClientHandler", "onClientTick", "(Lnet/minecraftforge/fml/common/gameevent/TickEvent$ClientTickEvent;)V")
-jvm.api.vm.debug_method("com/enderio/core/common/handlers/FireworkHandler", "onPlayerTick", "(Lnet/minecraftforge/fml/common/gameevent/TickEvent$PlayerTickEvent;)V")
+# jvm.api.vm.debug_method("com/enderio/core/common/handlers/FireworkHandler", "onPlayerTick", "(Lnet/minecraftforge/fml/common/gameevent/TickEvent$PlayerTickEvent;)V")
 
