@@ -1,15 +1,35 @@
 [
   {
-    "name": "net/minecraftforge/fml/relauncher/IFMLLoadingPlugin$Name"
+    "name": "net/minecraftforge/fml/relauncher/IFMLLoadingPlugin$Name",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
   },
   {
-    "name": "net/minecraftforge/fml/relauncher/IFMLLoadingPlugin$MCVersion"
+    "name": "net/minecraftforge/fml/relauncher/IFMLLoadingPlugin$MCVersion",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
   },
   {
-    "name": "net/minecraftforge/fml/relauncher/IFMLLoadingPlugin$TransformerExclusions"
+    "name": "net/minecraftforge/fml/relauncher/IFMLLoadingPlugin$TransformerExclusions",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
   },
   {
-    "name": "net/minecraftforge/fml/relauncher/IFMLLoadingPlugin$SortingIndex"
+    "name": "net/minecraftforge/fml/relauncher/IFMLLoadingPlugin$SortingIndex",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
   },
   {
     "name": "net/minecraftforge/fml/relauncher/Side",
@@ -21,13 +41,28 @@
     }
   },
   {
-    "name": "net/minecraftforge/fml/relauncher/SideOnly"
+    "name": "net/minecraftforge/fml/relauncher/SideOnly",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
   },
   {
-    "name": "net/minecraftforge/fml/common/eventhandler/SubscribeEvent"
+    "name": "net/minecraftforge/fml/common/eventhandler/SubscribeEvent",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
   },
   {
-    "name": "net/minecraftforge/fml/common/Mod$EventBusSubscriber"
+    "name": "net/minecraftforge/fml/common/Mod$EventBusSubscriber",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
   },
   {
     "name": "net/minecraftforge/fml/common/eventhandler/EventPriority",
@@ -51,21 +86,51 @@
     }
   },
   {
-    "name": "net/minecraftforge/fml/common/Optional$Method"
+    "name": "net/minecraftforge/fml/common/Optional$Method",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
   },
   {
-    "name": "net/minecraftforge/common/config/Config"
+    "name": "net/minecraftforge/common/config/Config",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
   },
   {
-    "name": "net/minecraftforge/fml/common/Optional$Interface"
+    "name": "net/minecraftforge/fml/common/Optional$Interface",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
   },
   {
-    "name": "net/minecraftforge/fml/common/Mod"
+    "name": "net/minecraftforge/fml/common/Mod",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
   },
   {
-    "name": "net/minecraftforge/fml/common/Mod$EventHandler"
+    "name": "net/minecraftforge/fml/common/Mod$EventHandler",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
   },
   {
-    "name": "mcp/MethodsReturnNonnullByDefault"
+    "name": "mcp/MethodsReturnNonnullByDefault",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
   }
 ]

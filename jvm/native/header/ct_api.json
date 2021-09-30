@@ -1,18 +1,43 @@
 [
   {
-    "name": "stanhebben/zenscript/annotations/ZenClass"
+    "name": "stanhebben/zenscript/annotations/ZenClass",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
   },
   {
-    "name": "crafttweaker/annotations/ZenRegister"
+    "name": "crafttweaker/annotations/ZenRegister",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
   },
   {
-    "name": "stanhebben/zenscript/annotations/ZenMethod"
+    "name": "stanhebben/zenscript/annotations/ZenMethod",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
   },
   {
-    "name": "crafttweaker/annotations/BracketHandler"
+    "name": "crafttweaker/annotations/BracketHandler",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
   },
   {
-    "name": "stanhebben/zenscript/annotations/ZenGetter"
+    "name": "stanhebben/zenscript/annotations/ZenGetter",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
   },
   {
     "name": "stanhebben/zenscript/annotations/OperatorType",
@@ -24,9 +49,19 @@
     }
   },
   {
-    "name": "stanhebben/zenscript/annotations/ZenOperator"
+    "name": "stanhebben/zenscript/annotations/ZenOperator",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
   },
   {
-    "name": "stanhebben/zenscript/annotations/ZenExpansion"
+    "name": "stanhebben/zenscript/annotations/ZenExpansion",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
   }
 ]

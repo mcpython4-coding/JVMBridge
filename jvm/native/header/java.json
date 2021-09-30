@@ -30,7 +30,12 @@
     }
   },
   {
-    "name": "javax/annotation/meta/TypeQualifierDefault"
+    "name": "javax/annotation/meta/TypeQualifierDefault",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
   },
   {
     "name": "java/lang/Object",
@@ -59,10 +64,20 @@
     "name": "java/lang/annotation/Annotation"
   },
   {
-    "name": "java/lang/annotation/Retention"
+    "name": "java/lang/annotation/Retention",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
   },
   {
-    "name": "javax/annotation/Nullable"
+    "name": "javax/annotation/Nullable",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
   },
   {
     "name": "java/util/Properties",
@@ -344,7 +359,12 @@
     }
   },
   {
-    "name": "java/lang/Deprecated"
+    "name": "java/lang/Deprecated",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
   },
   {
     "name": "java/util/concurrent/ConcurrentMap",
@@ -602,18 +622,43 @@
     }
   },
   {
-    "name": "javax/annotation/Nonnull"
+    "name": "javax/annotation/Nonnull",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
   },
   {
-    "name": "java/lang/FunctionalInterface"
+    "name": "java/lang/FunctionalInterface",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
   },
   {
-    "name": "javax/annotation/ParametersAreNonnullByDefault"
+    "name": "javax/annotation/ParametersAreNonnullByDefault",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
   },
   {
-    "name": "java/lang/annotation/Target"
+    "name": "java/lang/annotation/Target",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
   },
   {
-    "name": "java/lang/SafeVarargs"
+    "name": "java/lang/SafeVarargs",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
   }
 ]

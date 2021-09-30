@@ -1,5 +1,10 @@
 [
   {
-    "name": "io/netty/channel/ChannelHandler$Sharable"
+    "name": "io/netty/channel/ChannelHandler$Sharable",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
   }
 ]

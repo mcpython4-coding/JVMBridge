@@ -120,7 +120,7 @@ class NativeClass(jvm.api.AbstractJavaClass):
         )
 
     def on_annotate(self, obj, args):
-        pass
+        self.get_method("onObjectAnnotation", "(Ljava/lang/Object;Ljava/lang/List;)V").invoke([obj, args])
         
     def __repr__(self):
         return f"NativeClass@{self.header.file.split('/')[-1].split('.')[0]}.h({self.name})"

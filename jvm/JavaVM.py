@@ -10,7 +10,6 @@ from jvm.Java import JavaBytecodeClass
 from jvm.JavaExceptionStack import StackCollectingException
 import jvm.api
 from jvm.api import AbstractJavaClass
-from jvm.native_building import dumpClassCreationToFiles
 
 
 # And this can be wrapped into your own resource access (multiple directories, web download, whatever you want)

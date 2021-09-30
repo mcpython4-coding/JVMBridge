@@ -1,5 +1,10 @@
 [
   {
-    "name": "mezz/jei/api/JEIPlugin"
+    "name": "mezz/jei/api/JEIPlugin",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
   }
 ]
