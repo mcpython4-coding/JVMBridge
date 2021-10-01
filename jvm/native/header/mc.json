@@ -1,1 +1,130 @@
-[]
+[
+  {
+    "name": "net/minecraft/world/item/Item",
+    "methods": {
+      "<init>(Lnet/minecraft/world/item/Item$Properties;)V": {
+        "access": 8
+      },
+      "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
+      },
+      "register()V": {
+        "access": 1
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/item/Item$Properties",
+    "methods": {
+      "<init>()V": {
+        "access": 8
+      },
+      "m_41491_(Lnet/minecraft/world/item/CreativeModeTab;)Lnet/minecraft/world/item/Item$Properties;": {
+        "access": 8
+      },
+      "m_41497_(Lnet/minecraft/world/item/Rarity;)Lnet/minecraft/world/item/Item$Properties;": {
+        "access": 8
+      },
+      "m_41487_(I)Lnet/minecraft/world/item/Item$Properties;": {
+        "access": 8
+      },
+      "m_41495_(Lnet/minecraft/world/item/Item;)Lnet/minecraft/world/item/Item$Properties;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/item/CreativeModeTab",
+    "attributes": {
+      "f_40748_": {
+        "descriptor": "[Lnet/minecraft/world/item/CreativeModeTab;",
+        "access": 8
+      }
+    },
+    "methods": {
+      "<init>(ILjava/lang/String;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/item/RecordItem",
+    "methods": {
+      "<init>(ILjava/util/function/Supplier;Lnet/minecraft/world/item/Item$Properties;)V": {
+        "access": 8
+      },
+      "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
+      },
+      "register()V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/resources/ResourceLocation",
+    "methods": {
+      "<init>(Ljava/lang/String;Ljava/lang/String;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/item/Rarity",
+    "attributes": {
+      "RARE": {
+        "descriptor": "Lnet/minecraft/world/item/Rarity;",
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/item/BucketItem",
+    "methods": {
+      "<init>(Ljava/util/function/Supplier;Lnet/minecraft/world/item/Item$Properties;)V": {
+        "access": 8
+      },
+      "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
+      },
+      "register()V": {
+        "access": 0
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/item/Items",
+    "attributes": {
+      "f_42446_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/item/BoatItem",
+    "methods": {
+      "<init>(Lnet/minecraft/world/entity/vehicle/Boat$Type;Lnet/minecraft/world/item/Item$Properties;)V": {
+        "access": 8
+      },
+      "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
+      },
+      "register()V": {
+        "access": 0
+      },
+      "<init>(Ljava/util/function/Supplier;Lnet/minecraft/world/item/Item$Properties;)V": {
+        "access": 1
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/entity/vehicle/Boat$Type",
+    "attributes": {
+      "OAK": {
+        "descriptor": "Lnet/minecraft/world/entity/vehicle/Boat$Type;",
+        "access": 8
+      }
+    }
+  }
+]

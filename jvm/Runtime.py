@@ -248,6 +248,7 @@ class Stack(AbstractStack):
                 e.add_trace(
                     f"during invoking {instruction[0]} in {self.method} [index: {self.cp}]"
                 )
+                e.add_method_invocation_step(self.method)
                 raise
             except:
                 if isinstance(self.method, jvm.Java.JavaMethod):
@@ -466,7 +467,7 @@ class BytecodeRepr(AbstractBytecodeContainer):
             stack.visit()
 
     def print_stats(self, current=None):
-        print(f"ByteCodeRepr stats of {self}")
+        print(f"ByteCodeRepr stats of {self} bound to method {self.code.table.parent}")
         print(f"code entries: {len(self.decoded_code)}")
 
         if current is None:

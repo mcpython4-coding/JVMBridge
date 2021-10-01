@@ -1,0 +1,10 @@
+[
+  {
+    "name": "com/google/common/base/Suppliers",
+    "methods": {
+      "memoize(Lcom/google/common/base/Supplier;)Lcom/google/common/base/Supplier;": {
+        "access": 8
+      }
+    }
+  }
+]

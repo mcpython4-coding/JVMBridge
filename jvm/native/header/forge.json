@@ -135,5 +135,79 @@
   },
   {
     "name": "net/minecraftforge/common/property/IUnlistedProperty"
+  },
+  {
+    "name": "net/minecraftforge/api/distmarker/Dist",
+    "attributes": {
+      "CLIENT": {
+        "descriptor": "enum",
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraftforge/api/distmarker/OnlyIn",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraftforge/eventbus/api/SubscribeEvent",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraftforge/fml/common/Mod$EventBusSubscriber$Bus",
+    "attributes": {
+      "MOD": {
+        "descriptor": "enum",
+        "access": 8
+      },
+      "FORGE": {
+        "descriptor": "enum",
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraftforge/registries/ForgeRegistries",
+    "attributes": {
+      "ITEMS": {
+        "descriptor": "Lnet/minecraftforge/registries/IForgeRegistry;",
+        "access": 8
+      },
+      "SOUND_EVENTS": {
+        "descriptor": "Lnet/minecraftforge/registries/IForgeRegistry;",
+        "access": 8
+      },
+      "SOUND_EFFECTS": {
+        "descriptor": "Lnet/minecraftforge/registries/IForgeRegistry;",
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraftforge/registries/IForgeRegistry",
+    "methods": {
+      "register(Lnet/minecraftforge/registries/IForgeRegistryEntry;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraftforge/fmllegacy/RegistryObject",
+    "methods": {
+      "of(Lnet/minecraft/resources/ResourceLocation;Lnet/minecraftforge/registries/IForgeRegistry;)Lnet/minecraftforge/fmllegacy/RegistryObject;": {
+        "access": 8
+      },
+      "of(Lnet/minecraft/resources/ResourceLocation;Lnet/minecraftforge/registries/IForgeRegistry;)Lnet/minecraftforge/fmllegacy/RegistryObject": {
+        "access": 1
+      }
+    }
   }
 ]

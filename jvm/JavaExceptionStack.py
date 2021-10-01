@@ -17,11 +17,15 @@ class StackCollectingException(Exception):
     def __init__(self, text: str, base: Exception = None):
         self.text = str(text)
         self.traces = []
+        self.method_call_stack = []
         self.base = base
 
     def add_trace(self, line):
         self.traces.append(str(line))
         return self
+
+    def add_method_invocation_step(self, method):
+        self.method_call_stack.append(method)
 
     def format_exception(self):
         return self.text + "\n" + "\n".join(self.traces)

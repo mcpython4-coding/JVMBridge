@@ -178,10 +178,14 @@ class NativeHeader:
 
     def parse_data(self):
         for i, cls_data in enumerate(self.data):
-            cls = NativeClass(self, cls_data["name"])
-            cls.parse_data(cls_data)
-            jvm.api.vm.shared_classes[cls.name] = cls
-            self.name2index[cls.name] = i
+            try:
+                cls = NativeClass(self, cls_data["name"])
+                cls.parse_data(cls_data)
+                jvm.api.vm.shared_classes[cls.name] = cls
+                self.name2index[cls.name] = i
+            except:
+                print("during loading file", cls_data)
+                raise
 
     def update_file(self):
         if self.file is None:
@@ -200,7 +204,7 @@ class NativeHeader:
 
 
 class NativeManager:
-    DEFAULT_HEADER_FILES = ["java", "forge", "mc", "ct_api", "netty", "jei"]
+    DEFAULT_HEADER_FILES = ["java", "forge", "mc", "ct_api", "netty", "jei", "google"]
     MATCHER2HEADER: typing.Dict[str, str] = {
         "java/": "java",
         "javax/": "java",
@@ -212,6 +216,7 @@ class NativeManager:
         "crafttweaker/": "ct_api",
         "io/netty/": "netty",
         "mezz/jei/": "jei",
+        "com/google/": "google",
     }
 
     def __init__(self):
