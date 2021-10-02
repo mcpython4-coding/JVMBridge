@@ -188,6 +188,10 @@
       "SOUND_EFFECTS": {
         "descriptor": "Lnet/minecraftforge/registries/IForgeRegistry;",
         "access": 8
+      },
+      "BLOCKS": {
+        "descriptor": "Lnet/minecraftforge/registries/IForgeRegistry;",
+        "access": 8
       }
     }
   },
@@ -207,6 +211,18 @@
       },
       "of(Lnet/minecraft/resources/ResourceLocation;Lnet/minecraftforge/registries/IForgeRegistry;)Lnet/minecraftforge/fmllegacy/RegistryObject": {
         "access": 1
+      }
+    }
+  },
+  {
+    "name": "net/minecraftforge/common/IPlantable"
+  },
+  {
+    "name": "net/minecraftforge/fml/loading/FMLEnvironment",
+    "attributes": {
+      "dist": {
+        "descriptor": "Lnet/minecraftforge/api/distmarker/Dist;",
+        "access": 8
       }
     }
   }

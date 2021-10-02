@@ -126,5 +126,1216 @@
         "access": 8
       }
     }
+  },
+  {
+    "name": "net/minecraft/world/level/block/state/properties/BlockStateProperties",
+    "attributes": {
+      "f_61422_": {
+        "descriptor": "Lnet/minecraft/world/level/block/state/properties/IntegerProperty;",
+        "access": 8
+      },
+      "f_61387_": {
+        "descriptor": "Lnet/minecraft/world/level/block/state/properties/IntegerProperty;",
+        "access": 8
+      },
+      "f_61362_": {
+        "descriptor": "Lnet/minecraft/world/level/block/state/properties/BooleanProperty;",
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/level/block/Block",
+    "methods": {
+      "m_49796_(DDDDDD)Lnet/minecraft/world/phys/shapes/VoxelShape;": {
+        "access": 8
+      },
+      "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
+      },
+      "<init>(Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V": {
+        "access": 8
+      },
+      "register()V": {
+        "access": 0
+      },
+      "m_49966_()Lnet/minecraft/world/level/block/state/BlockState;": {
+        "access": 8
+      },
+      "m_60590_()Lnet/minecraft/world/level/material/MaterialColor;": {
+        "access": 8
+      },
+      "m_49959_(Lnet/minecraft/world/level/block/state/BlockState;)V": {
+        "access": 8
+      }
+    },
+    "attributes": {
+      "f_49792_": {
+        "access": 1,
+        "descriptor": "Lnet/minecraft/world/level/block/state/StateDefinition;"
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/core/Direction",
+    "attributes": {
+      "DOWN": {
+        "descriptor": "Lnet/minecraft/core/Direction;",
+        "access": 8
+      },
+      "SOUTH": {
+        "descriptor": "Lnet/minecraft/core/Direction;",
+        "access": 8
+      },
+      "NORTH": {
+        "descriptor": "Lnet/minecraft/core/Direction;",
+        "access": 8
+      },
+      "EAST": {
+        "descriptor": "Lnet/minecraft/core/Direction;",
+        "access": 8
+      },
+      "WEST": {
+        "descriptor": "Lnet/minecraft/core/Direction;",
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/level/block/LiquidBlock",
+    "methods": {
+      "<init>(Ljava/util/function/Supplier;Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V": {
+        "access": 8
+      },
+      "m_49959_(Lnet/minecraft/world/level/block/state/BlockState;)V": {
+        "access": 8
+      },
+      "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
+      },
+      "register()V": {
+        "access": 8
+      }
+    },
+    "attributes": {
+      "f_49792_": {
+        "access": 1,
+        "descriptor": "Lnet/minecraft/world/level/block/state/StateDefinition;"
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/level/material/Material$Builder",
+    "methods": {
+      "<init>(Lnet/minecraft/world/level/material/MaterialColor;)V": {
+        "access": 8
+      },
+      "m_76354_()Lnet/minecraft/world/level/material/Material$Builder;": {
+        "access": 8
+      },
+      "m_76360_()Lnet/minecraft/world/level/material/Material$Builder;": {
+        "access": 8
+      },
+      "m_76353_()Lnet/minecraft/world/level/material/Material$Builder;": {
+        "access": 8
+      },
+      "m_76357_()Lnet/minecraft/world/level/material/Material$Builder;": {
+        "access": 8
+      },
+      "m_76356_()Lnet/minecraft/world/level/material/Material$Builder;": {
+        "access": 8
+      },
+      "m_76350_()Lnet/minecraft/world/level/material/Material$Builder;": {
+        "access": 8
+      },
+      "m_76359_()Lnet/minecraft/world/level/material/Material;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/level/material/MaterialColor",
+    "attributes": {
+      "f_76364_": {
+        "descriptor": "Lnet/minecraft/world/level/material/MaterialColor;",
+        "access": 8
+      },
+      "f_76412_": {
+        "descriptor": "Lnet/minecraft/world/level/material/MaterialColor;",
+        "access": 8
+      },
+      "f_76413_": {
+        "descriptor": "Lnet/minecraft/world/level/material/MaterialColor;",
+        "access": 8
+      },
+      "f_76365_": {
+        "descriptor": "Lnet/minecraft/world/level/material/MaterialColor;",
+        "access": 8
+      },
+      "f_76384_": {
+        "descriptor": "Lnet/minecraft/world/level/material/MaterialColor;",
+        "access": 8
+      },
+      "f_76400_": {
+        "descriptor": "Lnet/minecraft/world/level/material/MaterialColor;",
+        "access": 8
+      },
+      "f_76411_": {
+        "descriptor": "Lnet/minecraft/world/level/material/MaterialColor;",
+        "access": 8
+      },
+      "f_76386_": {
+        "descriptor": "Lnet/minecraft/world/level/material/MaterialColor;",
+        "access": 8
+      },
+      "f_76416_": {
+        "descriptor": "Lnet/minecraft/world/level/material/MaterialColor;",
+        "access": 8
+      },
+      "f_76390_": {
+        "descriptor": "Lnet/minecraft/world/level/material/MaterialColor;",
+        "access": 8
+      },
+      "f_76367_": {
+        "descriptor": "Lnet/minecraft/world/level/material/MaterialColor;",
+        "access": 8
+      },
+      "f_76369_": {
+        "descriptor": "Lnet/minecraft/world/level/material/MaterialColor;",
+        "access": 8
+      },
+      "f_76376_": {
+        "descriptor": "Lnet/minecraft/world/level/material/MaterialColor;",
+        "access": 8
+      },
+      "f_76373_": {
+        "descriptor": "Lnet/minecraft/world/level/material/MaterialColor;",
+        "access": 8
+      },
+      "f_76372_": {
+        "descriptor": "Lnet/minecraft/world/level/material/MaterialColor;",
+        "access": 8
+      },
+      "f_76380_": {
+        "descriptor": "Lnet/minecraft/world/level/material/MaterialColor;",
+        "access": 8
+      },
+      "f_76406_": {
+        "descriptor": "Lnet/minecraft/world/level/material/MaterialColor;",
+        "access": 8
+      },
+      "f_76418_": {
+        "descriptor": "Lnet/minecraft/world/level/material/MaterialColor;",
+        "access": 8
+      },
+      "f_76378_": {
+        "descriptor": "Lnet/minecraft/world/level/material/MaterialColor;",
+        "access": 8
+      },
+      "f_76408_": {
+        "descriptor": "Lnet/minecraft/world/level/material/MaterialColor;",
+        "access": 8
+      },
+      "f_76422_": {
+        "descriptor": "Lnet/minecraft/world/level/material/MaterialColor;",
+        "access": 8
+      },
+      "f_76370_": {
+        "descriptor": "Lnet/minecraft/world/level/material/MaterialColor;",
+        "access": 8
+      },
+      "f_76377_": {
+        "descriptor": "Lnet/minecraft/world/level/material/MaterialColor;",
+        "access": 8
+      },
+      "f_76409_": {
+        "descriptor": "Lnet/minecraft/world/level/material/MaterialColor;",
+        "access": 8
+      },
+      "f_76419_": {
+        "descriptor": "Lnet/minecraft/world/level/material/MaterialColor;",
+        "access": 8
+      },
+      "f_76421_": {
+        "descriptor": "Lnet/minecraft/world/level/material/MaterialColor;",
+        "access": 8
+      },
+      "f_76361_": {
+        "descriptor": "Lnet/minecraft/world/level/material/MaterialColor;",
+        "access": 8
+      },
+      "f_76375_": {
+        "descriptor": "Lnet/minecraft/world/level/material/MaterialColor;",
+        "access": 8
+      },
+      "f_76383_": {
+        "descriptor": "Lnet/minecraft/world/level/material/MaterialColor;",
+        "access": 8
+      },
+      "f_76382_": {
+        "descriptor": "Lnet/minecraft/world/level/material/MaterialColor;",
+        "access": 8
+      },
+      "f_76379_": {
+        "descriptor": "Lnet/minecraft/world/level/material/MaterialColor;",
+        "access": 8
+      },
+      "f_76420_": {
+        "descriptor": "Lnet/minecraft/world/level/material/MaterialColor;",
+        "access": 8
+      },
+      "f_76414_": {
+        "descriptor": "Lnet/minecraft/world/level/material/MaterialColor;",
+        "access": 8
+      },
+      "f_76371_": {
+        "descriptor": "Lnet/minecraft/world/level/material/MaterialColor;",
+        "access": 8
+      },
+      "f_164535_": {
+        "descriptor": "Lnet/minecraft/world/level/material/MaterialColor;",
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/level/block/state/BlockBehaviour$Properties",
+    "methods": {
+      "m_60939_(Lnet/minecraft/world/level/material/Material;)Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;": {
+        "access": 8
+      },
+      "m_60910_()Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;": {
+        "access": 8
+      },
+      "m_60977_()Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;": {
+        "access": 8
+      },
+      "m_60978_(F)Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;": {
+        "access": 8
+      },
+      "m_60993_()Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;": {
+        "access": 8
+      },
+      "<init>(Lnet/minecraft/world/level/material/Material;)V": {
+        "access": 1
+      },
+      "m_60944_(Lnet/minecraft/world/level/material/Material;Lnet/minecraft/world/level/material/MaterialColor;)Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;": {
+        "access": 8
+      },
+      "m_60918_(Lnet/minecraft/world/level/block/SoundType;)Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;": {
+        "access": 8
+      },
+      "m_60926_(Lnet/minecraft/world/level/block/state/BlockBehaviour;)Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;": {
+        "access": 8
+      },
+      "m_60913_(FF)Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;": {
+        "access": 8
+      },
+      "m_60999_()Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;": {
+        "access": 8
+      },
+      "m_60953_(Ljava/util/function/ToIntFunction;)Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;": {
+        "access": 8
+      },
+      "m_60991_(Lnet/minecraft/world/level/block/state/BlockBehaviour$StatePredicate;)Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;": {
+        "access": 8
+      },
+      "m_60966_()Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;": {
+        "access": 8
+      },
+      "m_60955_()Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;": {
+        "access": 8
+      },
+      "<init>()V": {
+        "access": 1
+      },
+      "m_60947_(Lnet/minecraft/world/level/material/Material;Ljava/util/function/Function;)Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/level/block/BucketPickup"
+  },
+  {
+    "name": "net/minecraft/world/level/block/state/StateDefinition",
+    "methods": {
+      "m_61090_()Lnet/minecraft/world/level/block/state/StateHolder;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/level/block/state/BlockState",
+    "methods": {
+      "m_61124_(Lnet/minecraft/world/level/block/state/properties/Property;Ljava/lang/Comparable;)Ljava/lang/Object;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/item/BlockItem",
+    "methods": {
+      "<init>(Lnet/minecraft/world/level/block/Block;Lnet/minecraft/world/item/Item$Properties;)V": {
+        "access": 8
+      },
+      "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
+      },
+      "register()V": {
+        "access": 0
+      },
+      "<init>(Lnet/minecraft/world/level/block/Block;Lnet/minecraft/world/item/Item$Properties;)": {
+        "access": 1
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/level/block/SandBlock",
+    "methods": {
+      "<init>(ILnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V": {
+        "access": 8
+      },
+      "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
+      },
+      "register()V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/level/material/Material",
+    "attributes": {
+      "f_76317_": {
+        "descriptor": "Lnet/minecraft/world/level/material/Material;",
+        "access": 8
+      },
+      "f_76278_": {
+        "descriptor": "Lnet/minecraft/world/level/material/Material;",
+        "access": 8
+      },
+      "f_76314_": {
+        "descriptor": "Lnet/minecraft/world/level/material/Material;",
+        "access": 8
+      },
+      "f_76315_": {
+        "descriptor": "Lnet/minecraft/world/level/material/Material;",
+        "access": 8
+      },
+      "f_76318_": {
+        "descriptor": "Lnet/minecraft/world/level/material/Material;",
+        "access": 8
+      },
+      "f_164531_": {
+        "descriptor": "Lnet/minecraft/world/level/material/Material;",
+        "access": 8
+      },
+      "f_76320_": {
+        "descriptor": "Lnet/minecraft/world/level/material/Material;",
+        "access": 8
+      },
+      "f_76300_": {
+        "descriptor": "Lnet/minecraft/world/level/material/Material;",
+        "access": 8
+      },
+      "f_164530_": {
+        "descriptor": "Lnet/minecraft/world/level/material/Material;",
+        "access": 8
+      },
+      "f_76286_": {
+        "descriptor": "Lnet/minecraft/world/level/material/Material;",
+        "access": 8
+      },
+      "f_76274_": {
+        "descriptor": "Lnet/minecraft/world/level/material/Material;",
+        "access": 8
+      },
+      "f_76310_": {
+        "descriptor": "Lnet/minecraft/world/level/material/Material;",
+        "access": 8
+      },
+      "f_76302_": {
+        "descriptor": "Lnet/minecraft/world/level/material/Material;",
+        "access": 8
+      },
+      "f_76304_": {
+        "descriptor": "Lnet/minecraft/world/level/material/Material;",
+        "access": 8
+      },
+      "f_76301_": {
+        "descriptor": "Lnet/minecraft/world/level/material/Material;",
+        "access": 8
+      },
+      "f_76272_": {
+        "descriptor": "Lnet/minecraft/world/level/material/Material;",
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/level/block/SoundType",
+    "attributes": {
+      "f_56746_": {
+        "descriptor": "Lnet/minecraft/world/level/block/SoundType;",
+        "access": 8
+      },
+      "f_56740_": {
+        "descriptor": "Lnet/minecraft/world/level/block/SoundType;",
+        "access": 8
+      },
+      "f_154654_": {
+        "descriptor": "Lnet/minecraft/world/level/block/SoundType;",
+        "access": 8
+      },
+      "f_56736_": {
+        "descriptor": "Lnet/minecraft/world/level/block/SoundType;",
+        "access": 8
+      },
+      "f_154668_": {
+        "descriptor": "Lnet/minecraft/world/level/block/SoundType;",
+        "access": 8
+      },
+      "f_154669_": {
+        "descriptor": "Lnet/minecraft/world/level/block/SoundType;",
+        "access": 8
+      },
+      "f_56743_": {
+        "descriptor": "Lnet/minecraft/world/level/block/SoundType;",
+        "access": 8
+      },
+      "f_56745_": {
+        "descriptor": "Lnet/minecraft/world/level/block/SoundType;",
+        "access": 8
+      },
+      "f_56742_": {
+        "descriptor": "Lnet/minecraft/world/level/block/SoundType;",
+        "access": 8
+      },
+      "f_154655_": {
+        "descriptor": "Lnet/minecraft/world/level/block/SoundType;",
+        "access": 8
+      },
+      "f_154657_": {
+        "descriptor": "Lnet/minecraft/world/level/block/SoundType;",
+        "access": 8
+      },
+      "f_154658_": {
+        "descriptor": "Lnet/minecraft/world/level/block/SoundType;",
+        "access": 8
+      },
+      "f_154656_": {
+        "descriptor": "Lnet/minecraft/world/level/block/SoundType;",
+        "access": 8
+      }
+    },
+    "methods": {
+      "<init>(FFLnet/minecraft/sounds/SoundEvent;Lnet/minecraft/sounds/SoundEvent;Lnet/minecraft/sounds/SoundEvent;Lnet/minecraft/sounds/SoundEvent;Lnet/minecraft/sounds/SoundEvent;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/level/block/StairBlock",
+    "methods": {
+      "<init>(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V": {
+        "access": 8
+      },
+      "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
+      },
+      "register()V": {
+        "access": 0
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/level/block/SlabBlock",
+    "methods": {
+      "<init>(Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V": {
+        "access": 8
+      },
+      "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
+      },
+      "register()V": {
+        "access": 0
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/level/block/WallBlock",
+    "methods": {
+      "<init>(Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V": {
+        "access": 8
+      },
+      "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
+      },
+      "register()V": {
+        "access": 0
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/sounds/SoundEvents",
+    "attributes": {
+      "f_12389_": {
+        "descriptor": "Lnet/minecraft/sounds/SoundEvent;",
+        "access": 8
+      },
+      "f_12393_": {
+        "descriptor": "Lnet/minecraft/sounds/SoundEvent;",
+        "access": 8
+      },
+      "f_12392_": {
+        "descriptor": "Lnet/minecraft/sounds/SoundEvent;",
+        "access": 8
+      },
+      "f_12391_": {
+        "descriptor": "Lnet/minecraft/sounds/SoundEvent;",
+        "access": 8
+      },
+      "f_12390_": {
+        "descriptor": "Lnet/minecraft/sounds/SoundEvent;",
+        "access": 8
+      },
+      "f_11993_": {
+        "descriptor": "Lnet/minecraft/sounds/SoundEvent;",
+        "access": 8
+      },
+      "f_11997_": {
+        "descriptor": "Lnet/minecraft/sounds/SoundEvent;",
+        "access": 8
+      },
+      "f_11996_": {
+        "descriptor": "Lnet/minecraft/sounds/SoundEvent;",
+        "access": 8
+      },
+      "f_11995_": {
+        "descriptor": "Lnet/minecraft/sounds/SoundEvent;",
+        "access": 8
+      },
+      "f_11994_": {
+        "descriptor": "Lnet/minecraft/sounds/SoundEvent;",
+        "access": 8
+      },
+      "f_11825_": {
+        "descriptor": "Lnet/minecraft/sounds/SoundEvent;",
+        "access": 8
+      },
+      "f_11829_": {
+        "descriptor": "Lnet/minecraft/sounds/SoundEvent;",
+        "access": 8
+      },
+      "f_11828_": {
+        "descriptor": "Lnet/minecraft/sounds/SoundEvent;",
+        "access": 8
+      },
+      "f_11827_": {
+        "descriptor": "Lnet/minecraft/sounds/SoundEvent;",
+        "access": 8
+      },
+      "f_11826_": {
+        "descriptor": "Lnet/minecraft/sounds/SoundEvent;",
+        "access": 8
+      },
+      "f_12032_": {
+        "descriptor": "Lnet/minecraft/sounds/SoundEvent;",
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/level/block/GrassBlock",
+    "methods": {
+      "<init>(Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V": {
+        "access": 8
+      },
+      "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
+      },
+      "register()V": {
+        "access": 0
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/phys/shapes/Shapes",
+    "methods": {
+      "m_83110_(Lnet/minecraft/world/phys/shapes/VoxelShape;Lnet/minecraft/world/phys/shapes/VoxelShape;)Lnet/minecraft/world/phys/shapes/VoxelShape;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/level/block/AmethystBlock",
+    "methods": {
+      "<init>(Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V": {
+        "access": 8
+      },
+      "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
+      },
+      "register()V": {
+        "access": 0
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/level/block/HugeMushroomBlock",
+    "methods": {
+      "<init>(Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V": {
+        "access": 8
+      },
+      "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
+      },
+      "register()V": {
+        "access": 0
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/level/block/CarpetBlock",
+    "methods": {
+      "<init>(Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V": {
+        "access": 8
+      },
+      "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
+      },
+      "register()V": {
+        "access": 0
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/level/block/MossBlock",
+    "methods": {
+      "<init>(Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V": {
+        "access": 8
+      },
+      "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
+      },
+      "register()V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/level/block/SaplingBlock",
+    "methods": {
+      "<init>(Lnet/minecraft/world/level/block/grower/AbstractTreeGrower;Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V": {
+        "access": 8
+      },
+      "m_49959_(Lnet/minecraft/world/level/block/state/BlockState;)V": {
+        "access": 8
+      },
+      "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
+      },
+      "register()V": {
+        "access": 8
+      }
+    },
+    "attributes": {
+      "f_49792_": {
+        "access": 1,
+        "descriptor": "Lnet/minecraft/world/level/block/state/StateDefinition;"
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/level/block/grower/AbstractTreeGrower",
+    "methods": {
+      "<init>()V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/level/block/BonemealableBlock"
+  },
+  {
+    "name": "net/minecraft/world/level/block/LeavesBlock",
+    "methods": {
+      "<init>(Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V": {
+        "access": 8
+      },
+      "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
+      },
+      "register()V": {
+        "access": 0
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/level/block/grower/AbstractMegaTreeGrower",
+    "methods": {
+      "<init>()V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/level/block/Blocks",
+    "methods": {
+      "m_50788_(Lnet/minecraft/world/level/material/MaterialColor;Lnet/minecraft/world/level/material/MaterialColor;)Lnet/minecraft/world/level/block/RotatedPillarBlock;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/level/block/RotatedPillarBlock",
+    "methods": {
+      "<init>(Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V": {
+        "access": 0
+      },
+      "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
+      },
+      "register()V": {
+        "access": 0
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/level/block/FenceBlock",
+    "methods": {
+      "<init>(Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V": {
+        "access": 8
+      },
+      "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
+      },
+      "register()V": {
+        "access": 0
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/level/block/FenceGateBlock",
+    "methods": {
+      "<init>(Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V": {
+        "access": 8
+      },
+      "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
+      },
+      "register()V": {
+        "access": 0
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/level/block/DoorBlock",
+    "methods": {
+      "<init>(Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V": {
+        "access": 8
+      },
+      "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
+      },
+      "register()V": {
+        "access": 0
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/level/block/TrapDoorBlock",
+    "methods": {
+      "<init>(Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V": {
+        "access": 8
+      },
+      "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
+      },
+      "register()V": {
+        "access": 0
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/level/block/PressurePlateBlock",
+    "methods": {
+      "<init>(Lnet/minecraft/world/level/block/PressurePlateBlock$Sensitivity;Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V": {
+        "access": 8
+      },
+      "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
+      },
+      "register()V": {
+        "access": 0
+      },
+      "<init>(Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V": {
+        "access": 1
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/level/block/PressurePlateBlock$Sensitivity",
+    "attributes": {
+      "EVERYTHING": {
+        "descriptor": "Lnet/minecraft/world/level/block/PressurePlateBlock$Sensitivity;",
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/level/block/WoodButtonBlock",
+    "methods": {
+      "<init>(Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V": {
+        "access": 8
+      },
+      "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
+      },
+      "register()V": {
+        "access": 0
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/level/block/FlowerBlock",
+    "methods": {
+      "<init>(Lnet/minecraft/world/effect/MobEffect;ILnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V": {
+        "access": 8
+      },
+      "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
+      },
+      "register()V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/effect/MobEffects",
+    "attributes": {
+      "f_19596_": {
+        "descriptor": "Lnet/minecraft/world/effect/MobEffect;",
+        "access": 8
+      },
+      "f_19604_": {
+        "descriptor": "Lnet/minecraft/world/effect/MobEffect;",
+        "access": 8
+      },
+      "f_19616_": {
+        "descriptor": "Lnet/minecraft/world/effect/MobEffect;",
+        "access": 8
+      },
+      "f_19612_": {
+        "descriptor": "Lnet/minecraft/world/effect/MobEffect;",
+        "access": 8
+      },
+      "f_19617_": {
+        "descriptor": "Lnet/minecraft/world/effect/MobEffect;",
+        "access": 8
+      },
+      "f_19609_": {
+        "descriptor": "Lnet/minecraft/world/effect/MobEffect;",
+        "access": 8
+      },
+      "f_19605_": {
+        "descriptor": "Lnet/minecraft/world/effect/MobEffect;",
+        "access": 8
+      },
+      "f_19619_": {
+        "descriptor": "Lnet/minecraft/world/effect/MobEffect;",
+        "access": 8
+      },
+      "f_19590_": {
+        "descriptor": "Lnet/minecraft/world/effect/MobEffect;",
+        "access": 8
+      },
+      "f_19607_": {
+        "descriptor": "Lnet/minecraft/world/effect/MobEffect;",
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/effect/MobEffect",
+    "methods": {
+      "m_8093_()Z": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/level/block/TallFlowerBlock",
+    "methods": {
+      "<init>(Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V": {
+        "access": 8
+      },
+      "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
+      },
+      "register()V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/level/block/VineBlock",
+    "methods": {
+      "<init>(Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V": {
+        "access": 8
+      },
+      "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
+      },
+      "register()V": {
+        "access": 0
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/level/block/GrowingPlantHeadBlock",
+    "methods": {
+      "<init>(Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;Lnet/minecraft/core/Direction;Lnet/minecraft/world/phys/shapes/VoxelShape;ZD)V": {
+        "access": 8
+      },
+      "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
+      },
+      "register()V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/level/block/GrowingPlantBodyBlock",
+    "methods": {
+      "<init>(Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;Lnet/minecraft/core/Direction;Lnet/minecraft/world/phys/shapes/VoxelShape;Z)V": {
+        "access": 8
+      },
+      "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
+      },
+      "register()V": {
+        "access": 8
+      },
+      "<init>(Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;Lnet/minecraft/core/Direction;Lnet/minecraft/world/phys/shapes/VoxelShape;ZD)V": {
+        "access": 1
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/level/block/MultifaceBlock",
+    "methods": {
+      "<init>(Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V": {
+        "access": 8
+      },
+      "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
+      },
+      "register()V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/level/block/BushBlock",
+    "methods": {
+      "<init>(Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V": {
+        "access": 8
+      },
+      "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
+      },
+      "register()V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/level/block/HorizontalDirectionalBlock",
+    "attributes": {
+      "f_54117_": {
+        "descriptor": "Lnet/minecraft/world/level/block/state/properties/DirectionProperty;",
+        "access": 8
+      },
+      "f_49792_": {
+        "descriptor": "Lnet/minecraft/world/level/block/state/StateDefinition;",
+        "access": 1
+      }
+    },
+    "methods": {
+      "<init>(Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V": {
+        "access": 8
+      },
+      "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 1
+      },
+      "register()V": {
+        "access": 1
+      },
+      "m_49959_(Lnet/minecraft/world/level/block/state/BlockState;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/level/block/DoublePlantBlock",
+    "methods": {
+      "<init>(Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V": {
+        "access": 8
+      },
+      "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
+      },
+      "register()V": {
+        "access": 8
+      },
+      "m_49959_(Lnet/minecraft/world/level/block/state/BlockState;)V": {
+        "access": 8
+      }
+    },
+    "attributes": {
+      "f_49792_": {
+        "access": 1,
+        "descriptor": "Lnet/minecraft/world/level/block/state/StateDefinition;"
+      },
+      "f_52858_": {
+        "descriptor": "",
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/level/block/SimpleWaterloggedBlock"
+  },
+  {
+    "name": "net/minecraft/world/level/block/state/properties/DoubleBlockHalf",
+    "attributes": {
+      "LOWER": {
+        "descriptor": "Lnet/minecraft/world/level/block/state/properties/DoubleBlockHalf;",
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/level/block/PipeBlock",
+    "methods": {
+      "<init>(FLnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V": {
+        "access": 8
+      },
+      "<init>(Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V": {
+        "access": 1
+      },
+      "m_49959_(Lnet/minecraft/world/level/block/state/BlockState;)V": {
+        "access": 8
+      },
+      "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
+      },
+      "register()V": {
+        "access": 8
+      }
+    },
+    "attributes": {
+      "f_49792_": {
+        "descriptor": "Lnet/minecraft/world/level/block/state/StateDefinition;",
+        "access": 1
+      },
+      "f_55148_": {
+        "descriptor": "",
+        "access": 8
+      },
+      "f_55149_": {
+        "descriptor": "",
+        "access": 8
+      },
+      "f_55150_": {
+        "descriptor": "",
+        "access": 8
+      },
+      "f_55151_": {
+        "descriptor": "",
+        "access": 8
+      },
+      "f_55152_": {
+        "descriptor": "",
+        "access": 8
+      },
+      "f_55153_": {
+        "descriptor": "",
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/level/block/MushroomBlock",
+    "methods": {
+      "<init>(Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;Ljava/util/function/Supplier;)V": {
+        "access": 8
+      },
+      "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
+      },
+      "register()V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/level/block/AmethystClusterBlock",
+    "methods": {
+      "<init>(IILnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V": {
+        "access": 8
+      },
+      "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
+      },
+      "register()V": {
+        "access": 0
+      },
+      "m_60918_(Lnet/minecraft/world/level/block/SoundType;)Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;": {
+        "access": 8
+      },
+      "m_60953_(Ljava/util/function/ToIntFunction;)Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/level/block/FlowerPotBlock",
+    "methods": {
+      "<init>(Lnet/minecraft/world/level/block/Block;Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V": {
+        "access": 8
+      },
+      "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
+      },
+      "register()V": {
+        "access": 0
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/client/renderer/RenderType",
+    "methods": {
+      "m_110457_()Lnet/minecraft/client/renderer/RenderType;": {
+        "access": 8
+      },
+      "m_110463_()Lnet/minecraft/client/renderer/RenderType;": {
+        "access": 8
+      },
+      "m_110466_()Lnet/minecraft/client/renderer/RenderType;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/client/renderer/ItemBlockRenderTypes",
+    "methods": {
+      "setRenderLayer(Lnet/minecraft/world/level/block/Block;Lnet/minecraft/client/renderer/RenderType;)V": {
+        "access": 8
+      }
+    }
   }
 ]

@@ -6,5 +6,46 @@
         "access": 8
       }
     }
+  },
+  {
+    "name": "com/google/common/collect/ImmutableList",
+    "methods": {
+      "of(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Lcom/google/common/collect/ImmutableList;": {
+        "access": 8
+      },
+      "<init>([Ljava/lang/Object;)V": {
+        "access": 1
+      }
+    }
+  },
+  {
+    "name": "com/google/common/collect/Lists",
+    "methods": {
+      "newArrayList()Ljava/util/ArrayList;": {
+        "access": 8
+      },
+      "<init>()V": {
+        "access": 1
+      }
+    }
+  },
+  {
+    "name": "com/google/common/collect/ImmutableMap",
+    "methods": {
+      "of(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Lcom/google/common/collect/ImmutableMap;": {
+        "access": 8
+      },
+      "<init>(Ljava/util/Map;)V": {
+        "access": 1
+      }
+    }
+  },
+  {
+    "name": "com/google/common/collect/Maps",
+    "methods": {
+      "newEnumMap(Ljava/util/Map;)Ljava/util/EnumMap;": {
+        "access": 8
+      }
+    }
   }
 ]

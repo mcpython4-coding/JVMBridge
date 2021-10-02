@@ -660,5 +660,8 @@
         "access": 8
       }
     }
+  },
+  {
+    "name": "java/util/EnumMap"
   }
 ]

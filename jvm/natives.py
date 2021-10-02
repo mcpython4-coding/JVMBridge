@@ -90,13 +90,17 @@ class NativeClass(jvm.api.AbstractJavaClass):
     def parse_data(self, data: dict):
         if "attributes" in data:
             for name, d in data["attributes"].items():
-                if d["access"] & 0x0008:
-                    self.static_attributes[name] = None
-                else:
-                    self.dynamic_attribute_keys.add(name)
+                try:
+                    if d["access"] & 0x0008:
+                        self.static_attributes[name] = None
+                    else:
+                        self.dynamic_attribute_keys.add(name)
 
-                if "enum" in d["descriptor"] or d["access"] & 0x4000:
-                    self.enum_attribute_keys.add(name)
+                    if "enum" in d["descriptor"] or d["access"] & 0x4000:
+                        self.enum_attribute_keys.add(name)
+                except:
+                    print(name, d)
+                    raise
 
         if "methods" in data:
             for desc, d in data["methods"].items():
@@ -135,6 +139,9 @@ class NativeClass(jvm.api.AbstractJavaClass):
         
     def __repr__(self):
         return f"NativeClass@{self.header.file.split('/')[-1].split('.')[0]}.h({self.name})"
+
+    def get_dynamic_field_keys(self):
+        return self.dynamic_attribute_keys
 
 
 class NativeClassInstance(jvm.api.AbstractJavaClassInstance):
