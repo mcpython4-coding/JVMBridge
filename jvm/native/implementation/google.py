@@ -31,8 +31,13 @@ class Suppliers:
 class ListLike:
     @staticmethod
     @bind_native("com/google/common/collect/ImmutableList", "of(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Lcom/google/common/collect/ImmutableList;")
+    @bind_native("com/google/common/collect/ImmutableList", "of(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;)Lcom/google/common/collect/ImmutableList;")
     def create(method, stack, *args):
-        return method.get_class().create_instance().init("([Ljava/lang/Object;)V", list(args))
+        args = list(args)
+        if isinstance(args[-1], list):
+            args += args.pop(-1)
+
+        return method.get_class().create_instance().init("([Ljava/lang/Object;)V", args)
 
     @staticmethod
     @bind_native("com/google/common/collect/ImmutableList", "<init>([Ljava/lang/Object;)V")
@@ -60,6 +65,11 @@ class MapLike:
     @bind_native("com/google/common/collect/ImmutableMap", "<init>(Ljava/util/Map;)V")
     def init(method, stack, this, data: list):
         this.underlying = data
+
+    @staticmethod
+    @bind_native("com/google/common/collect/HashMultimap", "<init>()V")
+    def init(method, stack, this):
+        this.underlying = {}
 
     @staticmethod
     @bind_native("com/google/common/collect/Maps", "newEnumMap(Ljava/util/Map;)Ljava/util/EnumMap;")

@@ -1385,6 +1385,12 @@
     "methods": {
       "create(Ljava/util/function/Function;)Lcom/mojang/serialization/Codec;": {
         "access": 8
+      },
+      "<init>()V": {
+        "access": 1
+      },
+      "register()V": {
+        "access": 0
       }
     }
   },

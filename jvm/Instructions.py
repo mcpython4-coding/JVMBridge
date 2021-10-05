@@ -1407,17 +1407,18 @@ class PutField(CPLinkedInstruction):
     @classmethod
     def decode(
             cls, data: bytearray, index, class_file
-    ) -> typing.Tuple[typing.Any, int]:
+    ) -> typing.Tuple[typing.Tuple[str, str], int]:
         d, i = super().decode(data, index, class_file)
-        return d[2][1][1], i
+        return (d[2][1][1], d[1][1][1]), i
 
     @classmethod
-    def invoke(cls, name: str, stack: AbstractStack):
+    def invoke(cls, d, stack: AbstractStack):
+        name, target_type = d
         value = stack.pop()
         obj = stack.pop()
 
         if obj is None:
-            raise StackCollectingException(f"NullPointerException: obj is null; Cannot set field '{name}' to {value}")
+            raise StackCollectingException(f"NullPointerException: obj is null; Cannot set field '{name}' to {value}").add_trace(target_type)
 
         if not hasattr(obj, "set_field"):
             setattr(obj, name, value)

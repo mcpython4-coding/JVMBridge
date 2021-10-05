@@ -57,6 +57,9 @@
       },
       "newMessage(Ljava/lang/String;)Lorg/apache/logging/log4j/message/Message;": {
         "access": 8
+      },
+      "register()V": {
+        "access": 8
       }
     }
   },

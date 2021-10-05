@@ -61,6 +61,11 @@ def boundMethodToStage(method: AbstractMethod, event: str, mod: str):
 
 class ModContainer:
     @staticmethod
+    @bind_native("net/minecraftforge/fml/loading/FMLPaths", "get()Ljava/nio/file/Path;")
+    def get(method, stack, instance):
+        return shared.local
+
+    @staticmethod
     @bind_annotation("net/minecraftforge/fml/common/Mod")
     def processModAnnotation(method, stack, target, args):
         try:
@@ -123,6 +128,43 @@ class ModContainer:
     @bind_native("net/minecraftforge/fml/javafmlmod/FMLJavaModLoadingContext", "getModEventBus()Lnet/minecraftforge/eventbus/api/IEventBus;")
     def getModEventBus(method, stack, this):
         pass
+
+    @staticmethod
+    @bind_native("net/minecraftforge/eventbus/api/IEventBus", "register(Ljava/lang/Object;)V")
+    def registerArbitraryObject(method, stack, this, obj):
+        obj.get_method("register", "()V").invoke([obj])
+
+    @staticmethod
+    @bind_native("net/minecraft/core/Registry", "m_122961_(Lnet/minecraft/core/Registry;Ljava/lang/String;Ljava/lang/Object;)Ljava/lang/Object;")
+    def register(method, stack, registry, name, obj):
+        obj.get_method("register", "()V").invoke([obj])
+
+    @staticmethod
+    @bind_native("net/minecraftforge/fml/ModLoadingContext", "get()Lnet/minecraftforge/fml/ModLoadingContext;")
+    def getContext(method, stack):
+        return method.cls.create_instance()
+
+    @staticmethod
+    @bind_native("net/minecraftforge/fml/ModLoadingContext", "registerConfig(Lnet/minecraftforge/fml/config/ModConfig$Type;Lnet/minecraftforge/fml/config/IConfigSpec;Ljava/lang/String;)V")
+    def registerConfig(method, stack, this, mod_config_type, config_spec, some_string: str):
+        pass
+
+
+class Configs:
+    @staticmethod
+    @bind_native("net/minecraftforge/common/ForgeConfigSpec$Builder", "<init>()V")
+    def init(method, stack, this):
+        pass
+
+    @staticmethod
+    @bind_native("net/minecraftforge/common/ForgeConfigSpec$Builder", "comment(Ljava/lang/String;)Lnet/minecraftforge/common/ForgeConfigSpec$Builder;")
+    @bind_native("net/minecraftforge/common/ForgeConfigSpec$Builder", "push(Ljava/lang/String;)Lnet/minecraftforge/common/ForgeConfigSpec$Builder;")
+    @bind_native("net/minecraftforge/common/ForgeConfigSpec$Builder", "defineEnum(Ljava/lang/String;Ljava/lang/Enum;)Lnet/minecraftforge/common/ForgeConfigSpec$EnumValue;")
+    @bind_native("net/minecraftforge/common/ForgeConfigSpec$Builder", "define(Ljava/lang/String;Z)Lnet/minecraftforge/common/ForgeConfigSpec$BooleanValue;")
+    @bind_native("net/minecraftforge/common/ForgeConfigSpec$Builder", "pop()Lnet/minecraftforge/common/ForgeConfigSpec$Builder;")
+    @bind_native("net/minecraftforge/common/ForgeConfigSpec$Builder", "build()Lnet/minecraftforge/common/ForgeConfigSpec;")
+    def anyUnused(method, stack, this, *_):
+        return this
 
 
 class ItemCreation:
@@ -628,7 +670,9 @@ class ForgeRegistries:
     @staticmethod
     @bind_native("net/minecraftforge/fmllegacy/RegistryObject", "of(Lnet/minecraft/resources/ResourceLocation;Lnet/minecraftforge/registries/IForgeRegistry;)Lnet/minecraftforge/fmllegacy/RegistryObject;")
     def getObjectByName(method, stack, name, registry):
-        if registry is None: return
+        if registry is None:
+            return method.cls.create_instance()
+
         raise RuntimeError
 
 
@@ -667,6 +711,17 @@ class WorldGen:
     @staticmethod
     @bind_native("net/minecraftforge/common/world/ForgeWorldType", "<init>(Lnet/minecraftforge/common/world/ForgeWorldType$IBasicChunkGeneratorFactory;)V")
     def init(method, stack, this, chunk_generator):
+        pass
+
+    @staticmethod
+    @bind_native("net/minecraftforge/common/world/ForgeWorldType", "setRegistryName(Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraftforge/registries/IForgeRegistryEntry;")
+    def setRegime(method, stack, this, name):
+        this.registry_name = name
+        return this
+
+    @staticmethod
+    @bind_native("net/minecraftforge/common/world/ForgeWorldType", "register()V")
+    def register(method, stack, this):
         pass
 
 
@@ -811,6 +866,23 @@ class DeferredRegister:
 
     @staticmethod
     @bind_native("net/minecraftforge/registries/ForgeRegistryEntry", "register()V")
+    def register(method, stack, this):
+        pass
+
+
+class Codec:
+    @staticmethod
+    @bind_native("com/mojang/serialization/codecs/RecordCodecBuilder", "create(Ljava/util/function/Function;)Lcom/mojang/serialization/Codec;")
+    def create(method, stack, function):
+        return method.cls.create_instance().init("()V")
+
+    @staticmethod
+    @bind_native("com/mojang/serialization/codecs/RecordCodecBuilder", "<init>()V")
+    def init(method, stack, this):
+        pass
+
+    @staticmethod
+    @bind_native("com/mojang/serialization/codecs/RecordCodecBuilder", "register()V")
     def register(method, stack, this):
         pass
 

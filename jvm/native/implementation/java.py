@@ -1,4 +1,5 @@
 import collections
+import os.path
 import re
 import threading
 
@@ -472,4 +473,23 @@ class Asserts:
         if obj is None:
             raise StackCollectingException("Object is null")
         return obj
+
+
+class IO:
+    @staticmethod
+    @bind_native("java/nio/file/Path", "toAbsolutePath()Ljava/nio/file/Path;")
+    @bind_native("java/nio/file/Path", "toString()Ljava/lang/String;")
+    def toAbsolutePath(method, stack, this):
+        return this
+
+    @staticmethod
+    @bind_native("java/nio/file/Paths", "get(Ljava/lang/String;[Ljava/lang/String;)Ljava/nio/file/Path;")
+    def joinPathTree(method, stack, root, parts):
+        return os.path.join(root, *parts)
+
+    @staticmethod
+    @bind_native("java/nio/file/Files", "createDirectory(Ljava/nio/file/Path;[Ljava/nio/file/attribute/FileAttribute;)Ljava/nio/file/Path;")
+    def makeDirs(method, stack, path, config):
+        os.makedirs(path, exist_ok=True)
+        return path
 

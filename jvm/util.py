@@ -83,15 +83,18 @@ def pop_struct(s: struct.Struct, data: bytearray):
     return s.unpack(pop_sized(s.size, data))
 
 
-def decode_cp_constant(const, version=0):
+def decode_cp_constant(const, version=None):
     """
     Helper code for decoding an arbitrary constant pool entry down to a "primitive"
     Used in the instructions directly loading from the runtime constant pool and storing the stuff
     in the runtime.
-    :param const: the const, as stored in the constant pool
+    :param const: the const, as stored in the constant pool; Accepts tuple and list structures (freeze-d & not-freeze-d)
     :param version: the internal version of the class system, to use when loading a class
-    :return: the primitive
+    :return: the primitive the constant pool entry describes, when possible
     :raises NotImplementedError: when the constant pool entry could not be decoded with this decoded
+
+    WARNING: will class-load the needed classes when needed via the global vm
+    todo: add parameter for the vm
     """
 
     if const[0] == 7:  # Class
