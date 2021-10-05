@@ -96,8 +96,10 @@ def decode_cp_constant(const, version=0):
 
     if const[0] == 7:  # Class
         return jvm.api.vm.get_class(const[1][1], version=version)
+
     elif const[0] in (1, 3, 4, 5, 6, 8):
-        return const[1][1] if isinstance(const[1], list) else const[1]
+        return const[1][1] if isinstance(const[1], (list, tuple)) else const[1]
+
     raise NotImplementedError(const)
 
 

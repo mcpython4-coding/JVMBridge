@@ -637,7 +637,11 @@ class ResourceLocation:
     @bind_native("net/minecraft/resources/ResourceLocation", "<init>(Ljava/lang/String;Ljava/lang/String;)V")
     @bind_native("net/minecraft/util/ResourceLocation", "<init>(Ljava/lang/String;Ljava/lang/String;)V")
     def init(method, stack, this, namespace, name):
-        this.name = namespace + ":" + name
+        try:
+            this.name = namespace + ":" + name
+        except TypeError:
+            breakpoint()
+            raise
 
     @staticmethod
     @bind_native("net/minecraft/util/ResourceLocation", "<init>(Ljava/lang/String;)V")
@@ -780,8 +784,13 @@ class DeferredRegister:
     @bind_native("net/minecraftforge/registries/DeferredRegister", "register(Ljava/lang/String;Ljava/util/function/Supplier;)Lnet/minecraftforge/fml/RegistryObject;")
     def register(method, stack, this, postfix_name: str, supplier):
         obj = supplier.invoke([])
-        obj.get_method("setRegistryName", "(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;").invoke([obj, this.mod_name + ":" + postfix_name])
-        obj.get_method("register", "()V").invoke([obj])
+        try:
+            obj.get_method("setRegistryName", "(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;").invoke([obj, this.mod_name + ":" + postfix_name])
+            obj.get_method("register", "()V").invoke([obj])
+        except TypeError:
+            breakpoint()
+            raise
+
         return obj
 
     @staticmethod

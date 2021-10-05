@@ -176,6 +176,14 @@ class JavaMethod(AbstractMethod):
             self.code_repr.print_stats(current=current)
 
 
+def makeStatic(obj):
+    if isinstance(obj, list):
+        return tuple(makeStatic(e) for e in obj)
+    elif isinstance(obj, dict):
+        return {key: makeStatic(value) for key, value in obj.items()}
+    return obj
+
+
 class JavaBytecodeClass(AbstractJavaClass):
     def __init__(self):
         super().__init__()
@@ -262,6 +270,8 @@ class JavaBytecodeClass(AbstractJavaClass):
 
             elif tag in (15, 17, 18):
                 self.cp[i] = self.cp[i][:2] + [self.cp[self.cp[i][-1] - 1]]
+
+        self.cp = [makeStatic(e) for e in self.cp]
 
         # As by https://docs.oracle.com/javase/specs/jvms/se16/html/jvms-4.html#jvms-4.1-200-E.1
         self.access |= pop_u2(data)

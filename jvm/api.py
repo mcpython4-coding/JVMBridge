@@ -26,7 +26,6 @@ class AbstractStack(metaclass=ABCMeta):
     def __init__(self):
         self.local_vars = []
         self.stack = []
-        self.registers = [None, None, None]
 
         self.cp = 0
 
