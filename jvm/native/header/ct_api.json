@@ -63,5 +63,29 @@
         "access": 8
       }
     }
+  },
+  {
+    "name": "com/blamejared/crafttweaker/api/annotations/ZenRegister",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "org/openzen/zencode/java/ZenCodeType$Name",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "org/openzen/zencode/java/ZenCodeType$Method",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
   }
 ]

@@ -158,6 +158,9 @@
       },
       "newInstance()Ljava/lang/Object;": {
         "access": 8
+      },
+      "desiredAssertionStatus()Z": {
+        "access": 8
       }
     }
   },
@@ -419,6 +422,9 @@
       },
       "lastIndexOf(Ljava/lang/String;)I": {
         "access": 8
+      },
+      "equals(Ljava/lang/Object;)Z": {
+        "access": 8
       }
     }
   },
@@ -468,6 +474,9 @@
     "name": "java/util/List",
     "methods": {
       "add(Ljava/lang/Object;)Z": {
+        "access": 8
+      },
+      "size()I": {
         "access": 8
       }
     }
@@ -663,5 +672,83 @@
   },
   {
     "name": "java/util/EnumMap"
+  },
+  {
+    "name": "javax/annotation/Nonnegative",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/nio/file/Path",
+    "methods": {
+      "toAbsolutePath()Ljava/nio/file/Path;": {
+        "access": 8
+      },
+      "toString()Ljava/lang/String;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/nio/file/Paths",
+    "methods": {
+      "get(Ljava/lang/String;[Ljava/lang/String;)Ljava/nio/file/Path;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/nio/file/Files",
+    "methods": {
+      "createDirectory(Ljava/nio/file/Path;[Ljava/nio/file/attribute/FileAttribute;)Ljava/nio/file/Path;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/util/Objects",
+    "methods": {
+      "requireNonNull(Ljava/lang/Object;)Ljava/lang/Object;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/util/function/Function",
+    "methods": {
+      "apply(Ljava/lang/Object;)Ljava/lang/Object;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/lang/reflect/Method",
+    "methods": {
+      "apply(Ljava/lang/Object;)Ljava/lang/Object;": {
+        "access": 8
+      },
+      "accept(Ljava/lang/Object;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/util/function/Consumer",
+    "methods": {
+      "accept(Ljava/lang/Object;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/util/HashMap",
+    "methods": {
+      "<init>()V": {
+        "access": 0
+      }
+    }
   }
 ]

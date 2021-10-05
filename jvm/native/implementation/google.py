@@ -4,6 +4,11 @@ from jvm.api import AbstractStack
 from jvm.natives import bind_native, bind_annotation
 
 
+@bind_annotation("com/google/gson/annotations/JsonAdapter")
+def unusedAnnotation(method, stack, target, args):
+    pass
+
+
 class Suppliers:
     @staticmethod
     @bind_native("com/google/common/base/Suppliers", "memoize(Lcom/google/common/base/Supplier;)Lcom/google/common/base/Supplier;")
@@ -62,3 +67,10 @@ class MapLike:
         instance = stack.vm.get_class("java/util/EnumMap").create_instance()
         instance.underlying = map_obj.underlying
         return instance
+
+    @staticmethod
+    @bind_native("com/google/common/collect/Maps", "newTreeMap()Ljava/util/TreeMap;")
+    @bind_native("com/google/common/collect/Maps", "newHashMap()Ljava/util/HashMap;")
+    @bind_native("com/google/common/collect/HashMultimap", "create()Lcom/google/common/collect/HashMultimap;")
+    def createMap(method, stack):
+        return stack.vm.get_class(method.signature.split(")")[-1][1:-1]).create_instance().init("()V")

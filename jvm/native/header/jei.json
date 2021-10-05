@@ -6,5 +6,13 @@
         "access": 8
       }
     }
+  },
+  {
+    "name": "mezz/jei/api/JeiPlugin",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
   }
 ]

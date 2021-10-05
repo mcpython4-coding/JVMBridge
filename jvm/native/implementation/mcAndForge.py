@@ -11,9 +11,10 @@ from mcpython.common.container.ResourceStack import ItemStack
 from mcpython.common.mod.util import LoadingInterruptException
 from mcpython.engine import logger
 
-EVENT2STAGE: typing.Dict[typing.Union[str, typing.Tuple[str, str]], str] = {
-    ("Lnet/minecraftforge/event/RegistryEvent$Register;", "registerItems"): "stage:item:factory_usage",
-    ("Lnet/minecraftforge/event/RegistryEvent$Register;", "registerBlocks"): "stage:block:factory_usage",
+EVENT2STAGE: typing.Dict[str, str] = {
+    "(Lnet/minecraftforge/event/RegistryEvent$Register<Lnet/minecraft/world/item/Item;>;)V": "stage:item:factory_usage",
+    "(Lnet/minecraftforge/event/RegistryEvent$Register<Lnet/minecraft/world/level/block/Block;>;)V": "stage:block:factory_usage",
+    "(Lnet/minecraftforge/event/RegistryEvent$Register<Lnet/minecraft/block/Block;>;)V": "stage:block:factory_usage",
 }
 
 
@@ -29,6 +30,8 @@ class Annotations:
     @bind_annotation("net/minecraftforge/fml/common/Optional$Method")
     @bind_annotation("net/minecraftforge/fml/common/Optional$Interface")
     @bind_annotation("net/minecraftforge/common/config/Config")
+    @bind_annotation("net/minecraft/MethodsReturnNonnullByDefault")
+    @bind_annotation("net/minecraftforge/eventbus/api/Cancelable")
     def noAnnotationProcessing(method, stack, target, args):
         pass
 
@@ -36,6 +39,7 @@ class Annotations:
 def boundMethodToStage(method: AbstractMethod, event: str, mod: str):
     @shared.mod_loader(mod, event)
     def work():
+        print(mod, event, method)
         shared.CURRENT_EVENT_SUB = mod
         try:
             method.invoke([] if method.access & 0x0008 else [None])
@@ -59,7 +63,23 @@ class ModContainer:
     @staticmethod
     @bind_annotation("net/minecraftforge/fml/common/Mod")
     def processModAnnotation(method, stack, target, args):
-        pass
+        try:
+            target.create_instance().init("()V")
+        except StackCollectingException as e:
+            e.add_trace(method)
+            if shared.IS_CLIENT:
+                traceback.print_exc()
+                print(e.format_exception())
+
+                if e.method_call_stack:
+                    e.method_call_stack[0].code_repr.print_stats()
+
+                import mcpython.common.state.LoadingExceptionViewState
+                mcpython.common.state.LoadingExceptionViewState.error_occur(e.format_exception())
+                raise LoadingInterruptException from None
+
+            else:
+                raise LoadingInterruptException
 
     @staticmethod
     @bind_annotation("net/minecraftforge/fml/common/Mod$EventHandler")
@@ -70,16 +90,39 @@ class ModContainer:
         if isinstance(target, AbstractMethod):
             event_name = target.signature.split(")")[0].removeprefix("(")
 
-            if event_name in EVENT2STAGE and EVENT2STAGE[event_name]:
-                boundMethodToStage(target, EVENT2STAGE[event_name], shared.CURRENT_EVENT_SUB)
-                return
-            if (event_name, target.name) in EVENT2STAGE:
-                stage = EVENT2STAGE[(event_name, target.name)]
-                if stage is not None:
-                    boundMethodToStage(target, stage, shared.CURRENT_EVENT_SUB)
-                    return
+            try:
+                signature = target.attributes["Signature"][0].signature
+            except (KeyError, AttributeError):
+                signature = event_name
 
-            logger.println(f"[FML][WARN] mod {shared.CURRENT_EVENT_SUB} subscribed to event {event_name} with {target}, but stage was not found")
+            if signature in EVENT2STAGE and EVENT2STAGE[signature]:
+                boundMethodToStage(target, EVENT2STAGE[signature], shared.CURRENT_EVENT_SUB)
+                return
+
+            logger.println(f"[FML][WARN] mod {shared.CURRENT_EVENT_SUB} subscribed to event {signature} with {target}, but stage was not found")
+
+    @staticmethod
+    @bind_native("net/minecraftforge/eventbus/api/IEventBus", "addListener(Ljava/util/function/Consumer;)V")
+    def addListener(method, stack, bus, listener):
+        ModContainer.processEventAnnotation(method, stack, listener, [])
+
+    @staticmethod
+    @bind_native("net/minecraftforge/fml/DistExecutor", "runForDist(Ljava/util/function/Supplier;Ljava/util/function/Supplier;)Ljava/lang/Object;")
+    def runForDist(method, stack, client, server):
+        if shared.IS_CLIENT:
+            client.invoke([])
+        else:
+            server.invoke([])
+
+    @staticmethod
+    @bind_native("net/minecraftforge/fml/javafmlmod/FMLJavaModLoadingContext", "get()Lnet/minecraftforge/fml/javafmlmod/FMLJavaModLoadingContext;")
+    def getLoadingContext(method, stack):
+        pass
+
+    @staticmethod
+    @bind_native("net/minecraftforge/fml/javafmlmod/FMLJavaModLoadingContext", "getModEventBus()Lnet/minecraftforge/eventbus/api/IEventBus;")
+    def getModEventBus(method, stack, this):
+        pass
 
 
 class ItemCreation:
@@ -173,6 +216,12 @@ class ItemCreation:
                     this.properties.bound_tab.instance.group.add(this.registry_name)
                 except ValueError:
                     pass
+
+    @staticmethod
+    @bind_native("net/minecraft/item/ItemGroup", "<init>(Ljava/lang/String;)V")
+    def init(method, stack, this, name):
+        from mcpython.common.container.ItemGroup import ItemGroup
+        this.underlying = ItemGroup()
 
     @staticmethod
     @bind_native("net/minecraft/world/item/CreativeModeTab", "<init>(ILjava/lang/String;)V")
@@ -586,8 +635,15 @@ class ForgeRegistries:
 class ResourceLocation:
     @staticmethod
     @bind_native("net/minecraft/resources/ResourceLocation", "<init>(Ljava/lang/String;Ljava/lang/String;)V")
+    @bind_native("net/minecraft/util/ResourceLocation", "<init>(Ljava/lang/String;Ljava/lang/String;)V")
     def init(method, stack, this, namespace, name):
         this.name = namespace + ":" + name
+
+    @staticmethod
+    @bind_native("net/minecraft/util/ResourceLocation", "<init>(Ljava/lang/String;)V")
+    @bind_native("net/minecraft/resources/ResourceLocation", "<init>(Ljava/lang/String;)V")
+    def init(method, stack, this, name):
+        this.name = name if ":" in name else shared.CURRENT_EVENT_SUB + ":" + name
 
 
 class SoundType:
@@ -604,12 +660,34 @@ class WorldGen:
     def init(method, stack, this):
         pass
 
+    @staticmethod
+    @bind_native("net/minecraftforge/common/world/ForgeWorldType", "<init>(Lnet/minecraftforge/common/world/ForgeWorldType$IBasicChunkGeneratorFactory;)V")
+    def init(method, stack, this, chunk_generator):
+        pass
+
 
 class Effect:
     @staticmethod
     @bind_native("net/minecraft/world/effect/MobEffect", "m_8093_()Z")
     def isInstantenous(method, stack, this):
         return True
+
+
+class Particle:
+    @staticmethod
+    @bind_native("net/minecraft/core/particles/SimpleParticleType", "<init>(Z)V")
+    def init(method, stack, this, flag):
+        this.registry_name = None
+
+    @staticmethod
+    @bind_native("net/minecraft/core/particles/SimpleParticleType", "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;")
+    def setRegistryName(method, stack, this, name: str):
+        this.registry_name = name if ":" in name else shared.CURRENT_EVENT_SUB + ":" + name
+
+    @staticmethod
+    @bind_native("net/minecraft/core/particles/SimpleParticleType", "register()V")
+    def register(method, stack, this):
+        pass
 
 
 class Rendering:
@@ -631,6 +709,100 @@ class Rendering:
     @staticmethod
     @bind_native("net/minecraft/client/renderer/ItemBlockRenderTypes", "setRenderLayer(Lnet/minecraft/world/level/block/Block;Lnet/minecraft/client/renderer/RenderType;)V")
     def setRenderLayer(method, stack, block, render_type):
+        pass
+
+
+class DamageSource:
+    @staticmethod
+    @bind_native("net/minecraft/util/DamageSource", "<init>(Ljava/lang/String;)V")
+    def init(method, stack, this, name):
+        pass
+
+    @staticmethod
+    @bind_native("net/minecraft/util/DamageSource", "func_76348_h()Lnet/minecraft/util/DamageSource;")
+    def someFlag(method, stack, this):
+        return this
+
+
+class Network:
+    @staticmethod
+    @bind_native("net/minecraftforge/fml/network/NetworkRegistry$ChannelBuilder", "named(Lnet/minecraft/util/ResourceLocation;)Lnet/minecraftforge/fml/network/NetworkRegistry$ChannelBuilder;")
+    def createNamedChannel(method, stack, name):
+        return method.cls.create_instance().init("()V")
+
+    @staticmethod
+    @bind_native("net/minecraftforge/fml/network/NetworkRegistry$ChannelBuilder", "<init>()V")
+    def init(method, stack, this):
+        pass
+
+    @staticmethod
+    @bind_native("net/minecraftforge/fml/network/NetworkRegistry$ChannelBuilder", "clientAcceptedVersions(Ljava/util/function/Predicate;)Lnet/minecraftforge/fml/network/NetworkRegistry$ChannelBuilder;")
+    def clientAcceptedVersions(method, stack, this, predicate):
+        return this
+
+    @staticmethod
+    @bind_native("net/minecraftforge/fml/network/NetworkRegistry$ChannelBuilder", "serverAcceptedVersions(Ljava/util/function/Predicate;)Lnet/minecraftforge/fml/network/NetworkRegistry$ChannelBuilder;")
+    def serverAcceptedVersions(method, stack, this, predicate):
+        return this
+
+    @staticmethod
+    @bind_native("net/minecraftforge/fml/network/NetworkRegistry$ChannelBuilder", "networkProtocolVersion(Ljava/util/function/Supplier;)Lnet/minecraftforge/fml/network/NetworkRegistry$ChannelBuilder;")
+    def networkProtocolVersion(method, stack, this, supplier):
+        return this
+
+    @staticmethod
+    @bind_native("net/minecraftforge/fml/network/NetworkRegistry$ChannelBuilder", "simpleChannel()Lnet/minecraftforge/fml/network/simple/SimpleChannel;")
+    def simpleChannel(method, stack, this):
+        return stack.vm.get_class("net/minecraftforge/fml/network/simple/SimpleChannel").create_instance().init("()V")
+
+    @staticmethod
+    @bind_native("net/minecraftforge/fml/network/simple/SimpleChannel", "<init>()V")
+    def init(method, stack, this):
+        pass
+
+
+class DeferredRegister:
+    @staticmethod
+    @bind_native("net/minecraftforge/registries/DeferredRegister", "create(Lnet/minecraftforge/registries/IForgeRegistry;Ljava/lang/String;)Lnet/minecraftforge/registries/DeferredRegister;")
+    @bind_native("net/minecraftforge/registries/DeferredRegister", "create(Ljava/lang/Class;Ljava/lang/String;)Lnet/minecraftforge/registries/DeferredRegister;")
+    def createDeferredRegister(method, stack, registry, mod_name: str):
+        obj = method.cls.create_instance().init("()V")
+        obj.mod_name = mod_name
+        return obj
+
+    @staticmethod
+    @bind_native("net/minecraftforge/registries/DeferredRegister", "<init>()V")
+    def init(method, stack, this):
+        this.mod_name = "minecraft"
+
+    @staticmethod
+    @bind_native("net/minecraftforge/registries/DeferredRegister", "register(Ljava/lang/String;Ljava/util/function/Supplier;)Lnet/minecraftforge/fmllegacy/RegistryObject;")
+    @bind_native("net/minecraftforge/registries/DeferredRegister", "register(Ljava/lang/String;Ljava/util/function/Supplier;)Lnet/minecraftforge/fml/RegistryObject;")
+    def register(method, stack, this, postfix_name: str, supplier):
+        obj = supplier.invoke([])
+        obj.get_method("setRegistryName", "(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;").invoke([obj, this.mod_name + ":" + postfix_name])
+        obj.get_method("register", "()V").invoke([obj])
+        return obj
+
+    @staticmethod
+    @bind_native("net/minecraftforge/registries/DeferredRegister", "register(Lnet/minecraftforge/eventbus/api/IEventBus;)V")
+    def register(method, stack, this, event_bus):
+        pass
+
+    @staticmethod
+    @bind_native("net/minecraftforge/registries/ForgeRegistryEntry", "<init>()V")
+    def init(method, stack, this):
+        pass
+
+    @staticmethod
+    @bind_native("net/minecraftforge/registries/ForgeRegistryEntry", "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;")
+    def setRegistryName(method, stack, this, name):
+        this.registry_name = name
+        return this
+
+    @staticmethod
+    @bind_native("net/minecraftforge/registries/ForgeRegistryEntry", "register()V")
+    def register(method, stack, this):
         pass
 
 

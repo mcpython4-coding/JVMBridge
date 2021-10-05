@@ -157,7 +157,7 @@ class JavaMethod(AbstractMethod):
         )
 
     def __call__(self, *args):
-        return self.invoke()
+        return self.invoke(args)
 
     def dump(self) -> bytearray:
         data = bytearray()

@@ -192,6 +192,22 @@
       "BLOCKS": {
         "descriptor": "Lnet/minecraftforge/registries/IForgeRegistry;",
         "access": 8
+      },
+      "PARTICLE_TYPES": {
+        "descriptor": "Lnet/minecraftforge/registries/IForgeRegistry;",
+        "access": 8
+      },
+      "WORLD_TYPES": {
+        "descriptor": "Lnet/minecraftforge/registries/IForgeRegistry;",
+        "access": 8
+      },
+      "FLUIDS": {
+        "descriptor": "Lnet/minecraftforge/registries/IForgeRegistry;",
+        "access": 8
+      },
+      "CONTAINERS": {
+        "descriptor": "Lnet/minecraftforge/registries/IForgeRegistry;",
+        "access": 8
       }
     }
   },
@@ -223,6 +239,238 @@
       "dist": {
         "descriptor": "Lnet/minecraftforge/api/distmarker/Dist;",
         "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraftforge/eventbus/api/EventPriority",
+    "attributes": {
+      "LOWEST": {
+        "descriptor": "enum",
+        "access": 8
+      },
+      "NORMAL": {
+        "descriptor": "enum",
+        "access": 8
+      },
+      "HIGH": {
+        "descriptor": "enum",
+        "access": 8
+      },
+      "LOW": {
+        "descriptor": "enum",
+        "access": 8
+      },
+      "HIGHEST": {
+        "descriptor": "enum",
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraftforge/eventbus/api/Cancelable",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraftforge/fml/DistExecutor",
+    "methods": {
+      "runForDist(Ljava/util/function/Supplier;Ljava/util/function/Supplier;)Ljava/lang/Object;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraftforge/fml/javafmlmod/FMLJavaModLoadingContext",
+    "methods": {
+      "get()Lnet/minecraftforge/fml/javafmlmod/FMLJavaModLoadingContext;": {
+        "access": 8
+      },
+      "getModEventBus()Lnet/minecraftforge/eventbus/api/IEventBus;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraftforge/eventbus/api/IEventBus",
+    "methods": {
+      "addListener(Ljava/util/function/Consumer;)V": {
+        "access": 8
+      },
+      "register(Ljava/lang/Object;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraftforge/registries/DeferredRegister",
+    "methods": {
+      "create(Lnet/minecraftforge/registries/IForgeRegistry;Ljava/lang/String;)Lnet/minecraftforge/registries/DeferredRegister;": {
+        "access": 8
+      },
+      "register(Ljava/lang/String;Ljava/util/function/Supplier;)Lnet/minecraftforge/fmllegacy/RegistryObject;": {
+        "access": 8
+      },
+      "register(Lnet/minecraftforge/eventbus/api/IEventBus;)V": {
+        "access": 8
+      },
+      "create(Ljava/lang/Class;Ljava/lang/String;)Lnet/minecraftforge/registries/DeferredRegister;": {
+        "access": 8
+      },
+      "register(Ljava/lang/String;Ljava/util/function/Supplier;)Lnet/minecraftforge/fml/RegistryObject;": {
+        "access": 8
+      },
+      "makeRegistry(Ljava/lang/String;Ljava/util/function/Supplier;)Ljava/util/function/Supplier;": {
+        "access": 8
+      },
+      "<init>()V": {
+        "access": 1
+      }
+    }
+  },
+  {
+    "name": "net/minecraftforge/common/MinecraftForge",
+    "attributes": {
+      "EVENT_BUS": {
+        "descriptor": "Lnet/minecraftforge/eventbus/api/IEventBus;",
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraftforge/common/world/ForgeWorldType",
+    "methods": {
+      "<init>(Lnet/minecraftforge/common/world/ForgeWorldType$IBasicChunkGeneratorFactory;)V": {
+        "access": 8
+      },
+      "setRegistryName(Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
+      },
+      "register()V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraftforge/registries/GameData"
+  },
+  {
+    "name": "net/minecraftforge/fml/loading/FMLPaths",
+    "attributes": {
+      "CONFIGDIR": {
+        "descriptor": "Lnet/minecraftforge/fml/loading/FMLPaths;",
+        "access": 8
+      }
+    },
+    "methods": {
+      "get()Ljava/nio/file/Path;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraftforge/fml/ModLoadingContext",
+    "methods": {
+      "get()Lnet/minecraftforge/fml/ModLoadingContext;": {
+        "access": 8
+      },
+      "registerConfig(Lnet/minecraftforge/fml/config/ModConfig$Type;Lnet/minecraftforge/fml/config/IConfigSpec;Ljava/lang/String;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraftforge/fml/config/ModConfig$Type",
+    "attributes": {
+      "COMMON": {
+        "descriptor": "Lnet/minecraftforge/fml/config/ModConfig$Type;",
+        "access": 8
+      },
+      "CLIENT": {
+        "descriptor": "Lnet/minecraftforge/fml/config/ModConfig$Type;",
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraftforge/common/ForgeConfigSpec$Builder",
+    "methods": {
+      "<init>()V": {
+        "access": 8
+      },
+      "comment(Ljava/lang/String;)Lnet/minecraftforge/common/ForgeConfigSpec$Builder;": {
+        "access": 8
+      },
+      "push(Ljava/lang/String;)Lnet/minecraftforge/common/ForgeConfigSpec$Builder;": {
+        "access": 8
+      },
+      "defineEnum(Ljava/lang/String;Ljava/lang/Enum;)Lnet/minecraftforge/common/ForgeConfigSpec$EnumValue;": {
+        "access": 8
+      },
+      "define(Ljava/lang/String;Z)Lnet/minecraftforge/common/ForgeConfigSpec$BooleanValue;": {
+        "access": 8
+      },
+      "pop()Lnet/minecraftforge/common/ForgeConfigSpec$Builder;": {
+        "access": 8
+      },
+      "build()Lnet/minecraftforge/common/ForgeConfigSpec;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraftforge/fml/network/NetworkRegistry$ChannelBuilder",
+    "methods": {
+      "named(Lnet/minecraft/util/ResourceLocation;)Lnet/minecraftforge/fml/network/NetworkRegistry$ChannelBuilder;": {
+        "access": 8
+      },
+      "clientAcceptedVersions(Ljava/util/function/Predicate;)Lnet/minecraftforge/fml/network/NetworkRegistry$ChannelBuilder;": {
+        "access": 8
+      },
+      "serverAcceptedVersions(Ljava/util/function/Predicate;)Lnet/minecraftforge/fml/network/NetworkRegistry$ChannelBuilder;": {
+        "access": 8
+      },
+      "networkProtocolVersion(Ljava/util/function/Supplier;)Lnet/minecraftforge/fml/network/NetworkRegistry$ChannelBuilder;": {
+        "access": 8
+      },
+      "simpleChannel()Lnet/minecraftforge/fml/network/simple/SimpleChannel;": {
+        "access": 8
+      },
+      "<init>()V": {
+        "access": 1
+      }
+    }
+  },
+  {
+    "name": "net/minecraftforge/registries/RegistryBuilder",
+    "methods": {
+      "<init>()V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraftforge/registries/ForgeRegistryEntry",
+    "methods": {
+      "<init>()V": {
+        "access": 8
+      },
+      "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
+      },
+      "register()V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraftforge/fml/network/simple/SimpleChannel",
+    "methods": {
+      "<init>()V": {
+        "access": 0
       }
     }
   }

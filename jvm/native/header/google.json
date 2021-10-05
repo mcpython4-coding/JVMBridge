@@ -15,6 +15,9 @@
       },
       "<init>([Ljava/lang/Object;)V": {
         "access": 1
+      },
+      "of(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;)Lcom/google/common/collect/ImmutableList;": {
+        "access": 8
       }
     }
   },
@@ -26,6 +29,9 @@
       },
       "<init>()V": {
         "access": 1
+      },
+      "size()I": {
+        "access": 8
       }
     }
   },
@@ -44,6 +50,36 @@
     "name": "com/google/common/collect/Maps",
     "methods": {
       "newEnumMap(Ljava/util/Map;)Ljava/util/EnumMap;": {
+        "access": 8
+      },
+      "newHashMap()Ljava/util/HashMap;": {
+        "access": 8
+      },
+      "newTreeMap()Ljava/util/TreeMap;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "com/google/gson/annotations/JsonAdapter",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "com/google/common/collect/HashMultimap",
+    "methods": {
+      "create()Lcom/google/common/collect/HashMultimap;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "com/google/common/collect/Sets",
+    "methods": {
+      "newHashSet()Ljava/util/HashSet;": {
         "access": 8
       }
     }

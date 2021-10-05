@@ -135,6 +135,13 @@ class Any2Double(Any2Float):
         stack.pop()
         stack.push("D")
 
+    @classmethod
+    def prepare_python_bytecode_instructions(cls, command_index, prepared_data: typing.Any,
+                                             container: AbstractBytecodeContainer, builder: PyBytecodeBuilder):
+        builder.add_instruction(PyOpcodes.LOAD_NAME, builder.add_name("float"))
+        builder.add_instruction(PyOpcodes.ROT_TWO)
+        builder.add_instruction(PyOpcodes.CALL_FUNCTION, 1)
+
 
 @AbstractBytecodeContainer.register_instruction
 class Any2Int(OpcodeInstruction):
@@ -167,6 +174,13 @@ class Any2Long(Any2Int):
     def validate_stack(cls, command_index, prepared_data: typing.Any, container: AbstractBytecodeContainer, stack: AbstractStack):
         stack.pop()
         stack.push("J")
+
+    @classmethod
+    def prepare_python_bytecode_instructions(cls, command_index, prepared_data: typing.Any,
+                                             container: AbstractBytecodeContainer, builder: PyBytecodeBuilder):
+        builder.add_instruction(PyOpcodes.LOAD_NAME, builder.add_name("int"))
+        builder.add_instruction(PyOpcodes.ROT_TWO)
+        builder.add_instruction(PyOpcodes.CALL_FUNCTION, 1)
 
 
 class ConstPush(OpcodeInstruction, ABC):
@@ -375,7 +389,7 @@ class LDC(OpcodeInstruction):
 
 
 @AbstractBytecodeContainer.register_instruction
-class LDC_W(OpcodeInstruction):
+class LDC_W(LDC):
     OPCODES = {0x13, 0x14}
 
     @classmethod
@@ -383,28 +397,6 @@ class LDC_W(OpcodeInstruction):
         cls, data: bytearray, index, class_file
     ) -> typing.Tuple[typing.Any, int]:
         return jvm.util.U2.unpack(data[index: index + 2])[0], 3
-
-    @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack):
-        stack.push(
-            jvm.util.decode_cp_constant(
-                stack.method.class_file.cp[data - 1],
-                version=stack.method.class_file.internal_version,
-            )
-        )
-
-    @classmethod
-    def validate_stack(cls, command_index, prepared_data: typing.Any, container: AbstractBytecodeContainer,
-                       stack: AbstractStack):
-        stack.push(None)  # todo: add type
-
-    @classmethod
-    def prepare_python_bytecode_instructions(cls, command_index, prepared_data: typing.Any,
-                                             container: AbstractBytecodeContainer, builder: PyBytecodeBuilder):
-        builder.add_instruction(PyOpcodes.LOAD_CONST, builder.add_const(jvm.util.decode_cp_constant(
-            container.method.class_file.cp[prepared_data - 1],
-            version=container.method.class_file.internal_version,
-        )))
 
 
 @AbstractBytecodeContainer.register_instruction
@@ -1339,12 +1331,19 @@ class PutStatic(CPLinkedInstruction):
     OPCODES = {0xB3}
 
     @classmethod
+    def decode(
+            cls, data: bytearray, index, class_file
+    ) -> typing.Tuple[typing.Any, int]:
+        d, i = super().decode(data, index, class_file)
+        return (d[1][1][1], d[2][1][1]), i
+
+    @classmethod
     def invoke(cls, data: typing.Any, stack: AbstractStack):
-        cls_name = data[1][1][1]
+        cls_name, name = data
         java_class = stack.vm.get_class(
             cls_name, version=stack.method.class_file.internal_version
         )
-        name = data[2][1][1]
+
         value = stack.pop()
         java_class.set_static_attribute(name, value)
 
@@ -1358,12 +1357,18 @@ class GetField(CPLinkedInstruction):
     OPCODES = {0xB4}
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack):
-        name = data[2][1][1]
-        obj = stack.pop()
+    def decode(
+            cls, data: bytearray, index, class_file
+    ) -> typing.Tuple[typing.Any, int]:
+        d, i = super().decode(data, index, class_file)
+        return d[2][1][1], i
+
+    @classmethod
+    def invoke(cls, name: str, stack: AbstractStack):
+        obj = stack.pop()x
 
         if obj is None:
-            raise StackCollectingException("NullPointerException: object is None").add_trace(data)
+            raise StackCollectingException(f"NullPointerException: object is None; Cannot get attribute '{name}'")
 
         try:
             stack.push(obj.get_field(name))
@@ -1371,17 +1376,18 @@ class GetField(CPLinkedInstruction):
             if hasattr(obj, "get_class") and isinstance(obj.get_class(), jvm.Java.JavaBytecodeClass):
                 raise StackCollectingException(
                     f"AttributeError: object {obj} (type {type(obj)}) has no attribute {name}"
-                ).add_trace(data) from None
+                ) from None
 
             try:
                 stack.push(getattr(obj, name))
             except (KeyError, AttributeError):
                 raise StackCollectingException(
                     f"AttributeError: object {obj} (type {type(obj)}) has no attribute {name}"
-                ).add_trace(data) from None
+                ) from None
 
     @classmethod
     def validate_stack(cls, command_index, prepared_data: typing.Any, container: AbstractBytecodeContainer, stack: AbstractStack):
+        stack.pop()
         stack.push(None)
 
 
@@ -1390,13 +1396,19 @@ class PutField(CPLinkedInstruction):
     OPCODES = {0xB5}
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack):
-        name = data[2][1][1]
+    def decode(
+            cls, data: bytearray, index, class_file
+    ) -> typing.Tuple[typing.Any, int]:
+        d, i = super().decode(data, index, class_file)
+        return d[2][1][1], i
+
+    @classmethod
+    def invoke(cls, name: str, stack: AbstractStack):
         value = stack.pop()
         obj = stack.pop()
 
         if obj is None:
-            raise StackCollectingException("NullPointerException: obj is null")
+            raise StackCollectingException(f"NullPointerException: obj is null; Cannot set field '{name}' to {value}")
 
         if not hasattr(obj, "set_field"):
             setattr(obj, name, value)
@@ -1404,7 +1416,8 @@ class PutField(CPLinkedInstruction):
             obj.set_field(name, value)
 
     @classmethod
-    def validate_stack(cls, command_index, prepared_data: typing.Any, container: AbstractBytecodeContainer, stack: AbstractStack):
+    def validate_stack(cls, command_index, name: str, container: AbstractBytecodeContainer, stack: AbstractStack):
+        stack.pop()
         stack.pop()
 
 
@@ -1656,15 +1669,19 @@ class LambdaInvokeDynamic(BaseInstruction):
     def validate_stack(cls, command_index, prepared_data: typing.Any, container: AbstractBytecodeContainer, stack: AbstractStack):
         stack.cp = -1  # todo: implement
 
-    class LambdaInvokeDynamicWrapper:
+    class LambdaInvokeDynamicWrapper(jvm.api.AbstractMethod):
         def __init__(
             self, method, name: str, signature: str, extra_args: typing.Iterable
         ):
+            super().__init__()
             self.method = method
             self.name = name
             self.signature = signature
             self.extra_args = extra_args
             self.access = method.access  # access stays the same
+
+        def invoke(self, args, stack=None):
+            return self(*args)
 
         def __call__(self, *args):
             return self.method(*self.extra_args, *args)

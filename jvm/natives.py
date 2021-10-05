@@ -211,7 +211,7 @@ class NativeHeader:
 
 
 class NativeManager:
-    DEFAULT_HEADER_FILES = ["java", "forge", "mc", "ct_api", "netty", "jei", "google"]
+    DEFAULT_HEADER_FILES = ["java", "forge", "mc", "ct_api", "netty", "jei", "google", "logging"]
     MATCHER2HEADER: typing.Dict[str, str] = {
         "java/": "java",
         "javax/": "java",
@@ -220,10 +220,13 @@ class NativeManager:
         "net/minecraft/": "mc",
         "com/mojang/": "mc",
         "stanhebben/zenscript/": "ct_api",
+        "org/openzen/zencode/": "ct_api",
         "crafttweaker/": "ct_api",
+        "com/blamejared/crafttweaker/": "ct_api",
         "io/netty/": "netty",
         "mezz/jei/": "jei",
         "com/google/": "google",
+        "org/apache/logging/": "logging",
     }
 
     def __init__(self):
@@ -256,7 +259,10 @@ manager = NativeManager()
 
 
 def bind_native(cls_name: str, action: str):
-    cls: NativeClass = jvm.api.vm.shared_classes[cls_name]
+    try:
+        cls: NativeClass = jvm.api.vm.shared_classes[cls_name]
+    except KeyError:
+        return lambda f: f
 
     if not isinstance(cls, NativeClass):
         raise ValueError(cls_name)

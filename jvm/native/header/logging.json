@@ -1,0 +1,36 @@
+[
+  {
+    "name": "org/apache/logging/log4j/LogManager",
+    "methods": {
+      "getLogger(Ljava/lang/String;)Lorg/apache/logging/log4j/Logger;": {
+        "access": 8
+      },
+      "getLogger(Ljava/lang/Class;)Lorg/apache/logging/log4j/Logger;": {
+        "access": 8
+      },
+      "getLogger()Lorg/apache/logging/log4j/Logger;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "org/apache/logging/log4j/core/Logger",
+    "methods": {
+      "getLevel()Lorg/apache/logging/log4j/Level;": {
+        "access": 8
+      },
+      "setLevel(Lorg/apache/logging/log4j/Level;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "org/apache/logging/log4j/Level",
+    "attributes": {
+      "OFF": {
+        "descriptor": "Lorg/apache/logging/log4j/Level;",
+        "access": 8
+      }
+    }
+  }
+]

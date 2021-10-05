@@ -13,6 +13,9 @@ class Annotations:
     @bind_annotation("crafttweaker/annotations/BracketHandler")
     @bind_annotation("stanhebben/zenscript/annotations/ZenOperator")
     @bind_annotation("stanhebben/zenscript/annotations/ZenExpansion")
+    @bind_annotation("com/blamejared/crafttweaker/api/annotations/ZenRegister")
+    @bind_annotation("org/openzen/zencode/java/ZenCodeType$Name")
+    @bind_annotation("org/openzen/zencode/java/ZenCodeType$Method")
     def noAnnotationProcessing(method, stack, target, args):
         pass
 

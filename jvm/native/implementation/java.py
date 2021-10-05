@@ -5,6 +5,7 @@ import threading
 import jvm.api
 from jvm.api import AbstractMethod
 from jvm.api import AbstractStack
+from jvm.JavaExceptionStack import StackCollectingException
 from jvm.natives import bind_native, bind_annotation
 
 
@@ -17,6 +18,7 @@ from jvm.natives import bind_native, bind_annotation
 @bind_annotation("java/lang/SafeVarargs")
 @bind_annotation("javax/annotation/ParametersAreNonnullByDefault")
 @bind_annotation("javax/annotation/meta/TypeQualifierDefault")
+@bind_annotation("javax/annotation/Nonnegative")
 def noAnnotation(method, stack, target, args):
     pass
 
@@ -154,6 +156,7 @@ class MapLike:
     @staticmethod
     @bind_native("java/util/concurrent/ConcurrentHashMap", "<init>()V")
     @bind_native("java/util/TreeMap", "<init>()V")
+    @bind_native("java/util/HashMap", "<init>()V")
     @bind_native("java/util/Properties", "<init>()V")
     @bind_native("java/lang/ThreadLocal", "<init>()V")
     def init(method, stack, this):
@@ -453,4 +456,20 @@ class JException:
     @bind_native("java/lang/IllegalStateException", "<init>(Ljava/lang/String;)V")
     def init(method, stack, this, message):
         this.fields["message"] = message
+
+
+class Method:
+    @staticmethod
+    @bind_native("java/lang/reflect/Method", "apply(Ljava/lang/Object;)Ljava/lang/Object;")
+    def apply(method, stack, this, *args):
+        return this.invoke(args)
+
+
+class Asserts:
+    @staticmethod
+    @bind_native("java/util/Objects", "requireNonNull(Ljava/lang/Object;)Ljava/lang/Object;")
+    def requireNonNull(method, stack, obj):
+        if obj is None:
+            raise StackCollectingException("Object is null")
+        return obj
 

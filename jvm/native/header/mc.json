@@ -66,6 +66,9 @@
     "methods": {
       "<init>(Ljava/lang/String;Ljava/lang/String;)V": {
         "access": 8
+      },
+      "<init>(Ljava/lang/String;)V": {
+        "access": 8
       }
     }
   },
@@ -1335,6 +1338,397 @@
     "methods": {
       "setRenderLayer(Lnet/minecraft/world/level/block/Block;Lnet/minecraft/client/renderer/RenderType;)V": {
         "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/MethodsReturnNonnullByDefault",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/client/renderer/BiomeColors",
+    "attributes": {
+      "f_108789_": {
+        "descriptor": "Lnet/minecraft/world/level/ColorResolver;",
+        "access": 8
+      },
+      "f_108790_": {
+        "descriptor": "Lnet/minecraft/world/level/ColorResolver;",
+        "access": 8
+      },
+      "f_108791_": {
+        "descriptor": "Lnet/minecraft/world/level/ColorResolver;",
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/core/Registry",
+    "attributes": {
+      "f_122889_": {
+        "descriptor": "Lnet/minecraft/core/Registry;",
+        "access": 8
+      }
+    },
+    "methods": {
+      "m_122961_(Lnet/minecraft/core/Registry;Ljava/lang/String;Ljava/lang/Object;)Ljava/lang/Object;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "com/mojang/serialization/codecs/RecordCodecBuilder",
+    "methods": {
+      "create(Ljava/util/function/Function;)Lcom/mojang/serialization/Codec;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/level/biome/Biomes",
+    "attributes": {
+      "f_48174_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48202_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48203_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48204_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48205_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48206_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48207_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48208_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48211_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48212_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48213_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48214_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48215_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48216_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48217_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48218_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48219_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48220_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48221_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48222_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48223_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48224_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48225_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48226_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48148_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48149_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48150_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48151_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48152_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48153_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48154_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48155_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48156_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48157_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48158_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48159_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48160_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48161_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48166_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48167_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48168_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48169_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48170_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48171_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48172_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48176_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48177_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48178_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48179_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48180_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48181_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48182_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48183_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48184_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48185_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48186_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48187_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48188_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48189_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48190_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48191_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48192_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48193_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48194_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48195_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48196_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48209_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48199_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48200_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48201_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_48175_": {
+        "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/util/ResourceLocation",
+    "methods": {
+      "<init>(Ljava/lang/String;Ljava/lang/String;)V": {
+        "access": 8
+      },
+      "<init>(Ljava/lang/String;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/util/DamageSource",
+    "methods": {
+      "<init>(Ljava/lang/String;)V": {
+        "access": 8
+      },
+      "func_76348_h()Lnet/minecraft/util/DamageSource;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/item/ItemGroup",
+    "methods": {
+      "<init>(Ljava/lang/String;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/block/Block",
+    "methods": {
+      "func_208617_a(DDDDDD)Lnet/minecraft/util/math/shapes/VoxelShape;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/core/particles/SimpleParticleType",
+    "methods": {
+      "<init>(Z)V": {
+        "access": 8
+      },
+      "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 0
+      },
+      "register()V": {
+        "access": 0
+      },
+      "<init>(Z)": {
+        "access": 1
       }
     }
   }
