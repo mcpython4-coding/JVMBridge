@@ -8,22 +8,18 @@ vm = None
 
 
 class AbstractRuntime(metaclass=ABCMeta):
-    @abstractmethod
     def spawn_stack(self):
-        pass
+        raise NotImplementedError
 
-    @abstractmethod
     def run_method(self, method, *args, stack=None):
-        pass
+        raise NotImplementedError
 
     @classmethod
-    @abstractmethod
     def get_arg_parts_of(cls, method):
-        pass
+        raise NotImplementedError
 
-    @abstractmethod
     def parse_args_from_stack(self, method, stack, static):
-        pass
+        raise NotImplementedError
 
 
 class AbstractStack(metaclass=ABCMeta):
@@ -273,6 +269,10 @@ class BaseInstruction(ABC):
     @classmethod
     def prepare_python_bytecode_instructions(cls, command_index, prepared_data: typing.Any, container: AbstractBytecodeContainer, builder: PyBytecodeBuilder):
         pass
+
+    @classmethod
+    def decode(cls, code, index: int, class_file):
+        return None, index+1
 
 
 class AbstractJavaVM(metaclass=ABCMeta):

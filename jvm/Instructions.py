@@ -3,6 +3,7 @@ import copy
 import dis
 import typing
 from abc import ABC
+
 from jvm.util import PyOpcodes
 
 import jvm.Java
@@ -1490,7 +1491,7 @@ class InvokeSpecial(CPLinkedInstruction):
     def validate_stack(cls, command_index, prepared_data: typing.Any, container: AbstractBytecodeContainer, stack: AbstractStack):
         arg_types = tuple(AbstractRuntime.get_arg_parts_of(prepared_data[2][2][1]))
         args = len(arg_types)
-        [stack.pop_expect_type(arg_types[i]) for i in range(args + 1)]
+        [stack.pop()] + [stack.pop_expect_type(arg_types[i]) for i in range(args)]
 
         if prepared_data[2][1][1] not in (
             "<init>",
@@ -1520,10 +1521,11 @@ class InvokeStatic(CPLinkedInstruction):
 
     @classmethod
     def validate_stack(cls, command_index, prepared_data: typing.Any, container: AbstractBytecodeContainer, stack: AbstractStack):
-        # todo: lookup signature and insert here
-        args = len(tuple(AbstractRuntime.get_arg_parts_of(prepared_data[2][2][1])))
-        [stack.pop() for _ in range(args)]
-        stack.push(None)
+        from jvm.Runtime import Runtime
+
+        args = tuple(Runtime.get_arg_parts_of(prepared_data[2][2][1]))
+        [stack.pop_expect_type(arg) for arg in args]
+        stack.push(prepared_data[2][2][1].split(")")[-1])
 
     @classmethod
     def invoke(cls, data: typing.Any, stack: AbstractStack):

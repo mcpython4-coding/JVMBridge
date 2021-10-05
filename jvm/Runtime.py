@@ -136,6 +136,8 @@ class Runtime(AbstractRuntime):
         except:
             raise StackCollectingException(f"cannot parse argument list {signature}")
 
+        yield from tuple()
+
     def parse_args_from_stack(self, method, stack, static=False):
         try:
             parts = tuple(self.get_arg_parts_of(method))
@@ -440,13 +442,14 @@ class BytecodeRepr(AbstractBytecodeContainer):
 
         # As long as there are arrival paths, we need to work
         while True:
+
             # as long as the current path is finished, fetch a new one, and when there is none, exit the method
-            while not stack.check():
+            while stack.check():
                 if len(stack.pending) == 0: return
 
                 stack.cp, stack.stack = stack.pending.pop(0)
 
-            # prepare for similuation
+            # prepare for simulation
             prev_cp = stack.cp
             e = self.decoded_code[stack.cp]
 
