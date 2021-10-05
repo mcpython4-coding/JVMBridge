@@ -17,6 +17,6 @@ def getLevel(method, stack, this):
 
 
 @bind_native("org/apache/logging/log4j/core/Logger", "setLevel(Lorg/apache/logging/log4j/Level;)V")
-def setLevel(method, stack, this):
+def setLevel(method, stack, this, level):
     pass
 

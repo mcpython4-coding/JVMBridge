@@ -73,6 +73,9 @@
     "methods": {
       "create()Lcom/google/common/collect/HashMultimap;": {
         "access": 8
+      },
+      "<init>()V": {
+        "access": 0
       }
     }
   },

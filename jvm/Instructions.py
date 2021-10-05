@@ -1016,23 +1016,23 @@ class IINC(OpcodeInstruction):
     @classmethod
     def decode(
         cls, data: bytearray, index, class_file
-    ) -> typing.Tuple[typing.Any, int]:
+    ) -> typing.Tuple[typing.Tuple[int, int], int]:
         return (
            data[index],
            jvm.util.U1_S.unpack(data[index + 1: index + 2])[0],
         ), 3
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack):
+    def invoke(cls, data: typing.Tuple[int, int], stack: AbstractStack):
         stack.local_vars[data[0]] += data[1]
 
     @classmethod
-    def validate(cls, command_index, prepared_data: typing.Any, container: AbstractBytecodeContainer):
+    def validate(cls, command_index, prepared_data: typing.Tuple[int, int], container: AbstractBytecodeContainer):
         if prepared_data[0] >= container.code.max_locals:
             raise StackCollectingException(f"local var index {prepared_data[0]} out of range")
 
     @classmethod
-    def prepare_python_bytecode_instructions(cls, command_index, prepared_data: typing.Any,
+    def prepare_python_bytecode_instructions(cls, command_index, prepared_data: typing.Tuple[int, int],
                                              container: AbstractBytecodeContainer, builder: PyBytecodeBuilder):
         builder.add_instruction(PyOpcodes.LOAD_FAST, prepared_data[0])
         builder.add_instruction(PyOpcodes.LOAD_CONST, builder.add_const(prepared_data[1]))
@@ -1092,7 +1092,7 @@ class CompareHelper(OpcodeInstruction, ABC):
     def code_reference_changer(
         cls,
         container: AbstractBytecodeContainer,
-        prepared_data: typing.Any,
+        prepared_data: int,
         instruction_index: int,
         old_index: int,
         checker: typing.Callable[[int], int],
@@ -1100,25 +1100,27 @@ class CompareHelper(OpcodeInstruction, ABC):
         return checker(prepared_data + old_index) - instruction_index
 
     @classmethod
-    def validate(cls, command_index: int, prepared_data: typing.Any, container: AbstractBytecodeContainer):
+    def validate(cls, command_index: int, prepared_data: int, container: AbstractBytecodeContainer):
         if command_index + prepared_data < 0:
             raise StackCollectingException(f"opcode index {command_index + prepared_data} is < 0 (OutOfBoundError)")
+
         elif command_index + prepared_data >= len(container.decoded_code):
             raise StackCollectingException(f"opcode index {command_index + prepared_data} is >= {len(container.decoded_code)} (OutOfBoundError)")
+
         elif container.decoded_code[command_index + prepared_data] is None:
             raise StackCollectingException(f"opcode index {command_index+prepared_data} is pointing into opcode BODY, not HEAD (bound 0 <= {command_index+prepared_data} < {len(container.decoded_code)})")
 
 
 class SingleCompare(CompareHelper, ABC):
     @classmethod
-    def validate_stack(cls, command_index, prepared_data: typing.Any, container: AbstractBytecodeContainer, stack: AbstractStack):
+    def validate_stack(cls, command_index, prepared_data: int, container: AbstractBytecodeContainer, stack: AbstractStack):
         stack.pop()
         stack.branch(prepared_data)
 
 
 class DoubleCompare(CompareHelper, ABC):
     @classmethod
-    def validate_stack(cls, command_index, prepared_data: typing.Any, container: AbstractBytecodeContainer, stack: AbstractStack):
+    def validate_stack(cls, command_index, prepared_data: int, container: AbstractBytecodeContainer, stack: AbstractStack):
         stack.pop()
         stack.pop()
         stack.branch(prepared_data)
@@ -1129,7 +1131,7 @@ class IfLT(DoubleCompare):
     OPCODES = {0x97}
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack) -> bool:
+    def invoke(cls, data: int, stack: AbstractStack) -> bool:
         if stack.pop() > stack.pop():
             stack.cp += data
             return True
@@ -1140,7 +1142,7 @@ class IfGT(DoubleCompare):
     OPCODES = {0xA3}
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack) -> bool:
+    def invoke(cls, data: int, stack: AbstractStack) -> bool:
         if stack.pop() < stack.pop():
             stack.cp += data
             return True
@@ -1151,7 +1153,7 @@ class IfEq0(SingleCompare):
     OPCODES = {0x99}
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack) -> bool:
+    def invoke(cls, data: int, stack: AbstractStack) -> bool:
         if stack.pop() == 0:
             stack.cp += data
             return True
@@ -1162,7 +1164,7 @@ class IfNEq0(SingleCompare):
     OPCODES = {0x9A}
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack) -> bool:
+    def invoke(cls, data: int, stack: AbstractStack) -> bool:
         if stack.pop() != 0:
             stack.cp += data
             return True
@@ -1173,7 +1175,7 @@ class IfLT0(SingleCompare):
     OPCODES = {0x9B}
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack) -> bool:
+    def invoke(cls, data: int, stack: AbstractStack) -> bool:
         if stack.pop() < 0:
             stack.cp += data
             return True
@@ -1184,7 +1186,7 @@ class IfGE0(SingleCompare):
     OPCODES = {0x9C}
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack) -> bool:
+    def invoke(cls, data: int, stack: AbstractStack) -> bool:
         if stack.pop() >= 0:
             stack.cp += data
             return True
@@ -1195,7 +1197,7 @@ class IfGT0(SingleCompare):
     OPCODES = {0x9D}
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack) -> bool:
+    def invoke(cls, data: int, stack: AbstractStack) -> bool:
         if stack.pop() > 0:
             stack.cp += data
             return True
@@ -1206,7 +1208,7 @@ class IfLE0(SingleCompare):
     OPCODES = {0x9E}
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack) -> bool:
+    def invoke(cls, data: int, stack: AbstractStack) -> bool:
         if stack.pop() <= 0:
             stack.cp += data
             return True
@@ -1217,7 +1219,7 @@ class IfEq(DoubleCompare):
     OPCODES = {0x9F, 0xA5}
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack) -> bool:
+    def invoke(cls, data: int, stack: AbstractStack) -> bool:
         if stack.pop() == stack.pop():
             stack.cp += data
             return True
@@ -1228,7 +1230,7 @@ class IfNE(DoubleCompare):
     OPCODES = {0xA0, 0xA6}
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack) -> bool:
+    def invoke(cls, data: int, stack: AbstractStack) -> bool:
         if stack.pop() != stack.pop():
             stack.cp += data
             return True
@@ -1239,7 +1241,7 @@ class IfLt(DoubleCompare):
     OPCODES = {0xA1}
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack) -> bool:
+    def invoke(cls, data: int, stack: AbstractStack) -> bool:
         if stack.pop() > stack.pop():
             stack.cp += data
             return True
@@ -1250,7 +1252,7 @@ class IfGe(DoubleCompare):
     OPCODES = {0xA2}
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack) -> bool:
+    def invoke(cls, data: int, stack: AbstractStack) -> bool:
         if stack.pop() <= stack.pop():
             stack.cp += data
             return True
@@ -1261,7 +1263,7 @@ class IfLe(DoubleCompare):
     OPCODES = {0xA4}
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack) -> bool:
+    def invoke(cls, data: int, stack: AbstractStack) -> bool:
         if stack.pop() >= stack.pop():
             stack.cp += data
             return True
@@ -1272,12 +1274,12 @@ class Goto(CompareHelper):
     OPCODES = {0xA7}
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack):
+    def invoke(cls, data: int, stack: AbstractStack):
         stack.cp += data
         return True
 
     @classmethod
-    def validate_stack(cls, command_index, prepared_data: typing.Any, container: AbstractBytecodeContainer, stack: AbstractStack):
+    def validate_stack(cls, command_index, prepared_data: int, container: AbstractBytecodeContainer, stack: AbstractStack):
         stack.cp += prepared_data
 
 
@@ -1313,17 +1315,23 @@ class GetStatic(CPLinkedInstruction):
     OPCODES = {0xB2}
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack):
-        cls_name = data[1][1][1]
+    def decode(
+        cls, data: bytearray, index, class_file
+    ) -> typing.Tuple[typing.Any, int]:
+        d, i = super().decode(data, index, class_file)
+        return (d[1][1][1], d[2][1][1], d[2][2][1]), i
+
+    @classmethod
+    def invoke(cls, data: typing.Tuple[str, str, str], stack: AbstractStack):
+        cls_name, name, T = data
         java_class = stack.vm.get_class(
             cls_name, version=stack.method.class_file.internal_version
         )
-        name = data[2][1][1]
-        stack.push(java_class.get_static_attribute(name, expected_type=data[2][2][1]))
+        stack.push(java_class.get_static_attribute(name, expected_type=T))
 
     @classmethod
-    def validate_stack(cls, command_index, prepared_data: typing.Any, container: AbstractBytecodeContainer, stack: AbstractStack):
-        stack.push(None)
+    def validate_stack(cls, command_index, prepared_data: typing.Tuple[str, str, str], container: AbstractBytecodeContainer, stack: AbstractStack):
+        stack.push(prepared_data[2])
 
 
 @AbstractBytecodeContainer.register_instruction
@@ -1338,7 +1346,7 @@ class PutStatic(CPLinkedInstruction):
         return (d[1][1][1], d[2][1][1]), i
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack):
+    def invoke(cls, data: typing.Tuple[str, str], stack: AbstractStack):
         cls_name, name = data
         java_class = stack.vm.get_class(
             cls_name, version=stack.method.class_file.internal_version
@@ -1365,7 +1373,7 @@ class GetField(CPLinkedInstruction):
 
     @classmethod
     def invoke(cls, name: str, stack: AbstractStack):
-        obj = stack.pop()x
+        obj = stack.pop()
 
         if obj is None:
             raise StackCollectingException(f"NullPointerException: object is None; Cannot get attribute '{name}'")
