@@ -168,6 +168,9 @@ class Runtime(AbstractRuntime):
 
         return tuple(reversed(args))
 
+    def get_current_stack(self):
+        return self.stacks[-1]
+
 
 class Stack(AbstractStack):
     def pop(self):

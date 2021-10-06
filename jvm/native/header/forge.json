@@ -473,5 +473,30 @@
         "access": 0
       }
     }
+  },
+  {
+    "name": "net/minecraftforge/fml/RegistryObject",
+    "methods": {
+      "get()Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraftforge/fluids/FluidStack",
+    "methods": {
+      "<init>(Lnet/minecraft/fluid/Fluid;I)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraftforge/common/ToolType",
+    "attributes": {
+      "PICKAXE": {
+        "descriptor": "Lnet/minecraftforge/common/ToolType;",
+        "access": 8
+      }
+    }
   }
 ]

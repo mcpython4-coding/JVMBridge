@@ -170,12 +170,14 @@ class Configs:
 class ItemCreation:
     @staticmethod
     @bind_native("net/minecraft/world/item/Item$Properties", "<init>()V")
+    @bind_native("net/minecraft/item/Item$Properties", "<init>()V")
     def initProperties(method, stack, this):
         this.bound_tab = None
         this.rarity = -1
 
     @staticmethod
     @bind_native("net/minecraft/world/item/Item$Properties", "m_41491_(Lnet/minecraft/world/item/CreativeModeTab;)Lnet/minecraft/world/item/Item$Properties;")
+    @bind_native("net/minecraft/item/Item$Properties", "func_200916_a(Lnet/minecraft/item/ItemGroup;)Lnet/minecraft/item/Item$Properties;")
     def setItemTab(method, stack, this, tab):
         this.bound_tab = tab
         return this
@@ -223,6 +225,7 @@ class ItemCreation:
 
     @staticmethod
     @bind_native("net/minecraft/world/item/BlockItem", "<init>(Lnet/minecraft/world/level/block/Block;Lnet/minecraft/world/item/Item$Properties;)V")
+    @bind_native("net/minecraft/item/BlockItem", "<init>(Lnet/minecraft/block/Block;Lnet/minecraft/item/Item$Properties;)V")
     def initBlockItem(method, stack, this, block, properties):
         this.properties = properties
         this.registry_name = None
@@ -233,6 +236,7 @@ class ItemCreation:
     @bind_native("net/minecraft/world/item/BoatItem", "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;")
     @bind_native("net/minecraft/world/item/BucketItem", "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;")
     @bind_native("net/minecraft/world/item/BlockItem", "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;")
+    @bind_native("net/minecraft/item/BlockItem", "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;")
     def setRegistryName(method, stack, this, name: str):
         this.registry_name = name if ":" in name else (shared.CURRENT_EVENT_SUB + ":" + name)
         return this
@@ -243,6 +247,7 @@ class ItemCreation:
     @bind_native("net/minecraft/world/item/BoatItem", "register()V")
     @bind_native("net/minecraft/world/item/BucketItem", "register()V")
     @bind_native("net/minecraft/world/item/BlockItem", "register()V")
+    @bind_native("net/minecraft/item/BlockItem", "register()V")
     def register(method, stack, this):
         if this.get_class().name != "net/minecraft/world/item/BlockItem":
             from mcpython.common.factory.ItemFactory import ItemFactory
@@ -674,6 +679,11 @@ class ForgeRegistries:
             return method.cls.create_instance()
 
         raise RuntimeError
+
+    @staticmethod
+    @bind_native("net/minecraftforge/fml/RegistryObject", "get()Lnet/minecraftforge/registries/IForgeRegistryEntry;")
+    def getObject(method, stack, this):
+        return this
 
 
 class ResourceLocation:

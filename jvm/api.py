@@ -21,6 +21,9 @@ class AbstractRuntime(metaclass=ABCMeta):
     def parse_args_from_stack(self, method, stack, static):
         raise NotImplementedError
 
+    def get_current_stack(self):
+        raise NotImplementedError
+
 
 class AbstractStack(metaclass=ABCMeta):
     def __init__(self):

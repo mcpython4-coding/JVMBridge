@@ -428,6 +428,9 @@
       },
       "equals(Ljava/lang/Object;)Z": {
         "access": 8
+      },
+      "toLowerCase(Ljava/util/Locale;)Ljava/lang/String;": {
+        "access": 8
       }
     }
   },
@@ -554,6 +557,9 @@
     "name": "java/lang/Enum",
     "methods": {
       "<init>(Ljava/lang/String;I)V": {
+        "access": 8
+      },
+      "name()Ljava/lang/String;": {
         "access": 8
       }
     }
@@ -751,6 +757,15 @@
     "methods": {
       "<init>()V": {
         "access": 0
+      }
+    }
+  },
+  {
+    "name": "java/util/Locale",
+    "attributes": {
+      "ROOT": {
+        "descriptor": "Ljava/util/Locale;",
+        "access": 8
       }
     }
   }

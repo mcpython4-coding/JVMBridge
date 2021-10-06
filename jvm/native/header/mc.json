@@ -1718,6 +1718,15 @@
     "methods": {
       "func_208617_a(DDDDDD)Lnet/minecraft/util/math/shapes/VoxelShape;": {
         "access": 8
+      },
+      "<init>(Lnet/minecraft/block/AbstractBlock$Properties;)V": {
+        "access": 8
+      },
+      "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
+      },
+      "register()V": {
+        "access": 8
       }
     }
   },
@@ -1735,6 +1744,287 @@
       },
       "<init>(Z)": {
         "access": 1
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/item/BlockItem",
+    "methods": {
+      "<init>(Lnet/minecraft/block/Block;Lnet/minecraft/item/Item$Properties;)V": {
+        "access": 8
+      },
+      "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 0
+      },
+      "register()V": {
+        "access": 0
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/item/Item$Properties",
+    "methods": {
+      "<init>()V": {
+        "access": 8
+      },
+      "func_200916_a(Lnet/minecraft/item/ItemGroup;)Lnet/minecraft/item/Item$Properties;": {
+        "access": 8
+      },
+      "func_200917_a(I)Lnet/minecraft/item/Item$Properties;": {
+        "access": 8
+      },
+      "func_200918_c(I)Lnet/minecraft/item/Item$Properties;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/item/Item",
+    "methods": {
+      "<init>(Lnet/minecraft/item/Item$Properties;)V": {
+        "access": 8
+      },
+      "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
+      },
+      "register()V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/fluid/Fluids",
+    "attributes": {
+      "field_204546_a": {
+        "descriptor": "Lnet/minecraft/fluid/FlowingFluid;",
+        "access": 8
+      },
+      "field_204541_a": {
+        "descriptor": "Lnet/minecraft/fluid/Fluid;",
+        "access": 8
+      },
+      "field_204547_b": {
+        "descriptor": "Lnet/minecraft/fluid/FlowingFluid;",
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/item/ArmorItem",
+    "methods": {
+      "<init>(Lnet/minecraft/item/IArmorMaterial;Lnet/minecraft/inventory/EquipmentSlotType;Lnet/minecraft/item/Item$Properties;)V": {
+        "access": 8
+      },
+      "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
+      },
+      "register()V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/inventory/EquipmentSlotType",
+    "attributes": {
+      "HEAD": {
+        "descriptor": "Lnet/minecraft/inventory/EquipmentSlotType;",
+        "access": 8
+      },
+      "CHEST": {
+        "descriptor": "Lnet/minecraft/inventory/EquipmentSlotType;",
+        "access": 8
+      },
+      "LEGS": {
+        "descriptor": "Lnet/minecraft/inventory/EquipmentSlotType;",
+        "access": 8
+      },
+      "FEET": {
+        "descriptor": "Lnet/minecraft/inventory/EquipmentSlotType;",
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/util/text/TextFormatting",
+    "attributes": {
+      "GRAY": {
+        "descriptor": "Lnet/minecraft/util/text/TextFormatting;",
+        "access": 8
+      },
+      "AQUA": {
+        "descriptor": "Lnet/minecraft/util/text/TextFormatting;",
+        "access": 8
+      },
+      "RED": {
+        "descriptor": "Lnet/minecraft/util/text/TextFormatting;",
+        "access": 8
+      },
+      "GREEN": {
+        "descriptor": "Lnet/minecraft/util/text/TextFormatting;",
+        "access": 8
+      },
+      "WHITE": {
+        "descriptor": "Lnet/minecraft/util/text/TextFormatting;",
+        "access": 8
+      },
+      "DARK_GRAY": {
+        "descriptor": "Lnet/minecraft/util/text/TextFormatting;",
+        "access": 8
+      },
+      "GOLD": {
+        "descriptor": "Lnet/minecraft/util/text/TextFormatting;",
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/item/SwordItem",
+    "methods": {
+      "<init>(Lnet/minecraft/item/IItemTier;IFLnet/minecraft/item/Item$Properties;)V": {
+        "access": 8
+      },
+      "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
+      },
+      "register()V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/util/LazyValue",
+    "methods": {
+      "<init>(Ljava/util/function/Supplier;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/item/AxeItem",
+    "methods": {
+      "<init>(Lnet/minecraft/item/IItemTier;FFLnet/minecraft/item/Item$Properties;)V": {
+        "access": 8
+      },
+      "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
+      },
+      "register()V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/item/PickaxeItem",
+    "methods": {
+      "<init>(Lnet/minecraft/item/IItemTier;IFLnet/minecraft/item/Item$Properties;)V": {
+        "access": 8
+      },
+      "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
+      },
+      "register()V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/item/ShovelItem",
+    "methods": {
+      "<init>(Lnet/minecraft/item/IItemTier;FFLnet/minecraft/item/Item$Properties;)V": {
+        "access": 8
+      },
+      "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
+      },
+      "register()V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/item/HoeItem",
+    "methods": {
+      "<init>(Lnet/minecraft/item/IItemTier;IFLnet/minecraft/item/Item$Properties;)V": {
+        "access": 8
+      },
+      "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
+      },
+      "register()V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/block/material/Material",
+    "attributes": {
+      "field_151573_f": {
+        "descriptor": "Lnet/minecraft/block/material/Material;",
+        "access": 8
+      },
+      "field_151580_n": {
+        "descriptor": "Lnet/minecraft/block/material/Material;",
+        "access": 8
+      },
+      "field_151576_e": {
+        "descriptor": "Lnet/minecraft/block/material/Material;",
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/block/AbstractBlock$Properties",
+    "methods": {
+      "func_200945_a(Lnet/minecraft/block/material/Material;)Lnet/minecraft/block/AbstractBlock$Properties;": {
+        "access": 8
+      },
+      "func_200948_a(FF)Lnet/minecraft/block/AbstractBlock$Properties;": {
+        "access": 8
+      },
+      "harvestTool(Lnet/minecraftforge/common/ToolType;)Lnet/minecraft/block/AbstractBlock$Properties;": {
+        "access": 8
+      },
+      "harvestLevel(I)Lnet/minecraft/block/AbstractBlock$Properties;": {
+        "access": 8
+      },
+      "func_200942_a()Lnet/minecraft/block/AbstractBlock$Properties;": {
+        "access": 8
+      },
+      "func_200947_a(Lnet/minecraft/block/SoundType;)Lnet/minecraft/block/AbstractBlock$Properties;": {
+        "access": 8
+      },
+      "func_235838_a_(Ljava/util/function/ToIntFunction;)Lnet/minecraft/block/AbstractBlock$Properties;": {
+        "access": 8
+      },
+      "func_235861_h_()Lnet/minecraft/block/AbstractBlock$Properties;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/block/SoundType",
+    "attributes": {
+      "field_185851_d": {
+        "descriptor": "Lnet/minecraft/block/SoundType;",
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/block/HorizontalBlock",
+    "attributes": {
+      "field_185512_D": {
+        "descriptor": "Lnet/minecraft/state/DirectionProperty;",
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/state/properties/BlockStateProperties",
+    "attributes": {
+      "field_208190_q": {
+        "descriptor": "Lnet/minecraft/state/BooleanProperty;",
+        "access": 8
       }
     }
   }
