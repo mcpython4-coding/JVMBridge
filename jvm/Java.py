@@ -149,7 +149,7 @@ class JavaMethod(AbstractMethod):
         import jvm.Runtime
 
         runtime = jvm.Runtime.Runtime()
-        return runtime.run_method(self, )
+        return runtime.run_method(self, *args, stack=stack)
 
     def get_class(self):
         return self.class_file.vm.get_class(
