@@ -430,6 +430,7 @@ class BlockCreation:
         this.is_falling = False
         this.is_slab = False
         this.is_log = False
+        this.is_fluid = True
 
     @staticmethod
     @bind_native("net/minecraft/world/level/block/SandBlock", "<init>(ILnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V")
@@ -626,6 +627,12 @@ class BlockCreation:
         try:
             if this.is_slab:
                 factory.set_slab()
+        except AttributeError:
+            pass
+
+        try:
+            if this.is_fluid:
+                factory.set_fluid_block()
         except AttributeError:
             pass
 
