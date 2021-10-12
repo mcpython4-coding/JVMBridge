@@ -355,7 +355,12 @@
     }
   },
   {
-    "name": "net/minecraftforge/registries/GameData"
+    "name": "net/minecraftforge/registries/GameData",
+    "methods": {
+      "register_impl(Lnet/minecraftforge/registries/IForgeRegistryEntry;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
+      }
+    }
   },
   {
     "name": "net/minecraftforge/fml/loading/FMLPaths",
@@ -495,6 +500,76 @@
     "attributes": {
       "PICKAXE": {
         "descriptor": "Lnet/minecraftforge/common/ToolType;",
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraftforge/common/util/EnumHelper",
+    "methods": {
+      "addToolMaterial(Ljava/lang/String;IIFFI)Lnet/minecraft/item/Item$ToolMaterial;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraftforge/fluids/FluidRegistry",
+    "methods": {
+      "enableUniversalBucket()V": {
+        "access": 8
+      },
+      "addBucketForFluid(Lnet/minecraftforge/fluids/Fluid;)Z": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraftforge/fml/common/event/FMLPreInitializationEvent",
+    "methods": {
+      "getModLog()Lorg/apache/logging/log4j/Logger;": {
+        "access": 8
+      },
+      "getModMetadata()Lnet/minecraftforge/fml/common/ModMetadata;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraftforge/fluids/Fluid",
+    "methods": {
+      "<init>(Ljava/lang/String;Lnet/minecraft/util/ResourceLocation;Lnet/minecraft/util/ResourceLocation;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraftforge/fml/common/API",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraftforge/fml/common/eventhandler/Cancelable",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "mcp/mobius/waila/api/WailaPlugin",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraftforge/fml/relauncher/IFMLLoadingPlugin$DependsOn",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
         "access": 8
       }
     }

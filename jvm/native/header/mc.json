@@ -1727,6 +1727,36 @@
       },
       "register()V": {
         "access": 8
+      },
+      "<init>(Lnet/minecraft/block/material/Material;)V": {
+        "access": 8
+      },
+      "func_149663_c(Ljava/lang/String;)Lnet/minecraft/block/Block;": {
+        "access": 8
+      },
+      "func_149647_a(Lnet/minecraft/creativetab/CreativeTabs;)Lnet/minecraft/block/Block;": {
+        "access": 8
+      },
+      "func_149711_c(F)Lnet/minecraft/block/Block;": {
+        "access": 8
+      },
+      "func_149752_b(F)Lnet/minecraft/block/Block;": {
+        "access": 8
+      },
+      "func_149672_a(Lnet/minecraft/block/SoundType;)Lnet/minecraft/block/Block;": {
+        "access": 8
+      },
+      "getRegistryName()Lnet/minecraft/util/ResourceLocation;": {
+        "access": 8
+      },
+      "func_180632_j(Lnet/minecraft/block/state/IBlockState;)V": {
+        "access": 8
+      }
+    },
+    "attributes": {
+      "field_176227_L": {
+        "descriptor": "Ljava/lang/Object;",
+        "access": 1
       }
     }
   },
@@ -1788,6 +1818,9 @@
         "access": 8
       },
       "register()V": {
+        "access": 8
+      },
+      "setRegistryName(Lnet/minecraft/util/ResourceLocation;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
         "access": 8
       }
     }
@@ -1969,6 +2002,42 @@
       "field_151576_e": {
         "descriptor": "Lnet/minecraft/block/material/Material;",
         "access": 8
+      },
+      "field_151585_k": {
+        "descriptor": "Lnet/minecraft/block/material/Material;",
+        "access": 8
+      },
+      "field_151571_B": {
+        "descriptor": "Lnet/minecraft/block/material/Material;",
+        "access": 8
+      },
+      "field_151575_d": {
+        "descriptor": "Lnet/minecraft/block/material/Material;",
+        "access": 8
+      },
+      "field_151592_s": {
+        "descriptor": "Lnet/minecraft/block/material/Material;",
+        "access": 8
+      },
+      "field_151578_c": {
+        "descriptor": "Lnet/minecraft/block/material/Material;",
+        "access": 8
+      },
+      "field_151577_b": {
+        "descriptor": "Lnet/minecraft/block/material/Material;",
+        "access": 8
+      },
+      "field_151594_q": {
+        "descriptor": "Lnet/minecraft/block/material/Material;",
+        "access": 8
+      },
+      "field_151586_h": {
+        "descriptor": "Lnet/minecraft/block/material/Material;",
+        "access": 8
+      },
+      "field_151587_i": {
+        "descriptor": "Lnet/minecraft/block/material/Material;",
+        "access": 8
       }
     }
   },
@@ -2007,6 +2076,26 @@
       "field_185851_d": {
         "descriptor": "Lnet/minecraft/block/SoundType;",
         "access": 8
+      },
+      "field_185850_c": {
+        "descriptor": "Lnet/minecraft/block/SoundType;",
+        "access": 8
+      },
+      "field_185849_b": {
+        "descriptor": "Lnet/minecraft/block/SoundType;",
+        "access": 8
+      },
+      "field_185848_a": {
+        "descriptor": "Lnet/minecraft/block/SoundType;",
+        "access": 8
+      },
+      "field_185853_f": {
+        "descriptor": "Lnet/minecraft/block/SoundType;",
+        "access": 8
+      },
+      "field_185856_i": {
+        "descriptor": "Lnet/minecraft/block/SoundType;",
+        "access": 8
       }
     }
   },
@@ -2024,6 +2113,125 @@
     "attributes": {
       "field_208190_q": {
         "descriptor": "Lnet/minecraft/state/BooleanProperty;",
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/util/math/AxisAlignedBB",
+    "methods": {
+      "<init>(DDDDDD)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/creativetab/CreativeTabs",
+    "methods": {
+      "<init>(Ljava/lang/String;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/item/ItemBlock",
+    "methods": {
+      "<init>(Lnet/minecraft/block/Block;)V": {
+        "access": 8
+      },
+      "setRegistryName(Lnet/minecraft/util/ResourceLocation;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/block/BlockContainer",
+    "methods": {
+      "<init>(Lnet/minecraft/block/material/Material;)V": {
+        "access": 8
+      },
+      "func_149663_c(Ljava/lang/String;)Lnet/minecraft/block/Block;": {
+        "access": 8
+      },
+      "func_149647_a(Lnet/minecraft/creativetab/CreativeTabs;)Lnet/minecraft/block/Block;": {
+        "access": 8
+      },
+      "func_149711_c(F)Lnet/minecraft/block/Block;": {
+        "access": 8
+      },
+      "func_149752_b(F)Lnet/minecraft/block/Block;": {
+        "access": 8
+      },
+      "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
+      },
+      "getRegistryName()Lnet/minecraft/util/ResourceLocation;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/block/BlockHorizontal",
+    "attributes": {
+      "field_185512_D": {
+        "descriptor": "Lnet/minecraft/block/properties/PropertyDirection;",
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/block/ITileEntityProvider"
+  },
+  {
+    "name": "net/minecraft/block/state/BlockStateContainer",
+    "methods": {
+      "func_177621_b()Lnet/minecraft/block/state/IBlockState;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/util/EnumFacing",
+    "attributes": {
+      "NORTH": {
+        "descriptor": "Lnet/minecraft/util/EnumFacing;",
+        "access": 8
+      },
+      "EAST": {
+        "descriptor": "Lnet/minecraft/util/EnumFacing;",
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/block/state/IBlockState",
+    "methods": {
+      "func_177226_a(Lnet/minecraft/block/properties/IProperty;Ljava/lang/Comparable;)Lnet/minecraft/block/state/IBlockState;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/block/properties/PropertyEnum",
+    "methods": {
+      "func_177709_a(Ljava/lang/String;Ljava/lang/Class;)Lnet/minecraft/block/properties/PropertyEnum;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/block/properties/PropertyBool",
+    "methods": {
+      "func_177716_a(Ljava/lang/String;)Lnet/minecraft/block/properties/PropertyBool;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "com/mojang/authlib/minecraft/MinecraftProfileTexture$Type",
+    "attributes": {
+      "ELYTRA": {
+        "descriptor": "Lcom/mojang/authlib/minecraft/MinecraftProfileTexture$Type;",
         "access": 8
       }
     }

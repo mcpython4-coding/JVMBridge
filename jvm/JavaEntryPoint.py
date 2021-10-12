@@ -13,6 +13,8 @@ This project is not official by mojang and does not relate to it.
 """
 import json
 
+import typing
+
 import jvm.JavaVM
 import jvm.logging
 from mcpython.common.mod.ModLoader import ModContainer
@@ -258,16 +260,23 @@ class McModInfoLoader(AbstractModLoaderInstance):
         self.raw_data = data
         self.load_from_data(data)
 
-    def load_from_data(self, data: dict):
-        for entry in data:
-            v = entry["version"].split("-")[-1]
-            mod = JavaMod(entry["modid"], tuple(int(e) for e in v.split(".")))
-            mod.add_load_default_resources()
-            mod.loader_version = entry["mcversion"].split("-")[0]
-            mod.resource_access = self.container.resource_access
-            mod.container = self.container
+    def load_from_data(self, data: typing.Union[list, dict]):
+        if isinstance(data, dict):
+            return self.parse_entry(data)
 
-            shared.mod_loader(entry["modid"], "stage:mod:init")(mod.load_underlying_classes)
+        for entry in data:
+            self.parse_entry(entry)
+
+    def parse_entry(self, entry: dict):
+        v = entry["version"].split("-")[-1]
+        mod = JavaMod(entry["modid"], tuple(int(e) for e in v.split(".")))
+        mod.add_load_default_resources()
+
+        mod.loader_version = entry["mcversion"].split("-")[0]
+        mod.resource_access = self.container.resource_access
+        mod.container = self.container
+
+        shared.mod_loader(entry["modid"], "stage:mod:init")(mod.load_underlying_classes)
 
 
 ModLoader.TOML_LOADERS["javafml"] = JavaModLoader

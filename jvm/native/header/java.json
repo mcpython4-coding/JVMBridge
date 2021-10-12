@@ -60,6 +60,9 @@
       },
       "register()V": {
         "access": 8
+      },
+      "getClass()Ljava/lang/Class;": {
+        "access": 8
       }
     }
   },
@@ -163,6 +166,9 @@
         "access": 8
       },
       "desiredAssertionStatus()Z": {
+        "access": 8
+      },
+      "toString()Ljava/lang/String;": {
         "access": 8
       }
     }
@@ -430,6 +436,9 @@
         "access": 8
       },
       "toLowerCase(Ljava/util/Locale;)Ljava/lang/String;": {
+        "access": 8
+      },
+      "concat(Ljava/lang/String;)Ljava/lang/String;": {
         "access": 8
       }
     }

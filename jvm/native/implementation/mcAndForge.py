@@ -15,6 +15,9 @@ EVENT2STAGE: typing.Dict[str, str] = {
     "(Lnet/minecraftforge/event/RegistryEvent$Register<Lnet/minecraft/world/item/Item;>;)V": "stage:item:factory_usage",
     "(Lnet/minecraftforge/event/RegistryEvent$Register<Lnet/minecraft/world/level/block/Block;>;)V": "stage:block:factory_usage",
     "(Lnet/minecraftforge/event/RegistryEvent$Register<Lnet/minecraft/block/Block;>;)V": "stage:block:factory_usage",
+    "Lnet/minecraftforge/fml/common/event/FMLPreInitializationEvent;": "stage:mod:init",
+    "Lnet/minecraftforge/fml/common/event/FMLInitializationEvent;": "stage:mod:init",
+    "Lnet/minecraftforge/fml/common/event/FMLPostInitializationEvent;": "stage:post",
 }
 
 
@@ -149,6 +152,17 @@ class ModContainer:
     def registerConfig(method, stack, this, mod_config_type, config_spec, some_string: str):
         pass
 
+    @staticmethod
+    @bind_native("net/minecraftforge/fml/common/event/FMLPreInitializationEvent", "getModLog()Lorg/apache/logging/log4j/Logger;")
+    def getModLogger(method, stack, this):
+        # return stack.vm.get_class("org/apache/logging/log4j/Logger").create_instance()
+        pass
+
+    @staticmethod
+    @bind_native("net/minecraftforge/registries/GameData", "register_impl(Lnet/minecraftforge/registries/IForgeRegistryEntry;)Lnet/minecraftforge/registries/IForgeRegistryEntry;")
+    def register_impl(method, stack, obj):
+        return obj
+
 
 class Configs:
     @staticmethod
@@ -226,9 +240,14 @@ class ItemCreation:
     @staticmethod
     @bind_native("net/minecraft/world/item/BlockItem", "<init>(Lnet/minecraft/world/level/block/Block;Lnet/minecraft/world/item/Item$Properties;)V")
     @bind_native("net/minecraft/item/BlockItem", "<init>(Lnet/minecraft/block/Block;Lnet/minecraft/item/Item$Properties;)V")
-    def initBlockItem(method, stack, this, block, properties):
+    @bind_native("net/minecraft/item/ItemBlock", "<init>(Lnet/minecraft/block/Block;)V")
+    def initBlockItem(method, stack, this, block, properties=None):
         this.properties = properties
-        this.registry_name = None
+        try:
+            this.registry_name = None if block is None else block.registry_name
+        except AttributeError:
+            print(block)
+            this.registry_name = None
 
     @staticmethod
     @bind_native("net/minecraft/world/item/Item", "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;")
@@ -239,6 +258,12 @@ class ItemCreation:
     @bind_native("net/minecraft/item/BlockItem", "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;")
     def setRegistryName(method, stack, this, name: str):
         this.registry_name = name if ":" in name else (shared.CURRENT_EVENT_SUB + ":" + name)
+        return this
+
+    @staticmethod
+    @bind_native("net/minecraft/item/ItemBlock", "setRegistryName(Lnet/minecraft/util/ResourceLocation;)Lnet/minecraftforge/registries/IForgeRegistryEntry;")
+    def setRegistryNameFromResourceLocation(method, stack, this, resource_location):
+        this.registry_name = resource_location.name if resource_location is not None else None
         return this
 
     @staticmethod
@@ -280,11 +305,26 @@ class ItemCreation:
 
         mcpython.client.gui.InventoryCreativeTab.CT_MANAGER.add_tab(tab)
 
+    @staticmethod
+    @bind_native("net/minecraft/creativetab/CreativeTabs", "<init>(Ljava/lang/String;)V")
+    def initCreativeTabOld(method, stack, this, name: str):
+        import mcpython.client.gui.InventoryCreativeTab
+
+        tab = mcpython.client.gui.InventoryCreativeTab.CreativeItemTab(name, ItemStack("minecraft:barrier"))
+        this.instance = tab
+
+        mcpython.client.gui.InventoryCreativeTab.CT_MANAGER.add_tab(tab)
+
 
 class BlockCreation:
     @staticmethod
     @bind_native("net/minecraft/world/level/block/Block", "m_49796_(DDDDDD)Lnet/minecraft/world/phys/shapes/VoxelShape;")
     def createVoxelShape(method, stack, *some_values):
+        pass
+
+    @staticmethod
+    @bind_native("net/minecraft/util/math/AxisAlignedBB", "<init>(DDDDDD)V")
+    def initVoxelShape(method, stack, this, *values):
         pass
 
     @staticmethod
@@ -405,6 +445,8 @@ class BlockCreation:
     @bind_native("net/minecraft/world/level/block/HorizontalDirectionalBlock", "<init>(Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V")
     @bind_native("net/minecraft/world/level/block/DoublePlantBlock", "<init>(Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V")
     @bind_native("net/minecraft/world/level/block/PipeBlock", "<init>(Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V")
+    @bind_native("net/minecraft/block/Block", "<init>(Lnet/minecraft/block/material/Material;)V")
+    @bind_native("net/minecraft/block/BlockContainer", "<init>(Lnet/minecraft/block/material/Material;)V")
     def initBlock(method, stack, this, properties):
         this.properties = properties
         this.registry_name = None
@@ -571,8 +613,42 @@ class BlockCreation:
     @bind_native("net/minecraft/world/level/block/MushroomBlock", "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;")
     @bind_native("net/minecraft/world/level/block/AmethystClusterBlock", "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;")
     @bind_native("net/minecraft/world/level/block/FlowerPotBlock", "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;")
+    @bind_native("net/minecraft/block/Block", "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;")
+    @bind_native("net/minecraft/block/BlockContainer", "func_149663_c(Ljava/lang/String;)Lnet/minecraft/block/Block;")
+    @bind_native("net/minecraft/block/BlockContainer", "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;")
     def setRegistryName(method, stack, this, name):
         this.registry_name = name if ":" in name else shared.CURRENT_EVENT_SUB + ":" + name
+        return this
+
+    @staticmethod
+    @bind_native("net/minecraft/block/Block", "getRegistryName()Lnet/minecraft/util/ResourceLocation;")
+    @bind_native("net/minecraft/block/BlockContainer", "getRegistryName()Lnet/minecraft/util/ResourceLocation;")
+    def getRegistryName(method, stack, this):
+        return stack.vm.get_class("net/minecraft/util/ResourceLocation").create_instance().init("(Ljava/lang/String;)V", this.registry_name)
+
+    @staticmethod
+    @bind_native("net/minecraft/block/Block", "func_149663_c(Ljava/lang/String;)Lnet/minecraft/block/Block;")
+    def setTranslationComponentName(method, stack, this, name):
+        return this
+
+    @staticmethod
+    @bind_native("net/minecraft/block/Block", "func_149647_a(Lnet/minecraft/creativetab/CreativeTabs;)Lnet/minecraft/block/Block;")
+    @bind_native("net/minecraft/block/BlockContainer", "func_149647_a(Lnet/minecraft/creativetab/CreativeTabs;)Lnet/minecraft/block/Block;")
+    def bindToCreativeTab(method, stack, this, tab):
+
+        @shared.mod_loader(shared.CURRENT_EVENT_SUB, "stage:item_groups:load")
+        def add_to_tab():
+            tab.underlying.group.add(this.registry_name)
+
+        return this
+
+    @staticmethod
+    @bind_native("net/minecraft/block/Block", "func_149711_c(F)Lnet/minecraft/block/Block;")
+    @bind_native("net/minecraft/block/BlockContainer", "func_149711_c(F)Lnet/minecraft/block/Block;")
+    @bind_native("net/minecraft/block/Block", "func_149752_b(F)Lnet/minecraft/block/Block;")
+    @bind_native("net/minecraft/block/BlockContainer", "func_149752_b(F)Lnet/minecraft/block/Block;")
+    @bind_native("net/minecraft/block/Block", "func_149672_a(Lnet/minecraft/block/SoundType;)Lnet/minecraft/block/Block;")
+    def setSomeProperty(method, stack, this, *args):
         return this
 
     @staticmethod
@@ -670,6 +746,23 @@ class BlockCreation:
     @staticmethod
     @bind_native("net/minecraft/world/level/block/Block", "m_60590_()Lnet/minecraft/world/level/material/MaterialColor;")
     def defaultMaterialColor(method, stack, this):
+        pass
+
+
+class FluidCreation:
+    @staticmethod
+    @bind_native("net/minecraftforge/fluids/FluidRegistry", "enableUniversalBucket()V")
+    def enableUniversalBucket(method, stack, *_):
+        pass
+
+    @staticmethod
+    @bind_native("net/minecraftforge/fluids/FluidRegistry", "addBucketForFluid(Lnet/minecraftforge/fluids/Fluid;)Z")
+    def addBucketForFluid(method, stack, *_):
+        return True
+
+    @staticmethod
+    @bind_native("net/minecraftforge/fluids/Fluid", "<init>(Ljava/lang/String;Lnet/minecraft/util/ResourceLocation;Lnet/minecraft/util/ResourceLocation;)V")
+    def init(method, stack, this, name: str, still, flowing):
         pass
 
 
