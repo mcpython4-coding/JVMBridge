@@ -228,28 +228,29 @@ class JavaBytecodeClass(AbstractJavaClass):
 
             tag = pop_u1(data)
 
-            if tag in (7, 8, 16, 19, 20):
-                d = tag, pop_u2(data)
-            elif tag in (9, 10, 11, 12, 17, 18):
-                d = tag, pop_u2(data), pop_u2(data)
-            elif tag == 3:
-                d = tag, pop_struct(INT, data)[0]
-            elif tag == 4:
-                d = tag, pop_struct(FLOAT, data)[0]
-            elif tag == 5:
-                d = tag, pop_struct(LONG, data)[0]
-                i += 1
-            elif tag == 6:
-                d = tag, pop_struct(DOUBLE, data)[0]
-                i += 1
-            elif tag == 1:
-                size = pop_u2(data)
-                e = pop_sized(size, data)
-                d = tag, e.decode("utf-8", errors="ignore")
-            elif tag == 15:
-                d = tag, pop_u1(data), pop_u2(data)
-            else:
-                raise ValueError(tag)
+            match tag:
+                case 7 | 8 | 16 | 19 | 20:
+                    d = tag, pop_u2(data)
+                case 9 | 10 | 11 | 12 | 17 | 18:
+                    d = tag, pop_u2(data), pop_u2(data)
+                case 3:
+                    d = tag, pop_struct(INT, data)[0]
+                case 4:
+                    d = tag, pop_struct(FLOAT, data)[0]
+                case 5:
+                    d = tag, pop_struct(LONG, data)[0]
+                    i += 1
+                case 6:
+                    d = tag, pop_struct(DOUBLE, data)[0]
+                    i += 1
+                case 1:
+                    size = pop_u2(data)
+                    e = pop_sized(size, data)
+                    d = tag, e.decode("utf-8", errors="ignore")
+                case 15:
+                    d = tag, pop_u1(data), pop_u2(data)
+                case _:
+                    raise ValueError(tag)
 
             self.cp[j] = list(d)
 
@@ -557,31 +558,32 @@ class JavaBytecodeClass(AbstractJavaClass):
 
             tag, *d = entry
 
-            if tag == 1:
-                s = entry[1].encode("utf-8")
-                cp_data += b"\x01" + U2.pack(len(s)) + s
-            elif tag == 3:
-                cp_data += b"\x03" + INT.pack(entry[1])
-            elif tag == 4:
-                cp_data += b"\x04" + FLOAT.pack(entry[1])
-            elif tag == 5:
-                cp_data += b"\x05" + LONG.pack(entry[1])
-            elif tag == 6:
-                cp_data += b"\x06" + DOUBLE.pack(entry[1])
-            elif tag == 7:  # class
-                cp_data += b"\x07" + U2.pack(self.ensure_data(entry[1]))
-            elif tag == 8:
-                cp_data += b"\x08" + U2.pack(self.ensure_data(entry[1]))
-            elif tag == 9:
-                cp_data += b"\x09" + U2.pack(self.ensure_data(entry[1])) + U2.pack(self.ensure_data(entry[2]))
-            elif tag == 10:
-                cp_data += b"\x0A" + U2.pack(self.ensure_data(entry[1])) + U2.pack(self.ensure_data(entry[2]))
-            elif tag == 11:
-                cp_data += b"\x0B" + U2.pack(self.ensure_data(entry[1])) + U2.pack(self.ensure_data(entry[2]))
-            elif tag == 12:
-                cp_data += b"\x0C" + U2.pack(self.ensure_data(entry[1])) + U2.pack(self.ensure_data(entry[2]))
-            else:
-                raise RuntimeError(tag, entry)
+            match tag:
+                case 1:
+                    s = entry[1].encode("utf-8")
+                    cp_data += b"\x01" + U2.pack(len(s)) + s
+                case 3:
+                    cp_data += b"\x03" + INT.pack(entry[1])
+                case 4:
+                    cp_data += b"\x04" + FLOAT.pack(entry[1])
+                case 5:
+                    cp_data += b"\x05" + LONG.pack(entry[1])
+                case 6:
+                    cp_data += b"\x06" + DOUBLE.pack(entry[1])
+                case 7:  # class
+                    cp_data += b"\x07" + U2.pack(self.ensure_data(entry[1]))
+                case 8:
+                    cp_data += b"\x08" + U2.pack(self.ensure_data(entry[1]))
+                case 9:
+                    cp_data += b"\x09" + U2.pack(self.ensure_data(entry[1])) + U2.pack(self.ensure_data(entry[2]))
+                case 10:
+                    cp_data += b"\x0A" + U2.pack(self.ensure_data(entry[1])) + U2.pack(self.ensure_data(entry[2]))
+                case 11:
+                    cp_data += b"\x0B" + U2.pack(self.ensure_data(entry[1])) + U2.pack(self.ensure_data(entry[2]))
+                case 12:
+                    cp_data += b"\x0C" + U2.pack(self.ensure_data(entry[1])) + U2.pack(self.ensure_data(entry[2]))
+                case _:
+                    raise RuntimeError(tag, entry)
 
         data += U2.pack(len(self.cp) + 1)
         data += cp_data

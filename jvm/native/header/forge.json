@@ -573,5 +573,13 @@
         "access": 8
       }
     }
+  },
+  {
+    "name": "net/minecraftforge/fml/relauncher/FMLInjectionData",
+    "methods": {
+      "data()[Ljava/lang/Object;": {
+        "access": 8
+      }
+    }
   }
 ]
