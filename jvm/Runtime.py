@@ -258,6 +258,7 @@ class Stack(AbstractStack):
             except:
                 if isinstance(self.method, jvm.Java.JavaMethod):
                     self.method.print_stats(current=self.cp)
+
                 raise StackCollectingException(
                     f"Implementation-wise during invoking {instruction[0].__name__} in {self.method} [index: {self.cp}]"
                 ).add_trace(str(instruction[1])).add_trace(str(instruction[2]))
@@ -272,7 +273,7 @@ class Stack(AbstractStack):
 
         if debugging:
             jvm.logging.warn(
-                ("finished method", self.method, self.return_value)
+                repr(("finished method", self.method, self.return_value))
             )
 
 

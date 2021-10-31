@@ -170,6 +170,9 @@
       },
       "m_49959_(Lnet/minecraft/world/level/block/state/BlockState;)V": {
         "access": 8
+      },
+      "m_49965_()Lnet/minecraft/world/level/block/state/StateDefinition;": {
+        "access": 8
       }
     },
     "attributes": {
@@ -573,6 +576,22 @@
       "f_76272_": {
         "descriptor": "Lnet/minecraft/world/level/material/Material;",
         "access": 8
+      },
+      "f_76275_": {
+        "descriptor": "Lnet/minecraft/world/level/material/Material;",
+        "access": 8
+      },
+      "f_76309_": {
+        "descriptor": "Lnet/minecraft/world/level/material/Material;",
+        "access": 8
+      },
+      "f_76282_": {
+        "descriptor": "Lnet/minecraft/world/level/material/Material;",
+        "access": 8
+      },
+      "f_76305_": {
+        "descriptor": "Lnet/minecraft/world/level/material/Material;",
+        "access": 8
       }
     }
   },
@@ -767,6 +786,9 @@
     "name": "net/minecraft/world/phys/shapes/Shapes",
     "methods": {
       "m_83110_(Lnet/minecraft/world/phys/shapes/VoxelShape;Lnet/minecraft/world/phys/shapes/VoxelShape;)Lnet/minecraft/world/phys/shapes/VoxelShape;": {
+        "access": 8
+      },
+      "m_83064_(Lnet/minecraft/world/phys/AABB;)Lnet/minecraft/world/phys/shapes/VoxelShape;": {
         "access": 8
       }
     }
@@ -1267,6 +1289,10 @@
       },
       "f_55153_": {
         "descriptor": "",
+        "access": 8
+      },
+      "f_55154_": {
+        "descriptor": "Ljava/util/Map;",
         "access": 8
       }
     }
@@ -2232,6 +2258,46 @@
     "attributes": {
       "ELYTRA": {
         "descriptor": "Lcom/mojang/authlib/minecraft/MinecraftProfileTexture$Type;",
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/phys/AABB",
+    "methods": {
+      "<init>(DDDDDD)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/level/block/state/properties/IntegerProperty",
+    "methods": {
+      "m_61631_(Ljava/lang/String;II)Lnet/minecraft/world/level/block/state/properties/IntegerProperty;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/level/block/state/properties/BooleanProperty",
+    "methods": {
+      "m_61465_(Ljava/lang/String;)Lnet/minecraft/world/level/block/state/properties/BooleanProperty;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/Util",
+    "methods": {
+      "m_137448_()Ljava/util/stream/Collector;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/level/block/state/properties/DirectionProperty",
+    "methods": {
+      "m_61587_(Ljava/lang/String;Ljava/lang/Class;)Lnet/minecraft/world/level/block/state/properties/EnumProperty;": {
         "access": 8
       }
     }

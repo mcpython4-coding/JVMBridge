@@ -29,7 +29,7 @@ class NativeMethod(jvm.api.AbstractMethod):
         try:
             return self.underlying(self, stack, *args)
         except:
-            print("during native", self, "with", args)
+            print("during invoking native", self, "with", args)
             raise
 
     def get_class(self):

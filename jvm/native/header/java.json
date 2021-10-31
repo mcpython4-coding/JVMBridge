@@ -339,6 +339,9 @@
       },
       "add(Ljava/lang/Object;)Z": {
         "access": 8
+      },
+      "stream()Ljava/util/stream/Stream;": {
+        "access": 8
       }
     }
   },
@@ -366,6 +369,9 @@
         "access": 8
       },
       "put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;": {
+        "access": 8
+      },
+      "entrySet()Ljava/util/Set;": {
         "access": 8
       }
     }
@@ -689,7 +695,12 @@
     }
   },
   {
-    "name": "java/util/EnumMap"
+    "name": "java/util/EnumMap",
+    "methods": {
+      "<init>(Ljava/lang/Class;)V": {
+        "access": 8
+      }
+    }
   },
   {
     "name": "javax/annotation/Nonnegative",
@@ -774,6 +785,33 @@
     "attributes": {
       "ROOT": {
         "descriptor": "Ljava/util/Locale;",
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/awt/Color",
+    "methods": {
+      "<init>(IIII)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/util/Random",
+    "methods": {
+      "<init>()V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/util/stream/Stream",
+    "methods": {
+      "filter(Ljava/util/function/Predicate;)Ljava/util/stream/Stream;": {
+        "access": 8
+      },
+      "collect(Ljava/util/stream/Collector;)Ljava/lang/Object;": {
         "access": 8
       }
     }
