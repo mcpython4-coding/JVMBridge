@@ -211,7 +211,7 @@ class NativeHeader:
 
 
 class NativeManager:
-    DEFAULT_HEADER_FILES = ["java", "forge", "mc", "ct_api", "netty", "jei", "google", "logging"]
+    DEFAULT_HEADER_FILES = ["java", "forge", "mc", "ct_api", "netty", "jei", "google", "logging", "mixin", "apache"]
     MATCHER2HEADER: typing.Dict[str, str] = {
         "java/": "java",
         "javax/": "java",
@@ -227,6 +227,8 @@ class NativeManager:
         "mezz/jei/": "jei",
         "com/google/": "google",
         "org/apache/logging/": "logging",
+        "org/spongepowered/": "mixin",
+        "org/apache/commons/": "apache",
     }
 
     def __init__(self):

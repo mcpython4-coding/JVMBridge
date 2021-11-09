@@ -280,6 +280,12 @@
     "methods": {
       "runForDist(Ljava/util/function/Supplier;Ljava/util/function/Supplier;)Ljava/lang/Object;": {
         "access": 8
+      },
+      "runWhenOn(Lnet/minecraftforge/api/distmarker/Dist;Ljava/util/function/Supplier;)V": {
+        "access": 8
+      },
+      "safeRunForDist(Ljava/util/function/Supplier;Ljava/util/function/Supplier;)Ljava/lang/Object;": {
+        "access": 8
       }
     }
   },
@@ -301,6 +307,12 @@
         "access": 8
       },
       "register(Ljava/lang/Object;)V": {
+        "access": 8
+      },
+      "addListener(Lnet/minecraftforge/eventbus/api/EventPriority;ZLjava/lang/Class;Ljava/util/function/Consumer;)V": {
+        "access": 8
+      },
+      "addListener(Lnet/minecraftforge/eventbus/api/EventPriority;Ljava/util/function/Consumer;)V": {
         "access": 8
       }
     }
@@ -384,6 +396,9 @@
       },
       "registerConfig(Lnet/minecraftforge/fml/config/ModConfig$Type;Lnet/minecraftforge/fml/config/IConfigSpec;Ljava/lang/String;)V": {
         "access": 8
+      },
+      "registerConfig(Lnet/minecraftforge/fml/config/ModConfig$Type;Lnet/minecraftforge/fml/config/IConfigSpec;)V": {
+        "access": 8
       }
     }
   },
@@ -395,6 +410,10 @@
         "access": 8
       },
       "CLIENT": {
+        "descriptor": "Lnet/minecraftforge/fml/config/ModConfig$Type;",
+        "access": 8
+      },
+      "SERVER": {
         "descriptor": "Lnet/minecraftforge/fml/config/ModConfig$Type;",
         "access": 8
       }
@@ -422,6 +441,12 @@
         "access": 8
       },
       "build()Lnet/minecraftforge/common/ForgeConfigSpec;": {
+        "access": 8
+      },
+      "translation(Ljava/lang/String;)Lnet/minecraftforge/common/ForgeConfigSpec$Builder;": {
+        "access": 8
+      },
+      "configure(Ljava/util/function/Function;)Lorg/apache/commons/lang3/tuple/Pair;": {
         "access": 8
       }
     }
@@ -642,6 +667,44 @@
         "access": 8
       },
       "register()V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraftforge/common/loot/GlobalLootModifierSerializer",
+    "methods": {
+      "<init>()V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraftforge/event/entity/player/PlayerInteractEvent$RightClickBlock"
+  },
+  {
+    "name": "net/minecraftforge/eventbus/api/EventListenerHelper",
+    "methods": {
+      "getListenerList(Ljava/lang/Class;)Lnet/minecraftforge/eventbus/ListenerList;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraftforge/fmllegacy/network/NetworkRegistry",
+    "methods": {
+      "newEventChannel(Lnet/minecraft/resources/ResourceLocation;Ljava/util/function/Supplier;Ljava/util/function/Predicate;Ljava/util/function/Predicate;)Lnet/minecraftforge/fmllegacy/network/event/EventNetworkChannel;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraftforge/fml/event/lifecycle/FMLCommonSetupEvent"
+  },
+  {
+    "name": "net/minecraftforge/registries/ObjectHolder",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
         "access": 8
       }
     }

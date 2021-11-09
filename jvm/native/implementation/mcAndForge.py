@@ -180,6 +180,10 @@ class Configs:
     def anyUnused(method, stack, this, *_):
         return this
 
+    @bind_native("net/minecraftforge/common/ForgeConfigSpec$Builder", "configure(Ljava/util/function/Function;)Lorg/apache/commons/lang3/tuple/Pair;")
+    def configure(self, method, stack, this):
+        return None, None
+
 
 class ItemCreation:
     @staticmethod

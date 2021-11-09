@@ -1,0 +1,13 @@
+[
+  {
+    "name": "org/apache/commons/lang3/tuple/Pair",
+    "methods": {
+      "getRight()Ljava/lang/Object;": {
+        "access": 8
+      },
+      "getLeft()Ljava/lang/Object;": {
+        "access": 8
+      }
+    }
+  }
+]

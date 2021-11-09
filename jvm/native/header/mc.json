@@ -44,6 +44,9 @@
     "methods": {
       "<init>(ILjava/lang/String;)V": {
         "access": 8
+      },
+      "<init>(Ljava/lang/String;)V": {
+        "access": 8
       }
     }
   },
@@ -2298,6 +2301,28 @@
     "name": "net/minecraft/world/level/block/state/properties/DirectionProperty",
     "methods": {
       "m_61587_(Ljava/lang/String;Ljava/lang/Class;)Lnet/minecraft/world/level/block/state/properties/EnumProperty;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "com/mojang/blaze3d/MethodsReturnNonnullByDefault",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/entity/ai/attributes/Attribute"
+  },
+  {
+    "name": "net/minecraft/world/entity/ai/attributes/RangedAttribute",
+    "methods": {
+      "<init>(Ljava/lang/String;DDD)V": {
+        "access": 8
+      },
+      "m_22084_(Z)Lnet/minecraft/world/entity/ai/attributes/Attribute;": {
         "access": 8
       }
     }

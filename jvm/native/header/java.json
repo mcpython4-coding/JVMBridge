@@ -119,6 +119,9 @@
       },
       "containsProperty(Ljava/lang/String;)Z": {
         "access": 1
+      },
+      "setProperty(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;": {
+        "access": 8
       }
     },
     "attributes": {
@@ -353,6 +356,9 @@
       },
       "iterator()Ljava/util/Iterator;": {
         "access": 8
+      },
+      "load(Ljava/lang/Class;)Ljava/util/ServiceLoader;": {
+        "access": 8
       }
     }
   },
@@ -372,6 +378,9 @@
         "access": 8
       },
       "entrySet()Ljava/util/Set;": {
+        "access": 8
+      },
+      "computeIfAbsent(Ljava/lang/Object;Ljava/util/function/Function;)Ljava/lang/Object;": {
         "access": 8
       }
     }
@@ -446,6 +455,9 @@
       },
       "concat(Ljava/lang/String;)Ljava/lang/String;": {
         "access": 8
+      },
+      "equalsIgnoreCase(Ljava/lang/String;)Z": {
+        "access": 8
       }
     }
   },
@@ -473,6 +485,9 @@
         "access": 8
       },
       "add(Ljava/lang/Object;)Z": {
+        "access": 8
+      },
+      "size()I": {
         "access": 8
       }
     }
@@ -777,6 +792,9 @@
     "methods": {
       "<init>()V": {
         "access": 0
+      },
+      "computeIfAbsent(Ljava/lang/Object;Ljava/util/function/Function;)Ljava/lang/Object;": {
+        "access": 8
       }
     }
   },
@@ -812,6 +830,41 @@
         "access": 8
       },
       "collect(Ljava/util/stream/Collector;)Ljava/lang/Object;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/lang/invoke/StringConcatFactory",
+    "methods": {
+      "makeConcatWithConstants(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/invoke/CallSite;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/time/Duration",
+    "methods": {
+      "ofMillis(J)Ljava/time/Duration;": {
+        "access": 8
+      },
+      "toNanos()J": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/util/concurrent/LinkedBlockingQueue",
+    "methods": {
+      "<init>()V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/lang/InheritableThreadLocal",
+    "methods": {
+      "<init>()V": {
         "access": 8
       }
     }
