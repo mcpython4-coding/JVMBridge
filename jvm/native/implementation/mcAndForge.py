@@ -123,6 +123,11 @@ class ModContainer:
             server.invoke([])
 
     @staticmethod
+    @bind_native("net/minecraftforge/fml/DistExecutor", "unsafeRunWhenOn(Lnet/minecraftforge/api/distmarker/Dist;Ljava/util/function/Supplier;)V")
+    def unsafeRunWhenOn(method, stack, destination, supplier):
+        print("missing execution on", destination, "of", supplier)
+
+    @staticmethod
     @bind_native("net/minecraftforge/fml/javafmlmod/FMLJavaModLoadingContext", "get()Lnet/minecraftforge/fml/javafmlmod/FMLJavaModLoadingContext;")
     def getLoadingContext(method, stack):
         pass
@@ -177,6 +182,8 @@ class Configs:
     @bind_native("net/minecraftforge/common/ForgeConfigSpec$Builder", "define(Ljava/lang/String;Z)Lnet/minecraftforge/common/ForgeConfigSpec$BooleanValue;")
     @bind_native("net/minecraftforge/common/ForgeConfigSpec$Builder", "pop()Lnet/minecraftforge/common/ForgeConfigSpec$Builder;")
     @bind_native("net/minecraftforge/common/ForgeConfigSpec$Builder", "build()Lnet/minecraftforge/common/ForgeConfigSpec;")
+    @bind_native("net/minecraftforge/common/ForgeConfigSpec$Builder", "defineInRange(Ljava/lang/String;III)Lnet/minecraftforge/common/ForgeConfigSpec$IntValue;")
+    @bind_native("net/minecraftforge/common/ForgeConfigSpec$Builder", "defineList(Ljava/lang/String;Ljava/util/List;Ljava/util/function/Predicate;)Lnet/minecraftforge/common/ForgeConfigSpec$ConfigValue;")
     def anyUnused(method, stack, this, *_):
         return this
 
@@ -302,6 +309,11 @@ class ItemCreation:
     @staticmethod
     @bind_native("net/minecraft/world/item/CreativeModeTab", "<init>(ILjava/lang/String;)V")
     def initCreativeTab(method, stack, this, some_id, name: str):
+        ItemCreation.initCreativeTabWithName(method, stack, this, name)
+
+    @staticmethod
+    @bind_native("net/minecraft/world/item/CreativeModeTab", "<init>(Ljava/lang/String;)V")
+    def initCreativeTabWithName(method, stack, this, name: str):
         import mcpython.client.gui.InventoryCreativeTab
 
         tab = mcpython.client.gui.InventoryCreativeTab.CreativeItemTab(name, ItemStack("minecraft:barrier"))

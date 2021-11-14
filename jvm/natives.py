@@ -25,6 +25,9 @@ class NativeMethod(jvm.api.AbstractMethod):
         self.access = access
         self.bound = False
 
+    def __call__(self, *args):
+        return self.invoke(args)
+
     def invoke(self, args: typing.Iterable, stack=None):
         try:
             return self.underlying(self, stack, *args)

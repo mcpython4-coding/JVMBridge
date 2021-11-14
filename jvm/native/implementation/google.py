@@ -47,10 +47,17 @@ class ListLike:
     @staticmethod
     @bind_native("com/google/common/collect/Lists", "newArrayList()Ljava/util/ArrayList;")
     def createArrayList(method, stack):
-        return method.get_class().create_instance().init("()V")
+        return stack.vm.get_class("java/util/ArrayList").create_instance().init("()V")
 
     @staticmethod
-    @bind_native("com/google/common/collect/Lists", "<init>()V")
+    @bind_native("com/google/common/collect/Lists", "newArrayList([Ljava/lang/Object;)Ljava/util/ArrayList;")
+    def createArrayListFromArray(method, stack, array):
+        obj = stack.vm.get_class("java/util/ArrayList").create_instance().init("()V")
+        obj.underlying += array
+        return obj
+
+    @staticmethod
+    @bind_native("java/util/ArrayList", "<init>()V")
     def init(method, stack, this):
         this.underlying = []
 

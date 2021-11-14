@@ -595,6 +595,10 @@
       "f_76305_": {
         "descriptor": "Lnet/minecraft/world/level/material/Material;",
         "access": 8
+      },
+      "f_76279_": {
+        "descriptor": "Lnet/minecraft/world/level/material/Material;",
+        "access": 8
       }
     }
   },
@@ -2323,6 +2327,25 @@
         "access": 8
       },
       "m_22084_(Z)Lnet/minecraft/world/entity/ai/attributes/Attribute;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/network/chat/TranslatableComponent"
+  },
+  {
+    "name": "net/minecraft/world/level/block/state/properties/EnumProperty",
+    "methods": {
+      "m_61587_(Ljava/lang/String;Ljava/lang/Class;)Lnet/minecraft/world/level/block/state/properties/EnumProperty;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/nbt/CompoundTag",
+    "methods": {
+      "<init>()V": {
         "access": 8
       }
     }

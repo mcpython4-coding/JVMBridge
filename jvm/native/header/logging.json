@@ -32,5 +32,13 @@
         "access": 8
       }
     }
+  },
+  {
+    "name": "org/apache/logging/log4j/Logger",
+    "methods": {
+      "info(Ljava/lang/String;)V": {
+        "access": 8
+      }
+    }
   }
 ]

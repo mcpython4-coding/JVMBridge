@@ -30,7 +30,8 @@ def noAnnotation(method, stack, target, args):
 @bind_native("java/lang/ClassLoader", "<init>()V")
 @bind_native("java/lang/ThreadLocal", "initialValue()Ljava/lang/Object;")
 @bind_native("java/lang/ClassLoader", "getParent()Ljava/lang/ClassLoader;")
-def noAction(method, stack, this):
+@bind_native("java/lang/annotation/Documented", "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V")
+def noAction(method, stack, this, *args):
     pass
 
 
@@ -402,6 +403,11 @@ class String:
     def lastIndexOf(method, stack, this: str, search: str):
         return this.rindex(search) if search in this else -1
 
+    @staticmethod
+    @bind_native("java/lang/String", "contains(Ljava/lang/CharSequence;)Z")
+    def containsSubSequence(method, stack, this: str, compare: str):
+        return compare in this
+
 
 class Regex:
     @staticmethod
@@ -492,4 +498,15 @@ class IO:
     def makeDirs(method, stack, path, config):
         os.makedirs(path, exist_ok=True)
         return path
+
+    @staticmethod
+    @bind_native("java/io/File", "<init>(Ljava/lang/String;)V")
+    def init(method, stack, this, path: str):
+        this.underlying = path
+
+    @staticmethod
+    @bind_native("java/io/File", "mkdirs/(Z")
+    def mkdirs(method, stack, this):
+        os.makedirs(this.underlying, exist_ok=True)
+        return True
 

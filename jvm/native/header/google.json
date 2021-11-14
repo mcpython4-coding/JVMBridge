@@ -32,6 +32,9 @@
       },
       "size()I": {
         "access": 8
+      },
+      "newArrayList([Ljava/lang/Object;)Ljava/util/ArrayList;": {
+        "access": 8
       }
     }
   },
@@ -83,6 +86,20 @@
     "name": "com/google/common/collect/Sets",
     "methods": {
       "newHashSet()Ljava/util/HashSet;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "com/google/gson/GsonBuilder",
+    "methods": {
+      "<init>()V": {
+        "access": 8
+      },
+      "setPrettyPrinting()Lcom/google/gson/GsonBuilder;": {
+        "access": 8
+      },
+      "create()Lcom/google/gson/Gson;": {
         "access": 8
       }
     }

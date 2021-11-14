@@ -286,6 +286,9 @@
       },
       "safeRunForDist(Ljava/util/function/Supplier;Ljava/util/function/Supplier;)Ljava/lang/Object;": {
         "access": 8
+      },
+      "unsafeRunWhenOn(Lnet/minecraftforge/api/distmarker/Dist;Ljava/util/function/Supplier;)V": {
+        "access": 8
       }
     }
   },
@@ -399,6 +402,9 @@
       },
       "registerConfig(Lnet/minecraftforge/fml/config/ModConfig$Type;Lnet/minecraftforge/fml/config/IConfigSpec;)V": {
         "access": 8
+      },
+      "registerExtensionPoint(Ljava/lang/Class;Ljava/util/function/Supplier;)V": {
+        "access": 8
       }
     }
   },
@@ -447,6 +453,12 @@
         "access": 8
       },
       "configure(Ljava/util/function/Function;)Lorg/apache/commons/lang3/tuple/Pair;": {
+        "access": 8
+      },
+      "defineInRange(Ljava/lang/String;III)Lnet/minecraftforge/common/ForgeConfigSpec$IntValue;": {
+        "access": 8
+      },
+      "defineList(Ljava/lang/String;Ljava/util/List;Ljava/util/function/Predicate;)Lnet/minecraftforge/common/ForgeConfigSpec$ConfigValue;": {
         "access": 8
       }
     }
@@ -695,6 +707,9 @@
     "methods": {
       "newEventChannel(Lnet/minecraft/resources/ResourceLocation;Ljava/util/function/Supplier;Ljava/util/function/Predicate;Ljava/util/function/Predicate;)Lnet/minecraftforge/fmllegacy/network/event/EventNetworkChannel;": {
         "access": 8
+      },
+      "newSimpleChannel(Lnet/minecraft/resources/ResourceLocation;Ljava/util/function/Supplier;Ljava/util/function/Predicate;Ljava/util/function/Predicate;)Lnet/minecraftforge/fmllegacy/network/simple/SimpleChannel;": {
+        "access": 8
       }
     }
   },
@@ -705,6 +720,37 @@
     "name": "net/minecraftforge/registries/ObjectHolder",
     "methods": {
       "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraftforge/fmllegacy/network/NetworkRegistry$ChannelBuilder",
+    "methods": {
+      "named(Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraftforge/fmllegacy/network/NetworkRegistry$ChannelBuilder;": {
+        "access": 8
+      },
+      "clientAcceptedVersions(Ljava/util/function/Predicate;)Lnet/minecraftforge/fmllegacy/network/NetworkRegistry$ChannelBuilder;": {
+        "access": 8
+      },
+      "serverAcceptedVersions(Ljava/util/function/Predicate;)Lnet/minecraftforge/fmllegacy/network/NetworkRegistry$ChannelBuilder;": {
+        "access": 8
+      },
+      "networkProtocolVersion(Ljava/util/function/Supplier;)Lnet/minecraftforge/fmllegacy/network/NetworkRegistry$ChannelBuilder;": {
+        "access": 8
+      },
+      "simpleChannel()Lnet/minecraftforge/fmllegacy/network/simple/SimpleChannel;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraftforge/fml/IExtensionPoint$DisplayTest"
+  },
+  {
+    "name": "net/minecraftforge/fmllegacy/network/simple/SimpleChannel",
+    "methods": {
+      "registerMessage(ILjava/lang/Class;Ljava/util/function/BiConsumer;Ljava/util/function/Function;Ljava/util/function/BiConsumer;)Lnet/minecraftforge/fmllegacy/network/simple/IndexedMessageCodec$MessageHandler;": {
         "access": 8
       }
     }

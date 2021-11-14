@@ -13,6 +13,22 @@
       "FIELD": {
         "descriptor": "enum",
         "access": 8
+      },
+      "PARAMETER": {
+        "descriptor": "enum",
+        "access": 8
+      },
+      "LOCAL_VARIABLE": {
+        "descriptor": "enum",
+        "access": 8
+      },
+      "ANNOTATION_TYPE": {
+        "descriptor": "enum",
+        "access": 8
+      },
+      "CONSTRUCTOR": {
+        "descriptor": "enum",
+        "access": 8
       }
     }
   },
@@ -172,6 +188,9 @@
         "access": 8
       },
       "toString()Ljava/lang/String;": {
+        "access": 8
+      },
+      "getResourceAsStream(Ljava/lang/String;)Ljava/io/InputStream;": {
         "access": 8
       }
     }
@@ -458,6 +477,18 @@
       },
       "equalsIgnoreCase(Ljava/lang/String;)Z": {
         "access": 8
+      },
+      "contains(Ljava/lang/CharSequence;)Z": {
+        "access": 8
+      },
+      "trim()Ljava/lang/String;": {
+        "access": 8
+      },
+      "isEmpty()Z": {
+        "access": 8
+      },
+      "endsWith(Ljava/lang/String;)Z": {
+        "access": 8
       }
     }
   },
@@ -733,6 +764,9 @@
       },
       "toString()Ljava/lang/String;": {
         "access": 8
+      },
+      "toFile()Ljava/io/File;": {
+        "access": 8
       }
     }
   },
@@ -865,6 +899,50 @@
     "name": "java/lang/InheritableThreadLocal",
     "methods": {
       "<init>()V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/lang/Double",
+    "methods": {
+      "valueOf(D)Ljava/lang/Double;": {
+        "access": 8
+      },
+      "doubleValue()D": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/lang/annotation/Documented",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/lang/annotation/Inherited",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/io/File",
+    "methods": {
+      "<init>(Ljava/lang/String;)V": {
+        "access": 8
+      },
+      "mkdirs()Z": {
+        "access": 8
+      },
+      "mkdirs/(Z": {
+        "access": 1
+      },
+      "<init>(Ljava/io/File;Ljava/lang/String;)V": {
         "access": 8
       }
     }
