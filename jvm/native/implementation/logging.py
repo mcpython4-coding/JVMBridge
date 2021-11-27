@@ -23,5 +23,5 @@ def setLevel(method, stack, this, level):
 
 @bind_native("org/apache/logging/log4j/Logger", "info(Ljava/lang/String;)V")
 def info(method, stack, this, arg: str):
-    print("[JVM][INFO] "+arg)
+    print("[JVM][INFO]", arg)
 

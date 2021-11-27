@@ -142,6 +142,10 @@
       "CLIENT": {
         "descriptor": "enum",
         "access": 8
+      },
+      "DEDICATED_SERVER": {
+        "descriptor": "enum",
+        "access": 8
       }
     }
   },
@@ -170,6 +174,11 @@
       },
       "FORGE": {
         "descriptor": "enum",
+        "access": 8
+      }
+    },
+    "methods": {
+      "bus()Ljava/util/function/Supplier;": {
         "access": 8
       }
     }
@@ -208,6 +217,42 @@
       "CONTAINERS": {
         "descriptor": "Lnet/minecraftforge/registries/IForgeRegistry;",
         "access": 8
+      },
+      "BLOCK_ENTITIES": {
+        "descriptor": "Lnet/minecraftforge/registries/IForgeRegistry;",
+        "access": 8
+      },
+      "LOOT_MODIFIER_SERIALIZERS": {
+        "descriptor": "Lnet/minecraftforge/registries/IForgeRegistry;",
+        "access": 8
+      },
+      "ENTITIES": {
+        "descriptor": "Lnet/minecraftforge/registries/IForgeRegistry;",
+        "access": 8
+      },
+      "STRUCTURE_FEATURES": {
+        "descriptor": "Lnet/minecraftforge/registries/IForgeRegistry;",
+        "access": 8
+      },
+      "FEATURES": {
+        "descriptor": "Lnet/minecraftforge/registries/IForgeRegistry;",
+        "access": 8
+      },
+      "MOB_EFFECTS": {
+        "descriptor": "Lnet/minecraftforge/registries/IForgeRegistry;",
+        "access": 8
+      },
+      "POI_TYPES": {
+        "descriptor": "Lnet/minecraftforge/registries/IForgeRegistry;",
+        "access": 8
+      },
+      "PROFESSIONS": {
+        "descriptor": "Lnet/minecraftforge/registries/IForgeRegistry;",
+        "access": 8
+      },
+      "RECIPE_SERIALIZERS": {
+        "descriptor": "Lnet/minecraftforge/registries/IForgeRegistry;",
+        "access": 8
       }
     }
   },
@@ -227,6 +272,9 @@
       },
       "of(Lnet/minecraft/resources/ResourceLocation;Lnet/minecraftforge/registries/IForgeRegistry;)Lnet/minecraftforge/fmllegacy/RegistryObject": {
         "access": 1
+      },
+      "get()Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
       }
     }
   },
@@ -289,6 +337,9 @@
       },
       "unsafeRunWhenOn(Lnet/minecraftforge/api/distmarker/Dist;Ljava/util/function/Supplier;)V": {
         "access": 8
+      },
+      "safeRunWhenOn(Lnet/minecraftforge/api/distmarker/Dist;Ljava/util/function/Supplier;)V": {
+        "access": 8
       }
     }
   },
@@ -316,6 +367,9 @@
         "access": 8
       },
       "addListener(Lnet/minecraftforge/eventbus/api/EventPriority;Ljava/util/function/Consumer;)V": {
+        "access": 8
+      },
+      "addGenericListener(Ljava/lang/Class;Ljava/util/function/Consumer;)V": {
         "access": 8
       }
     }
@@ -459,6 +513,24 @@
         "access": 8
       },
       "defineList(Ljava/lang/String;Ljava/util/List;Ljava/util/function/Predicate;)Lnet/minecraftforge/common/ForgeConfigSpec$ConfigValue;": {
+        "access": 8
+      },
+      "worldRestart()Lnet/minecraftforge/common/ForgeConfigSpec$Builder;": {
+        "access": 8
+      },
+      "comment([Ljava/lang/String;)Lnet/minecraftforge/common/ForgeConfigSpec$Builder;": {
+        "access": 8
+      },
+      "define(Ljava/lang/String;Ljava/lang/Object;)Lnet/minecraftforge/common/ForgeConfigSpec$ConfigValue;": {
+        "access": 8
+      },
+      "defineInRange(Ljava/lang/String;DDD)Lnet/minecraftforge/common/ForgeConfigSpec$DoubleValue;": {
+        "access": 8
+      },
+      "get()Ljava/lang/Object;": {
+        "access": 8
+      },
+      "setConfig(Lcom/electronwill/nightconfig/core/CommentedConfig;)V": {
         "access": 8
       }
     }
@@ -741,6 +813,12 @@
       },
       "simpleChannel()Lnet/minecraftforge/fmllegacy/network/simple/SimpleChannel;": {
         "access": 8
+      },
+      "registerMessage(ILjava/lang/Class;Ljava/util/function/BiConsumer;Ljava/util/function/Function;Ljava/util/function/BiConsumer;)Lnet/minecraftforge/fmllegacy/network/simple/IndexedMessageCodec$MessageHandler;": {
+        "access": 8
+      },
+      "messageBuilder(Ljava/lang/Class;I)Lnet/minecraftforge/fmllegacy/network/simple/SimpleChannel$MessageBuilder;": {
+        "access": 8
       }
     }
   },
@@ -751,6 +829,147 @@
     "name": "net/minecraftforge/fmllegacy/network/simple/SimpleChannel",
     "methods": {
       "registerMessage(ILjava/lang/Class;Ljava/util/function/BiConsumer;Ljava/util/function/Function;Ljava/util/function/BiConsumer;)Lnet/minecraftforge/fmllegacy/network/simple/IndexedMessageCodec$MessageHandler;": {
+        "access": 8
+      },
+      "messageBuilder(Ljava/lang/Class;I)Lnet/minecraftforge/fmllegacy/network/simple/SimpleChannel$MessageBuilder;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraftforge/eventbus/api/Event$HasResult",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraftforge/common/capabilities/CapabilityInject",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraftforge/fml/ModList",
+    "methods": {
+      "get()Lnet/minecraftforge/fml/ModList;": {
+        "access": 8
+      },
+      "isLoaded(Ljava/lang/String;)Z": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraftforge/common/BiomeDictionary$Type",
+    "attributes": {
+      "SNOWY": {
+        "descriptor": "Lnet/minecraftforge/common/BiomeDictionary$Type;",
+        "access": 8
+      },
+      "FOREST": {
+        "descriptor": "Lnet/minecraftforge/common/BiomeDictionary$Type;",
+        "access": 8
+      },
+      "MOUNTAIN": {
+        "descriptor": "Lnet/minecraftforge/common/BiomeDictionary$Type;",
+        "access": 8
+      },
+      "OCEAN": {
+        "descriptor": "Lnet/minecraftforge/common/BiomeDictionary$Type;",
+        "access": 8
+      },
+      "NETHER": {
+        "descriptor": "Lnet/minecraftforge/common/BiomeDictionary$Type;",
+        "access": 8
+      }
+    },
+    "methods": {
+      "toString()Ljava/lang/String;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraftforge/common/ForgeTier",
+    "methods": {
+      "<init>(IIFFILnet/minecraft/tags/Tag;Ljava/util/function/Supplier;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraftforge/common/TierSortingRegistry",
+    "methods": {
+      "registerTier(Lnet/minecraft/world/item/Tier;Lnet/minecraft/resources/ResourceLocation;Ljava/util/List;Ljava/util/List;)Lnet/minecraft/world/item/Tier;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraftforge/common/TagReference",
+    "methods": {
+      "<init>(H)V": {
+        "access": 0
+      }
+    }
+  },
+  {
+    "name": "net/minecraftforge/common/util/Lazy",
+    "methods": {
+      "of(Ljava/util/function/Supplier;)Lnet/minecraftforge/common/util/Lazy;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraftforge/common/ForgeConfigSpec$ConfigValue",
+    "methods": {
+      "get()Ljava/lang/Object;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraftforge/fmllegacy/network/simple/SimpleChannel$MessageBuilder",
+    "methods": {
+      "decoder(Ljava/util/function/Function;)Lnet/minecraftforge/fmllegacy/network/simple/SimpleChannel$MessageBuilder;": {
+        "access": 8
+      },
+      "encoder(Ljava/util/function/BiConsumer;)Lnet/minecraftforge/fmllegacy/network/simple/SimpleChannel$MessageBuilder;": {
+        "access": 8
+      },
+      "consumer(Ljava/util/function/BiConsumer;)Lnet/minecraftforge/fmllegacy/network/simple/SimpleChannel$MessageBuilder;": {
+        "access": 8
+      },
+      "add()V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraftforge/common/extensions/IForgeContainerType",
+    "methods": {
+      "create(Lnet/minecraftforge/fmllegacy/network/IContainerFactory;)Lnet/minecraft/world/inventory/MenuType;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraftforge/common/ForgeConfigSpec",
+    "methods": {
+      "setConfig(Lcom/electronwill/nightconfig/core/CommentedConfig;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraftforge/client/model/data/ModelProperty",
+    "methods": {
+      "<init>()V": {
         "access": 8
       }
     }

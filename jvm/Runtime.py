@@ -50,8 +50,9 @@ class Runtime(AbstractRuntime):
         ):
             from mcpython.common.mod.util import LoadingInterruptException
 
+            stack = self.spawn_stack()
             try:
-                return method(*args)
+                return method(*args, stack=stack)
             except StackCollectingException as e:
                 e.add_trace("invoking native " + str(method) + " with " + str(args))
                 raise
@@ -61,6 +62,9 @@ class Runtime(AbstractRuntime):
                 raise StackCollectingException(
                     f"during invoking native {method} with {args}"
                 )
+            finally:
+                if self.stacks[-1] == stack:
+                    self.stacks.pop(-1)
 
         if method.code_repr is None:
             if isinstance(method, jvm.Java.JavaMethod):

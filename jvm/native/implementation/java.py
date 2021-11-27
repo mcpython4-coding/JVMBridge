@@ -20,6 +20,17 @@ from jvm.natives import bind_native, bind_annotation
 @bind_annotation("javax/annotation/ParametersAreNonnullByDefault")
 @bind_annotation("javax/annotation/meta/TypeQualifierDefault")
 @bind_annotation("javax/annotation/Nonnegative")
+@bind_annotation("org/jetbrains/annotations/ApiStatus$Internal")
+@bind_annotation("org/jetbrains/annotations/Nullable")
+@bind_annotation("org/jetbrains/annotations/NotNull")
+@bind_annotation("java/lang/annotation/Inherited")
+@bind_annotation("javax/annotation/CheckForNull")
+@bind_annotation("javax/annotation/meta/TypeQualifierNickname")
+@bind_annotation("org/jetbrains/annotations/ApiStatus$Experimental")
+@bind_annotation("org/jetbrains/annotations/ApiStatus$ScheduledForRemoval")
+@bind_annotation("org/jetbrains/annotations/ApiStatus$NonExtendable")
+@bind_annotation("dev/architectury/injectables/annotations/ExpectPlatform$Transformed")
+@bind_annotation("dev/architectury/injectables/annotations/ExpectPlatform")
 def noAnnotation(method, stack, target, args):
     pass
 
@@ -39,6 +50,7 @@ def noAction(method, stack, this, *args):
 @bind_native("java/lang/Integer", "valueOf(I)Ljava/lang/Integer;")
 @bind_native("java/lang/Boolean", "booleanValue()Z")
 @bind_native("java/lang/Class", "asSubclass(Ljava/lang/Class;)Ljava/lang/Class;")
+@bind_native("java/lang/Double", "valueOf(D)Ljava/lang/Double;")
 def thisMap(method, stack, this, *_):
     return this
 
@@ -129,8 +141,14 @@ class ListLike:
 
     @staticmethod
     @bind_native("java/util/Iterator", "<init>(ITERABLE)V")
+    @bind_native("java/util/ArrayList", "<init>(Ljava/util/Collection;)V")
     def initFromIter(method, stack, this, source: list):
         this.underlying = source
+
+    @staticmethod
+    @bind_native("java/util/Collections", "singletonList(Ljava/lang/Object;)Ljava/util/List;")
+    def singletonList(method, stack, obj):
+        return stack.vm.get_class("java/util/Iterator").create_instance().init("(ITERABLE)V", [obj])
 
     @staticmethod
     @bind_native("java/util/Iterator", "hasNext()Z")
@@ -144,6 +162,7 @@ class ListLike:
 
     @staticmethod
     @bind_native("java/util/ArrayList", "add(Ljava/lang/Object;)Z")
+    @bind_native("java/util/concurrent/CopyOnWriteArrayList", "add(Ljava/lang/Object;)Z")
     def add(method, stack, this, obj):
         this.underlying.append(obj)
         return True
@@ -152,6 +171,11 @@ class ListLike:
     @bind_native("java/util/concurrent/CopyOnWriteArrayList", "size()I")
     def size(method, stack, this):
         return len(this.underlying)
+
+    @staticmethod
+    @bind_native("java/util/Arrays", "asList([Ljava/lang/Object;)Ljava/util/List;")
+    def asList(method, stack, this):
+        return list(this)
 
 
 class MapLike:
@@ -194,6 +218,7 @@ class MapLike:
 
     @staticmethod
     @bind_native("java/util/concurrent/ConcurrentHashMap", "put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;")
+    @bind_native("java/util/HashMap", "put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;")
     def put(method, stack, this, key, value):
         this.underlying[key] = value
         return value
@@ -408,6 +433,16 @@ class String:
     def containsSubSequence(method, stack, this: str, compare: str):
         return compare in this
 
+    @staticmethod
+    @bind_native("java/lang/String", "replaceAll(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;")
+    def replaceAll(method, stack, this: str, before: str, after: str):
+        return this.replace(before, after)
+
+    @staticmethod
+    @bind_native("java/lang/String", "equalsIgnoreCase(Ljava/lang/String;)Z")
+    def equalsIgnoreCase(method, stack, this: str, other: str):
+        return this.lower() == other.lower()
+
 
 class Regex:
     @staticmethod
@@ -509,4 +544,39 @@ class IO:
     def mkdirs(method, stack, this):
         os.makedirs(this.underlying, exist_ok=True)
         return True
+
+
+class StringConcatFactory:
+    @staticmethod
+    @bind_native("java/lang/invoke/StringConcatFactory", "makeConcatWithConstants(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/invoke/CallSite;")
+    def makeConcatWithConstants(method, stack, lookup, *args):
+        print(args)
+
+
+class Repeatable:
+    @staticmethod
+    @bind_annotation("java/lang/annotation/Repeatable")
+    def noAnnotationProcessing(method, stack, target, args):
+        pass
+
+
+class Random:
+    @staticmethod
+    @bind_native("java/util/Random", "<init>()V")
+    def init(method, stack, this):
+        pass
+
+
+class Supplier:
+    @staticmethod
+    @bind_native("java/util/function/Supplier", "get()Ljava/lang/Object;")
+    def getValue(method, stack, this):
+        return this()
+
+
+class Record:
+    @staticmethod
+    @bind_native("java/lang/Record", "<init>()V")
+    def init(method, stack, this):
+        pass
 

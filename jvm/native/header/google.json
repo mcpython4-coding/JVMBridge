@@ -18,6 +18,9 @@
       },
       "of(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;)Lcom/google/common/collect/ImmutableList;": {
         "access": 8
+      },
+      "iterator()Lcom/google/common/collect/UnmodifiableIterator;": {
+        "access": 8
       }
     }
   },
@@ -46,6 +49,9 @@
       },
       "<init>(Ljava/util/Map;)V": {
         "access": 1
+      },
+      "builder()Lcom/google/common/collect/ImmutableMap$Builder;": {
+        "access": 8
       }
     }
   },
@@ -87,6 +93,9 @@
     "methods": {
       "newHashSet()Ljava/util/HashSet;": {
         "access": 8
+      },
+      "newHashSet([Ljava/lang/Object;)Ljava/util/HashSet;": {
+        "access": 8
       }
     }
   },
@@ -100,6 +109,31 @@
         "access": 8
       },
       "create()Lcom/google/gson/Gson;": {
+        "access": 8
+      },
+      "disableHtmlEscaping()Lcom/google/gson/GsonBuilder;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "com/google/common/collect/ImmutableMap$Builder",
+    "methods": {
+      "put(Ljava/lang/Object;Ljava/lang/Object;)Lcom/google/common/collect/ImmutableMap$Builder;": {
+        "access": 8
+      },
+      "build()Lcom/google/common/collect/ImmutableMap;": {
+        "access": 8
+      },
+      "<init>()V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "com/google/common/collect/ImmutableSet",
+    "methods": {
+      "of(Ljava/lang/Object;)Lcom/google/common/collect/ImmutableSet;": {
         "access": 8
       }
     }

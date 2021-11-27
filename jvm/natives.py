@@ -10,6 +10,30 @@ import simplejson
 import jvm.api
 
 
+class UnimplementedNative:
+    missing = os.path.dirname(__file__)+"/missing_methods.txt"
+
+    def __init__(self, name):
+        self.name = name
+        self.warned = False
+
+    def __call__(self, *args, **kwargs):
+
+        if not self.warned:
+            print(f"cannot invoke native {self.name} as no implementation was bound")
+            self.warned = True
+
+            text = repr(self.name)
+
+            if os.path.exists(self.missing):
+                with open(self.missing, mode="r") as f:
+                    if text in f.read():
+                        return
+
+            with open(self.missing, mode="a") as f:
+                f.write(text+"\n")
+
+
 class NativeMethod(jvm.api.AbstractMethod):
     """
     Wrapper implementation of a NativeMethod wrapping a python implemented
@@ -25,8 +49,8 @@ class NativeMethod(jvm.api.AbstractMethod):
         self.access = access
         self.bound = False
 
-    def __call__(self, *args):
-        return self.invoke(args)
+    def __call__(self, *args, stack=None):
+        return self.invoke(args, stack=stack)
 
     def invoke(self, args: typing.Iterable, stack=None):
         try:
@@ -101,6 +125,7 @@ class NativeClass(jvm.api.AbstractJavaClass):
 
                     if "enum" in d["descriptor"] or d["access"] & 0x4000:
                         self.enum_attribute_keys.add(name)
+                        self.static_attributes[name] = self.name+"::"+name
                 except:
                     print(name, d)
                     raise
@@ -111,7 +136,7 @@ class NativeClass(jvm.api.AbstractJavaClass):
                     self,
                     desc.split("(")[0],
                     "("+desc.split("(")[1],
-                    lambda m, *_: print("error native does not exists", m),
+                    lambda m, *_: UnimplementedNative(m)(*_),
                 )
 
         if "exposed_attributes" in data:
@@ -134,7 +159,7 @@ class NativeClass(jvm.api.AbstractJavaClass):
             self,
             name,
             signature,
-            lambda m, *_: print("error native does not exists", m)
+            lambda m, *_: UnimplementedNative(m)(*_)
         )
 
     def on_annotate(self, obj, args):
@@ -214,7 +239,7 @@ class NativeHeader:
 
 
 class NativeManager:
-    DEFAULT_HEADER_FILES = ["java", "forge", "mc", "ct_api", "netty", "jei", "google", "logging", "mixin", "apache"]
+    DEFAULT_HEADER_FILES = ["java", "forge", "mc", "ct_api", "netty", "jei", "google", "logging", "mixin", "apache", "night_config"]
     MATCHER2HEADER: typing.Dict[str, str] = {
         "java/": "java",
         "javax/": "java",
@@ -232,6 +257,9 @@ class NativeManager:
         "org/apache/logging/": "logging",
         "org/spongepowered/": "mixin",
         "org/apache/commons/": "apache",
+        "org/jetbrains/annotations/": "java",
+        "dev/architectury/injectables/annotations/": "java",
+        "com/electronwill/nightconfig/core/": "night_config",
     }
 
     def __init__(self):

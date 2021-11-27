@@ -29,6 +29,10 @@
       "CONSTRUCTOR": {
         "descriptor": "enum",
         "access": 8
+      },
+      "PACKAGE": {
+        "descriptor": "enum",
+        "access": 8
       }
     }
   },
@@ -78,6 +82,9 @@
         "access": 8
       },
       "getClass()Ljava/lang/Class;": {
+        "access": 8
+      },
+      "add(Ljava/lang/Object;)Z": {
         "access": 8
       }
     }
@@ -138,10 +145,17 @@
       },
       "setProperty(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;": {
         "access": 8
+      },
+      "currentTimeMillis()J": {
+        "access": 8
       }
     },
     "attributes": {
       "err": {
+        "descriptor": "Ljava/io/PrintStream;",
+        "access": 8
+      },
+      "out": {
         "descriptor": "Ljava/io/PrintStream;",
         "access": 8
       }
@@ -324,6 +338,9 @@
       },
       "iterator()Ljava/util/Iterator;": {
         "access": 8
+      },
+      "<init>()V": {
+        "access": 8
       }
     }
   },
@@ -363,6 +380,9 @@
         "access": 8
       },
       "stream()Ljava/util/stream/Stream;": {
+        "access": 8
+      },
+      "addAll(Ljava/util/Collection;)Z": {
         "access": 8
       }
     }
@@ -489,6 +509,12 @@
       },
       "endsWith(Ljava/lang/String;)Z": {
         "access": 8
+      },
+      "replaceAll(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;": {
+        "access": 8
+      },
+      "getBytes()[B": {
+        "access": 8
       }
     }
   },
@@ -520,6 +546,12 @@
       },
       "size()I": {
         "access": 8
+      },
+      "<init>(Ljava/util/Collection;)V": {
+        "access": 8
+      },
+      "iterator()Ljava/util/Iterator;": {
+        "access": 8
       }
     }
   },
@@ -545,11 +577,25 @@
       },
       "size()I": {
         "access": 8
+      },
+      "of(Ljava/lang/Object;)Ljava/util/List;": {
+        "access": 8
+      },
+      "of()Ljava/util/List;": {
+        "access": 8
+      },
+      "iterator()Ljava/util/Iterator;": {
+        "access": 8
       }
     }
   },
   {
-    "name": "java/util/Comparator"
+    "name": "java/util/Comparator",
+    "methods": {
+      "comparingLong(Ljava/util/function/ToLongFunction;)Ljava/util/Comparator;": {
+        "access": 8
+      }
+    }
   },
   {
     "name": "javax/servlet/Servlet"
@@ -562,6 +608,9 @@
       },
       "valueOf(I)Ljava/lang/Integer;": {
         "access": 8
+      },
+      "toString(I)Ljava/lang/String;": {
+        "access": 8
       }
     }
   },
@@ -572,6 +621,9 @@
         "access": 8
       },
       "size()I": {
+        "access": 8
+      },
+      "add(Ljava/lang/Object;)Z": {
         "access": 8
       }
     }
@@ -686,6 +738,12 @@
       },
       "isEmpty()Z": {
         "access": 8
+      },
+      "addAll(Ljava/util/Collection;)Z": {
+        "access": 8
+      },
+      "<init>(I)V": {
+        "access": 8
       }
     }
   },
@@ -767,6 +825,9 @@
       },
       "toFile()Ljava/io/File;": {
         "access": 8
+      },
+      "resolve(Ljava/lang/String;)Ljava/nio/file/Path;": {
+        "access": 8
       }
     }
   },
@@ -782,6 +843,12 @@
     "name": "java/nio/file/Files",
     "methods": {
       "createDirectory(Ljava/nio/file/Path;[Ljava/nio/file/attribute/FileAttribute;)Ljava/nio/file/Path;": {
+        "access": 8
+      },
+      "exists(Ljava/nio/file/Path;[Ljava/nio/file/LinkOption;)Z": {
+        "access": 8
+      },
+      "newDirectoryStream(Ljava/nio/file/Path;)Ljava/nio/file/DirectoryStream;": {
         "access": 8
       }
     }
@@ -829,6 +896,9 @@
       },
       "computeIfAbsent(Ljava/lang/Object;Ljava/util/function/Function;)Ljava/lang/Object;": {
         "access": 8
+      },
+      "put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;": {
+        "access": 8
       }
     }
   },
@@ -864,6 +934,12 @@
         "access": 8
       },
       "collect(Ljava/util/stream/Collector;)Ljava/lang/Object;": {
+        "access": 8
+      },
+      "of([Ljava/lang/Object;)Ljava/util/stream/Stream;": {
+        "access": 8
+      },
+      "reduce(Ljava/util/function/BinaryOperator;)Ljava/util/Optional;": {
         "access": 8
       }
     }
@@ -943,6 +1019,161 @@
         "access": 1
       },
       "<init>(Ljava/io/File;Ljava/lang/String;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/lang/annotation/Repeatable",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/util/Arrays",
+    "methods": {
+      "asList([Ljava/lang/Object;)Ljava/util/List;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "org/jetbrains/annotations/ApiStatus$Internal",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "org/jetbrains/annotations/Nullable",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "org/jetbrains/annotations/NotNull",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "javax/annotation/CheckForNull",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "javax/annotation/meta/TypeQualifierNickname",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/util/Collections",
+    "methods": {
+      "singletonList(Ljava/lang/Object;)Ljava/util/List;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/util/UUID",
+    "methods": {
+      "fromString(Ljava/lang/String;)Ljava/util/UUID;": {
+        "access": 8
+      },
+      "nameUUIDFromBytes([B)Ljava/util/UUID;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "dev/architectury/injectables/annotations/ExpectPlatform",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "dev/architectury/injectables/annotations/ExpectPlatform$Transformed",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "org/jetbrains/annotations/ApiStatus$NonExtendable",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "org/jetbrains/annotations/ApiStatus$ScheduledForRemoval",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "org/jetbrains/annotations/ApiStatus$Experimental",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/util/function/Supplier",
+    "methods": {
+      "get()Ljava/lang/Object;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/util/Optional",
+    "methods": {
+      "get()Ljava/lang/Object;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/io/PrintStream",
+    "methods": {
+      "println(Ljava/lang/String;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/lang/Record",
+    "methods": {
+      "<init>()V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/nio/file/DirectoryStream",
+    "methods": {
+      "iterator()Ljava/util/Iterator;": {
         "access": 8
       }
     }

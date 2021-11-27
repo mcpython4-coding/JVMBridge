@@ -44,11 +44,14 @@ FORGE_VERSION_NUMBER_TO_MC = {
     36: "1.16.5",
     35: "1.16.5",
     34: "1.16.5",
+    33: "1.17.1",
     32: "1.16.5",
     31: "1.17.1",
     30: "1.17.1",
+    29: "1.17.1",
     28: "1.17.1",
     26: "1.17.1",
+    14: "1.17.1",
     "1.12.2": "1.12.2",
 }
 
@@ -181,7 +184,9 @@ class JavaMod(mcpython.common.mod.Mod.Mod):
                     logger.print_exception("error screen error")
 
             else:
-                shared.window.close()
+                if shared.IS_CLIENT:
+                    shared.window.close()
+
                 pyglet.app.exit()
                 print("closing")
 

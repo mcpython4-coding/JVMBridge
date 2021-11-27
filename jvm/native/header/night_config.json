@@ -1,0 +1,44 @@
+[
+  {
+    "name": "com/electronwill/nightconfig/core/file/CommentedFileConfig",
+    "methods": {
+      "builder(Ljava/nio/file/Path;)Lcom/electronwill/nightconfig/core/file/CommentedFileConfigBuilder;": {
+        "access": 8
+      },
+      "load()V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "com/electronwill/nightconfig/core/file/CommentedFileConfigBuilder",
+    "methods": {
+      "sync()Lcom/electronwill/nightconfig/core/file/GenericBuilder;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "com/electronwill/nightconfig/core/file/GenericBuilder",
+    "methods": {
+      "autosave()Lcom/electronwill/nightconfig/core/file/GenericBuilder;": {
+        "access": 8
+      },
+      "writingMode(Lcom/electronwill/nightconfig/core/io/WritingMode;)Lcom/electronwill/nightconfig/core/file/GenericBuilder;": {
+        "access": 8
+      },
+      "build()Lcom/electronwill/nightconfig/core/file/FileConfig;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "com/electronwill/nightconfig/core/io/WritingMode",
+    "attributes": {
+      "REPLACE": {
+        "descriptor": "Lcom/electronwill/nightconfig/core/io/WritingMode;",
+        "access": 8
+      }
+    }
+  }
+]

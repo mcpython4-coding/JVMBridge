@@ -35,6 +35,8 @@ class Annotations:
     @bind_annotation("net/minecraftforge/common/config/Config")
     @bind_annotation("net/minecraft/MethodsReturnNonnullByDefault")
     @bind_annotation("net/minecraftforge/eventbus/api/Cancelable")
+    @bind_annotation("net/minecraftforge/eventbus/api/Event$HasResult")
+    @bind_annotation("net/minecraftforge/common/capabilities/CapabilityInject")
     def noAnnotationProcessing(method, stack, target, args):
         pass
 
@@ -59,6 +61,8 @@ def boundMethodToStage(method: AbstractMethod, event: str, mod: str):
                 raise LoadingInterruptException from None
 
             else:
+                traceback.print_exc()
+                print(e.format_exception())
                 raise LoadingInterruptException
 
 
@@ -87,6 +91,8 @@ class ModContainer:
                 raise LoadingInterruptException from None
 
             else:
+                traceback.print_exc()
+                print(e.format_exception())
                 raise LoadingInterruptException
 
     @staticmethod
@@ -115,21 +121,34 @@ class ModContainer:
         ModContainer.processEventAnnotation(method, stack, listener, [])
 
     @staticmethod
+    @bind_native("net/minecraftforge/eventbus/api/IEventBus", "addListener(Lnet/minecraftforge/eventbus/api/EventPriority;Ljava/util/function/Consumer;)V")
+    def addListener(method, stack, bus, priority, listener):
+        ModContainer.processEventAnnotation(method, stack, listener, [])
+
+    @staticmethod
     @bind_native("net/minecraftforge/fml/DistExecutor", "runForDist(Ljava/util/function/Supplier;Ljava/util/function/Supplier;)Ljava/lang/Object;")
+    @bind_native("net/minecraftforge/fml/DistExecutor", "safeRunForDist(Ljava/util/function/Supplier;Ljava/util/function/Supplier;)Ljava/lang/Object;")
     def runForDist(method, stack, client, server):
         if shared.IS_CLIENT:
             client.invoke([])
-        else:
-            server.invoke([])
+        server.invoke([])
 
     @staticmethod
     @bind_native("net/minecraftforge/fml/DistExecutor", "unsafeRunWhenOn(Lnet/minecraftforge/api/distmarker/Dist;Ljava/util/function/Supplier;)V")
+    @bind_native("net/minecraftforge/fml/DistExecutor", "runWhenOn(Lnet/minecraftforge/api/distmarker/Dist;Ljava/util/function/Supplier;)V")
+    @bind_native("net/minecraftforge/fml/DistExecutor", "safeRunWhenOn(Lnet/minecraftforge/api/distmarker/Dist;Ljava/util/function/Supplier;)V")
     def unsafeRunWhenOn(method, stack, destination, supplier):
-        print("missing execution on", destination, "of", supplier)
+        if destination == "net/minecraftforge/api/distmarker/Dist::CLIENT" and not shared.IS_CLIENT: return
+        supplier()
 
     @staticmethod
     @bind_native("net/minecraftforge/fml/javafmlmod/FMLJavaModLoadingContext", "get()Lnet/minecraftforge/fml/javafmlmod/FMLJavaModLoadingContext;")
     def getLoadingContext(method, stack):
+        pass
+
+    @staticmethod
+    @bind_native("net/minecraftforge/fml/ModLoadingContext", "registerExtensionPoint(Ljava/lang/Class;Ljava/util/function/Supplier;)V")
+    def registerExtensionPoint(method, stack, this, cls, supplier):
         pass
 
     @staticmethod
@@ -154,7 +173,8 @@ class ModContainer:
 
     @staticmethod
     @bind_native("net/minecraftforge/fml/ModLoadingContext", "registerConfig(Lnet/minecraftforge/fml/config/ModConfig$Type;Lnet/minecraftforge/fml/config/IConfigSpec;Ljava/lang/String;)V")
-    def registerConfig(method, stack, this, mod_config_type, config_spec, some_string: str):
+    @bind_native("net/minecraftforge/fml/ModLoadingContext", "registerConfig(Lnet/minecraftforge/fml/config/ModConfig$Type;Lnet/minecraftforge/fml/config/IConfigSpec;)V")
+    def registerConfig(method, stack, this, mod_config_type, config_spec, some_string: str = None):
         pass
 
     @staticmethod
@@ -168,6 +188,16 @@ class ModContainer:
     def register_impl(method, stack, obj):
         return obj
 
+    @staticmethod
+    @bind_native("net/minecraftforge/eventbus/api/EventListenerHelper", "getListenerList(Ljava/lang/Class;)Lnet/minecraftforge/eventbus/ListenerList;")
+    def getListenerList(method, stack, this):
+        return []
+
+    @staticmethod
+    @bind_native("net/minecraftforge/fml/common/Mod$EventBusSubscriber$Bus", "bus()Ljava/util/function/Supplier;")
+    def getBus(method, stack, this):
+        return lambda: None
+
 
 class Configs:
     @staticmethod
@@ -177,13 +207,18 @@ class Configs:
 
     @staticmethod
     @bind_native("net/minecraftforge/common/ForgeConfigSpec$Builder", "comment(Ljava/lang/String;)Lnet/minecraftforge/common/ForgeConfigSpec$Builder;")
+    @bind_native("net/minecraftforge/common/ForgeConfigSpec$Builder", "comment([Ljava/lang/String;)Lnet/minecraftforge/common/ForgeConfigSpec$Builder;")
     @bind_native("net/minecraftforge/common/ForgeConfigSpec$Builder", "push(Ljava/lang/String;)Lnet/minecraftforge/common/ForgeConfigSpec$Builder;")
     @bind_native("net/minecraftforge/common/ForgeConfigSpec$Builder", "defineEnum(Ljava/lang/String;Ljava/lang/Enum;)Lnet/minecraftforge/common/ForgeConfigSpec$EnumValue;")
     @bind_native("net/minecraftforge/common/ForgeConfigSpec$Builder", "define(Ljava/lang/String;Z)Lnet/minecraftforge/common/ForgeConfigSpec$BooleanValue;")
+    @bind_native("net/minecraftforge/common/ForgeConfigSpec$Builder", "define(Ljava/lang/String;Ljava/lang/Object;)Lnet/minecraftforge/common/ForgeConfigSpec$ConfigValue;")
     @bind_native("net/minecraftforge/common/ForgeConfigSpec$Builder", "pop()Lnet/minecraftforge/common/ForgeConfigSpec$Builder;")
     @bind_native("net/minecraftforge/common/ForgeConfigSpec$Builder", "build()Lnet/minecraftforge/common/ForgeConfigSpec;")
     @bind_native("net/minecraftforge/common/ForgeConfigSpec$Builder", "defineInRange(Ljava/lang/String;III)Lnet/minecraftforge/common/ForgeConfigSpec$IntValue;")
     @bind_native("net/minecraftforge/common/ForgeConfigSpec$Builder", "defineList(Ljava/lang/String;Ljava/util/List;Ljava/util/function/Predicate;)Lnet/minecraftforge/common/ForgeConfigSpec$ConfigValue;")
+    @bind_native("net/minecraftforge/common/ForgeConfigSpec$Builder", "worldRestart()Lnet/minecraftforge/common/ForgeConfigSpec$Builder;")
+    @bind_native("net/minecraftforge/common/ForgeConfigSpec$Builder", "translation(Ljava/lang/String;)Lnet/minecraftforge/common/ForgeConfigSpec$Builder;")
+    @bind_native("net/minecraftforge/common/ForgeConfigSpec$Builder", "defineInRange(Ljava/lang/String;DDD)Lnet/minecraftforge/common/ForgeConfigSpec$DoubleValue;")
     def anyUnused(method, stack, this, *_):
         return this
 
@@ -196,9 +231,17 @@ class ItemCreation:
     @staticmethod
     @bind_native("net/minecraft/world/item/Item$Properties", "<init>()V")
     @bind_native("net/minecraft/item/Item$Properties", "<init>()V")
+    @bind_native("net/minecraft/world/food/FoodProperties$Builder", "<init>()V")
     def initProperties(method, stack, this):
         this.bound_tab = None
         this.rarity = -1
+
+    @staticmethod
+    @bind_native("net/minecraft/world/item/Item$Properties", "m_41489_(Lnet/minecraft/world/food/FoodProperties;)Lnet/minecraft/world/item/Item$Properties;")
+    def createFrom(method, stack, this, other):
+        this.bound_tab = other.bound_tab
+        this.rarity = other.rarity
+        return this
 
     @staticmethod
     @bind_native("net/minecraft/world/item/Item$Properties", "m_41491_(Lnet/minecraft/world/item/CreativeModeTab;)Lnet/minecraft/world/item/Item$Properties;")
@@ -217,6 +260,14 @@ class ItemCreation:
     @bind_native("net/minecraft/world/item/Item$Properties", "m_41487_(I)Lnet/minecraft/world/item/Item$Properties;")
     def setSomeInt(method, stack, this, value: int):
         return this  # todo: do something with value
+
+    @staticmethod
+    @bind_native("net/minecraft/world/food/FoodProperties$Builder", "m_38758_(F)Lnet/minecraft/world/food/FoodProperties$Builder;")
+    @bind_native("net/minecraft/world/food/FoodProperties$Builder", "m_38765_()Lnet/minecraft/world/food/FoodProperties$Builder;")
+    @bind_native("net/minecraft/world/food/FoodProperties$Builder", "m_38760_(I)Lnet/minecraft/world/food/FoodProperties$Builder;")
+    @bind_native("net/minecraft/world/food/FoodProperties$Builder", "m_38767_()Lnet/minecraft/world/food/FoodProperties;")
+    def setSomeProperty(method, stack, this, *args):
+        return this
 
     @staticmethod
     @bind_native("net/minecraft/world/item/Item$Properties", "m_41495_(Lnet/minecraft/world/item/Item;)Lnet/minecraft/world/item/Item$Properties;")
@@ -292,13 +343,16 @@ class ItemCreation:
 
             instance.finish()
 
-        if this.properties.bound_tab is not None:
-            @shared.mod_loader(shared.CURRENT_EVENT_SUB, "stage:item_groups:load")
-            def bind_to_tab():
-                try:
-                    this.properties.bound_tab.instance.group.add(this.registry_name)
-                except ValueError:
-                    pass
+        try:
+            if this.properties.bound_tab is not None:
+                @shared.mod_loader(shared.CURRENT_EVENT_SUB, "stage:item_groups:load")
+                def bind_to_tab():
+                    try:
+                        this.properties.bound_tab.instance.group.add(this.registry_name)
+                    except ValueError:
+                        pass
+        except AttributeError:
+            pass
 
     @staticmethod
     @bind_native("net/minecraft/item/ItemGroup", "<init>(Ljava/lang/String;)V")
@@ -314,12 +368,12 @@ class ItemCreation:
     @staticmethod
     @bind_native("net/minecraft/world/item/CreativeModeTab", "<init>(Ljava/lang/String;)V")
     def initCreativeTabWithName(method, stack, this, name: str):
-        import mcpython.client.gui.InventoryCreativeTab
+        if shared.IS_CLIENT:
+            import mcpython.client.gui.InventoryCreativeTab
+            tab = mcpython.client.gui.InventoryCreativeTab.CreativeItemTab(name, ItemStack("minecraft:barrier"))
+            this.instance = tab
 
-        tab = mcpython.client.gui.InventoryCreativeTab.CreativeItemTab(name, ItemStack("minecraft:barrier"))
-        this.instance = tab
-
-        mcpython.client.gui.InventoryCreativeTab.CT_MANAGER.add_tab(tab)
+            mcpython.client.gui.InventoryCreativeTab.CT_MANAGER.add_tab(tab)
 
     @staticmethod
     @bind_native("net/minecraft/creativetab/CreativeTabs", "<init>(Ljava/lang/String;)V")
@@ -371,7 +425,8 @@ class BlockCreation:
     @staticmethod
     @bind_native("net/minecraft/world/level/block/state/BlockBehaviour$Properties", "m_60926_(Lnet/minecraft/world/level/block/state/BlockBehaviour;)Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;")
     def copyFrom(method, stack, behaviour):
-        behaviour.hardness = 1, 1
+        if behaviour is not None:
+            behaviour.hardness = 1, 1
         return behaviour
 
     @staticmethod
@@ -440,6 +495,11 @@ class BlockCreation:
         return this
 
     @staticmethod
+    @bind_native("net/minecraft/world/level/material/Material", "<init>(Lnet/minecraft/world/level/material/MaterialColor;ZZZZZZLnet/minecraft/world/level/material/PushReaction;)V")
+    def initMaterial(method, stack, this, color, *values):
+        pass
+
+    @staticmethod
     @bind_native("net/minecraft/world/level/block/Block", "<init>(Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V")
     @bind_native("net/minecraft/world/level/block/WallBlock", "<init>(Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V")
     @bind_native("net/minecraft/world/level/block/GrassBlock", "<init>(Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V")
@@ -461,6 +521,8 @@ class BlockCreation:
     @bind_native("net/minecraft/world/level/block/HorizontalDirectionalBlock", "<init>(Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V")
     @bind_native("net/minecraft/world/level/block/DoublePlantBlock", "<init>(Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V")
     @bind_native("net/minecraft/world/level/block/PipeBlock", "<init>(Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V")
+    @bind_native("net/minecraft/world/level/block/OreBlock", "<init>(Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V")
+    @bind_native("net/minecraft/world/level/block/BaseEntityBlock", "<init>(Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V")
     @bind_native("net/minecraft/block/Block", "<init>(Lnet/minecraft/block/material/Material;)V")
     @bind_native("net/minecraft/block/BlockContainer", "<init>(Lnet/minecraft/block/material/Material;)V")
     def initBlock(method, stack, this, properties):
@@ -629,7 +691,9 @@ class BlockCreation:
     @bind_native("net/minecraft/world/level/block/MushroomBlock", "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;")
     @bind_native("net/minecraft/world/level/block/AmethystClusterBlock", "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;")
     @bind_native("net/minecraft/world/level/block/FlowerPotBlock", "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;")
+    @bind_native("net/minecraft/world/level/block/OreBlock", "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;")
     @bind_native("net/minecraft/block/Block", "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;")
+    @bind_native("net/minecraft/world/level/block/BaseEntityBlock", "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;")
     @bind_native("net/minecraft/block/BlockContainer", "func_149663_c(Ljava/lang/String;)Lnet/minecraft/block/Block;")
     @bind_native("net/minecraft/block/BlockContainer", "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;")
     def setRegistryName(method, stack, this, name):
@@ -638,6 +702,7 @@ class BlockCreation:
 
     @staticmethod
     @bind_native("net/minecraft/block/Block", "getRegistryName()Lnet/minecraft/util/ResourceLocation;")
+    @bind_native("net/minecraft/world/level/block/Block", "getRegistryName()Lnet/minecraft/resources/ResourceLocation;")
     @bind_native("net/minecraft/block/BlockContainer", "getRegistryName()Lnet/minecraft/util/ResourceLocation;")
     def getRegistryName(method, stack, this):
         return stack.vm.get_class("net/minecraft/util/ResourceLocation").create_instance().init("(Ljava/lang/String;)V", this.registry_name)
@@ -706,6 +771,8 @@ class BlockCreation:
     @bind_native("net/minecraft/world/level/block/MushroomBlock", "register()V")
     @bind_native("net/minecraft/world/level/block/AmethystClusterBlock", "register()V")
     @bind_native("net/minecraft/world/level/block/FlowerPotBlock", "register()V")
+    @bind_native("net/minecraft/world/level/block/OreBlock", "register()V")
+    @bind_native("net/minecraft/world/level/block/BaseEntityBlock", "register()V")
     def register(method, stack, this):
         from mcpython.common.factory.BlockFactory import BlockFactory
         factory = BlockFactory().set_name(this.registry_name)
@@ -764,6 +831,19 @@ class BlockCreation:
     def defaultMaterialColor(method, stack, this):
         pass
 
+    @staticmethod
+    @bind_native("net/minecraft/world/level/block/Block", "m_49965_()Lnet/minecraft/world/level/block/state/StateDefinition;")
+    def getStateDefinition(method, stack, this):
+        pass
+
+    @staticmethod
+    @bind_native("net/minecraft/world/level/block/Block", "get()Lnet/minecraftforge/registries/IForgeRegistryEntry;")
+    @bind_native("net/minecraft/world/level/block/OreBlock", "get()Lnet/minecraftforge/registries/IForgeRegistryEntry;")
+    @bind_native("net/minecraft/world/level/block/DoorBlock", "get()Lnet/minecraftforge/registries/IForgeRegistryEntry;")
+    @bind_native("net/minecraft/world/level/block/BaseEntityBlock", "get()Lnet/minecraftforge/registries/IForgeRegistryEntry;")
+    def getValue(method, stack, this):
+        return this
+
 
 class FluidCreation:
     @staticmethod
@@ -810,7 +890,6 @@ class ResourceLocation:
         try:
             this.name = namespace + ":" + name
         except TypeError:
-            breakpoint()
             raise
 
     @staticmethod
@@ -818,6 +897,21 @@ class ResourceLocation:
     @bind_native("net/minecraft/resources/ResourceLocation", "<init>(Ljava/lang/String;)V")
     def init(method, stack, this, name):
         this.name = name if ":" in name else shared.CURRENT_EVENT_SUB + ":" + name
+
+    @staticmethod
+    @bind_native("net/minecraft/resources/ResourceLocation", "toString()Ljava/lang/String;")
+    def toString(method, stack, this):
+        return this.name
+
+    @staticmethod
+    @bind_native("net/minecraft/resources/ResourceLocation", "m_135827_()Ljava/lang/String;")
+    def getNamespace(method, stack, this):
+        return this.name.split(":")[0]
+
+    @staticmethod
+    @bind_native("net/minecraft/resources/ResourceLocation", "m_135815_()Ljava/lang/String;")
+    def getUnlocalizedName(method, stack, this):
+        return this.name.split(":")[1]
 
 
 class SoundType:
@@ -853,9 +947,25 @@ class WorldGen:
 
 class Effect:
     @staticmethod
+    @bind_native("net/minecraft/world/effect/MobEffect", "<init>(Lnet/minecraft/world/effect/MobEffectCategory;I)V")
+    def initMobEffect(method, stack, this, cat):
+        pass
+
+    @staticmethod
     @bind_native("net/minecraft/world/effect/MobEffect", "m_8093_()Z")
     def isInstantenous(method, stack, this):
         return True
+
+    @staticmethod
+    @bind_native("net/minecraft/world/effect/MobEffect", "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;")
+    def setRegistryName(method, stack, this, name):
+        this.registry_name = name
+        return this
+
+    @staticmethod
+    @bind_native("net/minecraft/world/effect/MobEffect", "register()V")
+    def registerMobEffect(method, stack, this):
+        pass
 
 
 class Particle:
@@ -965,6 +1075,11 @@ class DeferredRegister:
     @bind_native("net/minecraftforge/registries/DeferredRegister", "register(Ljava/lang/String;Ljava/util/function/Supplier;)Lnet/minecraftforge/fml/RegistryObject;")
     def register(method, stack, this, postfix_name: str, supplier):
         obj = supplier.invoke([])
+
+        if obj is None:
+            logger.println("Failed to register; object is null")
+            return obj
+
         try:
             obj.get_method("setRegistryName", "(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;").invoke([obj, this.mod_name + ":" + postfix_name])
             obj.get_method("register", "()V").invoke([obj])
@@ -1011,6 +1126,106 @@ class Codec:
     @bind_native("com/mojang/serialization/codecs/RecordCodecBuilder", "register()V")
     def register(method, stack, this):
         pass
+
+
+class Properties:
+    @staticmethod
+    @bind_native("net/minecraft/world/level/block/state/properties/BooleanProperty", "m_61465_(Ljava/lang/String;)Lnet/minecraft/world/level/block/state/properties/BooleanProperty;")
+    def createByName(method, stack, name: str):
+        return method.get_class().create_instance()
+
+
+class BiomeDictionary_Type:
+    @staticmethod
+    @bind_native("net/minecraftforge/common/BiomeDictionary$Type", "toString()Ljava/lang/String;")
+    def toString(method, stack, this):
+        return this.split("::")[-1]
+
+
+class Tags:
+    @staticmethod
+    @bind_native("net/minecraft/tags/BlockTags", "createOptional(Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraftforge/common/Tags$IOptionalNamedTag;")
+    def createOptional(method, stack, name):
+        name = name if isinstance(name, str) else name.name
+        return stack.vm.get_class("net/minecraftforge/common/TagReference").create_instance().init("(H)V", "blocks", name)
+
+    @staticmethod
+    @bind_native("net/minecraftforge/common/TagReference", "<init>(H)V")
+    def init_tag_ref(method, stack, this, group: str, name: str):
+        this.group = group
+        this.name = name
+
+
+class LootModifier:
+    @staticmethod
+    @bind_native("net/minecraftforge/common/loot/GlobalLootModifierSerializer", "<init>()V")
+    def init(method, stack, this):
+        pass
+
+
+class EntityBuilder:
+    @staticmethod
+    @bind_native("net/minecraft/world/level/block/entity/BlockEntityType$Builder", "m_155273_(Lnet/minecraft/world/level/block/entity/BlockEntityType$BlockEntitySupplier;[Lnet/minecraft/world/level/block/Block;)Lnet/minecraft/world/level/block/entity/BlockEntityType$Builder;")
+    def create(method, stack, supplier, blocks):
+        return method.get_class().create_instance()
+
+    @staticmethod
+    @bind_native("net/minecraft/world/level/block/entity/BlockEntityType$Builder", "m_58966_(Lcom/mojang/datafixers/types/Type;)Lnet/minecraft/world/level/block/entity/BlockEntityType;")
+    def setDatafixerType(method, stack, instance, datafixer_type):
+        return instance
+
+    @staticmethod
+    @bind_native("net/minecraft/world/level/block/entity/BlockEntityType$Builder", "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;")
+    def setRegistryName(method, stack, this, name):
+        this.registry_name = name
+        return this
+
+    @staticmethod
+    @bind_native("net/minecraft/world/level/block/entity/BlockEntityType$Builder", "register()V")
+    def register(method, stack, this):
+        pass
+
+
+class Networking:
+    @staticmethod
+    @bind_native("net/minecraftforge/fmllegacy/network/NetworkRegistry$ChannelBuilder", "named(Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraftforge/fmllegacy/network/NetworkRegistry$ChannelBuilder;")
+    def create_named_channel(method, stack, name):
+        return stack.vm.get_class("net/minecraftforge/fmllegacy/network/NetworkRegistry$ChannelBuilder").create_instance()
+
+    @staticmethod
+    @bind_native("net/minecraftforge/fmllegacy/network/NetworkRegistry$ChannelBuilder", "clientAcceptedVersions(Ljava/util/function/Predicate;)Lnet/minecraftforge/fmllegacy/network/NetworkRegistry$ChannelBuilder;")
+    @bind_native("net/minecraftforge/fmllegacy/network/NetworkRegistry$ChannelBuilder", "serverAcceptedVersions(Ljava/util/function/Predicate;)Lnet/minecraftforge/fmllegacy/network/NetworkRegistry$ChannelBuilder;")
+    def clientAcceptedVersions(method, stack, this, predicate):
+        return this
+
+    @staticmethod
+    @bind_native("net/minecraftforge/fmllegacy/network/NetworkRegistry$ChannelBuilder", "networkProtocolVersion(Ljava/util/function/Supplier;)Lnet/minecraftforge/fmllegacy/network/NetworkRegistry$ChannelBuilder;")
+    def networkProtocolVersion(method, stack, this, supplier):
+        return this
+
+    @staticmethod
+    @bind_native("net/minecraftforge/fmllegacy/network/NetworkRegistry$ChannelBuilder", "simpleChannel()Lnet/minecraftforge/fmllegacy/network/simple/SimpleChannel;")
+    def createSimpleChannel(method, stack, this):
+        return this
+
+
+class ReloadListener:
+    @staticmethod
+    @bind_native("net/minecraft/server/packs/resources/SimpleJsonResourceReloadListener", "<init>(Lcom/google/gson/Gson;Ljava/lang/String;)V")
+    def initSimple(method, stack, this, gson_instance, name):
+        pass
+
+
+class TranslationTextComponent:
+    @staticmethod
+    @bind_native("net/minecraft/network/chat/TranslatableComponent", "<init>(Ljava/lang/String;)V")
+    def init(method, stack, this, name: str):
+        this.name = name
+
+    @staticmethod
+    @bind_native("net/minecraft/network/chat/TranslatableComponent", "add(Ljava/lang/Object;)Z")
+    def add_trace(method, stack, this, obj):
+        return True
 
 
 jvm.api.vm.get_class("net/minecraft/world/item/CreativeModeTab").set_static_attribute("f_40748_", [])

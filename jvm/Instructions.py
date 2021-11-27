@@ -749,6 +749,29 @@ class POP(OpcodeInstruction):
 
 
 @AbstractBytecodeContainer.register_instruction
+class POP2(OpcodeInstruction):
+    OPCODES = {0x58}
+
+    @classmethod
+    def invoke(cls, data: typing.Any, stack: AbstractStack):
+        # todo: check computation type
+        stack.pop()
+        stack.pop()
+
+    @classmethod
+    def validate_stack(cls, command_index, prepared_data: typing.Any, container: AbstractBytecodeContainer,
+                       stack: AbstractStack):
+        stack.pop()
+        stack.pop()
+
+    @classmethod
+    def prepare_python_bytecode_instructions(cls, command_index, prepared_data: typing.Any,
+                                             container: AbstractBytecodeContainer, builder: PyBytecodeBuilder):
+        builder.add_instruction(PyOpcodes.POP_TOP)
+        builder.add_instruction(PyOpcodes.POP_TOP)
+
+
+@AbstractBytecodeContainer.register_instruction
 class DUP(OpcodeInstruction):
     OPCODES = {0x59}
 
@@ -911,8 +934,8 @@ class FDIV(OpcodeInstruction):
 
 
 @AbstractBytecodeContainer.register_instruction
-class LRem(OpcodeInstruction):
-    OPCODES = {0x71}
+class Rem(OpcodeInstruction):
+    OPCODES = {0x70, 0x71}
 
     @classmethod
     def invoke(cls, data: typing.Any, stack: AbstractStack):
