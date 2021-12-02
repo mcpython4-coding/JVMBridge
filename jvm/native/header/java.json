@@ -46,6 +46,10 @@
       "RUNTIME": {
         "descriptor": "enum",
         "access": 8
+      },
+      "SOURCE": {
+        "descriptor": "enum",
+        "access": 8
       }
     }
   },
@@ -85,6 +89,15 @@
         "access": 8
       },
       "add(Ljava/lang/Object;)Z": {
+        "access": 8
+      },
+      "toString()Ljava/lang/String;": {
+        "access": 8
+      },
+      "stateChanged(Ljava/lang/Object;)V": {
+        "access": 8
+      },
+      "getConfigDirectory()Ljava/nio/file/Path;": {
         "access": 8
       }
     }
@@ -148,6 +161,9 @@
       },
       "currentTimeMillis()J": {
         "access": 8
+      },
+      "currentTimeMillis()": {
+        "access": 1
       }
     },
     "attributes": {
@@ -177,6 +193,12 @@
       },
       "getContextClassLoader()Ljava/lang/ClassLoader;": {
         "access": 8
+      },
+      "<init>(Ljava/lang/Runnable;Ljava/lang/String;)V": {
+        "access": 8
+      },
+      "start()V": {
+        "access": 8
       }
     }
   },
@@ -205,6 +227,21 @@
         "access": 8
       },
       "getResourceAsStream(Ljava/lang/String;)Ljava/io/InputStream;": {
+        "access": 8
+      },
+      "getConstructor([Ljava/lang/Class;)Ljava/lang/reflect/Constructor;": {
+        "access": 8
+      },
+      "forName(Ljava/lang/String;ZLjava/lang/ClassLoader;)Ljava/lang/Class;": {
+        "access": 8
+      },
+      "getFields()[Ljava/lang/reflect/Field;": {
+        "access": 8
+      },
+      "getComponentType()Ljava/lang/Class;": {
+        "access": 8
+      },
+      "getDeclaredFields()[Ljava/lang/reflect/Field;": {
         "access": 8
       }
     }
@@ -265,6 +302,15 @@
         "access": 8
       },
       "isEmpty()Z": {
+        "access": 8
+      },
+      "forEach(Ljava/util/function/Consumer;)V": {
+        "access": 8
+      },
+      "stream()Ljava/util/stream/Stream;": {
+        "access": 8
+      },
+      "clear()V": {
         "access": 8
       }
     }
@@ -341,6 +387,9 @@
       },
       "<init>()V": {
         "access": 8
+      },
+      "clear()V": {
+        "access": 8
       }
     }
   },
@@ -364,6 +413,9 @@
       },
       "put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;": {
         "access": 8
+      },
+      "newKeySet()Ljava/util/concurrent/ConcurrentHashMap$KeySetView;": {
+        "access": 8
       }
     }
   },
@@ -383,6 +435,12 @@
         "access": 8
       },
       "addAll(Ljava/util/Collection;)Z": {
+        "access": 8
+      },
+      "forEach(Ljava/util/function/Consumer;)V": {
+        "access": 8
+      },
+      "contains(Ljava/lang/Object;)Z": {
         "access": 8
       }
     }
@@ -420,6 +478,15 @@
         "access": 8
       },
       "computeIfAbsent(Ljava/lang/Object;Ljava/util/function/Function;)Ljava/lang/Object;": {
+        "access": 8
+      },
+      "getOrDefault(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;": {
+        "access": 8
+      },
+      "of(Ljava/lang/Object;Ljava/lang/Object;)Ljava/util/Map;": {
+        "access": 8
+      },
+      "values()Ljava/util/Collection;": {
         "access": 8
       }
     }
@@ -460,6 +527,9 @@
       },
       "initialValue()Ljava/lang/Object;": {
         "access": 0
+      },
+      "withInitial(Ljava/util/function/Supplier;)Ljava/lang/ThreadLocal;": {
+        "access": 8
       }
     }
   },
@@ -470,6 +540,12 @@
         "access": 8
       },
       "booleanValue()Z": {
+        "access": 8
+      }
+    },
+    "attributes": {
+      "FALSE": {
+        "descriptor": "Ljava/lang/Boolean;",
         "access": 8
       }
     }
@@ -515,6 +591,21 @@
       },
       "getBytes()[B": {
         "access": 8
+      },
+      "indexOf(I)I": {
+        "access": 8
+      },
+      "replace(Ljava/lang/CharSequence;Ljava/lang/CharSequence;)Ljava/lang/String;": {
+        "access": 8
+      },
+      "toCharArray()[C": {
+        "access": 8
+      },
+      "replaceFirst(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;": {
+        "access": 8
+      },
+      "valueOf(Ljava/lang/Object;)Ljava/lang/String;": {
+        "access": 8
       }
     }
   },
@@ -552,6 +643,18 @@
       },
       "iterator()Ljava/util/Iterator;": {
         "access": 8
+      },
+      "forEach(Ljava/util/function/Consumer;)V": {
+        "access": 8
+      },
+      "clear()V": {
+        "access": 8
+      },
+      "addAll(Ljava/util/Collection;)Z": {
+        "access": 8
+      },
+      "stream()Ljava/util/stream/Stream;": {
+        "access": 8
       }
     }
   },
@@ -586,6 +689,15 @@
       },
       "iterator()Ljava/util/Iterator;": {
         "access": 8
+      },
+      "of(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/util/List;": {
+        "access": 8
+      },
+      "clear()V": {
+        "access": 8
+      },
+      "stream()Ljava/util/stream/Stream;": {
+        "access": 8
       }
     }
   },
@@ -593,6 +705,12 @@
     "name": "java/util/Comparator",
     "methods": {
       "comparingLong(Ljava/util/function/ToLongFunction;)Ljava/util/Comparator;": {
+        "access": 8
+      },
+      "thenComparingInt(Ljava/util/function/ToIntFunction;)Ljava/util/Comparator;": {
+        "access": 8
+      },
+      "thenComparing(Ljava/util/function/Function;)Ljava/util/Comparator;": {
         "access": 8
       }
     }
@@ -610,6 +728,9 @@
         "access": 8
       },
       "toString(I)Ljava/lang/String;": {
+        "access": 8
+      },
+      "intValue()I": {
         "access": 8
       }
     }
@@ -655,6 +776,9 @@
       },
       "unlock()V": {
         "access": 8
+      },
+      "<init>(Z)V": {
+        "access": 8
       }
     }
   },
@@ -673,6 +797,9 @@
         "access": 8
       },
       "name()Ljava/lang/String;": {
+        "access": 8
+      },
+      "literal()Lcom/mojang/brigadier/builder/LiteralArgumentBuilder;": {
         "access": 8
       }
     }
@@ -744,6 +871,9 @@
       },
       "<init>(I)V": {
         "access": 8
+      },
+      "forEach(Ljava/util/function/Consumer;)V": {
+        "access": 8
       }
     }
   },
@@ -803,6 +933,12 @@
     "methods": {
       "<init>(Ljava/lang/Class;)V": {
         "access": 8
+      },
+      "<init>(Ljava/util/Map;)V": {
+        "access": 8
+      },
+      "values()Ljava/util/Collection;": {
+        "access": 8
       }
     }
   },
@@ -849,6 +985,9 @@
         "access": 8
       },
       "newDirectoryStream(Ljava/nio/file/Path;)Ljava/nio/file/DirectoryStream;": {
+        "access": 8
+      },
+      "newBufferedReader(Ljava/nio/file/Path;Ljava/nio/charset/Charset;)Ljava/io/BufferedReader;": {
         "access": 8
       }
     }
@@ -899,6 +1038,15 @@
       },
       "put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;": {
         "access": 8
+      },
+      "getOrDefault(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;": {
+        "access": 8
+      },
+      "values()Ljava/util/Collection;": {
+        "access": 8
+      },
+      "get(Ljava/lang/Object;)Ljava/lang/Object;": {
+        "access": 8
       }
     }
   },
@@ -908,6 +1056,10 @@
       "ROOT": {
         "descriptor": "Ljava/util/Locale;",
         "access": 8
+      },
+      "US": {
+        "descriptor": "Ljava/util/Locale;",
+        "access": 8
       }
     }
   },
@@ -915,6 +1067,9 @@
     "name": "java/awt/Color",
     "methods": {
       "<init>(IIII)V": {
+        "access": 8
+      },
+      "<init>(I)V": {
         "access": 8
       }
     }
@@ -940,6 +1095,18 @@
         "access": 8
       },
       "reduce(Ljava/util/function/BinaryOperator;)Ljava/util/Optional;": {
+        "access": 8
+      },
+      "forEach(Ljava/util/function/Consumer;)V": {
+        "access": 8
+      },
+      "map(Ljava/util/function/Function;)Ljava/util/stream/Stream;": {
+        "access": 8
+      },
+      "concat(Ljava/util/stream/Stream;Ljava/util/stream/Stream;)Ljava/util/stream/Stream;": {
+        "access": 8
+      },
+      "toList()Ljava/util/List;": {
         "access": 8
       }
     }
@@ -1036,6 +1203,9 @@
     "methods": {
       "asList([Ljava/lang/Object;)Ljava/util/List;": {
         "access": 8
+      },
+      "stream([Ljava/lang/Object;)Ljava/util/stream/Stream;": {
+        "access": 8
       }
     }
   },
@@ -1083,6 +1253,15 @@
     "name": "java/util/Collections",
     "methods": {
       "singletonList(Ljava/lang/Object;)Ljava/util/List;": {
+        "access": 8
+      },
+      "emptyList()Ljava/util/List;": {
+        "access": 8
+      },
+      "unmodifiableList(Ljava/util/List;)Ljava/util/List;": {
+        "access": 8
+      },
+      "addAll(Ljava/util/Collection;[Ljava/lang/Object;)Z": {
         "access": 8
       }
     }
@@ -1151,6 +1330,9 @@
     "methods": {
       "get()Ljava/lang/Object;": {
         "access": 8
+      },
+      "ofNullable(Ljava/lang/Object;)Ljava/util/Optional;": {
+        "access": 8
       }
     }
   },
@@ -1174,6 +1356,214 @@
     "name": "java/nio/file/DirectoryStream",
     "methods": {
       "iterator()Ljava/util/Iterator;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "org/jetbrains/annotations/VisibleForTesting",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/util/concurrent/TimeUnit",
+    "attributes": {
+      "MILLISECONDS": {
+        "descriptor": "Ljava/util/concurrent/TimeUnit;",
+        "access": 8
+      }
+    },
+    "methods": {
+      "toNanos(J)J": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "javax/annotation/concurrent/ThreadSafe",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "javax/annotation/OverridingMethodsMustInvokeSuper",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/lang/Exception",
+    "methods": {
+      "<init>()V": {
+        "access": 8
+      },
+      "getStackTrace()[Ljava/lang/StackTraceElement;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/lang/reflect/Constructor",
+    "methods": {
+      "newInstance([Ljava/lang/Object;)Ljava/lang/Object;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/util/concurrent/atomic/AtomicReference",
+    "methods": {
+      "<init>()V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "org/intellij/lang/annotations/Pattern",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "org/jetbrains/annotations/Contract",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "org/jetbrains/annotations/ApiStatus$OverrideOnly",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "org/jetbrains/annotations/Debug$Renderer",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/lang/IllegalArgumentException",
+    "methods": {
+      "<init>(Ljava/lang/String;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/lang/reflect/Proxy",
+    "methods": {
+      "newProxyInstance(Ljava/lang/ClassLoader;[Ljava/lang/Class;Ljava/lang/reflect/InvocationHandler;)Ljava/lang/Object;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/util/concurrent/Executors",
+    "methods": {
+      "newSingleThreadScheduledExecutor(Ljava/util/concurrent/ThreadFactory;)Ljava/util/concurrent/ScheduledExecutorService;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/time/format/DateTimeFormatter",
+    "methods": {
+      "ofPattern(Ljava/lang/String;)Ljava/time/format/DateTimeFormatter;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/util/concurrent/atomic/AtomicBoolean",
+    "methods": {
+      "<init>(Z)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/nio/charset/StandardCharsets",
+    "attributes": {
+      "UTF_8": {
+        "descriptor": "Ljava/nio/charset/Charset;",
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/text/DecimalFormatSymbols",
+    "methods": {
+      "<init>()V": {
+        "access": 8
+      },
+      "setDecimalSeparator(C)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/text/DecimalFormat",
+    "methods": {
+      "<init>(Ljava/lang/String;)V": {
+        "access": 8
+      },
+      "setDecimalFormatSymbols(Ljava/text/DecimalFormatSymbols;)V": {
+        "access": 8
+      },
+      "setRoundingMode(Ljava/math/RoundingMode;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/math/RoundingMode",
+    "attributes": {
+      "DOWN": {
+        "descriptor": "Ljava/math/RoundingMode;",
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/util/LinkedHashMap",
+    "methods": {
+      "<init>()V": {
+        "access": 8
+      },
+      "put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;": {
+        "access": 8
+      },
+      "containsKey(Ljava/lang/Object;)Z": {
+        "access": 8
+      },
+      "clear()V": {
+        "access": 8
+      },
+      "entrySet()Ljava/util/Set;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/text/Collator",
+    "methods": {
+      "getInstance()Ljava/text/Collator;": {
         "access": 8
       }
     }

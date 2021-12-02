@@ -1,3 +1,4 @@
+import os.path
 import traceback
 import typing
 
@@ -14,11 +15,30 @@ from mcpython.engine import logger
 EVENT2STAGE: typing.Dict[str, str] = {
     "(Lnet/minecraftforge/event/RegistryEvent$Register<Lnet/minecraft/world/item/Item;>;)V": "stage:item:factory_usage",
     "(Lnet/minecraftforge/event/RegistryEvent$Register<Lnet/minecraft/world/level/block/Block;>;)V": "stage:block:factory_usage",
+    "(Lnet/minecraftforge/event/RegistryEvent$Register<Lnet/minecraft/world/level/block/entity/BlockEntityType<*>;>;)V": "stage:block:bind_special",
     "(Lnet/minecraftforge/event/RegistryEvent$Register<Lnet/minecraft/block/Block;>;)V": "stage:block:factory_usage",
     "Lnet/minecraftforge/fml/common/event/FMLPreInitializationEvent;": "stage:mod:init",
     "Lnet/minecraftforge/fml/common/event/FMLInitializationEvent;": "stage:mod:init",
     "Lnet/minecraftforge/fml/common/event/FMLPostInitializationEvent;": "stage:post",
+    "Lnet/minecraftforge/client/event/ModelBakeEvent;": "stage:model:model_bake",
+    "Lnet/minecraftforge/client/event/TextureStitchEvent$Pre;": "stage:textureatlas:prepare",
+    "Lnet/minecraftforge/client/event/TextureStitchEvent$Post;": "stage:textureatlas:prepare",
+    "Lnet/minecraftforge/fml/event/lifecycle/FMLClientSetupEvent;": "stage:client:work",
+    "Lnet/minecraftforge/fml/event/config/ModConfigEvent$Loading;": "stage:mod:config:load",
+    "Lnet/minecraftforge/fml/event/config/ModConfigEvent;": "stage:mod:config:work",
+    "Lnet/minecraftforge/event/RegisterCommandsEvent;": "stage:commands",
+    "(Lnet/minecraftforge/event/RegistryEvent$Register<Lnet/minecraft/world/item/crafting/RecipeSerializer<*>;>;)V": "stage:recipes:serializers",
+    "Lnet/minecraftforge/event/world/BiomeLoadingEvent;": "stage:worldgen:biomes",
+    "(Lnet/minecraftforge/event/RegistryEvent$Register<Lnet/minecraft/world/level/biome/Biome;>;)V": "stage:worldgen:biomes",
+    "Lnet/minecraftforge/client/event/ModelRegistryEvent;": "stage:model:model_create",
+    "(Lnet/minecraftforge/event/RegistryEvent$Register<Lnet/minecraft/world/inventory/MenuType<*>;>;)V": "stage:states",
+    "(Lnet/minecraftforge/event/RegistryEvent$MissingMappings<Lnet/minecraft/world/item/Item;>;)V": "stage:item:overwrite",
+    "(Lnet/minecraftforge/event/RegistryEvent$MissingMappings<Lnet/minecraft/world/level/block/Block;>;)V": "stage:block:overwrite",
+    "(Lnet/minecraftforge/event/RegistryEvent$Register<Lnet/minecraft/world/level/material/Fluid;>;)V": "stage:fluids:register",
+    "(Lnet/minecraftforge/event/RegistryEvent$Register<Lnet/minecraft/world/level/levelgen/feature/StructureFeature<*>;>;)V": "stage:worldgen:feature",
 }
+
+missing_event_file = os.path.dirname(os.path.dirname(__file__))+"/missing_events.txt"
 
 
 class Annotations:
@@ -37,6 +57,8 @@ class Annotations:
     @bind_annotation("net/minecraftforge/eventbus/api/Cancelable")
     @bind_annotation("net/minecraftforge/eventbus/api/Event$HasResult")
     @bind_annotation("net/minecraftforge/common/capabilities/CapabilityInject")
+    @bind_annotation("net/minecraftforge/registries/ObjectHolder")
+    @bind_annotation("com/mojang/blaze3d/MethodsReturnNonnullByDefault")
     def noAnnotationProcessing(method, stack, target, args):
         pass
 
@@ -44,7 +66,7 @@ class Annotations:
 def boundMethodToStage(method: AbstractMethod, event: str, mod: str):
     @shared.mod_loader(mod, event)
     def work():
-        print(mod, event, method)
+        # print(mod, event, method)
         shared.CURRENT_EVENT_SUB = mod
         try:
             method.invoke([] if method.access & 0x0008 else [None])
@@ -115,10 +137,25 @@ class ModContainer:
 
             logger.println(f"[FML][WARN] mod {shared.CURRENT_EVENT_SUB} subscribed to event {signature} with {target}, but stage was not found")
 
+            if os.path.exists(missing_event_file):
+                with open(missing_event_file) as f:
+                    data = f.read()
+            else:
+                data = ""
+
+            if signature not in data:
+                with open(missing_event_file, mode="a") as f:
+                    f.write(f"mod {shared.CURRENT_EVENT_SUB} event {signature} with {target}\n")
+
     @staticmethod
     @bind_native("net/minecraftforge/eventbus/api/IEventBus", "addListener(Ljava/util/function/Consumer;)V")
     def addListener(method, stack, bus, listener):
         ModContainer.processEventAnnotation(method, stack, listener, [])
+
+    @staticmethod
+    @bind_native("net/minecraftforge/eventbus/api/IEventBus", "addGenericListener(Ljava/lang/Class;Ljava/util/function/Consumer;)V")
+    def addGenericListener(method, stack, this, cls, consumer):
+        print("generic listener", this, cls, consumer)
 
     @staticmethod
     @bind_native("net/minecraftforge/eventbus/api/IEventBus", "addListener(Lnet/minecraftforge/eventbus/api/EventPriority;Ljava/util/function/Consumer;)V")
@@ -384,6 +421,19 @@ class ItemCreation:
         this.instance = tab
 
         mcpython.client.gui.InventoryCreativeTab.CT_MANAGER.add_tab(tab)
+
+    @staticmethod
+    @bind_native("net/minecraft/world/item/Item", "get()Lnet/minecraftforge/registries/IForgeRegistryEntry;")
+    @bind_native("net/minecraft/world/item/BlockItem", "get()Lnet/minecraftforge/registries/IForgeRegistryEntry;")
+    def getInstance(method, stack, this):
+        return this
+
+
+class ItemStackImpl:
+    @staticmethod
+    @bind_native("net/minecraft/world/item/ItemStack", "<init>(Lnet/minecraft/world/level/ItemLike;)V")
+    def initItemStack(method, stack, this, item_like):
+        this.underlying = ItemStack()
 
 
 class BlockCreation:
@@ -841,6 +891,9 @@ class BlockCreation:
     @bind_native("net/minecraft/world/level/block/OreBlock", "get()Lnet/minecraftforge/registries/IForgeRegistryEntry;")
     @bind_native("net/minecraft/world/level/block/DoorBlock", "get()Lnet/minecraftforge/registries/IForgeRegistryEntry;")
     @bind_native("net/minecraft/world/level/block/BaseEntityBlock", "get()Lnet/minecraftforge/registries/IForgeRegistryEntry;")
+    @bind_native("net/minecraft/world/level/block/TrapDoorBlock", "get()Lnet/minecraftforge/registries/IForgeRegistryEntry;")
+    @bind_native("net/minecraft/world/level/block/FenceBlock", "get()Lnet/minecraftforge/registries/IForgeRegistryEntry;")
+    @bind_native("net/minecraft/world/level/block/FenceGateBlock", "get()Lnet/minecraftforge/registries/IForgeRegistryEntry;")
     def getValue(method, stack, this):
         return this
 
@@ -1185,6 +1238,22 @@ class EntityBuilder:
     def register(method, stack, this):
         pass
 
+    @staticmethod
+    @bind_native("net/minecraft/world/entity/ai/attributes/AttributeModifier", "<init>(Ljava/util/UUID;Ljava/lang/String;DLnet/minecraft/world/entity/ai/attributes/AttributeModifier$Operation;)V")
+    def initEntityAttributeModifier(method, stack, this, bind_uuid, string, double, operation):
+        pass
+
+    @staticmethod
+    @bind_native("net/minecraft/world/entity/EntityDimensions", "m_20395_(FF)Lnet/minecraft/world/entity/EntityDimensions;")
+    @bind_native("net/minecraft/world/entity/EntityDimensions", "m_20398_(FF)Lnet/minecraft/world/entity/EntityDimensions;")
+    def m_20395_(method, stack, a, b):
+        return method.get_class().create_instance()
+
+    @staticmethod
+    @bind_native("net/minecraft/world/entity/EntityType$Builder", "m_20702_(I)Lnet/minecraft/world/entity/EntityType$Builder;")
+    def m_20702_(method, stack, this, some_int):
+        return this
+
 
 class Networking:
     @staticmethod
@@ -1207,6 +1276,13 @@ class Networking:
     @bind_native("net/minecraftforge/fmllegacy/network/NetworkRegistry$ChannelBuilder", "simpleChannel()Lnet/minecraftforge/fmllegacy/network/simple/SimpleChannel;")
     def createSimpleChannel(method, stack, this):
         return this
+
+
+class Packages:
+    @staticmethod
+    @bind_native("net/minecraft/network/syncher/SynchedEntityData", "m_135353_(Ljava/lang/Class;Lnet/minecraft/network/syncher/EntityDataSerializer;)Lnet/minecraft/network/syncher/EntityDataAccessor;")
+    def m_135353_(method, stack, cls, serializer):
+        return method.get_class().create_instance()
 
 
 class ReloadListener:

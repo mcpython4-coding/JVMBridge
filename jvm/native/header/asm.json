@@ -1,0 +1,10 @@
+[
+  {
+    "name": "org/objectweb/asm/Type",
+    "methods": {
+      "getType(Ljava/lang/Class;)Lorg/objectweb/asm/Type;": {
+        "access": 8
+      }
+    }
+  }
+]

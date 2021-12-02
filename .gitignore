@@ -128,3 +128,4 @@ dmypy.json
 .pyre/
 /tests/
 /jvm/missing_methods.txt
+/jvm/native/missing_events.txt

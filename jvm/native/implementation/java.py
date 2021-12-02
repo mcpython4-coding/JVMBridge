@@ -2,12 +2,15 @@ import collections
 import os.path
 import re
 import threading
+import time
+import uuid
 
 import jvm.api
 from jvm.api import AbstractMethod
 from jvm.api import AbstractStack
 from jvm.JavaExceptionStack import StackCollectingException
 from jvm.natives import bind_native, bind_annotation
+from mcpython.engine import logger
 
 
 @bind_annotation("javax/annotation/Nullable")
@@ -31,6 +34,8 @@ from jvm.natives import bind_native, bind_annotation
 @bind_annotation("org/jetbrains/annotations/ApiStatus$NonExtendable")
 @bind_annotation("dev/architectury/injectables/annotations/ExpectPlatform$Transformed")
 @bind_annotation("dev/architectury/injectables/annotations/ExpectPlatform")
+@bind_annotation("org/jetbrains/annotations/VisibleForTesting")
+@bind_annotation("org/jetbrains/annotations/Contract")
 def noAnnotation(method, stack, target, args):
     pass
 
@@ -49,8 +54,10 @@ def noAction(method, stack, this, *args):
 @bind_native("java/lang/Boolean", "valueOf(Z)Ljava/lang/Boolean;")
 @bind_native("java/lang/Integer", "valueOf(I)Ljava/lang/Integer;")
 @bind_native("java/lang/Boolean", "booleanValue()Z")
+@bind_native("java/lang/Integer", "intValue()I")
 @bind_native("java/lang/Class", "asSubclass(Ljava/lang/Class;)Ljava/lang/Class;")
 @bind_native("java/lang/Double", "valueOf(D)Ljava/lang/Double;")
+@bind_native("java/lang/Double", "doubleValue()D")
 def thisMap(method, stack, this, *_):
     return this
 
@@ -61,6 +68,11 @@ def parseToInt(method, stack, value):
         return int(value)
     except ValueError:
         return 0
+
+
+@bind_native("java/lang/Integer", "toString(I)Ljava/lang/String;")
+def transform2string(method, stack, this):
+    return str(this)
 
 
 class SetLike:
@@ -80,6 +92,7 @@ class SetLike:
 
     @staticmethod
     @bind_native("java/util/LinkedHashSet", "<init>(I)V")
+    @bind_native("java/util/HashSet", "<init>(I)V")
     def init2(method, stack, this, max_size):
         this.underlying = set()
         this.max_size = max_size
@@ -98,6 +111,12 @@ class SetLike:
             return False
 
         this.underlying.add(element)
+        return True
+
+    @staticmethod
+    @bind_native("java/util/HashSet", "addAll(Ljava/util/Collection;)Z")
+    def addAll(method, stack, this, elements):
+        this.underlying |= set(elements)  # todo: check max size
         return True
 
     @staticmethod
@@ -169,6 +188,7 @@ class ListLike:
 
     @staticmethod
     @bind_native("java/util/concurrent/CopyOnWriteArrayList", "size()I")
+    @bind_native("java/util/ArrayList", "size()I")
     def size(method, stack, this):
         return len(this.underlying)
 
@@ -176,6 +196,11 @@ class ListLike:
     @bind_native("java/util/Arrays", "asList([Ljava/lang/Object;)Ljava/util/List;")
     def asList(method, stack, this):
         return list(this)
+
+    @staticmethod
+    @bind_native("java/util/ArrayList", "clear()V")
+    def clearArrayList(method, stack, this):
+        this.underlying.clear()
 
 
 class MapLike:
@@ -321,6 +346,11 @@ class System:
     def arraycopy(method, stack, source: list, start: int, target: list, new_start: int, size: int):
         target[new_start:new_start + size] = source[start:start + size]
 
+    @staticmethod
+    @bind_native("java/lang/System", "currentTimeMillis()")
+    def currentTimeMillis(method, stack):
+        return round(time.time() * 1000)
+
 
 class Thread:
     CURRENT = None
@@ -443,6 +473,11 @@ class String:
     def equalsIgnoreCase(method, stack, this: str, other: str):
         return this.lower() == other.lower()
 
+    @staticmethod
+    @bind_native("java/lang/String", "endsWith(Ljava/lang/String;)Z")
+    def endsWith(method, stack, this: str, other: str):
+        return this.endswith(other)
+
 
 class Regex:
     @staticmethod
@@ -540,10 +575,25 @@ class IO:
         this.underlying = path
 
     @staticmethod
+    @bind_native("java/io/File", "<init>(Ljava/io/File;Ljava/lang/String;)V")
+    def initFromFile(method, stack, this, file, end: str):
+        this.underlying = os.path.join(file.underlying, end)
+
+    @staticmethod
     @bind_native("java/io/File", "mkdirs/(Z")
     def mkdirs(method, stack, this):
         os.makedirs(this.underlying, exist_ok=True)
         return True
+
+    @staticmethod
+    @bind_native("java/nio/file/Path", "toFile()Ljava/io/File;")
+    def toFile(method, stack, this):
+        return this
+
+    @staticmethod
+    @bind_native("java/io/PrintStream", "println(Ljava/lang/String;)V")
+    def println(method, stack, this, text: str):
+        logger.println("[JAVA] "+text)
 
 
 class StringConcatFactory:
@@ -579,4 +629,13 @@ class Record:
     @bind_native("java/lang/Record", "<init>()V")
     def init(method, stack, this):
         pass
+
+
+class UUID:
+    @staticmethod
+    @bind_native("java/util/UUID", "fromString(Ljava/lang/String;)Ljava/util/UUID;")
+    def uuidFromString(method, stack, string: str):
+        obj = method.get_class().create_instance()
+        obj.underlying = uuid.UUID(string)
+        return obj
 

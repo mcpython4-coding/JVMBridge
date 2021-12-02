@@ -239,7 +239,7 @@ class NativeHeader:
 
 
 class NativeManager:
-    DEFAULT_HEADER_FILES = ["java", "forge", "mc", "ct_api", "netty", "jei", "google", "logging", "mixin", "apache", "night_config"]
+    DEFAULT_HEADER_FILES = ["java", "forge", "mc", "ct_api", "netty", "jei", "google", "logging", "mixin", "apache", "night_config", "asm"]
     MATCHER2HEADER: typing.Dict[str, str] = {
         "java/": "java",
         "javax/": "java",
@@ -260,6 +260,9 @@ class NativeManager:
         "org/jetbrains/annotations/": "java",
         "dev/architectury/injectables/annotations/": "java",
         "com/electronwill/nightconfig/core/": "night_config",
+        "cpw/mods/": "mc",
+        "org/intellij/lang/annotations/": "java",
+        "org/objectweb/asm/": "asm",
     }
 
     def __init__(self):

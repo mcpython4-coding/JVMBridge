@@ -51,6 +51,7 @@ FORGE_VERSION_NUMBER_TO_MC = {
     29: "1.17.1",
     28: "1.17.1",
     26: "1.17.1",
+    25: "1.17.1",
     14: "1.17.1",
     "1.12.2": "1.12.2",
 }
@@ -106,15 +107,18 @@ class JavaMod(mcpython.common.mod.Mod.Mod):
 
         data = json.loads(self.resource_access.read_raw(file).decode("utf-8"))
 
-        refmap = data["refmap"]
+        if "refmap" in data:
+            refmap = data["refmap"]
 
-        try:
-            refmap_data = json.loads(self.resource_access.read_raw(refmap).decode("utf-8"))
-        except KeyError:
-            logger.println("[MIXIN PROCESSOR][FATAL] failed to load refmap")
-            return
+            try:
+                refmap_data = json.loads(self.resource_access.read_raw(refmap).decode("utf-8"))
+            except KeyError:
+                logger.println("[MIXIN PROCESSOR][FATAL] failed to load refmap")
+                return
 
-        shared.CURRENT_REF_MAP = refmap_data
+            shared.CURRENT_REF_MAP = refmap_data
+        else:
+            shared.CURRENT_REF_MAP = {}
 
         package = data["package"].replace(".", "/")
 
@@ -124,7 +128,29 @@ class JavaMod(mcpython.common.mod.Mod.Mod):
 
                 shared.CURRENT_EVENT_SUB = self.name
 
-                jvm.api.vm.load_class(module, version=FORGE_VERSION_NUMBER_TO_MC[self.loader_version]).prepare_use()
+                try:
+                    jvm.api.vm.load_class(module, version=FORGE_VERSION_NUMBER_TO_MC[self.loader_version]).prepare_use()
+                except StackCollectingException as e:
+                    if shared.IS_CLIENT:
+                        shared.window.set_caption("JavaFML JVM error (during loading mixins)")
+
+                        try:
+                            import mcpython.common.state.LoadingExceptionViewState
+
+                            exception = e.format_exception()
+                            mcpython.common.state.LoadingExceptionViewState.error_occur(exception)
+                            logger.print_exception("raw exception trace")
+                            logger.write_into_container(
+                                "fatal FML error", exception.split("\n")
+                            )
+                        except:
+                            logger.print_exception("error screen error")
+
+                    else:
+                        pyglet.app.exit()
+                        print("closing")
+
+                    raise LoadingInterruptException from None
 
     def load_mod_file(self, file: str):
         """
@@ -139,7 +165,12 @@ class JavaMod(mcpython.common.mod.Mod.Mod):
             # make sure that this is set!
             shared.CURRENT_EVENT_SUB = self.name
 
-            jvm.api.vm.load_class(cls, version=FORGE_VERSION_NUMBER_TO_MC[self.loader_version])
+            if self.loader_version not in FORGE_VERSION_NUMBER_TO_MC:
+                version = "1.17.1"
+            else:
+                version = FORGE_VERSION_NUMBER_TO_MC[self.loader_version]
+
+            jvm.api.vm.load_class(cls, version=version)
 
         # StackCollectingException is something internal and contains more meta-data than the other exceptions
         except StackCollectingException as e:
@@ -159,7 +190,6 @@ class JavaMod(mcpython.common.mod.Mod.Mod):
                     logger.print_exception("error screen error")
 
             else:
-                shared.window.close()
                 pyglet.app.exit()
                 print("closing")
 

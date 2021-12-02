@@ -21,6 +21,12 @@
       },
       "iterator()Lcom/google/common/collect/UnmodifiableIterator;": {
         "access": 8
+      },
+      "of(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Lcom/google/common/collect/ImmutableList;": {
+        "access": 8
+      },
+      "of(Ljava/lang/Object;Ljava/lang/Object;)Lcom/google/common/collect/ImmutableList;": {
+        "access": 8
       }
     }
   },
@@ -52,6 +58,18 @@
       },
       "builder()Lcom/google/common/collect/ImmutableMap$Builder;": {
         "access": 8
+      },
+      "put(Ljava/lang/Object;Ljava/lang/Object;)Lcom/google/common/collect/ImmutableMap$Builder;": {
+        "access": 8
+      },
+      "copyOf(Ljava/util/Map;)Lcom/google/common/collect/ImmutableMap;": {
+        "access": 8
+      },
+      "build()Lcom/google/common/collect/ImmutableMap;": {
+        "access": 8
+      },
+      "of()Lcom/google/common/collect/ImmutableMap;": {
+        "access": 8
       }
     }
   },
@@ -65,6 +83,12 @@
         "access": 8
       },
       "newTreeMap()Ljava/util/TreeMap;": {
+        "access": 8
+      },
+      "newIdentityHashMap()Ljava/util/IdentityHashMap;": {
+        "access": 8
+      },
+      "newEnumMap(Ljava/lang/Class;)Ljava/util/EnumMap;": {
         "access": 8
       }
     }
@@ -134,6 +158,123 @@
     "name": "com/google/common/collect/ImmutableSet",
     "methods": {
       "of(Ljava/lang/Object;)Lcom/google/common/collect/ImmutableSet;": {
+        "access": 8
+      },
+      "of()Lcom/google/common/collect/ImmutableSet;": {
+        "access": 8
+      },
+      "builder()Lcom/google/common/collect/ImmutableSet$Builder;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "com/google/common/collect/ImmutableBiMap",
+    "methods": {
+      "of()Lcom/google/common/collect/ImmutableBiMap;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "com/google/common/reflect/Reflection",
+    "methods": {
+      "initialize([Ljava/lang/Class;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "com/google/gson/Gson",
+    "methods": {
+      "<init>()V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "com/google/common/collect/ImmutableList$Builder",
+    "methods": {
+      "<init>()V": {
+        "access": 8
+      },
+      "add(Ljava/lang/Object;)Lcom/google/common/collect/ImmutableList$Builder;": {
+        "access": 8
+      },
+      "build()Lcom/google/common/collect/ImmutableList;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "com/google/gson/JsonParser",
+    "methods": {
+      "<init>()V": {
+        "access": 8
+      },
+      "parse(Ljava/io/Reader;)Lcom/google/gson/JsonElement;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "com/google/common/collect/ImmutableSet$Builder",
+    "methods": {
+      "add(Ljava/lang/Object;)Lcom/google/common/collect/ImmutableSet$Builder;": {
+        "access": 8
+      },
+      "build()Lcom/google/common/collect/ImmutableSet;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "com/google/common/collect/HashBasedTable",
+    "methods": {
+      "create()Lcom/google/common/collect/HashBasedTable;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "com/google/common/collect/Table",
+    "methods": {
+      "put(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "com/google/common/annotations/VisibleForTesting",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "com/google/common/reflect/AbstractInvocationHandler",
+    "methods": {
+      "<init>()V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "com/google/gson/JsonElement",
+    "methods": {
+      "getAsJsonObject()Lcom/google/gson/JsonObject;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "com/google/gson/JsonObject",
+    "methods": {
+      "<init>()V": {
+        "access": 8
+      },
+      "get(Ljava/lang/String;)Lcom/google/gson/JsonElement;": {
         "access": 8
       }
     }

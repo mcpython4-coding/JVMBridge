@@ -87,5 +87,46 @@
         "access": 8
       }
     }
+  },
+  {
+    "name": "org/spongepowered/asm/mixin/injection/ModifyVariable",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "org/spongepowered/asm/mixin/injection/At$Shift",
+    "attributes": {
+      "BEFORE": {
+        "descriptor": "enum",
+        "access": 8
+      },
+      "AFTER": {
+        "descriptor": "enum",
+        "access": 8
+      },
+      "BY": {
+        "descriptor": "enum",
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "org/spongepowered/asm/mixin/Mutable",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "org/spongepowered/asm/mixin/Unique",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
   }
 ]

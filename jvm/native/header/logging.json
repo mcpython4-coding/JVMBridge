@@ -44,6 +44,21 @@
       },
       "error(Ljava/lang/String;Ljava/lang/Object;)V": {
         "access": 8
+      },
+      "info(Ljava/lang/String;Ljava/lang/Object;)V": {
+        "access": 8
+      },
+      "error(Ljava/lang/String;)V": {
+        "access": 8
+      },
+      "debug(Ljava/lang/String;)V": {
+        "access": 8
+      },
+      "debug(Lorg/apache/logging/log4j/Marker;Ljava/lang/String;Ljava/lang/Object;)V": {
+        "access": 8
+      },
+      "debug(Ljava/lang/String;Ljava/lang/Object;)V": {
+        "access": 8
       }
     }
   },

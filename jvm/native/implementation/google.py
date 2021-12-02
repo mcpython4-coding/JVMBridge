@@ -70,8 +70,27 @@ class MapLike:
 
     @staticmethod
     @bind_native("com/google/common/collect/ImmutableMap", "<init>(Ljava/util/Map;)V")
-    def init(method, stack, this, data: list):
-        this.underlying = data
+    def init(method, stack, this, data: dict):
+        this.underlying = data.copy()
+
+    @staticmethod
+    @bind_native("com/google/common/collect/ImmutableMap", "builder()Lcom/google/common/collect/ImmutableMap$Builder;")
+    def builder(method, stack):
+        obj = method.get_class().create_instance()
+        obj.underlying = {}
+        return obj
+
+    @staticmethod
+    @bind_native("com/google/common/collect/ImmutableMap$Builder", "put(Ljava/lang/Object;Ljava/lang/Object;)Lcom/google/common/collect/ImmutableMap$Builder;")
+    @bind_native("com/google/common/collect/ImmutableMap", "put(Ljava/lang/Object;Ljava/lang/Object;)Lcom/google/common/collect/ImmutableMap$Builder;")
+    def put(method, stack, this, key, value):
+        this.underlying[key] = value
+        return this
+
+    @staticmethod
+    @bind_native("com/google/common/collect/ImmutableMap$Builder", "build()Lcom/google/common/collect/ImmutableMap;")
+    def build(method, stack, this):
+        return this
 
     @staticmethod
     @bind_native("com/google/common/collect/HashMultimap", "<init>()V")
@@ -91,3 +110,17 @@ class MapLike:
     @bind_native("com/google/common/collect/HashMultimap", "create()Lcom/google/common/collect/HashMultimap;")
     def createMap(method, stack):
         return stack.vm.get_class(method.signature.split(")")[-1][1:-1]).create_instance().init("()V")
+
+
+class SetLike:
+    @staticmethod
+    @bind_native("com/google/common/collect/Sets", "newHashSet()Ljava/util/HashSet;")
+    def newHashSet(method, stack):
+        return stack.vm.get_class("java/util/HashSet").create_instance().init("()V")
+
+    @staticmethod
+    @bind_native("com/google/common/collect/Sets", "newHashSet([Ljava/lang/Object;)Ljava/util/HashSet;")
+    def newHashSet(method, stack, array):
+        obj = stack.vm.get_class("java/util/HashSet").create_instance().init("()V")
+        obj.underlying |= set(array)
+        return obj
