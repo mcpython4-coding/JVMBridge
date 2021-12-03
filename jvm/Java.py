@@ -18,6 +18,8 @@ This project is not official by mojang and does not relate to it.
 # See builtin folder for python implementations for java internals
 import traceback
 import typing
+import weakref
+
 from jvm.api import AbstractJavaClass
 from jvm.api import AbstractJavaClassInstance
 from jvm.api import AbstractMethod
@@ -84,7 +86,7 @@ class JavaArrayManager:
     """
 
     def __init__(self, vm_i):
-        self.vm = vm_i
+        self.vm = weakref.proxy(vm_i)
 
     def get(self, class_text: str, version=0):
         depth = class_text.count("[")
@@ -108,7 +110,7 @@ class JavaField:
         self.attributes = JavaAttributeTable(self)
 
     def from_data(self, class_file: "JavaBytecodeClass", data: bytearray):
-        self.class_file = class_file
+        self.class_file = weakref.proxy(class_file)
         self.access = pop_u2(data)
         self.name = class_file.cp[pop_u2(data) - 1][1]
         self.descriptor = class_file.cp[pop_u2(data) - 1][1]
@@ -136,7 +138,7 @@ class JavaMethod(AbstractMethod):
         self.code_repr = None
 
     def from_data(self, class_file: "JavaBytecodeClass", data: bytearray):
-        self.class_file = class_file
+        self.class_file = weakref.proxy(class_file)
         self.access = pop_u2(data)
         self.name = class_file.cp[pop_u2(data) - 1][1]
         self.signature = class_file.cp[pop_u2(data) - 1][1]

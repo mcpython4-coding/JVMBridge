@@ -25,3 +25,18 @@ def setLevel(method, stack, this, level):
 def info(method, stack, this, arg: str):
     print("[JVM][INFO]", arg)
 
+
+@bind_native("org/apache/logging/log4j/Logger", "info(Ljava/lang/String;Ljava/lang/Object;)V")
+def infoWithObject(method, stack, this, arg, obj):
+    print("[JVM][INFO]", arg, obj)
+
+
+@bind_native("org/apache/logging/log4j/Logger", "error(Ljava/lang/String;)V")
+def error(method, stack, this, arg):
+    print("[JVM][ERROR]", arg)
+
+
+@bind_annotation("org/apache/logging/log4j/core/config/plugins/Plugin")
+def no_action(*args):
+    pass
+

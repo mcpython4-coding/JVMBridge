@@ -5,6 +5,7 @@ from jvm.natives import bind_native, bind_annotation
 
 
 @bind_annotation("com/google/gson/annotations/JsonAdapter")
+@bind_annotation("com/google/common/annotations/VisibleForTesting")
 def unusedAnnotation(method, stack, target, args):
     pass
 
@@ -38,6 +39,22 @@ class ListLike:
             args += args.pop(-1)
 
         return method.get_class().create_instance().init("([Ljava/lang/Object;)V", args)
+
+    @staticmethod
+    @bind_native("com/google/common/collect/ImmutableList$Builder", "<init>()V")
+    def initEmpty(method, stack, this):
+        this.underlying = []
+
+    @staticmethod
+    @bind_native("com/google/common/collect/ImmutableList$Builder", "add(Ljava/lang/Object;)Lcom/google/common/collect/ImmutableList$Builder;")
+    def addObject(method, stack, this, obj):
+        this.underlying.append(obj)
+        return this
+
+    @staticmethod
+    @bind_native("com/google/common/collect/ImmutableList$Builder", "build()Lcom/google/common/collect/ImmutableList;")
+    def buildList(method, stack, this):
+        return tuple(this)
 
     @staticmethod
     @bind_native("com/google/common/collect/ImmutableList", "<init>([Ljava/lang/Object;)V")
@@ -107,12 +124,29 @@ class MapLike:
     @staticmethod
     @bind_native("com/google/common/collect/Maps", "newTreeMap()Ljava/util/TreeMap;")
     @bind_native("com/google/common/collect/Maps", "newHashMap()Ljava/util/HashMap;")
+    @bind_native("com/google/common/collect/Maps", "newIdentityHashMap()Ljava/util/IdentityHashMap;")
     @bind_native("com/google/common/collect/HashMultimap", "create()Lcom/google/common/collect/HashMultimap;")
     def createMap(method, stack):
         return stack.vm.get_class(method.signature.split(")")[-1][1:-1]).create_instance().init("()V")
 
 
 class SetLike:
+    @staticmethod
+    @bind_native("com/google/common/collect/ImmutableSet", "builder()Lcom/google/common/collect/ImmutableSet$Builder;")
+    def initImmutableSet(method, stack, this):
+        this.underlying = {}
+
+    @staticmethod
+    @bind_native("com/google/common/collect/ImmutableSet", "add(Ljava/lang/Object;)Lcom/google/common/collect/ImmutableSet$Builder;")
+    def addImmutableSet(method, stack, this, obj):
+        this.underlying.add(obj)
+        return this
+
+    @staticmethod
+    @bind_native("com/google/common/collect/ImmutableSet", "build()Lcom/google/common/collect/ImmutableSet;")
+    def buildImmutableSet(method, stack, this):
+        return this
+
     @staticmethod
     @bind_native("com/google/common/collect/Sets", "newHashSet()Ljava/util/HashSet;")
     def newHashSet(method, stack):
@@ -124,3 +158,13 @@ class SetLike:
         obj = stack.vm.get_class("java/util/HashSet").create_instance().init("()V")
         obj.underlying |= set(array)
         return obj
+
+    @staticmethod
+    @bind_native("com/google/common/collect/ImmutableSet", "of()Lcom/google/common/collect/ImmutableSet;")
+    def createImmutableEmpty(method, stack):
+        return method.get_class().create_instance().init("()V")
+
+    @staticmethod
+    @bind_native("com/google/common/collect/ImmutableSet", "<init>()V")
+    def initImmutableSet(method, stack, this):
+        this.underlying = set()

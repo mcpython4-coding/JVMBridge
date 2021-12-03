@@ -1,4 +1,5 @@
 import typing
+import weakref
 from abc import ABC
 
 from jvm.util import decode_cp_constant
@@ -333,7 +334,7 @@ class JavaAttributeTable:
     }
 
     def __init__(self, parent):
-        self.parent = parent
+        self.parent = weakref.proxy(parent)
         self.class_file: "JavaBytecodeClass" = None
         self.attributes_unparsed = {}
         self.attributes = {}

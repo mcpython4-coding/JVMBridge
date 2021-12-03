@@ -9,5 +9,13 @@
         "access": 8
       }
     }
+  },
+  {
+    "name": "org/apache/commons/io/IOUtils",
+    "methods": {
+      "closeQuietly(Ljava/io/InputStream;)V": {
+        "access": 8
+      }
+    }
   }
 ]

@@ -114,6 +114,9 @@
     "methods": {
       "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
         "access": 8
+      },
+      "value()Ljava/lang/String;": {
+        "access": 8
       }
     }
   },
@@ -266,6 +269,10 @@
       "DECORATORS": {
         "descriptor": "Lnet/minecraftforge/registries/IForgeRegistry;",
         "access": 8
+      },
+      "ENCHANTMENTS": {
+        "descriptor": "Lnet/minecraftforge/registries/IForgeRegistry;",
+        "access": 8
       }
     }
   },
@@ -276,6 +283,18 @@
         "access": 8
       },
       "registerAll([Lnet/minecraftforge/registries/IForgeRegistryEntry;)V": {
+        "access": 8
+      },
+      "getValues()Ljava/util/Collection;": {
+        "access": 8
+      },
+      "iterator()Ljava/util/Iterator;": {
+        "access": 8
+      },
+      "containsKey(Lnet/minecraft/resources/ResourceLocation;)Z": {
+        "access": 8
+      },
+      "getValue(Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
         "access": 8
       }
     }
@@ -363,6 +382,9 @@
       },
       "unsafeRunForDist(Ljava/util/function/Supplier;Ljava/util/function/Supplier;)Ljava/lang/Object;": {
         "access": 8
+      },
+      "unsafeCallWhenOn(Lnet/minecraftforge/api/distmarker/Dist;Ljava/util/function/Supplier;)Ljava/lang/Object;": {
+        "access": 8
       }
     }
   },
@@ -393,6 +415,9 @@
         "access": 8
       },
       "addGenericListener(Ljava/lang/Class;Ljava/util/function/Consumer;)V": {
+        "access": 8
+      },
+      "addGenericListener(Ljava/lang/Class;Lnet/minecraftforge/eventbus/api/EventPriority;Ljava/util/function/Consumer;)V": {
         "access": 8
       }
     }
@@ -491,6 +516,9 @@
         "access": 8
       },
       "getActiveContainer()Lnet/minecraftforge/fml/ModContainer;": {
+        "access": 8
+      },
+      "getActiveNamespace()Ljava/lang/String;": {
         "access": 8
       }
     }
@@ -628,6 +656,9 @@
       },
       "setRegistryName(Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
         "access": 8
+      },
+      "setRegistryName(Lnet/minecraft/resources/ResourceLocation;)Ljava/lang/Object;": {
+        "access": 8
       }
     }
   },
@@ -764,6 +795,21 @@
     "methods": {
       "builder(Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraftforge/fluids/FluidAttributes$Builder;": {
         "access": 8
+      },
+      "getStillTexture()Lnet/minecraft/resources/ResourceLocation;": {
+        "access": 8
+      },
+      "getFlowingTexture()Lnet/minecraft/resources/ResourceLocation;": {
+        "access": 8
+      },
+      "getColor()I": {
+        "access": 8
+      },
+      "getLuminosity()I": {
+        "access": 8
+      },
+      "getTranslationKey()Ljava/lang/String;": {
+        "access": 8
       }
     }
   },
@@ -822,6 +868,12 @@
     "name": "net/minecraftforge/common/loot/GlobalLootModifierSerializer",
     "methods": {
       "<init>()V": {
+        "access": 8
+      },
+      "setRegistryName(Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraftforge/common/loot/GlobalLootModifierSerializer;": {
+        "access": 8
+      },
+      "register()V": {
         "access": 8
       }
     }
@@ -1055,6 +1107,9 @@
     "methods": {
       "getModInfo()Lnet/minecraftforge/forgespi/language/IModInfo;": {
         "access": 8
+      },
+      "addConfig(Lnet/minecraftforge/fml/config/ModConfig;)V": {
+        "access": 8
       }
     }
   },
@@ -1087,6 +1142,9 @@
         "access": 8
       },
       "getFileName()Ljava/lang/String;": {
+        "access": 8
+      },
+      "<init>(Lnet/minecraftforge/fml/config/ModConfig$Type;Lnet/minecraftforge/fml/config/IConfigSpec;Lnet/minecraftforge/fml/ModContainer;)V": {
         "access": 8
       }
     }
@@ -1296,6 +1354,9 @@
     "methods": {
       "getDispatcher()Lcom/mojang/brigadier/CommandDispatcher;": {
         "access": 8
+      },
+      "getEnvironment()Lnet/minecraft/commands/Commands$CommandSelection;": {
+        "access": 8
       }
     }
   },
@@ -1364,6 +1425,15 @@
       },
       "getCategory()Lnet/minecraft/world/level/biome/Biome$BiomeCategory;": {
         "access": 8
+      },
+      "getClimate()Lnet/minecraft/world/level/biome/Biome$ClimateSettings;": {
+        "access": 8
+      },
+      "getEffects()Lnet/minecraft/world/level/biome/BiomeSpecialEffects;": {
+        "access": 8
+      },
+      "getSpawns()Lnet/minecraftforge/common/world/MobSpawnInfoBuilder;": {
+        "access": 8
       }
     }
   },
@@ -1429,6 +1499,49 @@
     "name": "net/minecraftforge/client/event/TextureStitchEvent$Post",
     "methods": {
       "getMap()Lnet/minecraft/client/renderer/texture/TextureAtlas;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraftforge/fml/loading/FMLLoader",
+    "methods": {
+      "isProduction()Z": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraftforge/common/ForgeConfigSpec$BooleanValue",
+    "methods": {
+      "get()Ljava/lang/Object;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraftforge/common/ForgeTagHandler",
+    "methods": {
+      "makeWrapperTag(Lnet/minecraftforge/registries/IForgeRegistry;Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraft/tags/Tag$Named;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraftforge/registries/DataSerializerEntry",
+    "methods": {
+      "<init>(Lnet/minecraft/network/syncher/EntityDataSerializer;)V": {
+        "access": 8
+      },
+      "setRegistryName(Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraftforge/common/util/ForgeSoundType",
+    "methods": {
+      "<init>(FFLjava/util/function/Supplier;Ljava/util/function/Supplier;Ljava/util/function/Supplier;Ljava/util/function/Supplier;Ljava/util/function/Supplier;)V": {
         "access": 8
       }
     }

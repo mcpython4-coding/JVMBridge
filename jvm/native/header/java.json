@@ -33,6 +33,14 @@
       "PACKAGE": {
         "descriptor": "enum",
         "access": 8
+      },
+      "MODULE": {
+        "descriptor": "enum",
+        "access": 8
+      },
+      "RECORD_COMPONENT": {
+        "descriptor": "enum",
+        "access": 8
       }
     }
   },
@@ -98,6 +106,9 @@
         "access": 8
       },
       "getConfigDirectory()Ljava/nio/file/Path;": {
+        "access": 8
+      },
+      "build()Lcom/mojang/brigadier/builder/LiteralArgumentBuilder;": {
         "access": 8
       }
     }
@@ -199,6 +210,9 @@
       },
       "start()V": {
         "access": 8
+      },
+      "<init>()V": {
+        "access": 0
       }
     }
   },
@@ -243,6 +257,15 @@
       },
       "getDeclaredFields()[Ljava/lang/reflect/Field;": {
         "access": 8
+      },
+      "getAnnotation(Ljava/lang/Class;)Ljava/lang/annotation/Annotation;": {
+        "access": 8
+      },
+      "getModifiers()I": {
+        "access": 8
+      },
+      "isInstance(Ljava/lang/Object;)Z": {
+        "access": 8
       }
     }
   },
@@ -259,6 +282,9 @@
         "access": 0
       },
       "getParent()Ljava/lang/ClassLoader;": {
+        "access": 8
+      },
+      "getResourceAsStream(Ljava/lang/String;)Ljava/io/InputStream;": {
         "access": 8
       }
     }
@@ -283,6 +309,9 @@
       },
       "toArray([Ljava/lang/Object;)[Ljava/lang/Object;": {
         "access": 8
+      },
+      "isEmpty()Z": {
+        "access": 1
       }
     }
   },
@@ -390,6 +419,15 @@
       },
       "clear()V": {
         "access": 8
+      },
+      "size()I": {
+        "access": 1
+      },
+      "toArray([Ljava/lang/Object;)[Ljava/lang/Object;": {
+        "access": 1
+      },
+      "isEmpty()Z": {
+        "access": 1
       }
     }
   },
@@ -415,6 +453,9 @@
         "access": 8
       },
       "newKeySet()Ljava/util/concurrent/ConcurrentHashMap$KeySetView;": {
+        "access": 8
+      },
+      "computeIfAbsent(Ljava/lang/Object;Ljava/util/function/Function;)Ljava/lang/Object;": {
         "access": 8
       }
     }
@@ -442,6 +483,15 @@
       },
       "contains(Ljava/lang/Object;)Z": {
         "access": 8
+      },
+      "size()I": {
+        "access": 1
+      },
+      "toArray([Ljava/lang/Object;)[Ljava/lang/Object;": {
+        "access": 1
+      },
+      "isEmpty()Z": {
+        "access": 1
       }
     }
   },
@@ -487,6 +537,9 @@
         "access": 8
       },
       "values()Ljava/util/Collection;": {
+        "access": 8
+      },
+      "forEach(Ljava/util/function/BiConsumer;)V": {
         "access": 8
       }
     }
@@ -606,6 +659,9 @@
       },
       "valueOf(Ljava/lang/Object;)Ljava/lang/String;": {
         "access": 8
+      },
+      "format(Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;": {
+        "access": 8
       }
     }
   },
@@ -655,6 +711,12 @@
       },
       "stream()Ljava/util/stream/Stream;": {
         "access": 8
+      },
+      "add(ILjava/lang/Object;)V": {
+        "access": 8
+      },
+      "get(I)Ljava/lang/Object;": {
+        "access": 8
       }
     }
   },
@@ -698,6 +760,36 @@
       },
       "stream()Ljava/util/stream/Stream;": {
         "access": 8
+      },
+      "addAll(Ljava/util/Collection;)Z": {
+        "access": 8
+      },
+      "add(ILjava/lang/Object;)V": {
+        "access": 8
+      },
+      "get(I)Ljava/lang/Object;": {
+        "access": 8
+      },
+      "<init>()V": {
+        "access": 1
+      },
+      "of(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/util/List;": {
+        "access": 1
+      },
+      "of(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/util/List;": {
+        "access": 1
+      },
+      "of(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/util/List;": {
+        "access": 1
+      },
+      "of(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/util/List;": {
+        "access": 1
+      },
+      "of(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/util/List;": {
+        "access": 1
+      },
+      "of(Ljava/lang/Object;Ljava/lang/Object;)Ljava/util/List;": {
+        "access": 1
       }
     }
   },
@@ -731,6 +823,9 @@
         "access": 8
       },
       "intValue()I": {
+        "access": 8
+      },
+      "toHexString(I)Ljava/lang/String;": {
         "access": 8
       }
     }
@@ -815,6 +910,18 @@
       },
       "<init>(SOURCE)V": {
         "access": 1
+      },
+      "add(Ljava/lang/Object;)Z": {
+        "access": 1
+      },
+      "size()I": {
+        "access": 1
+      },
+      "toArray([Ljava/lang/Object;)[Ljava/lang/Object;": {
+        "access": 1
+      },
+      "isEmpty()Z": {
+        "access": 1
       }
     }
   },
@@ -874,6 +981,21 @@
       },
       "forEach(Ljava/util/function/Consumer;)V": {
         "access": 8
+      },
+      "contains(Ljava/lang/Object;)Z": {
+        "access": 8
+      },
+      "add(Ljava/lang/Object;)Z": {
+        "access": 1
+      },
+      "size()I": {
+        "access": 1
+      },
+      "iterator()Ljava/util/Iterator;": {
+        "access": 1
+      },
+      "toArray([Ljava/lang/Object;)[Ljava/lang/Object;": {
+        "access": 1
       }
     }
   },
@@ -1016,6 +1138,9 @@
       },
       "accept(Ljava/lang/Object;)V": {
         "access": 8
+      },
+      "get()Ljava/lang/Object;": {
+        "access": 8
       }
     }
   },
@@ -1047,6 +1172,12 @@
       },
       "get(Ljava/lang/Object;)Ljava/lang/Object;": {
         "access": 8
+      },
+      "containsKey(Ljava/lang/Object;)Z": {
+        "access": 8
+      },
+      "forEach(Ljava/util/function/BiConsumer;)V": {
+        "access": 8
       }
     }
   },
@@ -1058,6 +1189,10 @@
         "access": 8
       },
       "US": {
+        "descriptor": "Ljava/util/Locale;",
+        "access": 8
+      },
+      "ENGLISH": {
         "descriptor": "Ljava/util/Locale;",
         "access": 8
       }
@@ -1108,6 +1243,15 @@
       },
       "toList()Ljava/util/List;": {
         "access": 8
+      },
+      "of(Ljava/lang/Object;)Ljava/util/stream/Stream;": {
+        "access": 8
+      },
+      "toArray(Ljava/util/function/IntFunction;)[Ljava/lang/Object;": {
+        "access": 8
+      },
+      "<init>()V": {
+        "access": 1
       }
     }
   },
@@ -1333,6 +1477,9 @@
       },
       "ofNullable(Ljava/lang/Object;)Ljava/util/Optional;": {
         "access": 8
+      },
+      "orElseThrow(Ljava/util/function/Supplier;)Ljava/lang/Object;": {
+        "access": 8
       }
     }
   },
@@ -1557,6 +1704,9 @@
       },
       "entrySet()Ljava/util/Set;": {
         "access": 8
+      },
+      "get(Ljava/lang/Object;)Ljava/lang/Object;": {
+        "access": 8
       }
     }
   },
@@ -1564,6 +1714,57 @@
     "name": "java/text/Collator",
     "methods": {
       "getInstance()Ljava/text/Collator;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/util/stream/Collectors",
+    "methods": {
+      "toCollection(Ljava/util/function/Supplier;)Ljava/util/stream/Collector;": {
+        "access": 8
+      },
+      "toList()Ljava/util/stream/Collector;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/lang/RuntimeException",
+    "methods": {
+      "<init>(Ljava/lang/String;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/lang/reflect/Modifier",
+    "methods": {
+      "isFinal(I)Z": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/io/InputStreamReader",
+    "methods": {
+      "<init>(Ljava/io/InputStream;Ljava/nio/charset/Charset;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/util/IdentityHashMap",
+    "methods": {
+      "<init>()V": {
+        "access": 0
+      }
+    }
+  },
+  {
+    "name": "java/lang/Math",
+    "methods": {
+      "max(II)I": {
         "access": 8
       }
     }

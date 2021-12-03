@@ -27,6 +27,9 @@
       },
       "of(Ljava/lang/Object;Ljava/lang/Object;)Lcom/google/common/collect/ImmutableList;": {
         "access": 8
+      },
+      "copyOf([Ljava/lang/Object;)Lcom/google/common/collect/ImmutableList;": {
+        "access": 8
       }
     }
   },
@@ -137,6 +140,9 @@
       },
       "disableHtmlEscaping()Lcom/google/gson/GsonBuilder;": {
         "access": 8
+      },
+      "registerTypeAdapter(Ljava/lang/reflect/Type;Ljava/lang/Object;)Lcom/google/gson/GsonBuilder;": {
+        "access": 8
       }
     }
   },
@@ -165,6 +171,15 @@
       },
       "builder()Lcom/google/common/collect/ImmutableSet$Builder;": {
         "access": 8
+      },
+      "add(Ljava/lang/Object;)Lcom/google/common/collect/ImmutableSet$Builder;": {
+        "access": 1
+      },
+      "build()Lcom/google/common/collect/ImmutableSet;": {
+        "access": 1
+      },
+      "<init>()V": {
+        "access": 1
       }
     }
   },
@@ -188,6 +203,9 @@
     "name": "com/google/gson/Gson",
     "methods": {
       "<init>()V": {
+        "access": 8
+      },
+      "fromJson(Ljava/io/Reader;Ljava/lang/reflect/Type;)Ljava/lang/Object;": {
         "access": 8
       }
     }
@@ -275,6 +293,17 @@
         "access": 8
       },
       "get(Ljava/lang/String;)Lcom/google/gson/JsonElement;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "com/google/gson/reflect/TypeToken",
+    "methods": {
+      "<init>()V": {
+        "access": 8
+      },
+      "getType()Ljava/lang/reflect/Type;": {
         "access": 8
       }
     }

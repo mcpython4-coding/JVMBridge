@@ -25,3 +25,10 @@ class GsonBuilder:
     def create(method, stack, this):
         return this
 
+
+class JsonParser:
+    @staticmethod
+    @bind_native("com/google/gson/JsonParser", "<init>()V")
+    def initJsonParse(method, stack, this):
+        pass
+

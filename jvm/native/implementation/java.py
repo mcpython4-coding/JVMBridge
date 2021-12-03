@@ -8,6 +8,7 @@ import uuid
 import jvm.api
 from jvm.api import AbstractMethod
 from jvm.api import AbstractStack
+from jvm.Java import JavaMethod
 from jvm.JavaExceptionStack import StackCollectingException
 from jvm.natives import bind_native, bind_annotation
 from mcpython.engine import logger
@@ -36,6 +37,11 @@ from mcpython.engine import logger
 @bind_annotation("dev/architectury/injectables/annotations/ExpectPlatform")
 @bind_annotation("org/jetbrains/annotations/VisibleForTesting")
 @bind_annotation("org/jetbrains/annotations/Contract")
+@bind_annotation("org/jetbrains/annotations/ApiStatus$OverrideOnly")
+@bind_annotation("org/jetbrains/annotations/Debug$Renderer")
+@bind_annotation("javax/annotation/concurrent/ThreadSafe")
+@bind_annotation("javax/annotation/OverridingMethodsMustInvokeSuper")
+@bind_annotation("org/intellij/lang/annotations/Pattern")
 def noAnnotation(method, stack, target, args):
     pass
 
@@ -77,11 +83,7 @@ def transform2string(method, stack, this):
 
 class SetLike:
     @staticmethod
-    @bind_native("java/util/Properties", "entrySet()Ljava/util/Set;")
-    def entrySet(method, stack, this):
-        return stack.vm.get_class("java/util/Set").create_instance().init("()V")
-
-    @staticmethod
+    @bind_native("java/util/HashSet", "<init>()V")
     @bind_native("java/util/LinkedHashSet", "<init>()V")
     @bind_native("java/util/Set", "<init>()V")
     @bind_native("java/util/HashSet", "<init>()V")
@@ -104,8 +106,11 @@ class SetLike:
         this.max_size = -1
 
     @staticmethod
+    @bind_native("java/util/HashSet", "add(Ljava/lang/Object;)Z")
     @bind_native("java/util/LinkedHashSet", "add(Ljava/lang/Object;)Z")
+    @bind_native("java/util/Set", "add(Ljava/lang/Object;)Z")
     @bind_native("java/util/TreeSet", "add(Ljava/lang/Object;)Z")
+    @bind_native("java/util/EnumSet", "add(Ljava/lang/Object;)Z")
     def add(method, stack, this, element):
         if this.max_size != -1 and len(this.underlying) >= this.max_size:
             return False
@@ -120,11 +125,16 @@ class SetLike:
         return True
 
     @staticmethod
+    @bind_native("java/util/HashSet", "size()I")
     @bind_native("java/util/LinkedHashSet", "size()I")
-    def getSize(method, stack, this):
+    @bind_native("java/util/Set", "size()I")
+    @bind_native("java/util/TreeSet", "size()I")
+    @bind_native("java/util/EnumSet", "size()I")
+    def getSize(stack, this):
         return len(this.underlying)
 
     @staticmethod
+    @bind_native("java/util/HashSet", "iterator()Ljava/util/Iterator;")
     @bind_native("java/util/LinkedHashSet", "iterator()Ljava/util/Iterator;")
     @bind_native("java/util/Set", "iterator()Ljava/util/Iterator;")
     @bind_native("java/util/TreeSet", "iterator()Ljava/util/Iterator;")
@@ -133,7 +143,11 @@ class SetLike:
         return stack.vm.get_class("java/util/Iterator").create_instance().init("(ITERABLE)V", list(this.underlying))
 
     @staticmethod
+    @bind_native("java/util/HashSet", "toArray([Ljava/lang/Object;)[Ljava/lang/Object;")
     @bind_native("java/util/LinkedHashSet", "toArray([Ljava/lang/Object;)[Ljava/lang/Object;")
+    @bind_native("java/util/Set", "toArray([Ljava/lang/Object;)[Ljava/lang/Object;")
+    @bind_native("java/util/TreeSet", "toArray([Ljava/lang/Object;)[Ljava/lang/Object;")
+    @bind_native("java/util/EnumSet", "toArray([Ljava/lang/Object;)[Ljava/lang/Object;")
     def toArray(method, stack, this, array: list):
         array.clear()
         array.extend(this.underlying)
@@ -146,14 +160,26 @@ class SetLike:
 
     @staticmethod
     @bind_native("java/util/HashSet", "isEmpty()Z")
+    @bind_native("java/util/LinkedHashSet", "isEmpty()Z")
+    @bind_native("java/util/Set", "isEmpty()Z")
+    @bind_native("java/util/TreeSet", "isEmpty()Z")
+    @bind_native("java/util/EnumSet", "isEmpty()Z")
     def isEmpty(method, stack, this):
         return len(this.underlying) == 0
+
+    @staticmethod
+    @bind_native("java/util/Set", "stream()Ljava/util/stream/Stream;")
+    def stream(method, stack, this):
+        obj = stack.vm.get_class("java/util/List").create_instance().init("()V")
+        obj.underlying += list(this.underlying)
+        return obj
 
 
 class ListLike:
     @staticmethod
     @bind_native("java/util/Enumeration", "<init>()V")
     @bind_native("java/util/ArrayList", "<init>()V")
+    @bind_native("java/util/List", "<init>()V")
     @bind_native("java/util/concurrent/CopyOnWriteArrayList", "<init>()V")
     def init(method, stack, this):
         this.underlying = list()
@@ -172,7 +198,7 @@ class ListLike:
     @staticmethod
     @bind_native("java/util/Iterator", "hasNext()Z")
     def hasNext(method, stack, this):
-        return len(this.underlying) > 0
+        return len(this.underlying) > 0 if this is not None else False
 
     @staticmethod
     @bind_native("java/util/Iterator", "next()Ljava/lang/Object;")
@@ -181,10 +207,16 @@ class ListLike:
 
     @staticmethod
     @bind_native("java/util/ArrayList", "add(Ljava/lang/Object;)Z")
+    @bind_native("java/util/List", "add(Ljava/lang/Object;)Z")
     @bind_native("java/util/concurrent/CopyOnWriteArrayList", "add(Ljava/lang/Object;)Z")
     def add(method, stack, this, obj):
         this.underlying.append(obj)
         return True
+
+    @staticmethod
+    @bind_native("java/util/ArrayList", "add(ILjava/lang/Object;)V")
+    def addAt(method, stack, this, index, obj):
+        this.underlying.insert(index, obj)
 
     @staticmethod
     @bind_native("java/util/concurrent/CopyOnWriteArrayList", "size()I")
@@ -194,6 +226,7 @@ class ListLike:
 
     @staticmethod
     @bind_native("java/util/Arrays", "asList([Ljava/lang/Object;)Ljava/util/List;")
+    @bind_native("java/util/List", "iterator()Ljava/util/Iterator;")
     def asList(method, stack, this):
         return list(this)
 
@@ -201,6 +234,37 @@ class ListLike:
     @bind_native("java/util/ArrayList", "clear()V")
     def clearArrayList(method, stack, this):
         this.underlying.clear()
+
+    @staticmethod
+    @bind_native("java/util/ArrayList", "get(I)Ljava/lang/Object;")
+    def getFrom(method, stack, this, index):
+        return this.underlying[index]
+
+    @staticmethod
+    @bind_native("com/google/common/collect/ImmutableList", "copyOf([Ljava/lang/Object;)Lcom/google/common/collect/ImmutableList;")
+    def copyOf(method, stack, this):
+        return this.copy()
+
+    @staticmethod
+    @bind_native("java/util/ArrayList", "forEach(Ljava/util/function/Consumer;)V")
+    def forEach(method, stack, this, consumer):
+        for item in this.underlying:
+            consumer(item)
+
+    @staticmethod
+    @bind_native("java/util/Collections", "emptyList()Ljava/util/List;")
+    @bind_native("java/util/List", "of()Ljava/util/List;")
+    @bind_native("java/util/List", "of(Ljava/lang/Object;)Ljava/util/List;")
+    @bind_native("java/util/List", "of(Ljava/lang/Object;Ljava/lang/Object;)Ljava/util/List;")
+    @bind_native("java/util/List", "of(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/util/List;")
+    @bind_native("java/util/List", "of(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/util/List;")
+    @bind_native("java/util/List", "of(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/util/List;")
+    @bind_native("java/util/List", "of(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/util/List;")
+    @bind_native("java/util/List", "of(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/util/List;")
+    def fromVaryingSize(method, stack, *args):
+        obj = method.get_class().create_instance().init("()V")
+        obj.underlying += args
+        return obj
 
 
 class MapLike:
@@ -217,6 +281,12 @@ class MapLike:
     @bind_native("java/util/Properties", "<init>(MAP)V")
     def init2(method, stack, this, m):
         this.underlying = m.copy()
+
+    @staticmethod
+    @bind_native("java/util/EnumMap", "<init>(Ljava/lang/Class;)V")
+    def initEnumMap(method, stack, this, key_type):
+        this.underlying = {}
+        this.key_type = key_type
 
     @staticmethod
     @bind_native("java/util/concurrent/ConcurrentHashMap", "clear()V")
@@ -249,6 +319,14 @@ class MapLike:
         return value
 
     @staticmethod
+    @bind_native("java/util/concurrent/ConcurrentHashMap", "computeIfAbsent(Ljava/lang/Object;Ljava/util/function/Function;)Ljava/lang/Object;")
+    @bind_native("java/util/HashMap", "computeIfAbsent(Ljava/lang/Object;Ljava/util/function/Function;)Ljava/lang/Object;")
+    def computeIfAbsent(method, stack, this, key, supplier):
+        if key in this.underlying:
+            return this.underlying[key]
+        return this.underlying.setdefault(key, supplier())
+
+    @staticmethod
     @bind_native("java/lang/ThreadLocal", "get()Ljava/lang/Object;")
     def get(method, stack, this):
         if "value " not in this.underlying:
@@ -256,14 +334,38 @@ class MapLike:
         return this.underlying["value"]
 
     @staticmethod
+    @bind_native("java/util/HashMap", "getOrDefault(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;")
+    def getOrDefault(method, stack, this, key, default):
+        return default if key not in this.underlying else this.underlying[key]
+
+    @staticmethod
     @bind_native("java/lang/ThreadLocal", "set(Ljava/lang/Object;)V")
     def set(method, stack, this, value):
         this.underlying["value"] = value
+
+    @staticmethod
+    @bind_native("java/util/HashMap", "forEach(Ljava/util/function/BiConsumer;)V")
+    def forEach(method, stack, this, consumer):
+        for v in this.underlying.items():
+            consumer(*v)
+
+    @staticmethod
+    @bind_native("java/util/Map", "entrySet()Ljava/util/Set;")
+    def entrySet(method, stack, this):
+        obj = stack.vm.get_class("java/util/Set").create_instance().init("()V")
+        obj.underlying |= set(this.underlying.entries())
+        return obj
+
+    @staticmethod
+    @bind_native("java/util/Properties", "entrySet()Ljava/util/Set;")
+    def entrySet(method, stack, this):
+        return stack.vm.get_class("java/util/Set").create_instance().init("()V")
 
 
 class QueueLike:
     @staticmethod
     @bind_native("java/util/concurrent/ConcurrentLinkedQueue", "<init>()V")
+    @bind_native("java/util/concurrent/LinkedBlockingQueue", "<init>()V")
     def init(method, stack, this):
         this.underlying = collections.deque()
 
@@ -284,6 +386,48 @@ class LockLike:
     @bind_native("java/util/concurrent/locks/ReentrantLock", "unlock()V")
     def unlock(method, stack, this):
         this.underlying.release()
+
+
+class StreamLike:
+    @staticmethod
+    @bind_native("java/util/stream/Stream", "of([Ljava/lang/Object;)Ljava/util/stream/Stream;")
+    def of(method, stack, array):
+        obj = method.get_class().create_instance().init("()V")
+        obj.underlying = array.copy()
+        return obj
+
+    @staticmethod
+    @bind_native("java/util/stream/Stream", "<init>()V")
+    def init(method, stack, this):
+        this.underlying = tuple()
+
+    @staticmethod
+    @bind_native("java/util/stream/Collectors", "toList()Ljava/util/stream/Collector;")
+    def toList(method, stack):
+        return lambda e: list(e.underlying)
+
+    @staticmethod
+    @bind_native("java/util/stream/Stream", "filter(Ljava/util/function/Predicate;)Ljava/util/stream/Stream;")
+    def filterStream(method, stack, this, predicate):
+        this.underlying = [e for e in this.underlying if predicate(e)]
+        return this
+
+    @staticmethod
+    @bind_native("java/util/stream/Stream", "collect(Ljava/util/stream/Collector;)Ljava/lang/Object;")
+    def collectStream(method, stack, this, collector):
+        if callable(collector):
+            return collector(this)
+        if collector is None:
+            return None
+        return None  # todo: implement
+
+    @staticmethod
+    @bind_native("java/util/stream/Stream", "reduce(Ljava/util/function/BinaryOperator;)Ljava/util/Optional;")
+    def reduceStream(method, stack, this, operator):
+        value = None
+        for e in this.underlying:
+            value = operator(value, e)
+        return value
 
 
 class RuntimePermission:
@@ -373,6 +517,21 @@ class Thread:
             Thread.CURRENT_CLASS_LOADER = stack.vm.get_class("java/lang/ClassLoader").create_instance().init("()V")
 
         return Thread.CURRENT_CLASS_LOADER
+
+
+class Method:
+    @staticmethod
+    @bind_native("java/lang/reflect/Constructor", "newInstance([Ljava/lang/Object;)Ljava/lang/Object;")
+    def newInstance(method, stack, constructor: JavaMethod, args):
+        obj = constructor.get_class().create_instance()
+        return constructor.invoke(args)
+
+
+class Class:
+    @staticmethod
+    @bind_native("java/lang/Class", "getAnnotation(Ljava/lang/Class;)Ljava/lang/annotation/Annotation;")
+    def getAnnotation(method, stack, this_cls, annotation_cls):
+        return []  # todo: implement
 
 
 class ClassLoader:
@@ -469,6 +628,11 @@ class String:
         return this.replace(before, after)
 
     @staticmethod
+    @bind_native("java/lang/String", "replace(Ljava/lang/CharSequence;Ljava/lang/CharSequence;)Ljava/lang/String;")
+    def replaceAll(method, stack, this: str, before: str, after: str):
+        return this.replace(before, after, 1)
+
+    @staticmethod
     @bind_native("java/lang/String", "equalsIgnoreCase(Ljava/lang/String;)Z")
     def equalsIgnoreCase(method, stack, this: str, other: str):
         return this.lower() == other.lower()
@@ -477,6 +641,21 @@ class String:
     @bind_native("java/lang/String", "endsWith(Ljava/lang/String;)Z")
     def endsWith(method, stack, this: str, other: str):
         return this.endswith(other)
+
+    @staticmethod
+    @bind_native("java/lang/String", "getBytes()[B")
+    def getBytes(method, stack, this: str):
+        return this.encode("utf-8")  # todo: is this correct?
+
+    @staticmethod
+    @bind_native("java/lang/String", "trim()Ljava/lang/String;")
+    def trimString(method, stack, this):
+        return this.trim()
+
+    @staticmethod
+    @bind_native("java/lang/String", "isEmpty()Z")
+    def isEmpty(method, stack, this):
+        return len(this) == 0
 
 
 class Regex:
@@ -535,7 +714,7 @@ class JException:
         this.fields["message"] = message
 
 
-class Method:
+class MethodImpl:
     @staticmethod
     @bind_native("java/lang/reflect/Method", "apply(Ljava/lang/Object;)Ljava/lang/Object;")
     def apply(method, stack, this, *args):
@@ -638,4 +817,27 @@ class UUID:
         obj = method.get_class().create_instance()
         obj.underlying = uuid.UUID(string)
         return obj
+
+    @staticmethod
+    @bind_native("java/util/UUID", "nameUUIDFromBytes([B)Ljava/util/UUID;")
+    def nameUUIDFromBytes(method, stack, array):
+        obj = method.get_class().create_instance()
+        obj.underlying = uuid.UUID(bytes=bytes(array))
+        return obj
+
+
+class Optional:
+    @staticmethod
+    @bind_native("java/util/Optional", "get()Ljava/lang/Object;")
+    def getOptionalValue(method, stack, this):
+        if this is None:
+            raise StackCollectingException("<this> is None")
+        return this
+
+
+class Object:
+    @staticmethod
+    @bind_native("java/lang/Object", "getClass()Ljava/lang/Class;")
+    def getClass(method, stack, this):
+        return None if this is None or not hasattr(this, "get_class") else this.get_class()
 

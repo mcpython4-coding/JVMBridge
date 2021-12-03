@@ -25,6 +25,9 @@
       },
       "setRegistryName(Lnet/minecraft/resources/ResourceLocation;)Ljava/lang/Object;": {
         "access": 8
+      },
+      "m_5524_()Ljava/lang/String;": {
+        "access": 8
       }
     }
   },
@@ -57,6 +60,9 @@
       },
       "m_41503_(I)Lnet/minecraft/world/item/Item$Properties;": {
         "access": 8
+      },
+      "setNoRepair()Lnet/minecraft/world/item/Item$Properties;": {
+        "access": 8
       }
     }
   },
@@ -84,6 +90,14 @@
         "access": 8
       },
       "f_40754_": {
+        "descriptor": "Lnet/minecraft/world/item/CreativeModeTab;",
+        "access": 8
+      },
+      "f_40751_": {
+        "descriptor": "Lnet/minecraft/world/item/CreativeModeTab;",
+        "access": 8
+      },
+      "f_40759_": {
         "descriptor": "Lnet/minecraft/world/item/CreativeModeTab;",
         "access": 8
       }
@@ -143,6 +157,9 @@
       },
       "getModelRegistry()Ljava/util/Map;": {
         "access": 8
+      },
+      "<init>()V": {
+        "access": 1
       }
     },
     "attributes": {
@@ -211,6 +228,78 @@
         "access": 8
       },
       "f_42650_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_41852_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42589_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42448_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42787_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42788_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42455_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42400_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42399_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42734_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42699_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42718_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42736_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42739_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42735_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42612_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42518_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42586_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42542_": {
         "descriptor": "Lnet/minecraft/world/item/Item;",
         "access": 8
       }
@@ -331,6 +420,22 @@
       },
       "f_61371_": {
         "descriptor": "Lnet/minecraft/world/level/block/state/properties/BooleanProperty;",
+        "access": 8
+      },
+      "f_61365_": {
+        "descriptor": "Lnet/minecraft/world/level/block/state/properties/EnumProperty;",
+        "access": 8
+      },
+      "f_61373_": {
+        "descriptor": "Lnet/minecraft/world/level/block/state/properties/DirectionProperty;",
+        "access": 8
+      },
+      "f_61376_": {
+        "descriptor": "Lnet/minecraft/world/level/block/state/properties/EnumProperty;",
+        "access": 8
+      },
+      "f_61409_": {
+        "descriptor": "Lnet/minecraft/world/level/block/state/properties/IntegerProperty;",
         "access": 8
       }
     }
@@ -657,6 +762,10 @@
       "f_76401_": {
         "descriptor": "Lnet/minecraft/world/level/material/MaterialColor;",
         "access": 8
+      },
+      "f_76393_": {
+        "descriptor": "Lnet/minecraft/world/level/material/MaterialColor;",
+        "access": 8
       }
     }
   },
@@ -797,6 +906,9 @@
       },
       "setRegistryName(Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
         "access": 8
+      },
+      "setRegistryName(Ljava/lang/String;Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
       }
     }
   },
@@ -928,6 +1040,10 @@
       "f_76296_": {
         "descriptor": "Lnet/minecraft/world/level/material/Material;",
         "access": 8
+      },
+      "f_76271_": {
+        "descriptor": "Lnet/minecraft/world/level/material/Material;",
+        "access": 8
       }
     },
     "methods": {
@@ -1035,6 +1151,18 @@
         "access": 8
       },
       "f_56752_": {
+        "descriptor": "Lnet/minecraft/world/level/block/SoundType;",
+        "access": 8
+      },
+      "f_56754_": {
+        "descriptor": "Lnet/minecraft/world/level/block/SoundType;",
+        "access": 8
+      },
+      "f_56749_": {
+        "descriptor": "Lnet/minecraft/world/level/block/SoundType;",
+        "access": 8
+      },
+      "f_56739_": {
         "descriptor": "Lnet/minecraft/world/level/block/SoundType;",
         "access": 8
       }
@@ -1200,6 +1328,22 @@
       "f_11678_": {
         "descriptor": "Lnet/minecraft/sounds/SoundEvent;",
         "access": 8
+      },
+      "f_11783_": {
+        "descriptor": "Lnet/minecraft/sounds/SoundEvent;",
+        "access": 8
+      },
+      "f_11780_": {
+        "descriptor": "Lnet/minecraft/sounds/SoundEvent;",
+        "access": 8
+      },
+      "f_11967_": {
+        "descriptor": "Lnet/minecraft/sounds/SoundEvent;",
+        "access": 8
+      },
+      "f_11964_": {
+        "descriptor": "Lnet/minecraft/sounds/SoundEvent;",
+        "access": 8
       }
     }
   },
@@ -1349,6 +1493,12 @@
         "access": 8
       },
       "m_49966_()Lnet/minecraft/world/level/block/state/BlockState;": {
+        "access": 8
+      }
+    },
+    "attributes": {
+      "f_54419_": {
+        "descriptor": "Lnet/minecraft/world/level/block/state/properties/BooleanProperty;",
         "access": 8
       }
     }
@@ -1752,6 +1902,34 @@
       "f_50055_": {
         "descriptor": "Lnet/minecraft/world/level/block/Block;",
         "access": 8
+      },
+      "f_50011_": {
+        "descriptor": "Lnet/minecraft/world/level/block/Block;",
+        "access": 8
+      },
+      "f_50044_": {
+        "descriptor": "Lnet/minecraft/world/level/block/Block;",
+        "access": 8
+      },
+      "f_50001_": {
+        "descriptor": "Lnet/minecraft/world/level/block/Block;",
+        "access": 8
+      },
+      "f_50051_": {
+        "descriptor": "Lnet/minecraft/world/level/block/Block;",
+        "access": 8
+      },
+      "f_50191_": {
+        "descriptor": "Lnet/minecraft/world/level/block/Block;",
+        "access": 8
+      },
+      "f_50054_": {
+        "descriptor": "Lnet/minecraft/world/level/block/Block;",
+        "access": 8
+      },
+      "f_50262_": {
+        "descriptor": "Lnet/minecraft/world/level/block/Block;",
+        "access": 8
       }
     }
   },
@@ -1766,6 +1944,9 @@
       },
       "register()V": {
         "access": 0
+      },
+      "m_49966_()Lnet/minecraft/world/level/block/state/BlockState;": {
+        "access": 8
       }
     }
   },
@@ -1982,6 +2163,9 @@
       },
       "register()V": {
         "access": 0
+      },
+      "m_49966_()Lnet/minecraft/world/level/block/state/BlockState;": {
+        "access": 8
       }
     }
   },
@@ -2129,6 +2313,9 @@
         "access": 8
       },
       "m_49966_()Lnet/minecraft/world/level/block/state/BlockState;": {
+        "access": 8
+      },
+      "getRegistryName()Lnet/minecraft/resources/ResourceLocation;": {
         "access": 8
       }
     },
@@ -2293,6 +2480,10 @@
       },
       "f_122881_": {
         "descriptor": "Lnet/minecraft/resources/ResourceKey;",
+        "access": 8
+      },
+      "f_122876_": {
+        "descriptor": "Lnet/minecraft/core/Registry;",
         "access": 8
       }
     },
@@ -2616,6 +2807,9 @@
       },
       "<init>(Ljava/lang/String;)V": {
         "access": 8
+      },
+      "<init>()V": {
+        "access": 1
       }
     }
   },
@@ -3368,6 +3562,9 @@
       },
       "m_49959_(Lnet/minecraft/world/level/block/state/BlockState;)V": {
         "access": 8
+      },
+      "getRegistryName()Lnet/minecraft/resources/ResourceLocation;": {
+        "access": 8
       }
     }
   },
@@ -3461,12 +3658,35 @@
     }
   },
   {
-    "name": "net/minecraft/world/item/SwordItem"
+    "name": "net/minecraft/world/item/SwordItem",
+    "methods": {
+      "<init>(Lnet/minecraft/world/item/Tier;IFLnet/minecraft/world/item/Item$Properties;)V": {
+        "access": 8
+      },
+      "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 0
+      },
+      "register()V": {
+        "access": 0
+      }
+    }
   },
   {
     "name": "net/minecraft/tags/BlockTags",
     "methods": {
       "createOptional(Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraftforge/common/Tags$IOptionalNamedTag;": {
+        "access": 8
+      },
+      "m_13115_()Lnet/minecraft/tags/TagCollection;": {
+        "access": 8
+      },
+      "m_13116_(Ljava/lang/String;)Lnet/minecraft/tags/Tag$Named;": {
+        "access": 8
+      }
+    },
+    "attributes": {
+      "f_13061_": {
+        "descriptor": "Lnet/minecraft/tags/Tag$Named;",
         "access": 8
       }
     }
@@ -3487,6 +3707,14 @@
         "access": 8
       },
       "DIAMOND": {
+        "descriptor": "Lnet/minecraft/world/item/Tiers;",
+        "access": 8
+      },
+      "WOOD": {
+        "descriptor": "Lnet/minecraft/world/item/Tiers;",
+        "access": 8
+      },
+      "GOLD": {
         "descriptor": "Lnet/minecraft/world/item/Tiers;",
         "access": 8
       }
@@ -3646,6 +3874,11 @@
       },
       "AMBIENT": {
         "descriptor": "Lnet/minecraft/world/entity/MobCategory;",
+        "access": 8
+      }
+    },
+    "methods": {
+      "values()[Lnet/minecraft/world/entity/MobCategory;": {
         "access": 8
       }
     }
@@ -3948,6 +4181,9 @@
       },
       "m_65815_(Lnet/minecraft/world/level/levelgen/feature/configurations/FeatureConfiguration;)Lnet/minecraft/world/level/levelgen/feature/ConfiguredFeature;": {
         "access": 8
+      },
+      "setRegistryName(Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
       }
     },
     "attributes": {
@@ -3969,6 +4205,10 @@
     "name": "net/minecraft/world/effect/MobEffectCategory",
     "attributes": {
       "HARMFUL": {
+        "descriptor": "Lnet/minecraft/world/effect/MobEffectCategory;",
+        "access": 8
+      },
+      "BENEFICIAL": {
         "descriptor": "Lnet/minecraft/world/effect/MobEffectCategory;",
         "access": 8
       }
@@ -4212,6 +4452,10 @@
       "f_82685_": {
         "descriptor": "Lnet/minecraft/world/phys/shapes/BooleanOp;",
         "access": 8
+      },
+      "f_82695_": {
+        "descriptor": "Lnet/minecraft/world/phys/shapes/BooleanOp;",
+        "access": 8
       }
     }
   },
@@ -4253,6 +4497,12 @@
     "name": "net/minecraft/world/item/enchantment/EnchantmentCategory",
     "methods": {
       "create(Ljava/lang/String;Ljava/util/function/Predicate;)Lnet/minecraft/world/item/enchantment/EnchantmentCategory;": {
+        "access": 8
+      }
+    },
+    "attributes": {
+      "ARMOR": {
+        "descriptor": "Lnet/minecraft/world/item/enchantment/EnchantmentCategory;",
         "access": 8
       }
     }
@@ -4401,6 +4651,9 @@
     "methods": {
       "m_6609_()I": {
         "access": 8
+      },
+      "m_6601_()I": {
+        "access": 8
       }
     }
   },
@@ -4409,6 +4662,9 @@
     "methods": {
       "<init>(Lnet/minecraft/world/item/enchantment/Enchantment$Rarity;Lnet/minecraft/world/item/enchantment/EnchantmentCategory;[Lnet/minecraft/world/entity/EquipmentSlot;)V": {
         "access": 8
+      },
+      "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
       }
     }
   },
@@ -4416,6 +4672,18 @@
     "name": "net/minecraft/world/item/enchantment/Enchantment$Rarity",
     "attributes": {
       "RARE": {
+        "descriptor": "Lnet/minecraft/world/item/enchantment/Enchantment$Rarity;",
+        "access": 8
+      },
+      "VERY_RARE": {
+        "descriptor": "Lnet/minecraft/world/item/enchantment/Enchantment$Rarity;",
+        "access": 8
+      },
+      "UNCOMMON": {
+        "descriptor": "Lnet/minecraft/world/item/enchantment/Enchantment$Rarity;",
+        "access": 8
+      },
+      "COMMON": {
         "descriptor": "Lnet/minecraft/world/item/enchantment/Enchantment$Rarity;",
         "access": 8
       }
@@ -4499,6 +4767,9 @@
         "access": 8
       },
       "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
+      },
+      "register()V": {
         "access": 8
       }
     }
@@ -4766,6 +5037,9 @@
       },
       "integer()Lcom/mojang/brigadier/arguments/IntegerArgumentType;": {
         "access": 8
+      },
+      "integer(I)Lcom/mojang/brigadier/arguments/IntegerArgumentType;": {
+        "access": 8
       }
     }
   },
@@ -4783,6 +5057,9 @@
       },
       "suggests(Lcom/mojang/brigadier/suggestion/SuggestionProvider;)Lcom/mojang/brigadier/builder/RequiredArgumentBuilder;": {
         "access": 8
+      },
+      "argument(Ljava/lang/String;Lcom/mojang/brigadier/arguments/ArgumentType;)Lcom/mojang/brigadier/builder/RequiredArgumentBuilder;": {
+        "access": 8
       }
     }
   },
@@ -4799,6 +5076,15 @@
         "access": 8
       },
       "redirect(Lcom/mojang/brigadier/tree/CommandNode;)Lcom/mojang/brigadier/builder/ArgumentBuilder;": {
+        "access": 8
+      },
+      "literal(Ljava/lang/String;)Lcom/mojang/brigadier/builder/LiteralArgumentBuilder;": {
+        "access": 8
+      },
+      "build()Lcom/mojang/brigadier/tree/LiteralCommandNode;": {
+        "access": 8
+      },
+      "then(Lcom/mojang/brigadier/tree/CommandNode;)Lcom/mojang/brigadier/builder/ArgumentBuilder;": {
         "access": 8
       }
     }
@@ -4953,6 +5239,12 @@
     "methods": {
       "setRegistryName(Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
         "access": 8
+      },
+      "getAttributes()Lnet/minecraftforge/fluids/FluidAttributes;": {
+        "access": 8
+      },
+      "getRegistryName()Lnet/minecraft/resources/ResourceLocation;": {
+        "access": 8
       }
     }
   },
@@ -5014,7 +5306,18 @@
     }
   },
   {
-    "name": "net/minecraft/world/item/BowItem"
+    "name": "net/minecraft/world/item/BowItem",
+    "methods": {
+      "<init>(Lnet/minecraft/world/item/Item$Properties;)V": {
+        "access": 8
+      },
+      "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
+      },
+      "register()V": {
+        "access": 8
+      }
+    }
   },
   {
     "name": "net/minecraft/world/item/crafting/Ingredient",
@@ -5259,7 +5562,18 @@
     }
   },
   {
-    "name": "net/minecraft/world/item/FishingRodItem"
+    "name": "net/minecraft/world/item/FishingRodItem",
+    "methods": {
+      "<init>(Lnet/minecraft/world/item/Item$Properties;)V": {
+        "access": 8
+      },
+      "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
+      },
+      "register()V": {
+        "access": 8
+      }
+    }
   },
   {
     "name": "net/minecraft/world/level/biome/Biome$BiomeBuilder",
@@ -5390,6 +5704,15 @@
     "methods": {
       "<init>(Lcom/mojang/serialization/Codec;)V": {
         "access": 8
+      },
+      "setRegistryName(Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
+      },
+      "register()V": {
+        "access": 8
+      },
+      "m_67267_(Lnet/minecraft/world/level/LevelSimulatedReader;Lnet/minecraft/core/BlockPos;)Z": {
+        "access": 8
       }
     }
   },
@@ -5488,6 +5811,217 @@
     "attributes": {
       "f_110740_": {
         "descriptor": "Lnet/minecraft/resources/ResourceLocation;",
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/tags/ItemTags",
+    "methods": {
+      "m_13194_(Ljava/lang/String;)Lnet/minecraft/tags/Tag$Named;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/damagesource/DamageSource",
+    "attributes": {
+      "f_19316_": {
+        "descriptor": "Lnet/minecraft/world/damagesource/DamageSource;",
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/level/storage/loot/functions/LootItemFunctionType",
+    "methods": {
+      "<init>(Lnet/minecraft/world/level/storage/loot/Serializer;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/level/storage/loot/functions/LootItemConditionalFunction$Serializer",
+    "methods": {
+      "<init>()V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/tags/TagCollection",
+    "methods": {
+      "m_7473_(Lnet/minecraft/tags/Tag;)Lnet/minecraft/resources/ResourceLocation;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/commands/synchronization/SuggestionProviders",
+    "methods": {
+      "m_121658_(Lnet/minecraft/resources/ResourceLocation;Lcom/mojang/brigadier/suggestion/SuggestionProvider;)Lcom/mojang/brigadier/suggestion/SuggestionProvider;": {
+        "access": 8
+      }
+    },
+    "attributes": {
+      "f_121644_": {
+        "descriptor": "Lcom/mojang/brigadier/suggestion/SuggestionProvider;",
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/commands/arguments/GameProfileArgument",
+    "methods": {
+      "m_94584_()Lnet/minecraft/commands/arguments/GameProfileArgument;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/core/Direction$Axis",
+    "attributes": {
+      "X": {
+        "descriptor": "Lnet/minecraft/core/Direction$Axis;",
+        "access": 8
+      },
+      "Y": {
+        "descriptor": "Lnet/minecraft/core/Direction$Axis;",
+        "access": 8
+      },
+      "Z": {
+        "descriptor": "Lnet/minecraft/core/Direction$Axis;",
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/phys/shapes/VoxelShape",
+    "methods": {
+      "m_83288_(Lnet/minecraft/core/Direction$Axis;)D": {
+        "access": 8
+      },
+      "m_83297_(Lnet/minecraft/core/Direction$Axis;)D": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/effect/MobEffectInstance",
+    "methods": {
+      "<init>(Lnet/minecraft/world/effect/MobEffect;IIZZZ)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/item/alchemy/Potion",
+    "methods": {
+      "<init>(Ljava/lang/String;[Lnet/minecraft/world/effect/MobEffectInstance;)V": {
+        "access": 8
+      },
+      "setRegistryName(Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/level/levelgen/feature/configurations/FeatureConfiguration",
+    "attributes": {
+      "f_67737_": {
+        "descriptor": "Lnet/minecraft/world/level/levelgen/feature/configurations/NoneFeatureConfiguration;",
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/resources/ResourceLocation$Serializer",
+    "methods": {
+      "<init>()V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/item/PickaxeItem",
+    "methods": {
+      "<init>(Lnet/minecraft/world/item/Tier;IFLnet/minecraft/world/item/Item$Properties;)V": {
+        "access": 8
+      },
+      "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
+      },
+      "register()V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/item/AxeItem",
+    "methods": {
+      "<init>(Lnet/minecraft/world/item/Tier;FFLnet/minecraft/world/item/Item$Properties;)V": {
+        "access": 8
+      },
+      "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
+      },
+      "register()V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/item/HoeItem",
+    "methods": {
+      "<init>(Lnet/minecraft/world/item/Tier;IFLnet/minecraft/world/item/Item$Properties;)V": {
+        "access": 8
+      },
+      "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
+      },
+      "register()V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/item/TieredItem",
+    "methods": {
+      "<init>(Lnet/minecraft/world/item/Tier;Lnet/minecraft/world/item/Item$Properties;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/level/material/Fluids",
+    "attributes": {
+      "f_76191_": {
+        "descriptor": "Lnet/minecraft/world/level/material/Fluid;",
+        "access": 8
+      },
+      "f_76193_": {
+        "descriptor": "Lnet/minecraft/world/level/material/FlowingFluid;",
+        "access": 8
+      },
+      "f_76195_": {
+        "descriptor": "Lnet/minecraft/world/level/material/FlowingFluid;",
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/item/alchemy/Potions",
+    "attributes": {
+      "f_43598_": {
+        "descriptor": "Lnet/minecraft/world/item/alchemy/Potion;",
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/item/alchemy/PotionUtils",
+    "methods": {
+      "m_43559_(Lnet/minecraft/world/item/alchemy/Potion;)I": {
         "access": 8
       }
     }
