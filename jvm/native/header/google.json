@@ -30,6 +30,21 @@
       },
       "copyOf([Ljava/lang/Object;)Lcom/google/common/collect/ImmutableList;": {
         "access": 8
+      },
+      "of(Ljava/lang/Object;)Lcom/google/common/collect/ImmutableList;": {
+        "access": 8
+      },
+      "builder()Lcom/google/common/collect/ImmutableList$Builder;": {
+        "access": 8
+      },
+      "addAll(Ljava/lang/Iterable;)Lcom/google/common/collect/ImmutableList$Builder;": {
+        "access": 8
+      },
+      "add(Ljava/lang/Object;)Lcom/google/common/collect/ImmutableList$Builder;": {
+        "access": 8
+      },
+      "build()Lcom/google/common/collect/ImmutableList;": {
+        "access": 8
       }
     }
   },
@@ -73,6 +88,15 @@
       },
       "of()Lcom/google/common/collect/ImmutableMap;": {
         "access": 8
+      },
+      "put(Ljava/lang/Object;Ljava/lang/Object;)Lcom/google/common/collect/ImmutableMap": {
+        "access": 1
+      },
+      "putAll(Ljava/util/Map;)Lcom/google/common/collect/ImmutableMap$Builder;": {
+        "access": 8
+      },
+      "<init>()V": {
+        "access": 0
       }
     }
   },
@@ -157,6 +181,9 @@
       },
       "<init>()V": {
         "access": 8
+      },
+      "putAll(Ljava/util/Map;)Lcom/google/common/collect/ImmutableMap$Builder;": {
+        "access": 8
       }
     }
   },
@@ -220,6 +247,9 @@
         "access": 8
       },
       "build()Lcom/google/common/collect/ImmutableList;": {
+        "access": 8
+      },
+      "addAll(Ljava/lang/Iterable;)Lcom/google/common/collect/ImmutableList$Builder;": {
         "access": 8
       }
     }
@@ -305,6 +335,17 @@
       },
       "getType()Ljava/lang/reflect/Type;": {
         "access": 8
+      }
+    }
+  },
+  {
+    "name": "com/google/common/collect/BiMap",
+    "methods": {
+      "put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;": {
+        "access": 8
+      },
+      "<init>()V": {
+        "access": 0
       }
     }
   }

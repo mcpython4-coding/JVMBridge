@@ -445,6 +445,12 @@ class ArrayStore(OpcodeInstruction):
         if array is None:
             raise StackCollectingException("NullPointerException: array is null")
 
+        if index < 0:
+            raise StackCollectingException(f"Array index out of range: {index} < 0")
+
+        if index >= len(array):
+            raise StackCollectingException(f"Array index out of range: {index} >= {len(array)}")
+
         array[index] = value
 
     @classmethod
@@ -1670,7 +1676,7 @@ class InvokeDynamic(CPLinkedInstruction):
         else:
             method, data = data
             # m = stack.vm.get_method_of_nat(data[0])
-            call_site = method((data[1][2], data[0], data[1]), data[1][0][2][1][1], data[1][2])
+            call_site = method((data[1][2], data[0], data[1]), data[1][0][2][1][1], data[1][2], stack=stack)
             stack.push(call_site)
 
     @classmethod

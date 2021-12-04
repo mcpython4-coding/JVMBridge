@@ -154,6 +154,12 @@
     "methods": {
       "isClient()Z": {
         "access": 8
+      },
+      "values()[Lnet/minecraftforge/api/distmarker/Dist;": {
+        "access": 8
+      },
+      "ordinal()I": {
+        "access": 8
       }
     }
   },
@@ -448,6 +454,9 @@
       },
       "getEntries()Ljava/util/Collection;": {
         "access": 8
+      },
+      "register(Ljava/lang/String;Ljava/util/function/Supplier;)Lnet/minecraftforge/registries/RegistryObject;": {
+        "access": 8
       }
     }
   },
@@ -667,6 +676,9 @@
     "methods": {
       "<init>()V": {
         "access": 0
+      },
+      "registerMessage(ILjava/lang/Class;Ljava/util/function/BiConsumer;Ljava/util/function/Function;Ljava/util/function/BiConsumer;)Lnet/minecraftforge/network/simple/IndexedMessageCodec$MessageHandler;": {
+        "access": 8
       }
     }
   },
@@ -901,7 +913,12 @@
     }
   },
   {
-    "name": "net/minecraftforge/fml/event/lifecycle/FMLCommonSetupEvent"
+    "name": "net/minecraftforge/fml/event/lifecycle/FMLCommonSetupEvent",
+    "methods": {
+      "enqueueWork(Ljava/lang/Runnable;)Ljava/util/concurrent/CompletableFuture;": {
+        "access": 8
+      }
+    }
   },
   {
     "name": "net/minecraftforge/registries/ObjectHolder",
@@ -1492,6 +1509,9 @@
       },
       "addSprite(Lnet/minecraft/resources/ResourceLocation;)Z": {
         "access": 8
+      },
+      "getAtlas()Lnet/minecraft/client/renderer/texture/TextureAtlas;": {
+        "access": 8
       }
     }
   },
@@ -1500,6 +1520,9 @@
     "methods": {
       "getMap()Lnet/minecraft/client/renderer/texture/TextureAtlas;": {
         "access": 8
+      },
+      "getAtlas()Lnet/minecraft/client/renderer/texture/TextureAtlas;": {
+        "access": 8
       }
     }
   },
@@ -1507,6 +1530,9 @@
     "name": "net/minecraftforge/fml/loading/FMLLoader",
     "methods": {
       "isProduction()Z": {
+        "access": 8
+      },
+      "getDist()Lnet/minecraftforge/api/distmarker/Dist;": {
         "access": 8
       }
     }
@@ -1545,5 +1571,84 @@
         "access": 8
       }
     }
+  },
+  {
+    "name": "net/minecraftforge/network/NetworkRegistry$ChannelBuilder",
+    "methods": {
+      "named(Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraftforge/network/NetworkRegistry$ChannelBuilder;": {
+        "access": 8
+      },
+      "clientAcceptedVersions(Ljava/util/function/Predicate;)Lnet/minecraftforge/network/NetworkRegistry$ChannelBuilder;": {
+        "access": 8
+      },
+      "serverAcceptedVersions(Ljava/util/function/Predicate;)Lnet/minecraftforge/network/NetworkRegistry$ChannelBuilder;": {
+        "access": 8
+      },
+      "networkProtocolVersion(Ljava/util/function/Supplier;)Lnet/minecraftforge/network/NetworkRegistry$ChannelBuilder;": {
+        "access": 8
+      },
+      "simpleChannel()Lnet/minecraftforge/network/simple/SimpleChannel;": {
+        "access": 8
+      },
+      "<init>()V": {
+        "access": 0
+      },
+      "simpleChannel()Lnet/minecraftforge/fml/network/simple/SimpleChannel;": {
+        "access": 1
+      }
+    }
+  },
+  {
+    "name": "net/minecraftforge/network/NetworkRegistry",
+    "methods": {
+      "newSimpleChannel(Lnet/minecraft/resources/ResourceLocation;Ljava/util/function/Supplier;Ljava/util/function/Predicate;Ljava/util/function/Predicate;)Lnet/minecraftforge/network/simple/SimpleChannel;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraftforge/common/extensions/IForgeMenuType",
+    "methods": {
+      "create(Lnet/minecraftforge/network/IContainerFactory;)Lnet/minecraft/world/inventory/MenuType;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraftforge/registries/RegistryObject",
+    "methods": {
+      "get()Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraftforge/network/simple/SimpleChannel",
+    "methods": {
+      "registerMessage(ILjava/lang/Class;Ljava/util/function/BiConsumer;Ljava/util/function/Function;Ljava/util/function/BiConsumer;)Lnet/minecraftforge/network/simple/IndexedMessageCodec$MessageHandler;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraftforge/fml/ModLoader",
+    "attributes": {
+      "LOGGER": {
+        "access": 8,
+        "descriptor": ""
+      }
+    }
+  },
+  {
+    "name": "net/minecraftforge/network/simple/IndexedMessageCodec$MessageHandler"
+  },
+  {
+    "name": "net/minecraftforge/energy/IEnergyStorage"
+  },
+  {
+    "name": "net/minecraftforge/common/crafting/IIngredientSerializer"
+  },
+  {
+    "name": "net/minecraftforge/common/crafting/conditions/IConditionSerializer"
   }
 ]

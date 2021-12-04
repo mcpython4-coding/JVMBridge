@@ -20,7 +20,7 @@ class UnimplementedNative:
     def __call__(self, *args, **kwargs):
 
         if not self.warned:
-            print(f"cannot invoke native {self.name} as no implementation was bound")
+            print(f"cannot invoke native {self.name} as no implementation was bound, args:", args)
             self.warned = True
 
             text = repr(self.name)
@@ -129,6 +129,8 @@ class NativeClass(jvm.api.AbstractJavaClass):
                 except:
                     print(name, d)
                     raise
+
+        self.enum_fields = list(self.enum_attribute_keys)
 
         if "methods" in data:
             for desc, d in data["methods"].items():

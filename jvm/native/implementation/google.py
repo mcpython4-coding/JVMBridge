@@ -2,6 +2,7 @@ import jvm.api
 from jvm.api import AbstractMethod
 from jvm.api import AbstractStack
 from jvm.natives import bind_native, bind_annotation
+from jvm.natives import NativeClassInstance
 
 
 @bind_annotation("com/google/gson/annotations/JsonAdapter")
@@ -31,11 +32,14 @@ class Suppliers:
 
 class ListLike:
     @staticmethod
+    @bind_native("com/google/common/collect/ImmutableList", "builder()Lcom/google/common/collect/ImmutableList$Builder;")
+    @bind_native("com/google/common/collect/ImmutableList", "of(Ljava/lang/Object;)Lcom/google/common/collect/ImmutableList;")
+    @bind_native("com/google/common/collect/ImmutableList", "of(Ljava/lang/Object;Ljava/lang/Object;)Lcom/google/common/collect/ImmutableList;")
     @bind_native("com/google/common/collect/ImmutableList", "of(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Lcom/google/common/collect/ImmutableList;")
     @bind_native("com/google/common/collect/ImmutableList", "of(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;)Lcom/google/common/collect/ImmutableList;")
     def create(method, stack, *args):
         args = list(args)
-        if isinstance(args[-1], list):
+        if args and isinstance(args[-1], list):
             args += args.pop(-1)
 
         return method.get_class().create_instance().init("([Ljava/lang/Object;)V", args)
@@ -47,14 +51,26 @@ class ListLike:
 
     @staticmethod
     @bind_native("com/google/common/collect/ImmutableList$Builder", "add(Ljava/lang/Object;)Lcom/google/common/collect/ImmutableList$Builder;")
+    @bind_native("com/google/common/collect/ImmutableList", "add(Ljava/lang/Object;)Lcom/google/common/collect/ImmutableList$Builder;")
     def addObject(method, stack, this, obj):
         this.underlying.append(obj)
         return this
 
     @staticmethod
+    @bind_native("com/google/common/collect/ImmutableList$Builder", "addAll(Ljava/lang/Iterable;)Lcom/google/common/collect/ImmutableList$Builder;")
+    @bind_native("com/google/common/collect/ImmutableList", "addAll(Ljava/lang/Iterable;)Lcom/google/common/collect/ImmutableList$Builder;")
+    def addAll(method, stack, this, obj):
+        if isinstance(obj, NativeClassInstance):
+            this.underlying += obj.underlying
+        else:
+            this.underlying += obj
+        return this
+
+    @staticmethod
     @bind_native("com/google/common/collect/ImmutableList$Builder", "build()Lcom/google/common/collect/ImmutableList;")
+    @bind_native("com/google/common/collect/ImmutableList", "build()Lcom/google/common/collect/ImmutableList;")
     def buildList(method, stack, this):
-        return tuple(this)
+        return tuple(this.underlying)
 
     @staticmethod
     @bind_native("com/google/common/collect/ImmutableList", "<init>([Ljava/lang/Object;)V")
@@ -86,6 +102,12 @@ class MapLike:
         return method.get_class().create_instance().init("(Ljava/util/Map;)V", {pairs[2*i]: pairs[2*i + 1] for i in range(len(pairs) // 2)})
 
     @staticmethod
+    @bind_native("com/google/common/collect/BiMap", "<init>()V")
+    @bind_native("com/google/common/collect/ImmutableMap", "<init>()V")
+    def init(method, stack, this):
+        this.underlying = {}
+
+    @staticmethod
     @bind_native("com/google/common/collect/ImmutableMap", "<init>(Ljava/util/Map;)V")
     def init(method, stack, this, data: dict):
         this.underlying = data.copy()
@@ -100,12 +122,21 @@ class MapLike:
     @staticmethod
     @bind_native("com/google/common/collect/ImmutableMap$Builder", "put(Ljava/lang/Object;Ljava/lang/Object;)Lcom/google/common/collect/ImmutableMap$Builder;")
     @bind_native("com/google/common/collect/ImmutableMap", "put(Ljava/lang/Object;Ljava/lang/Object;)Lcom/google/common/collect/ImmutableMap$Builder;")
+    @bind_native("com/google/common/collect/ImmutableMap", "put(Ljava/lang/Object;Ljava/lang/Object;)Lcom/google/common/collect/ImmutableMap")
+    @bind_native("com/google/common/collect/BiMap", "put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;")
     def put(method, stack, this, key, value):
         this.underlying[key] = value
         return this
 
     @staticmethod
+    @bind_native("com/google/common/collect/ImmutableMap", "putAll(Ljava/util/Map;)Lcom/google/common/collect/ImmutableMap$Builder;")
+    def putAll(method, stack, this, data):
+        this.underlying.update(data.underlying)
+        return this
+
+    @staticmethod
     @bind_native("com/google/common/collect/ImmutableMap$Builder", "build()Lcom/google/common/collect/ImmutableMap;")
+    @bind_native("com/google/common/collect/ImmutableMap", "build()Lcom/google/common/collect/ImmutableMap;")
     def build(method, stack, this):
         return this
 

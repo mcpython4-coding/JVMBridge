@@ -24,6 +24,9 @@
       },
       "setLevel(Lorg/apache/logging/log4j/Level;)V": {
         "access": 8
+      },
+      "getContext()Lorg/apache/logging/log4j/core/LoggerContext;": {
+        "access": 8
       }
     }
   },
@@ -66,6 +69,28 @@
     "name": "org/apache/logging/log4j/core/config/plugins/Plugin",
     "methods": {
       "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "org/apache/logging/log4j/core/LoggerContext",
+    "methods": {
+      "getLogger(Ljava/lang/String;)Lorg/apache/logging/log4j/core/Logger;": {
+        "access": 8
+      },
+      "getLogger(Ljava/lang/Class;)Lorg/apache/logging/log4j/Logger;": {
+        "access": 1
+      },
+      "getLogger(Ljava/lang/String;)Lorg/apache/logging/log4j/Logger;": {
+        "access": 1
+      }
+    }
+  },
+  {
+    "name": "org/apache/logging/log4j/MarkerManager",
+    "methods": {
+      "getMarker(Ljava/lang/String;)Lorg/apache/logging/log4j/Marker;": {
         "access": 8
       }
     }

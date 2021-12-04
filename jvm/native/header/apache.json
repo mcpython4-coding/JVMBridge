@@ -7,6 +7,15 @@
       },
       "getLeft()Ljava/lang/Object;": {
         "access": 8
+      },
+      "of(Ljava/lang/Object;Ljava/lang/Object;)Lorg/apache/commons/lang3/tuple/Pair;": {
+        "access": 8
+      },
+      "getKey()Ljava/lang/Object;": {
+        "access": 8
+      },
+      "getValue()Ljava/lang/Object;": {
+        "access": 8
       }
     }
   },

@@ -75,6 +75,7 @@
 [uuk]: added parser for the Signature attribute
 [uuk]: fixed arrays not getting version attribute from their parent class passed during construction
 [uuk]: added infrastructure for forge versions < 1.13
+[uuk]: made the system compatible with 1.18
 
 tasks to do [maybe moved away for later]:
 - minifier task should minify builtin & bridge library into each only one file

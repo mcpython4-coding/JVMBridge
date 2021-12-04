@@ -75,7 +75,7 @@ class ArrayBase(jvm.api.AbstractJavaClass):
     def create_instance(self):
         return []
 
-    def clone(self, instance):
+    def clone(self, method, stack, instance):
         return instance.copy() if instance is not None else instance
 
 

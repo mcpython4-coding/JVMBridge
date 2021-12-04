@@ -7,7 +7,19 @@ from jvm.natives import bind_native, bind_annotation
 @bind_native("org/apache/logging/log4j/LogManager", "getLogger()Lorg/apache/logging/log4j/Logger;")
 @bind_native("org/apache/logging/log4j/LogManager", "getLogger(Ljava/lang/String;)Lorg/apache/logging/log4j/Logger;")
 @bind_native("org/apache/logging/log4j/LogManager", "getLogger(Ljava/lang/Class;)Lorg/apache/logging/log4j/Logger;")
-def getLogger(method, stack, name=None):
+@bind_native("org/apache/logging/log4j/core/LoggerContext", "getLogger(Ljava/lang/String;)Lorg/apache/logging/log4j/core/Logger;")
+@bind_native("org/apache/logging/log4j/LogManager", "getRootLogger()Lorg/apache/logging/log4j/Logger;")
+def getLogger(method, stack, name_or_obj=None, name=None):
+    pass
+
+
+@bind_native("org/apache/logging/log4j/core/Logger", "getContext()Lorg/apache/logging/log4j/core/LoggerContext;")
+def getContext(method, stack, this):
+    pass
+
+
+@bind_native("org/apache/logging/log4j/MarkerManager", "getMarker(Ljava/lang/String;)Lorg/apache/logging/log4j/Marker;")
+def getMarker(method, stack, name: str):
     pass
 
 
@@ -34,6 +46,11 @@ def infoWithObject(method, stack, this, arg, obj):
 @bind_native("org/apache/logging/log4j/Logger", "error(Ljava/lang/String;)V")
 def error(method, stack, this, arg):
     print("[JVM][ERROR]", arg)
+
+
+@bind_native("org/apache/logging/log4j/Logger", "error(Ljava/lang/String;Ljava/lang/Object;)V")
+def error(method, stack, this, arg, obj):
+    print("[JVM][ERROR]", arg, obj)
 
 
 @bind_annotation("org/apache/logging/log4j/core/config/plugins/Plugin")

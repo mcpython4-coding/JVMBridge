@@ -110,6 +110,9 @@
       },
       "build()Lcom/mojang/brigadier/builder/LiteralArgumentBuilder;": {
         "access": 8
+      },
+      "setRegistryName(Ljava/lang/String;)Lnet/minecraftforge/registries/IForgeRegistryEntry;": {
+        "access": 8
       }
     }
   },
@@ -265,6 +268,9 @@
         "access": 8
       },
       "isInstance(Ljava/lang/Object;)Z": {
+        "access": 8
+      },
+      "getDeclaredField(Ljava/lang/String;)Ljava/lang/reflect/Field;": {
         "access": 8
       }
     }
@@ -541,6 +547,18 @@
       },
       "forEach(Ljava/util/function/BiConsumer;)V": {
         "access": 8
+      },
+      "copyOf(Ljava/util/Map;)Ljava/util/Map;": {
+        "access": 8
+      },
+      "<init>(MAP)V": {
+        "access": 1
+      },
+      "<init>()V": {
+        "access": 0
+      },
+      "entry(Ljava/lang/Object;Ljava/lang/Object;)Ljava/util/Map$Entry;": {
+        "access": 8
       }
     }
   },
@@ -717,6 +735,9 @@
       },
       "get(I)Ljava/lang/Object;": {
         "access": 8
+      },
+      "isEmpty()Z": {
+        "access": 8
       }
     }
   },
@@ -790,6 +811,18 @@
       },
       "of(Ljava/lang/Object;Ljava/lang/Object;)Ljava/util/List;": {
         "access": 1
+      },
+      "isEmpty()Z": {
+        "access": 8
+      },
+      "of(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/util/List;": {
+        "access": 1
+      },
+      "forEach(Ljava/util/function/Consumer;)V": {
+        "access": 8
+      },
+      "of([Ljava/lang/Object;)Ljava/util/List;": {
+        "access": 8
       }
     }
   },
@@ -803,6 +836,9 @@
         "access": 8
       },
       "thenComparing(Ljava/util/function/Function;)Ljava/util/Comparator;": {
+        "access": 8
+      },
+      "comparing(Ljava/util/function/Function;)Ljava/util/Comparator;": {
         "access": 8
       }
     }
@@ -895,6 +931,9 @@
         "access": 8
       },
       "literal()Lcom/mojang/brigadier/builder/LiteralArgumentBuilder;": {
+        "access": 8
+      },
+      "toString()Ljava/lang/String;": {
         "access": 8
       }
     }
@@ -1061,6 +1100,15 @@
       },
       "values()Ljava/util/Collection;": {
         "access": 8
+      },
+      "put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;": {
+        "access": 8
+      },
+      "put(Ljava/lang/Enum;Ljava/lang/Object;)Ljava/lang/Object;": {
+        "access": 8
+      },
+      "get(Ljava/lang/Object;)Ljava/lang/Object;": {
+        "access": 8
       }
     }
   },
@@ -1178,6 +1226,9 @@
       },
       "forEach(Ljava/util/function/BiConsumer;)V": {
         "access": 8
+      },
+      "<init>(MAP)V": {
+        "access": 0
       }
     }
   },
@@ -1252,6 +1303,12 @@
       },
       "<init>()V": {
         "access": 1
+      },
+      "<init>(ARRAY)V": {
+        "access": 1
+      },
+      "sorted(Ljava/util/Comparator;)Ljava/util/stream/Stream;": {
+        "access": 8
       }
     }
   },
@@ -1406,6 +1463,9 @@
         "access": 8
       },
       "addAll(Ljava/util/Collection;[Ljava/lang/Object;)Z": {
+        "access": 8
+      },
+      "unmodifiableMap(Ljava/util/Map;)Ljava/util/Map;": {
         "access": 8
       }
     }
@@ -1726,6 +1786,12 @@
       },
       "toList()Ljava/util/stream/Collector;": {
         "access": 8
+      },
+      "toMap(Ljava/util/function/Function;Ljava/util/function/Function;)Ljava/util/stream/Collector;": {
+        "access": 8
+      },
+      "toSet()Ljava/util/stream/Collector;": {
+        "access": 8
       }
     }
   },
@@ -1765,6 +1831,77 @@
     "name": "java/lang/Math",
     "methods": {
       "max(II)I": {
+        "access": 8
+      },
+      "max(DD)D": {
+        "access": 1
+      },
+      "max(FF)F": {
+        "access": 1
+      },
+      "max(JJ)J": {
+        "access": 1
+      },
+      "min(DD)D": {
+        "access": 1
+      },
+      "min(FF)F": {
+        "access": 1
+      },
+      "min(JJ)J": {
+        "access": 1
+      },
+      "min(II)I": {
+        "access": 1
+      }
+    }
+  },
+  {
+    "name": "java/lang/reflect/Field",
+    "methods": {
+      "setAccessible(Z)V": {
+        "access": 8
+      },
+      "get(Ljava/lang/Object;)Ljava/lang/Object;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/util/Map$Entry",
+    "methods": {
+      "getKey()Ljava/lang/Object;": {
+        "access": 8
+      },
+      "getValue()Ljava/lang/Object;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/util/function/Predicate"
+  },
+  {
+    "name": "java/util/function/BiPredicate"
+  },
+  {
+    "name": "java/util/concurrent/atomic/AtomicInteger",
+    "methods": {
+      "<init>(I)V": {
+        "access": 8
+      },
+      "getAndIncrement()I": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "java/lang/Set",
+    "methods": {
+      "<init>()V": {
+        "access": 0
+      },
+      "forEach(Ljava/util/function/Consumer;)V": {
         "access": 8
       }
     }
