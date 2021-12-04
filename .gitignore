@@ -129,3 +129,5 @@ dmypy.json
 /tests/
 /jvm/missing_methods.txt
 /jvm/native/missing_events.txt
+/.idea/
+/jvm/native/mapping/
