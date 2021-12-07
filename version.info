@@ -83,9 +83,9 @@ tasks to do [maybe moved away for later]:
 - a system to export code portions as "subroutines" & a special invoke instruction, this needs:
     - a code walker for deciding if instructions are jump-targets
     - a code walker for deciding which portions of code should get sub-routine-d, including a system to transform
-        such code into python-native code where possible
-- a code walker to shorten code by removing NOOP's & resolving the jumps to the new destinations
-- maybe decoded instructions store their following instruction instead of the offset?
+        such code into python-native code where possible (bytecode?)
+- a code walker to shorten code by removing NO-OP's & resolving the jumps to the new destinations
+- maybe decoded instructions store a "pointer" to their following instruction instead of the offset?
 - a code walker with a special instruction set for mc-specific instructions (shared.world access, current player, etc.) and
     generic optimisation instructions (new with constructor call in ones)
 - a system to generate .class files from the in-memory stuff, including a reversal of the non-default instructions

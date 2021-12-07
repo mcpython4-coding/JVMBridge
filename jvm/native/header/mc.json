@@ -3430,6 +3430,9 @@
       },
       "m_137469_(Ljava/lang/Object;Ljava/util/function/Consumer;)Ljava/lang/Object;": {
         "access": 8
+      },
+      "m_137456_(Lcom/mojang/datafixers/DSL$TypeReference;Ljava/lang/String;)Lcom/mojang/datafixers/types/Type;": {
+        "access": 8
       }
     }
   },
@@ -6353,6 +6356,40 @@
     "attributes": {
       "f_64580_": {
         "descriptor": "Lcom/google/common/collect/ImmutableMap;",
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "cpw/mods/modlauncher/Environment",
+    "methods": {
+      "getProperty(Lcpw/mods/modlauncher/api/TypesafeMap$Key;)Ljava/util/Optional;": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/level/storage/loot/Serializer"
+  },
+  {
+    "name": "net/minecraft/util/datafix/fixes/References",
+    "attributes": {
+      "f_16781_": {
+        "descriptor": "Lcom/mojang/datafixers/DSL$TypeReference;",
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/level/block/FarmBlock",
+    "methods": {
+      "<init>(Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V": {
+        "access": 8
+      }
+    },
+    "attributes": {
+      "f_49792_": {
+        "descriptor": "",
         "access": 8
       }
     }

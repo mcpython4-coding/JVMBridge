@@ -2017,6 +2017,11 @@ class CpwModLauncher:
     def getEnvironment(method, stack, this):
         return stack.vm.get_class("cpw/mods/modlauncher/Environment").create_instance()
 
+    @staticmethod
+    @bind_native("cpw/mods/modlauncher/Environment", "getProperty(Lcpw/mods/modlauncher/api/TypesafeMap$Key;)Ljava/util/Optional;")
+    def getPropertyFromKey(method, stack, this, key):
+        return key
+
 
 jvm.api.vm.get_class("net/minecraft/world/item/CreativeModeTab").set_static_attribute("f_40748_", [])
 jvm.api.vm.get_class("net/minecraftforge/registries/ForgeRegistries").set_static_attribute("ITEMS", lambda: shared.registry.get_by_name("minecraft:item"))
@@ -2024,4 +2029,5 @@ jvm.api.vm.get_class("net/minecraftforge/registries/ForgeRegistries").set_static
 jvm.api.vm.get_class("net/minecraft/world/level/levelgen/feature/StructureFeature").set_static_attribute("f_67012_", jvm.api.vm.get_class("com/google/common/collect/BiMap").create_instance().init("()V"))
 jvm.api.vm.get_class("net/minecraft/world/level/levelgen/feature/StructureFeature").set_static_attribute("f_67031_", jvm.api.vm.get_class("java/util/List").create_instance().init("()V"))
 jvm.api.vm.get_class("net/minecraft/world/level/levelgen/StructureSettings").set_static_attribute("f_64580_", jvm.api.vm.get_class("com/google/common/collect/ImmutableMap").create_instance().init("()V"))
+jvm.api.vm.get_class("cpw/mods/modlauncher/api/IEnvironment$Keys").set_static_attribute("VERSION", lambda: "1.18")
 

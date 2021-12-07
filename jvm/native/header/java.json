@@ -1540,6 +1540,12 @@
       },
       "orElseThrow(Ljava/util/function/Supplier;)Ljava/lang/Object;": {
         "access": 8
+      },
+      "filter(Ljava/util/function/Predicate;)Ljava/util/Optional;": {
+        "access": 8
+      },
+      "isPresent()Z": {
+        "access": 8
       }
     }
   },
