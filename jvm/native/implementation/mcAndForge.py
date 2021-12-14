@@ -77,7 +77,7 @@ class Annotations:
 
 def boundMethodToStage(method: AbstractMethod, event: str, mod: str):
     @shared.mod_loader(mod, event)
-    def work():
+    async def work():
         # print(mod, event, method)
         shared.CURRENT_EVENT_SUB = mod
         try:

@@ -78,7 +78,7 @@ class JavaMod(mcpython.common.mod.Mod.Mod):
     def mod_string(self):
         return super().mod_string() + " [JavaFML]"
 
-    def load_underlying_classes(self):
+    async def load_underlying_classes(self):
         """
         Called during mod init for loading the java code from the .jar archives
         """
