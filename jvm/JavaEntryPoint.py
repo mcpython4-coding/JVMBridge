@@ -19,6 +19,8 @@ import jvm.JavaVM
 import jvm.logging
 from mcpython.common.mod.ModLoader import ModContainer
 
+from jvm.ClassAdressing import IClassAccessor
+
 '''
 Integration point to mcpython's mod loader 
 Highly depends on code of that stuff, so don't use it without it
@@ -57,13 +59,21 @@ FORGE_VERSION_NUMBER_TO_MC = {
 }
 
 
+jvm.natives.manager.vm = jvm.api.vm
 jvm.natives.manager.load_files()
 
 
+class McpythonResourceLookup(IClassAccessor):
+    async def try_access_resource(self, path: str) -> typing.Optional[bytes]:
+        try:
+            return mcpython.engine.ResourceLoader.read_raw(path)
+        except (FileNotFoundError, KeyError, NameError):
+            pass
+
+
 # Replace java bytecode loader with ResourceLoader's lookup system
-jvm.JavaVM.get_bytecode_of_class = (
-    lambda file: mcpython.engine.ResourceLoader.read_raw(file.replace(".", "/") + ".class")
-)
+jvm.api.vm.add_accessor(McpythonResourceLookup())
+
 # jvm.Java.info = lambda text: logger.println("[JAVA][INFO]", text)
 jvm.logging.warn = lambda text: logger.println("[JAVA][WARN]", text)
 

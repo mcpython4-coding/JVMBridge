@@ -46,6 +46,8 @@ except ImportError:
 
 
 class ArrayBase(jvm.api.AbstractJavaClass):
+    __slots__ = ("attributes", "base_class", "depth", "name")
+
     def __init__(self, depth: int, name: str, base_class: AbstractJavaClass):
         super().__init__()
         self.methods = {
@@ -85,6 +87,8 @@ class JavaArrayManager:
     It creates the needed array classes and holds them for later reuse
     """
 
+    __slots__ = ("vm",)
+
     def __init__(self, vm_i):
         self.vm = weakref.proxy(vm_i)
 
@@ -102,6 +106,8 @@ class JavaArrayManager:
 
 
 class JavaField:
+    __slots__ = ("class_file", "name", "descriptor", "access", "attributes")
+
     def __init__(self):
         self.class_file: "JavaBytecodeClass" = None
         self.name: str = None
@@ -131,11 +137,24 @@ class JavaField:
 
 
 class JavaMethod(AbstractMethod):
+    __slots__ = AbstractMethod.__slots__ + ("attributes", "code_repr")
+
     def __init__(self):
         super().__init__()
         self.attributes = JavaAttributeTable(self)
 
         self.code_repr = None
+
+    def ensure_code_repr(self):
+        if self.code_repr is not None: return
+
+        from jvm.Runtime import BytecodeRepr
+        try:
+            code = self.attributes["Code"][0]
+        except (KeyError, IndexError):
+            return
+
+        self.code_repr = BytecodeRepr(code)
 
     def from_data(self, class_file: "JavaBytecodeClass", data: bytearray):
         self.class_file = weakref.proxy(class_file)
@@ -152,6 +171,9 @@ class JavaMethod(AbstractMethod):
 
         runtime = jvm.Runtime.Runtime()
         return runtime.run_method(self, *args, stack=stack)
+
+    def get_parent_class(self):
+        return self.class_file
 
     def get_class(self):
         return self.class_file.vm.get_class(
@@ -172,6 +194,7 @@ class JavaMethod(AbstractMethod):
         return data
 
     def print_stats(self, current=None):
+        self.ensure_code_repr()
         print(f"method {repr(self)}")
 
         if self.code_repr is not None:
@@ -291,12 +314,12 @@ class JavaBytecodeClass(AbstractJavaClass):
         self.name: str = self.cp[pop_u2(data) - 1][1][1]
         self.parent: typing.Callable[
             [], typing.Optional[AbstractJavaClass]
-        ] = jvm.api.vm.get_lazy_class(
+        ] = self.vm.get_lazy_class(
             self.cp[pop_u2(data) - 1][1][1], version=self.internal_version
         )
 
         self.interfaces += [
-            jvm.api.vm.get_lazy_class(
+            self.vm.get_lazy_class(
                 self.cp[pop_u2(data) - 1][1][1], version=self.internal_version
             )
             for _ in range(pop_u2(data))
@@ -402,7 +425,7 @@ class JavaBytecodeClass(AbstractJavaClass):
         for annotation in data:
             for cls_name, args in annotation.annotations:
                 try:
-                    cls = jvm.api.vm.get_class(cls_name, version=self.internal_version)
+                    cls = self.vm.get_class(cls_name, version=self.internal_version)
                 except StackCollectingException as e:
                     # checks if the class exists, this will be true if it is a here class loader exception
                     if (
@@ -612,6 +635,7 @@ class JavaClassInstance(AbstractJavaClassInstance):
     todo: add abstract base so natives can share the same layout
     todo: add set/get for fields & do type validation
     """
+    __slots__ = AbstractJavaClassInstance.__slots__ + ("class_file", "fields")
 
     def __init__(self, class_file: JavaBytecodeClass):
         super().__init__()

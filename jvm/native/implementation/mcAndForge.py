@@ -210,7 +210,7 @@ class ModContainer:
     @staticmethod
     @bind_native("net/minecraftforge/api/distmarker/Dist", "values()[Lnet/minecraftforge/api/distmarker/Dist;")
     def distValues(method, stack):
-        return method.get_class().get_enum_values()
+        return method.get_parent_class().get_enum_values()
 
     @staticmethod
     @bind_native("net/minecraftforge/api/distmarker/Dist", "ordinal()I")
@@ -726,14 +726,14 @@ class BlockCreation:
     @bind_native("net/minecraft/world/level/block/state/BlockBehaviour$Properties", "m_60939_(Lnet/minecraft/world/level/material/Material;)Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;")
     @bind_native("net/minecraft/world/level/block/state/BlockBehaviour$Properties", "m_60944_(Lnet/minecraft/world/level/material/Material;Lnet/minecraft/world/level/material/MaterialColor;)Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;")
     def createForMaterial(method, stack, material, color=None):
-        instance = method.get_class().create_instance().init("(Lnet/minecraft/world/level/material/Material;)V", material)
+        instance = method.get_parent_class().create_instance().init("(Lnet/minecraft/world/level/material/Material;)V", material)
         instance.material_color = color
         return instance
 
     @staticmethod
     @bind_native("net/minecraft/world/level/block/state/BlockBehaviour$Properties", "m_60947_(Lnet/minecraft/world/level/material/Material;Ljava/util/function/Function;)Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;")
     def createForMaterial(method, stack, material, function):
-        instance = method.get_class().create_instance().init("(Lnet/minecraft/world/level/material/Material;)V", material)
+        instance = method.get_parent_class().create_instance().init("(Lnet/minecraft/world/level/material/Material;)V", material)
         return instance
 
     @staticmethod
@@ -1321,7 +1321,7 @@ class ResourceLocation:
     @staticmethod
     @bind_native("net/minecraft/resources/ResourceKey", "m_135785_(Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraft/resources/ResourceKey;")
     def createFromKeyLocationPair(method, stack, key, location):
-        return method.get_class().create_instance()
+        return method.get_parent_class().create_instance()
 
     @staticmethod
     @bind_native("net/minecraft/resources/ResourceLocation", "equals(Ljava/lang/Object;)Z")
@@ -1601,7 +1601,7 @@ class Properties:
     @staticmethod
     @bind_native("net/minecraft/world/level/block/state/properties/BooleanProperty", "m_61465_(Ljava/lang/String;)Lnet/minecraft/world/level/block/state/properties/BooleanProperty;")
     def createByName(method, stack, name: str):
-        return method.get_class().create_instance()
+        return method.get_parent_class().create_instance()
 
 
 class BiomeDictionary_Type:
@@ -1676,7 +1676,7 @@ class EntityBuilder:
     @staticmethod
     @bind_native("net/minecraft/world/level/block/entity/BlockEntityType$Builder", "m_155273_(Lnet/minecraft/world/level/block/entity/BlockEntityType$BlockEntitySupplier;[Lnet/minecraft/world/level/block/Block;)Lnet/minecraft/world/level/block/entity/BlockEntityType$Builder;")
     def create(method, stack, supplier, blocks):
-        return method.get_class().create_instance()
+        return method.get_parent_class().create_instance()
 
     @staticmethod
     @bind_native("net/minecraft/world/level/block/entity/BlockEntityType$Builder", "m_58966_(Lcom/mojang/datafixers/types/Type;)Lnet/minecraft/world/level/block/entity/BlockEntityType;")
@@ -1715,7 +1715,7 @@ class EntityBuilder:
     @bind_native("net/minecraft/world/entity/EntityDimensions", "m_20395_(FF)Lnet/minecraft/world/entity/EntityDimensions;")
     @bind_native("net/minecraft/world/entity/EntityDimensions", "m_20398_(FF)Lnet/minecraft/world/entity/EntityDimensions;")
     def m_20395_(method, stack, a, b):
-        return method.get_class().create_instance()
+        return method.get_parent_class().create_instance()
 
     @staticmethod
     @bind_native("net/minecraft/world/entity/EntityType$Builder", "m_20702_(I)Lnet/minecraft/world/entity/EntityType$Builder;")
@@ -1725,7 +1725,7 @@ class EntityBuilder:
     @staticmethod
     @bind_native("net/minecraft/world/entity/EntityType$Builder", "m_20704_(Lnet/minecraft/world/entity/EntityType$EntityFactory;Lnet/minecraft/world/entity/MobCategory;)Lnet/minecraft/world/entity/EntityType$Builder;")
     def m_20704_(method, stack, factory, mob_category):
-        return method.get_class().create_instance()
+        return method.get_parent_class().create_instance()
 
     @staticmethod
     @bind_native("net/minecraft/world/entity/EntityType$Builder", "setTrackingRange(I)Lnet/minecraft/world/entity/EntityType$Builder;")
@@ -1777,7 +1777,7 @@ class Packages:
     @staticmethod
     @bind_native("net/minecraft/network/syncher/SynchedEntityData", "m_135353_(Ljava/lang/Class;Lnet/minecraft/network/syncher/EntityDataSerializer;)Lnet/minecraft/network/syncher/EntityDataAccessor;")
     def m_135353_(method, stack, cls, serializer):
-        return method.get_class().create_instance()
+        return method.get_parent_class().create_instance()
 
 
 class ReloadListener:
@@ -1886,12 +1886,12 @@ class Commands:
     @staticmethod
     @bind_native("com/mojang/brigadier/arguments/StringArgumentType", "word()Lcom/mojang/brigadier/arguments/StringArgumentType;")
     def word(method, stack):
-        return method.get_class().create_instance()
+        return method.get_parent_class().create_instance()
 
     @staticmethod
     @bind_native("com/mojang/brigadier/arguments/BoolArgumentType", "bool()Lcom/mojang/brigadier/arguments/BoolArgumentType;")
     def boolType(method, stack):
-        return method.get_class().create_instance()
+        return method.get_parent_class().create_instance()
 
     @staticmethod
     @bind_native("net/minecraftforge/event/RegisterCommandsEvent", "getDispatcher()Lcom/mojang/brigadier/CommandDispatcher;")
@@ -1908,7 +1908,7 @@ class Recipes:
     @staticmethod
     @bind_native("net/minecraft/world/item/crafting/RecipeType", "m_44119_(Ljava/lang/String;)Lnet/minecraft/world/item/crafting/RecipeType;")
     def m_44119_(method, stack, some_string: str):
-        obj = method.get_class().create_instance()
+        obj = method.get_parent_class().create_instance()
         obj.registry_name = some_string
         return obj
 

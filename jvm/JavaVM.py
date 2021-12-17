@@ -1,6 +1,8 @@
+import asyncio
 import typing
 
 from jvm.api import AbstractJavaVM
+from jvm.ClassAdressing import AccessorDict, IClassAccessor
 
 from jvm.natives import manager as native_manager
 from jvm.api import DYNAMIC_NATIVES
@@ -10,13 +12,6 @@ from jvm.Java import JavaBytecodeClass
 from jvm.JavaExceptionStack import StackCollectingException
 import jvm.api
 from jvm.api import AbstractJavaClass
-
-
-# And this can be wrapped into your own resource access (multiple directories, web download, whatever you want)
-# (Mcpython wraps it around the general resource access implementation called ResourceLoader)
-def get_bytecode_of_class(class_name: str):
-    with open("./" + class_name.replace(".", "/") + ".class", mode="rb") as f:
-        return f.read()
 
 
 class JavaVM(AbstractJavaVM):
@@ -45,6 +40,11 @@ class JavaVM(AbstractJavaVM):
         self.array_helper = JavaArrayManager(self)
 
         self.simulation = False
+        self.file_lookup = AccessorDict()
+
+    def add_accessor(self, accessor: IClassAccessor):
+        self.file_lookup.add_accessor(accessor)
+        return self
 
     def walk_across_classes(self) -> typing.Iterator[AbstractJavaClass]:
         yield from self.shared_classes.values()
@@ -99,8 +99,11 @@ class JavaVM(AbstractJavaVM):
             return self.array_helper.get(name, version=version)
 
         try:
-            bytecode = get_bytecode_of_class(name)
+            bytecode = asyncio.get_event_loop().run_until_complete(self.file_lookup.try_access_class_file(name))
         except FileNotFoundError:
+            bytecode = None
+
+        if bytecode is None:
             if DYNAMIC_NATIVES:
                 return self.create_native(name, version)
 

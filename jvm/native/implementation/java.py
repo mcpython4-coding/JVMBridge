@@ -12,7 +12,7 @@ from jvm.Java import JavaMethod
 from jvm.JavaExceptionStack import StackCollectingException
 from jvm.natives import bind_native, bind_annotation
 from jvm.natives import NativeClassInstance
-from mcpython.engine import logger
+# from mcpython.engine import logger
 
 
 @bind_annotation("javax/annotation/Nullable")
@@ -287,14 +287,14 @@ class ListLike:
     @bind_native("java/util/List", "of(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/util/List;")
     @bind_native("java/util/List", "of(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/util/List;")
     def fromVaryingSize(method, stack, *args):
-        obj = method.get_class().create_instance().init("()V")
+        obj = method.get_parent_class().create_instance().init("()V")
         obj.underlying += args
         return obj
 
     @staticmethod
     @bind_native("java/util/List", "of([Ljava/lang/Object;)Ljava/util/List;")
     def fromArray(method, stack, array):
-        obj = method.get_class().create_instance().init("()V")
+        obj = method.get_parent_class().create_instance().init("()V")
         obj.underlying += array
         return obj
 
@@ -334,14 +334,14 @@ class MapLike:
     @staticmethod
     @bind_native("java/util/Map", "copyOf(Ljava/util/Map;)Ljava/util/Map;")
     def copyOf(method, stack, other):
-        obj = method.get_class().create_instance().init("()V")
+        obj = method.get_parent_class().create_instance().init("()V")
         obj.underlying = other.underlying.copy()
         return obj
 
     @staticmethod
     @bind_native("java/util/Map", "of(Ljava/lang/Object;Ljava/lang/Object;)Ljava/util/Map;")
     def mapFromKeyValuePairs(method, stack, key, value):
-        obj = method.get_class().create_instance().init("()V")
+        obj = method.get_parent_class().create_instance().init("()V")
         obj.underlying = {key: value}
         return obj
 
@@ -482,7 +482,7 @@ class StreamLike:
     @staticmethod
     @bind_native("java/util/stream/Stream", "of([Ljava/lang/Object;)Ljava/util/stream/Stream;")
     def of(method, stack, array):
-        obj = method.get_class().create_instance().init("()V")
+        obj = method.get_parent_class().create_instance().init("()V")
         obj.underlying = array.copy()
         return obj
 
@@ -511,7 +511,7 @@ class StreamLike:
     @staticmethod
     @bind_native("java/util/stream/Stream", "concat(Ljava/util/stream/Stream;Ljava/util/stream/Stream;)Ljava/util/stream/Stream;")
     def concatStreams(method, stack, stream_a, stream_b):
-        stream = method.get_class().create_instance().init("()V")
+        stream = method.get_parent_class().create_instance().init("()V")
         stream.underlying = list(stream_a.underlying) + list(stream_b.underlying)
         return stream
 
@@ -667,7 +667,7 @@ class Thread:
     @bind_native("java/lang/Thread", "currentThread()Ljava/lang/Thread;")
     def currentThread(method: AbstractMethod, stack):
         if Thread.CURRENT is None:
-            Thread.CURRENT = method.get_class().create_instance().init("()V")
+            Thread.CURRENT = method.get_parent_class().create_instance().init("()V")
 
         return Thread.CURRENT
 
@@ -754,7 +754,7 @@ class ServiceLoader:
     @staticmethod
     @bind_native("java/util/ServiceLoader", "load(Ljava/lang/Class;Ljava/lang/ClassLoader;)Ljava/util/ServiceLoader;")
     def load(method, stack, cls, class_loader):
-        return method.get_class().create_instance()
+        return method.get_parent_class().create_instance()
 
     @staticmethod
     @bind_native("java/util/ServiceLoader", "iterator()Ljava/util/Iterator;")
@@ -879,7 +879,7 @@ class Regex:
     @staticmethod
     @bind_native("java/util/regex/Pattern", "compile(Ljava/lang/String;)Ljava/util/regex/Pattern;")
     def compile(method, stack, pattern):
-        return method.get_class().create_instance().init("(PATTERN)V", re.compile(pattern))
+        return method.get_parent_class().create_instance().init("(PATTERN)V", re.compile(pattern))
 
 
 class Pattern:
@@ -999,7 +999,7 @@ class IO:
     @staticmethod
     @bind_native("java/io/PrintStream", "println(Ljava/lang/String;)V")
     def println(method, stack, this, text: str):
-        logger.println("[JAVA] "+text)
+        print("[JAVA] "+text)
 
 
 class StringConcatFactory:
@@ -1049,14 +1049,14 @@ class UUID:
     @staticmethod
     @bind_native("java/util/UUID", "fromString(Ljava/lang/String;)Ljava/util/UUID;")
     def uuidFromString(method, stack, string: str):
-        obj = method.get_class().create_instance()
+        obj = method.get_parent_class().create_instance()
         obj.underlying = uuid.UUID(string)
         return obj
 
     @staticmethod
     @bind_native("java/util/UUID", "nameUUIDFromBytes([B)Ljava/util/UUID;")
     def nameUUIDFromBytes(method, stack, array):
-        obj = method.get_class().create_instance()
+        obj = method.get_parent_class().create_instance()
         obj.underlying = uuid.UUID(bytes=bytes(array))
         return obj
 

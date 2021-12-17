@@ -132,6 +132,7 @@ class AbstractJavaClass:
         ] = []
         self.internal_version = None  # the internal version identifier
         self.vm = None  # the vm instance bound to
+        self.cp = tuple()
 
         self.enum_fields = []
 
@@ -165,8 +166,13 @@ class AbstractJavaClass:
     def prepare_use(self, runtime=None):
         pass
 
+    def ensure_data(self, data):
+        raise RuntimeError("Class does not implement adding data to constant pool")
+
 
 class AbstractJavaClassInstance(ABC):
+    __slots__ = ("fields", "rebound_type")
+
     def __init__(self):
         self.fields = {}
         self.rebound_type = None
@@ -195,6 +201,8 @@ DYNAMIC_NATIVES = "--fill-unknown-natives" in sys.argv
 
 
 class AbstractMethod(metaclass=ABCMeta):
+    __slots__ = ("class_file", "name", "signature", "access", "code_repr")
+
     def __init__(self):
         self.class_file: AbstractJavaClass = None
         self.name: str = None
@@ -207,7 +215,7 @@ class AbstractMethod(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def get_class(self):
+    def get_parent_class(self):
         pass
 
 

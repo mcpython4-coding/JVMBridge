@@ -11,6 +11,7 @@ from jvm.util import U2
 from jvm.util import U4
 from jvm.JavaExceptionStack import StackCollectingException
 import jvm.api
+from jvm.api import AbstractJavaClass
 
 
 class AbstractAttributeParser(ABC):
@@ -24,6 +25,12 @@ class AbstractAttributeParser(ABC):
 
 
 class ConstantValueParser(AbstractAttributeParser):
+    __slots__ = (
+        "value",
+        "field",
+        "data",
+    )
+
     def __init__(self):
         self.value = None
         self.field: "JavaField" = None
@@ -49,6 +56,16 @@ class ConstantValueParser(AbstractAttributeParser):
 
 
 class CodeParser(AbstractAttributeParser):
+    __slots__ = (
+        "class_file",
+        "table",
+        "max_stacks",
+        "max_locals",
+        "code",
+        "exception_table",
+        "attributes",
+    )
+
     def __init__(self):
         self.class_file: "JavaBytecodeClass" = None
         self.table: "JavaAttributeTable" = None
@@ -94,6 +111,8 @@ class CodeParser(AbstractAttributeParser):
 
 
 class BootstrapMethods(AbstractAttributeParser):
+    __slots__ = ("entries",)
+
     def __init__(self):
         self.entries = []
 
@@ -116,14 +135,86 @@ class BootstrapMethods(AbstractAttributeParser):
 
 
 class StackMapTableParser(AbstractAttributeParser):
+    __slots__ = ("entries",)
+
+    @classmethod
+    def parse_verification_type_info(cls, data: bytearray):
+        tag = pop_u1(data)
+        # print(2, tag)
+
+        match tag:
+            case 0:  # TOP
+                return 0,
+            case 1:  # Integer
+                return "I",
+            case 2:  # Float
+                return "F",
+            case 3:  # Long
+                return "J",
+            case 4:  # Double
+                return "D",
+            case 5:  # null
+                return None,
+            case 6:  # UninitializedThis
+                return 4,
+            case 7:  # Object_variable
+                return 7, pop_u2(data)
+            case 8:  # Uninitialized_variable
+                return 8, pop_u2(data)
+
+        # raise ValueError(tag)
+
+    def __init__(self):
+        self.entries = []
+
     def parse(self, table: "JavaAttributeTable", data: bytearray):
-        pass  # todo: implement
+        for _ in range(pop_u2(data)):
+            entry_type = pop_u1(data)
+            # print(1, entry_type)
+
+            # same_frame
+            if entry_type < 64:
+                self.entries.append((entry_type, entry_type))
+
+            # same_locals_1_stack_item_frame
+            elif entry_type < 128:
+                self.entries.append((entry_type, entry_type - 64, self.parse_verification_type_info(data)))
+
+            elif entry_type < 247:
+                continue
+                # raise StackCollectingException("Reserved tag for StackMapTable: "+str(entry_type)).add_trace(table.class_file.name)
+
+            # same_locals_1_stack_item_frame_extended
+            elif entry_type == 247:
+                self.entries.append((entry_type, pop_u2(data), self.parse_verification_type_info(data)))
+
+            # chop_frame
+            elif entry_type < 251:
+                self.entries.append((entry_type, pop_u2(data), 251 - entry_type))
+
+            # same_frame_extended
+            elif entry_type == 251:
+                self.entries.append((entry_type, pop_u2(data)))
+
+            # append_frame
+            elif entry_type < 255:
+                self.entries.append((entry_type, pop_u2(data), self.parse_verification_type_info(data)))
+
+            # full_frame
+            elif entry_type == 255:
+                self.entries.append((entry_type, pop_u2(data), [self.parse_verification_type_info(data) for _ in range(pop_u2(data))], [self.parse_verification_type_info(data) for _ in range(pop_u2(data))]))
 
     def dump(self, table: "JavaAttributeTable") -> bytearray:
         return bytearray()  # todo: implement
 
 
 class ElementValue:
+    __slots__ = (
+        "tag",
+        "data",
+        "raw_data",
+    )
+
     def __init__(self):
         self.tag = None
         self.data = None
@@ -136,7 +227,7 @@ class ElementValue:
 
         # these can be directly loaded from the constant pool
         if tag in "BCDFIJSZs":
-            self.data = decode_cp_constant(table.class_file.cp[pop_u2(data) - 1])
+            self.data = decode_cp_constant(table.class_file.cp[pop_u2(data) - 1], vm=table.class_file.vm)
 
         elif tag == "e":
             cls_name = (
@@ -147,7 +238,7 @@ class ElementValue:
             attr_name = table.class_file.cp[pop_u2(data) - 1][1]
             self.raw_data = cls_name, attr_name
 
-            cls = jvm.api.vm.get_class(cls_name, version=table.class_file.internal_version)
+            cls = table.class_file.vm.get_class(cls_name, version=table.class_file.internal_version)
 
             if cls is not None:
                 self.data = cls.get_static_attribute(attr_name, "enum")
@@ -204,6 +295,8 @@ class ElementValue:
 
 
 class RuntimeAnnotationsParser(AbstractAttributeParser):
+    __slots__ = ("annotations",)
+
     def __init__(self):
         self.annotations = []
 
@@ -256,6 +349,8 @@ class RuntimeAnnotationsParser(AbstractAttributeParser):
 
 
 class NestHostParser(AbstractAttributeParser):
+    __slots__ = ("host",)
+
     def __init__(self):
         self.host = None
 
@@ -267,6 +362,8 @@ class NestHostParser(AbstractAttributeParser):
 
 
 class NestMembersParser(AbstractAttributeParser):
+    __slots__ = ("classes",)
+
     def __init__(self):
         self.classes = []
 
@@ -287,6 +384,8 @@ class NestMembersParser(AbstractAttributeParser):
 
 
 class SignatureParser(AbstractAttributeParser):
+    __slots__ = ("signature",)
+
     def __init__(self):
         self.signature = None
 
@@ -295,6 +394,59 @@ class SignatureParser(AbstractAttributeParser):
 
     def dump(self, table: "JavaAttributeTable") -> bytearray:
         return table.class_file.ensure_data([1, self.signature])
+
+
+class ExceptionsParser(AbstractAttributeParser):
+    __slots__ = ("exceptions",)
+
+    def __init__(self):
+        self.exceptions = []
+
+    def parse(self, table: "JavaAttributeTable", data: bytearray):
+        self.exceptions += [
+            table.class_file.cp[pop_u2(data) - 1][1][1]
+            for _ in range(pop_u2(data))
+        ]
+
+    def dump(self, table: "JavaAttributeTable") -> bytearray:
+        return U2.pack(len(self.exceptions)) + sum(
+            (
+                table.class_file.ensure_data([7, [1, e]])
+                for e in self.exceptions
+            ),
+            bytearray()
+        )
+
+
+class InnerClassesParser(AbstractAttributeParser):
+    __slots__ = ("inner_classes",)
+
+    def __init__(self):
+        self.inner_classes = []
+
+    def parse(self, table: "JavaAttributeTable", data: bytearray):
+        for _ in range(pop_u2(data)):
+            inner_class_index = pop_u2(data)
+            outer_class_index = pop_u2(data)
+            inner_name_index = pop_u2(data)
+            inner_class_access = pop_u2(data)
+            self.inner_classes.append((inner_class_index, outer_class_index, inner_name_index, inner_class_access))
+
+    def dump(self, table: "JavaAttributeTable") -> bytearray:
+        return bytearray()  # todo: implement
+
+
+class EnclosingMethodParser(AbstractAttributeParser):
+    __slots__ = ("class_index", "method_index")
+
+    def __init__(self):
+        self.class_index, self.method_index = -1, -1
+
+    def parse(self, table: "JavaAttributeTable", data: bytearray):
+        self.class_index, self.method_index = pop_u2(data), pop_u2(data)
+
+    def dump(self, table: "JavaAttributeTable") -> bytearray:
+        return U2.pack(self.class_index) + U2.pack(self.method_index)
 
 
 class JavaAttributeTable:
@@ -322,24 +474,34 @@ class JavaAttributeTable:
     }
 
     ATTRIBUTES = {
-        "ConstantValue": ConstantValueParser,
-        "Code": CodeParser,
         "BootstrapMethods": BootstrapMethods,
-        "StackMapTable": StackMapTableParser,
-        "RuntimeVisibleAnnotations": RuntimeAnnotationsParser,
-        "RuntimeInvisibleAnnotations": RuntimeAnnotationsParser,
+        "Code": CodeParser,
+        "ConstantValue": ConstantValueParser,
+        "EnclosingMethod": EnclosingMethodParser,
+        "Exceptions": ExceptionsParser,
+        "InnerClasses": InnerClassesParser,
         "NestHost": NestHostParser,
         "NestMembers": NestMembersParser,
+        "RuntimeInvisibleAnnotations": RuntimeAnnotationsParser,
+        "RuntimeVisibleAnnotations": RuntimeAnnotationsParser,
         "Signature": SignatureParser,
+        "StackMapTable": StackMapTableParser,
     }
 
+    __slots__ = (
+        "parent",
+        "class_file",
+        "attributes_unparsed",
+        "attributes",
+    )
+
     def __init__(self, parent):
-        self.parent = weakref.proxy(parent)
-        self.class_file: "JavaBytecodeClass" = None
+        self.parent = parent
+        self.class_file: AbstractJavaClass = None
         self.attributes_unparsed = {}
         self.attributes = {}
 
-    def from_data(self, class_file: "JavaBytecodeClass", data: bytearray):
+    def from_data(self, class_file: AbstractJavaClass, data: bytearray):
         self.class_file = class_file
 
         for _ in range(pop_u2(data)):

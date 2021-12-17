@@ -59,7 +59,7 @@ class NativeMethod(jvm.api.AbstractMethod):
             print("during invoking native", self, "with", args)
             raise
 
-    def get_class(self):
+    def get_parent_class(self):
         return self.cls
     
     def __repr__(self):
@@ -218,7 +218,8 @@ class NativeHeader:
             try:
                 cls = NativeClass(self, cls_data["name"])
                 cls.parse_data(cls_data)
-                jvm.api.vm.shared_classes[cls.name] = cls
+                cls.vm = manager.vm
+                manager.vm.shared_classes[cls.name] = cls
                 self.name2index[cls.name] = i
             except:
                 print("during loading file", cls_data)
@@ -241,34 +242,46 @@ class NativeHeader:
 
 
 class NativeManager:
-    DEFAULT_HEADER_FILES = ["java", "forge", "mc", "ct_api", "netty", "jei", "google", "logging", "mixin", "apache", "night_config", "asm"]
+    DEFAULT_HEADER_FILES = ["java", "asm"]
     MATCHER2HEADER: typing.Dict[str, str] = {
         "java/": "java",
         "javax/": "java",
-        "net/minecraftforge/": "forge",
-        "mcp/": "forge",
-        "net/minecraft/": "mc",
-        "com/mojang/": "mc",
-        "stanhebben/zenscript/": "ct_api",
-        "org/openzen/zencode/": "ct_api",
-        "crafttweaker/": "ct_api",
-        "com/blamejared/crafttweaker/": "ct_api",
-        "io/netty/": "netty",
-        "mezz/jei/": "jei",
-        "com/google/": "google",
-        "org/apache/logging/": "logging",
-        "org/spongepowered/": "mixin",
-        "org/apache/commons/": "apache",
         "org/jetbrains/annotations/": "java",
         "dev/architectury/injectables/annotations/": "java",
         "com/electronwill/nightconfig/core/": "night_config",
-        "cpw/mods/": "mc",
         "org/intellij/lang/annotations/": "java",
         "org/objectweb/asm/": "asm",
     }
 
+    @classmethod
+    def bind_mc_natives(cls):
+        try:
+            import mcpython
+        except ImportError:
+            return
+
+        cls.DEFAULT_HEADER_FILES += ["forge", "mc", "ct_api", "netty", "jei", "google", "logging", "mixin", "apache", "night_config"]
+        cls.MATCHER2HEADER.update({
+            "net/minecraftforge/": "forge",
+            "mcp/": "forge",
+            "net/minecraft/": "mc",
+            "com/mojang/": "mc",
+            "stanhebben/zenscript/": "ct_api",
+            "org/openzen/zencode/": "ct_api",
+            "crafttweaker/": "ct_api",
+            "com/blamejared/crafttweaker/": "ct_api",
+            "io/netty/": "netty",
+            "mezz/jei/": "jei",
+            "com/google/": "google",
+            "org/apache/logging/": "logging",
+            "org/spongepowered/": "mixin",
+            "org/apache/commons/": "apache",
+            "cpw/mods/": "mc",
+        })
+
     def __init__(self):
         self.headers: typing.Dict[str, NativeHeader] = {}
+        self.vm = jvm.api.vm
 
     def load_files(self):
         root = os.path.dirname(__file__)+"/native/header/"
@@ -285,7 +298,7 @@ class NativeManager:
                 importlib.import_module("jvm.native.implementation."+file.split(".")[0].replace("/", "."))
             except ImportError as e:
                 print(f"[JVM][WARN] failed to bind module {file.removesuffix('.py')}")
-                traceback.print_exc()
+                # traceback.print_exc()
 
     def get_header_for_cls(self, cls: str) -> typing.Optional[NativeHeader]:
         for matcher in self.MATCHER2HEADER.keys():
@@ -294,11 +307,12 @@ class NativeManager:
 
 
 manager = NativeManager()
+manager.bind_mc_natives()
 
 
 def bind_native(cls_name: str, action: str):
     try:
-        cls: NativeClass = jvm.api.vm.shared_classes[cls_name]
+        cls: NativeClass = manager.vm.shared_classes[cls_name]
     except KeyError:
         return lambda f: f
 

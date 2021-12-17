@@ -4,7 +4,7 @@ import dis
 import typing
 from abc import ABC
 
-from jvm.util import PyOpcodes
+from mcpython.mixin.util import PyOpcodes
 
 import jvm.Java
 import jvm.util
@@ -373,6 +373,7 @@ class LDC(OpcodeInstruction):
             jvm.util.decode_cp_constant(
                 stack.method.class_file.cp[data - 1],
                 version=stack.method.class_file.internal_version,
+                vm=stack.method.get_parent_class().vm,
             )
         )
 
@@ -386,6 +387,7 @@ class LDC(OpcodeInstruction):
         builder.add_instruction(PyOpcodes.LOAD_CONST, builder.add_const(jvm.util.decode_cp_constant(
             container.method.class_file.cp[prepared_data - 1],
             version=container.method.class_file.internal_version,
+            vm=container.method.get_parent_class().vm,
         )))
 
 

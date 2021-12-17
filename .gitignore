@@ -126,7 +126,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-/tests/
+/tests/mc/
 /jvm/missing_methods.txt
 /jvm/native/missing_events.txt
 /.idea/

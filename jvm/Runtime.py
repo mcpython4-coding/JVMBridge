@@ -48,7 +48,7 @@ class Runtime(AbstractRuntime):
         if callable(method) and not isinstance(
             method, jvm.Java.JavaMethod
         ):
-            from mcpython.common.mod.util import LoadingInterruptException
+            # from mcpython.common.mod.util import LoadingInterruptException
 
             stack = self.spawn_stack()
             try:
@@ -56,7 +56,7 @@ class Runtime(AbstractRuntime):
             except StackCollectingException as e:
                 e.add_trace("invoking native " + str(method) + " with " + str(args))
                 raise
-            except (LoadingInterruptException, SystemExit):
+            except SystemExit:  # (LoadingInterruptException, SystemExit):
                 raise
             except:
                 raise StackCollectingException(
@@ -85,6 +85,7 @@ class Runtime(AbstractRuntime):
                 return method.invoke(args, stack=stack)
 
         stack = self.spawn_stack()
+        stack.vm = method.get_parent_class().vm
 
         stack.code = method.code_repr
         stack.method = method
@@ -198,6 +199,9 @@ class Stack(AbstractStack):
         """
         Runs the data on this stack
         """
+
+        if self.vm is None:
+            self.vm = self.method.get_parent_class().vm
 
         # todo: check for class debugging
         debugging = (

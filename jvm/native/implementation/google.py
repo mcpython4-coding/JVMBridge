@@ -42,7 +42,7 @@ class ListLike:
         if args and isinstance(args[-1], list):
             args += args.pop(-1)
 
-        return method.get_class().create_instance().init("([Ljava/lang/Object;)V", args)
+        return method.get_parent_class().create_instance().init("([Ljava/lang/Object;)V", args)
 
     @staticmethod
     @bind_native("com/google/common/collect/ImmutableList$Builder", "<init>()V")
@@ -99,7 +99,7 @@ class MapLike:
     @staticmethod
     @bind_native("com/google/common/collect/ImmutableMap", "of(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Lcom/google/common/collect/ImmutableMap;")
     def create(method, stack, *pairs):
-        return method.get_class().create_instance().init("(Ljava/util/Map;)V", {pairs[2*i]: pairs[2*i + 1] for i in range(len(pairs) // 2)})
+        return method.get_parent_class().create_instance().init("(Ljava/util/Map;)V", {pairs[2*i]: pairs[2*i + 1] for i in range(len(pairs) // 2)})
 
     @staticmethod
     @bind_native("com/google/common/collect/BiMap", "<init>()V")
@@ -115,7 +115,7 @@ class MapLike:
     @staticmethod
     @bind_native("com/google/common/collect/ImmutableMap", "builder()Lcom/google/common/collect/ImmutableMap$Builder;")
     def builder(method, stack):
-        obj = method.get_class().create_instance()
+        obj = method.get_parent_class().create_instance()
         obj.underlying = {}
         return obj
 
@@ -193,7 +193,7 @@ class SetLike:
     @staticmethod
     @bind_native("com/google/common/collect/ImmutableSet", "of()Lcom/google/common/collect/ImmutableSet;")
     def createImmutableEmpty(method, stack):
-        return method.get_class().create_instance().init("()V")
+        return method.get_parent_class().create_instance().init("()V")
 
     @staticmethod
     @bind_native("com/google/common/collect/ImmutableSet", "<init>()V")
