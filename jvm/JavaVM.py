@@ -51,12 +51,12 @@ class JavaVM(AbstractJavaVM):
         for l in self.classes_by_version.values():
             yield from l.values()
 
-    def load_lazy(self):
+    async def load_lazy(self):
         while len(self.lazy_classes) > 0:
             version, name = self.lazy_classes.pop()
-            self.get_class(name, version=version)
+            await self.get_class(name, version=version)
 
-    def get_class(self, name: str, version=0) -> typing.Optional[AbstractJavaClass]:
+    async def get_class(self, name: str, version=0) -> typing.Optional[AbstractJavaClass]:
         """
         Looks up a specific class in the internal class loader array, and loads it from bytecode if not arrival
         :param name: the name of the class
@@ -77,29 +77,32 @@ class JavaVM(AbstractJavaVM):
         elif name in self.classes_by_version.setdefault(version, {}):
             cls = self.classes_by_version[version][name]
         else:
-            cls = self.load_class(name, version=version)
+            cls = await self.load_class(name, version=version)
 
-        cls.prepare_use()
+        await cls.prepare_use()
 
         return cls
 
-    def get_lazy_class(self, name: str, version: typing.Any = 0):
+    async def get_lazy_class(self, name: str, version: typing.Any = 0):
         name = name.replace(".", "/")
 
         if name not in self.shared_classes and name not in self.classes_by_version.setdefault(version, {}):
             self.lazy_classes.add((version, name))
 
-        return lambda: self.get_class(name, version=version)
+        async def lazy():
+            return self.get_class(name, version=version)
 
-    def load_class(
+        return lazy
+
+    async def load_class(
         self, name: str, version: typing.Any = 0, shared=False
     ) -> AbstractJavaClass:
         name = name.replace(".", "/")
         if name.startswith("["):
-            return self.array_helper.get(name, version=version)
+            return await self.array_helper.get(name, version=version)
 
         try:
-            bytecode = asyncio.get_event_loop().run_until_complete(self.file_lookup.try_access_class_file(name))
+            bytecode = await self.file_lookup.try_access_class_file(name)
         except FileNotFoundError:
             bytecode = None
 
@@ -109,7 +112,7 @@ class JavaVM(AbstractJavaVM):
 
             raise StackCollectingException(f"class file source for '{name}' not found!").add_trace(f"class loader version annotation: {version}") from None
 
-        return self.load_class_from_bytecode(name, bytecode, version=version, shared=shared)
+        return await self.load_class_from_bytecode(name, bytecode, version=version, shared=shared)
 
     def create_native(self, name: str, version):
         head = native_manager.get_header_for_cls(name)
@@ -122,7 +125,7 @@ class JavaVM(AbstractJavaVM):
         self.shared_classes[name] = cls
         return cls
 
-    def load_class_from_bytecode(self, name: str, bytecode: bytes, version=None, shared=False, prepare=True):
+    async def load_class_from_bytecode(self, name: str, bytecode: bytes, version=None, shared=False, prepare=True):
         info("loading java class '" + name + "'")
 
         cls = JavaBytecodeClass()
@@ -130,7 +133,7 @@ class JavaVM(AbstractJavaVM):
         cls.vm = self
 
         try:
-            cls.from_bytes(bytearray(bytecode))
+            await cls.from_bytes(bytearray(bytecode))
         except StackCollectingException as e:
             e.add_trace(f"decoding class {name}")
             raise
@@ -142,7 +145,7 @@ class JavaVM(AbstractJavaVM):
                 self.shared_classes[name] = cls
 
             try:
-                cls.bake()
+                await cls.bake()
                 cls.validate_class_file()
             except StackCollectingException as e:
                 e.add_trace(f"baking class {name}")
@@ -168,12 +171,12 @@ class JavaVM(AbstractJavaVM):
         else:
             self.classes_by_version.setdefault(version, {})[name] = cls
 
-    def get_method_of_nat(self, nat, version: typing.Any = 0):
+    async def get_method_of_nat(self, nat, version: typing.Any = 0):
         cls = nat[1][1][1]
         name = nat[2][1][1]
         descriptor = nat[2][2][1]
-        cls = self.get_class(cls, version=version)
-        return cls.get_method(name, descriptor)
+        cls = await self.get_class(cls, version=version)
+        return await cls.get_method(name, descriptor)
 
     def debug_method(self, cls: str, name: str, sig: str):
         self.debugged_methods.add((cls, name, sig))

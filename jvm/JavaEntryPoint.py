@@ -97,18 +97,18 @@ class JavaMod(mcpython.common.mod.Mod.Mod):
             for file in self.resource_access.get_all_entries_in_directory(""):
                 if file.endswith(".mixins.json"):
                     logger.println(f"found mixin info file at {file} for mod {self.name}")
-                    self.load_mixin_map(file)
+                    await self.load_mixin_map(file)
 
             for file in self.resource_access.get_all_entries_in_directory(""):
                 if not file.endswith(".class"):
                     continue
 
-                self.load_mod_file(file)
+                await self.load_mod_file(file)
         except:
             print(self.container, self.name)
             raise
 
-    def load_mixin_map(self, file: str):
+    async def load_mixin_map(self, file: str):
         """
         Loader for the mixin ref-map data
         Does some smart stuff with the data
@@ -139,7 +139,7 @@ class JavaMod(mcpython.common.mod.Mod.Mod):
                 shared.CURRENT_EVENT_SUB = self.name
 
                 try:
-                    jvm.api.vm.load_class(module, version=FORGE_VERSION_NUMBER_TO_MC[self.loader_version]).prepare_use()
+                    await (await jvm.api.vm.load_class(module, version=FORGE_VERSION_NUMBER_TO_MC[self.loader_version])).prepare_use()
                 except StackCollectingException as e:
                     if shared.IS_CLIENT:
                         shared.window.set_caption("JavaFML JVM error (during loading mixins)")
@@ -162,7 +162,7 @@ class JavaMod(mcpython.common.mod.Mod.Mod):
 
                     raise LoadingInterruptException from None
 
-    def load_mod_file(self, file: str):
+    async def load_mod_file(self, file: str):
         """
         Loads a given file which the local resource access can reach
         :param file: the file
@@ -180,7 +180,7 @@ class JavaMod(mcpython.common.mod.Mod.Mod):
             else:
                 version = FORGE_VERSION_NUMBER_TO_MC[self.loader_version]
 
-            jvm.api.vm.load_class(cls, version=version)
+            await jvm.api.vm.load_class(cls, version=version)
 
         # StackCollectingException is something internal and contains more meta-data than the other exceptions
         except StackCollectingException as e:

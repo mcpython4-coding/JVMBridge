@@ -57,7 +57,7 @@ def pop_struct(s: struct.Struct, data: bytearray):
     return s.unpack(pop_sized(s.size, data))
 
 
-def decode_cp_constant(const, version=None, vm=None):
+async def decode_cp_constant(const, version=None, vm=None):
     """
     Helper code for decoding an arbitrary constant pool entry down to a "primitive"
     Used in the instructions directly loading from the runtime constant pool and storing the stuff
@@ -73,7 +73,7 @@ def decode_cp_constant(const, version=None, vm=None):
     """
 
     if const[0] == 7:  # Class
-        return (vm or jvm.api.vm).get_class(const[1][1], version=version)
+        return await (vm or jvm.api.vm).get_class(const[1][1], version=version)
 
     elif const[0] in (1, 3, 4, 5, 6, 8):
         return const[1][1] if isinstance(const[1], (list, tuple)) else const[1]

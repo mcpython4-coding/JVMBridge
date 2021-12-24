@@ -24,6 +24,7 @@ from jvm.api import AbstractStack, AbstractRuntime
 from jvm.JavaExceptionStack import StackCollectingException
 import jvm.RuntimeModificationUtil
 from jvm.api import BaseInstruction
+from jvm.api import AbstractMethod
 
 DEBUG = "--debug-vm" in sys.argv
 
@@ -44,7 +45,7 @@ class Runtime(AbstractRuntime):
         self.stacks.append(stack)
         return stack
 
-    def run_method(self, method: typing.Union[jvm.Java.JavaMethod, typing.Callable], *args, stack=None):
+    async def run_method(self, method: typing.Union[jvm.Java.JavaMethod, typing.Callable], *args, stack=None):
         if callable(method) and not isinstance(
             method, jvm.Java.JavaMethod
         ):
@@ -52,7 +53,14 @@ class Runtime(AbstractRuntime):
 
             stack = self.spawn_stack()
             try:
-                return method(*args, stack=stack)
+                if isinstance(method, AbstractMethod):
+                    result = method.invoke(args, stack=stack)
+                else:
+                    result = method(*args, stack=stack)
+
+                if isinstance(result, typing.Awaitable):
+                    await result
+
             except StackCollectingException as e:
                 e.add_trace("invoking native " + str(method) + " with " + str(args))
                 raise
@@ -76,13 +84,13 @@ class Runtime(AbstractRuntime):
                     )
                 except AttributeError:
                     if not isinstance(method, jvm.Java.JavaMethod):
-                        return method.invoke(args)
+                        return await method.invoke(args)
 
                     raise
 
-                method.code_repr = BytecodeRepr(code)
+                await method.ensure_code_repr()
             else:
-                return method.invoke(args, stack=stack)
+                return await method.invoke(args, stack=stack)
 
         stack = self.spawn_stack()
         stack.vm = method.get_parent_class().vm
@@ -92,7 +100,7 @@ class Runtime(AbstractRuntime):
         method.code_repr.prepare_stack(stack)
         stack.local_vars[: len(args)] = list(args)
 
-        stack.run()
+        await stack.run()
 
         return stack.return_value
 
@@ -195,7 +203,7 @@ class Stack(AbstractStack):
         self.cp = -1
         self.return_value = value
 
-    def run(self):
+    async def run(self):
         """
         Runs the data on this stack
         """
@@ -211,7 +219,7 @@ class Stack(AbstractStack):
         )
 
         # todo: is this really needed?
-        self.method.class_file.prepare_use()
+        await self.method.class_file.prepare_use()
         if debugging:
             jvm.logging.warn(f"launching method {self.method} with local vars {self.local_vars}")
 
@@ -251,6 +259,9 @@ class Stack(AbstractStack):
 
             try:
                 result = instruction[0].invoke(instruction[1], self)
+                if isinstance(result, typing.Awaitable):
+                    result = await result
+
             except StackCollectingException as e:
                 # This exception MAY be caused by a wrong InvokeDynamic reference (missing static attribute)
                 if e.text == "StackUnderflowException":
@@ -265,7 +276,7 @@ class Stack(AbstractStack):
                 raise
             except:
                 if isinstance(self.method, jvm.Java.JavaMethod):
-                    self.method.print_stats(current=self.cp)
+                    await self.method.print_stats(current=self.cp)
 
                 raise StackCollectingException(
                     f"Implementation-wise during invoking {instruction[0].__name__} in {self.method} [index: {self.cp}]"
@@ -381,9 +392,7 @@ class BytecodeRepr(AbstractBytecodeContainer):
                     + ")"
                 ).add_trace(str(self.decoded_code)).add_trace(str(self.code.class_file))
 
-        self.optimiser_iteration()
-
-    def optimiser_iteration(self):
+    async def optimiser_iteration(self):
         """
         Runs optimiser code on the internal bytecode
         todo: call this more when the method gets called more often
@@ -394,7 +403,8 @@ class BytecodeRepr(AbstractBytecodeContainer):
                 continue
 
             try:
-                d = e[0].optimiser_iteration(self, e[1], i)
+                d = await e[0].optimiser_iteration(self, e[1], i)
+
             except StackCollectingException as e:
                 e.add_trace(
                     f"during optimising {e[0].__name__} with data {e[1]} stored at index {i} in {self.code.table.parent}"

@@ -55,7 +55,7 @@ class NoOp(OpcodeInstruction):
     OPCODES = {0x00}
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack) -> bool:
+    async def invoke(cls, data: typing.Any, stack: AbstractStack) -> bool:
         pass
 
     @classmethod
@@ -69,7 +69,7 @@ class NoOpPop(OpcodeInstruction):
     OPCODES = {0xC2, 0xC3}
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack):
+    async def invoke(cls, data: typing.Any, stack: AbstractStack):
         stack.pop()
 
     @classmethod
@@ -87,7 +87,7 @@ class Any2Byte(OpcodeInstruction):
     OPCODES = {0x91}
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack):
+    async def invoke(cls, data: typing.Any, stack: AbstractStack):
         v = stack.pop()
         stack.push(int(v) if v is not None else v)
 
@@ -110,7 +110,7 @@ class Any2Float(OpcodeInstruction):
     OPCODES = {0x86, 0x90}
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack):
+    async def invoke(cls, data: typing.Any, stack: AbstractStack):
         v = stack.pop()
         stack.push(float(v) if v is not None else v)
 
@@ -150,7 +150,7 @@ class Any2Int(OpcodeInstruction):
     OPCODES = {0x8E, 0x8B, 0x88}
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack):
+    async def invoke(cls, data: typing.Any, stack: AbstractStack):
         v = stack.pop()
         stack.push(int(v) if v is not None else v)
 
@@ -193,7 +193,7 @@ class ConstPush(OpcodeInstruction, ABC):
     PUSH_TYPE = None
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack):
+    async def invoke(cls, data: typing.Any, stack: AbstractStack):
         stack.push(cls.PUSHES)
 
     @classmethod
@@ -320,7 +320,7 @@ class BiPush(OpcodeInstruction):
         return jvm.util.U1_S.unpack(data[index: index + 1])[0], 2
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack):
+    async def invoke(cls, data: typing.Any, stack: AbstractStack):
         stack.push(data)
 
     @classmethod
@@ -343,7 +343,7 @@ class SiPush(OpcodeInstruction):
         return jvm.util.U2_S.unpack(data[index: index + 2])[0], 3
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack):
+    async def invoke(cls, data: typing.Any, stack: AbstractStack):
         stack.push(data)
 
     @classmethod
@@ -368,9 +368,9 @@ class LDC(OpcodeInstruction):
         return data[index], 2
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack):
+    async def invoke(cls, data: typing.Any, stack: AbstractStack):
         stack.push(
-            jvm.util.decode_cp_constant(
+            await jvm.util.decode_cp_constant(
                 stack.method.class_file.cp[data - 1],
                 version=stack.method.class_file.internal_version,
                 vm=stack.method.get_parent_class().vm,
@@ -383,8 +383,8 @@ class LDC(OpcodeInstruction):
         stack.push(None)  # todo: add type
 
     @classmethod
-    def prepare_python_bytecode_instructions(cls, command_index, prepared_data: typing.Any, container: AbstractBytecodeContainer, builder: PyBytecodeBuilder):
-        builder.add_instruction(PyOpcodes.LOAD_CONST, builder.add_const(jvm.util.decode_cp_constant(
+    async def prepare_python_bytecode_instructions(cls, command_index, prepared_data: typing.Any, container: AbstractBytecodeContainer, builder: PyBytecodeBuilder):
+        builder.add_instruction(PyOpcodes.LOAD_CONST, builder.add_const(await jvm.util.decode_cp_constant(
             container.method.class_file.cp[prepared_data - 1],
             version=container.method.class_file.internal_version,
             vm=container.method.get_parent_class().vm,
@@ -407,7 +407,7 @@ class ArrayLoad(OpcodeInstruction):
     OPCODES = {0x32, 0x2E, 0x33, 0x31}
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack):
+    async def invoke(cls, data: typing.Any, stack: AbstractStack):
         index = stack.pop()
         array = stack.pop()
 
@@ -436,7 +436,7 @@ class ArrayStore(OpcodeInstruction):
     OPCODES = {0x53, 0x4F, 0x50, 0x54, 0x52, 0x51, 0x55}
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack):
+    async def invoke(cls, data: typing.Any, stack: AbstractStack):
         value = stack.pop()
         index = stack.pop()
         array = stack.pop()
@@ -479,7 +479,7 @@ class Load(OpcodeInstruction):
         return jvm.util.U1.unpack(data[index: index + 1])[0], 2
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack):
+    async def invoke(cls, data: typing.Any, stack: AbstractStack):
         stack.push(stack.local_vars[data])
 
     @classmethod
@@ -503,7 +503,7 @@ class Load0(OpcodeInstruction):
     OPCODES = {0x2A, 0x1A, 0x22, 0x26, 0x1E}
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack):
+    async def invoke(cls, data: typing.Any, stack: AbstractStack):
         stack.push(stack.local_vars[0])
 
     @classmethod
@@ -529,7 +529,7 @@ class Load1(OpcodeInstruction):
     OPCODES = {0x2B, 0x1B, 0x23, 0x27, 0x1F}
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack):
+    async def invoke(cls, data: typing.Any, stack: AbstractStack):
         stack.push(stack.local_vars[1])
 
     @classmethod
@@ -555,7 +555,7 @@ class Load2(OpcodeInstruction):
     OPCODES = {0x2C, 0x1C, 0x24, 0x28, 0x20}
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack):
+    async def invoke(cls, data: typing.Any, stack: AbstractStack):
         stack.push(stack.local_vars[2])
 
     @classmethod
@@ -581,7 +581,7 @@ class Load3(OpcodeInstruction):
     OPCODES = {0x2D, 0x1D, 0x25, 0x29, 0x21}
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack):
+    async def invoke(cls, data: typing.Any, stack: AbstractStack):
         stack.push(stack.local_vars[3])
 
     @classmethod
@@ -613,7 +613,7 @@ class Store(OpcodeInstruction):
         return jvm.util.U1.unpack(data[index: index + 1])[0], 2
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack):
+    async def invoke(cls, data: typing.Any, stack: AbstractStack):
         stack.local_vars[data] = stack.pop()
 
     @classmethod
@@ -639,7 +639,7 @@ class Store0(OpcodeInstruction):
     OPCODES = {0x4B, 0x3B, 0x47, 0x43, 0x3F}
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack):
+    async def invoke(cls, data: typing.Any, stack: AbstractStack):
         stack.local_vars[0] = stack.pop()
 
     @classmethod
@@ -665,7 +665,7 @@ class Store1(OpcodeInstruction):
     OPCODES = {0x4C, 0x3C, 0x48, 0x44, 0x40}
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack):
+    async def invoke(cls, data: typing.Any, stack: AbstractStack):
         stack.local_vars[1] = stack.pop()
 
     @classmethod
@@ -691,7 +691,7 @@ class Store2(OpcodeInstruction):
     OPCODES = {0x4D, 0x3D, 0x49, 0x45, 0x41}
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack):
+    async def invoke(cls, data: typing.Any, stack: AbstractStack):
         stack.local_vars[2] = stack.pop()
 
     @classmethod
@@ -717,7 +717,7 @@ class Store3(OpcodeInstruction):
     OPCODES = {0x4E, 0x3E, 0x4A, 0x46, 0x42}
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack):
+    async def invoke(cls, data: typing.Any, stack: AbstractStack):
         stack.local_vars[3] = stack.pop()
 
     @classmethod
@@ -743,7 +743,7 @@ class POP(OpcodeInstruction):
     OPCODES = {0x57}
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack):
+    async def invoke(cls, data: typing.Any, stack: AbstractStack):
         stack.pop()
 
     @classmethod
@@ -761,7 +761,7 @@ class POP2(OpcodeInstruction):
     OPCODES = {0x58}
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack):
+    async def invoke(cls, data: typing.Any, stack: AbstractStack):
         # todo: check computation type
         stack.pop()
         stack.pop()
@@ -784,7 +784,7 @@ class DUP(OpcodeInstruction):
     OPCODES = {0x59}
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack):
+    async def invoke(cls, data: typing.Any, stack: AbstractStack):
         v = stack.pop()
         stack.push(v)
         stack.push(v)
@@ -807,7 +807,7 @@ class DUP2(OpcodeInstruction):
     # todo: check for double & long!
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack):
+    async def invoke(cls, data: typing.Any, stack: AbstractStack):
         v1 = stack.pop()
         v2 = stack.pop()
         stack.push(v2)
@@ -835,7 +835,7 @@ class DUP_X1(OpcodeInstruction):
     OPCODES = {0x5A}
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack):
+    async def invoke(cls, data: typing.Any, stack: AbstractStack):
         a, b = stack.pop(), stack.pop()
         stack.push(a)
         stack.push(b)
@@ -860,7 +860,7 @@ class ADD(OpcodeInstruction):
     OPCODES = {0x60, 0x63, 0x62}
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack):
+    async def invoke(cls, data: typing.Any, stack: AbstractStack):
         b, a = stack.pop(), stack.pop()
         try:
             stack.push(a + b)
@@ -883,7 +883,7 @@ class SUB(OpcodeInstruction):
     OPCODES = {0x66, 0x64, 0x67, 0x65}
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack):
+    async def invoke(cls, data: typing.Any, stack: AbstractStack):
         b, a = stack.pop(), stack.pop()
         stack.push(b - a)
 
@@ -904,7 +904,7 @@ class IDIV(OpcodeInstruction):
     OPCODES = {0x6C}
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack):
+    async def invoke(cls, data: typing.Any, stack: AbstractStack):
         b, a = stack.pop(), stack.pop()
         stack.push(a // b)
 
@@ -925,7 +925,7 @@ class FDIV(OpcodeInstruction):
     OPCODES = {0x6E, 0x6F}
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack):
+    async def invoke(cls, data: typing.Any, stack: AbstractStack):
         b, a = stack.pop(), stack.pop()
         stack.push(a / b)
 
@@ -946,7 +946,7 @@ class Rem(OpcodeInstruction):
     OPCODES = {0x70, 0x71}
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack):
+    async def invoke(cls, data: typing.Any, stack: AbstractStack):
         b, a = stack.pop(), stack.pop()
         stack.push(int(a - (a / b) * b))
 
@@ -962,7 +962,7 @@ class SHL(OpcodeInstruction):
     OPCODES = {0x78}
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack):
+    async def invoke(cls, data: typing.Any, stack: AbstractStack):
         b, a = stack.pop(), stack.pop()
         stack.push(a << b)
 
@@ -983,7 +983,7 @@ class SHR(OpcodeInstruction):
     OPCODES = {0x7A}
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack):
+    async def invoke(cls, data: typing.Any, stack: AbstractStack):
         b, a = stack.pop(), stack.pop()
         stack.push(a >> b)
 
@@ -1004,7 +1004,7 @@ class AND(OpcodeInstruction):
     OPCODES = {0x7E}
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack):
+    async def invoke(cls, data: typing.Any, stack: AbstractStack):
         b, a = stack.pop(), stack.pop()
         stack.push(a & b)
 
@@ -1025,7 +1025,7 @@ class OR(OpcodeInstruction):
     OPCODES = {0x80}
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack):
+    async def invoke(cls, data: typing.Any, stack: AbstractStack):
         b, a = stack.pop(), stack.pop()
         stack.push(a | b)
 
@@ -1055,7 +1055,7 @@ class IINC(OpcodeInstruction):
         ), 3
 
     @classmethod
-    def invoke(cls, data: typing.Tuple[int, int], stack: AbstractStack):
+    async def invoke(cls, data: typing.Tuple[int, int], stack: AbstractStack):
         stack.local_vars[data[0]] += data[1]
 
     @classmethod
@@ -1077,7 +1077,7 @@ class CompareTwo(OpcodeInstruction):
     OPCODES = {0x94, 0x95, 0x96, 0x97, 0x98}
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack):
+    async def invoke(cls, data: typing.Any, stack: AbstractStack):
         b, a = stack.pop(), stack.pop()
 
         if a == b:
@@ -1163,7 +1163,7 @@ class IfLT(DoubleCompare):
     OPCODES = {0x97}
 
     @classmethod
-    def invoke(cls, data: int, stack: AbstractStack) -> bool:
+    async def invoke(cls, data: int, stack: AbstractStack) -> bool:
         if stack.pop() > stack.pop():
             stack.cp += data
             return True
@@ -1174,7 +1174,7 @@ class IfGT(DoubleCompare):
     OPCODES = {0xA3}
 
     @classmethod
-    def invoke(cls, data: int, stack: AbstractStack) -> bool:
+    async def invoke(cls, data: int, stack: AbstractStack) -> bool:
         if stack.pop() < stack.pop():
             stack.cp += data
             return True
@@ -1185,7 +1185,7 @@ class IfEq0(SingleCompare):
     OPCODES = {0x99}
 
     @classmethod
-    def invoke(cls, data: int, stack: AbstractStack) -> bool:
+    async def invoke(cls, data: int, stack: AbstractStack) -> bool:
         if stack.pop() == 0:
             stack.cp += data
             return True
@@ -1196,7 +1196,7 @@ class IfNEq0(SingleCompare):
     OPCODES = {0x9A}
 
     @classmethod
-    def invoke(cls, data: int, stack: AbstractStack) -> bool:
+    async def invoke(cls, data: int, stack: AbstractStack) -> bool:
         if stack.pop() != 0:
             stack.cp += data
             return True
@@ -1207,7 +1207,7 @@ class IfLT0(SingleCompare):
     OPCODES = {0x9B}
 
     @classmethod
-    def invoke(cls, data: int, stack: AbstractStack) -> bool:
+    async def invoke(cls, data: int, stack: AbstractStack) -> bool:
         if stack.pop() < 0:
             stack.cp += data
             return True
@@ -1218,7 +1218,7 @@ class IfGE0(SingleCompare):
     OPCODES = {0x9C}
 
     @classmethod
-    def invoke(cls, data: int, stack: AbstractStack) -> bool:
+    async def invoke(cls, data: int, stack: AbstractStack) -> bool:
         if stack.pop() >= 0:
             stack.cp += data
             return True
@@ -1229,7 +1229,7 @@ class IfGT0(SingleCompare):
     OPCODES = {0x9D}
 
     @classmethod
-    def invoke(cls, data: int, stack: AbstractStack) -> bool:
+    async def invoke(cls, data: int, stack: AbstractStack) -> bool:
         if stack.pop() > 0:
             stack.cp += data
             return True
@@ -1240,7 +1240,7 @@ class IfLE0(SingleCompare):
     OPCODES = {0x9E}
 
     @classmethod
-    def invoke(cls, data: int, stack: AbstractStack) -> bool:
+    async def invoke(cls, data: int, stack: AbstractStack) -> bool:
         if stack.pop() <= 0:
             stack.cp += data
             return True
@@ -1251,7 +1251,7 @@ class IfEq(DoubleCompare):
     OPCODES = {0x9F, 0xA5}
 
     @classmethod
-    def invoke(cls, data: int, stack: AbstractStack) -> bool:
+    async def invoke(cls, data: int, stack: AbstractStack) -> bool:
         if stack.pop() == stack.pop():
             stack.cp += data
             return True
@@ -1262,7 +1262,7 @@ class IfNE(DoubleCompare):
     OPCODES = {0xA0, 0xA6}
 
     @classmethod
-    def invoke(cls, data: int, stack: AbstractStack) -> bool:
+    async def invoke(cls, data: int, stack: AbstractStack) -> bool:
         if stack.pop() != stack.pop():
             stack.cp += data
             return True
@@ -1273,7 +1273,7 @@ class IfLt(DoubleCompare):
     OPCODES = {0xA1}
 
     @classmethod
-    def invoke(cls, data: int, stack: AbstractStack) -> bool:
+    async def invoke(cls, data: int, stack: AbstractStack) -> bool:
         if stack.pop() > stack.pop():
             stack.cp += data
             return True
@@ -1284,7 +1284,7 @@ class IfGe(DoubleCompare):
     OPCODES = {0xA2}
 
     @classmethod
-    def invoke(cls, data: int, stack: AbstractStack) -> bool:
+    async def invoke(cls, data: int, stack: AbstractStack) -> bool:
         if stack.pop() <= stack.pop():
             stack.cp += data
             return True
@@ -1295,7 +1295,7 @@ class IfLe(DoubleCompare):
     OPCODES = {0xA4}
 
     @classmethod
-    def invoke(cls, data: int, stack: AbstractStack) -> bool:
+    async def invoke(cls, data: int, stack: AbstractStack) -> bool:
         if stack.pop() >= stack.pop():
             stack.cp += data
             return True
@@ -1306,7 +1306,7 @@ class Goto(CompareHelper):
     OPCODES = {0xA7}
 
     @classmethod
-    def invoke(cls, data: int, stack: AbstractStack):
+    async def invoke(cls, data: int, stack: AbstractStack):
         stack.cp += data
         return True
 
@@ -1320,7 +1320,7 @@ class AReturn(OpcodeInstruction):
     OPCODES = {0xB0, 0xAC, 0xAE}
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack):
+    async def invoke(cls, data: typing.Any, stack: AbstractStack):
         stack.end(stack.pop())
 
     @classmethod
@@ -1334,7 +1334,7 @@ class Return(OpcodeInstruction):
     OPCODES = {0xB1}
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack):
+    async def invoke(cls, data: typing.Any, stack: AbstractStack):
         stack.end()
 
     @classmethod
@@ -1354,12 +1354,12 @@ class GetStatic(CPLinkedInstruction):
         return (d[1][1][1], d[2][1][1], d[2][2][1]), i
 
     @classmethod
-    def invoke(cls, data: typing.Tuple[str, str, str], stack: AbstractStack):
+    async def invoke(cls, data: typing.Tuple[str, str, str], stack: AbstractStack):
         cls_name, name, T = data
-        java_class = stack.vm.get_class(
+        java_class = await stack.vm.get_class(
             cls_name, version=stack.method.class_file.internal_version
         )
-        stack.push(java_class.get_static_attribute(name, expected_type=T))
+        stack.push(await java_class.get_static_attribute(name, expected_type=T))
 
     @classmethod
     def validate_stack(cls, command_index, prepared_data: typing.Tuple[str, str, str], container: AbstractBytecodeContainer, stack: AbstractStack):
@@ -1378,9 +1378,9 @@ class PutStatic(CPLinkedInstruction):
         return (d[1][1][1], d[2][1][1]), i
 
     @classmethod
-    def invoke(cls, data: typing.Tuple[str, str], stack: AbstractStack):
+    async def invoke(cls, data: typing.Tuple[str, str], stack: AbstractStack):
         cls_name, name = data
-        java_class = stack.vm.get_class(
+        java_class = await stack.vm.get_class(
             cls_name, version=stack.method.class_file.internal_version
         )
 
@@ -1404,7 +1404,7 @@ class GetField(CPLinkedInstruction):
         return d[2][1][1], i
 
     @classmethod
-    def invoke(cls, name: str, stack: AbstractStack):
+    async def invoke(cls, name: str, stack: AbstractStack):
         obj = stack.pop()
 
         if obj is None:
@@ -1413,16 +1413,16 @@ class GetField(CPLinkedInstruction):
         try:
             stack.push(obj.get_field(name))
         except (KeyError, AttributeError):
-            if hasattr(obj, "get_class") and isinstance(obj.get_class(), jvm.Java.JavaBytecodeClass):
+            if hasattr(obj, "get_class") and isinstance(await obj.get_class(), jvm.Java.JavaBytecodeClass):
                 raise StackCollectingException(
-                    f"AttributeError: object {obj} (type {type(obj)}) has no attribute {name}"
+                    f"AttributeError: object {obj} (type {type(obj)}) has no attribute '{name}'"
                 ) from None
 
             try:
                 stack.push(getattr(obj, name))
             except (KeyError, AttributeError):
                 raise StackCollectingException(
-                    f"AttributeError: object {obj} (type {type(obj)}) has no attribute {name}"
+                    f"AttributeError: object {obj} (type {type(obj)}) has no attribute '{name}'"
                 ) from None
 
     @classmethod
@@ -1443,7 +1443,7 @@ class PutField(CPLinkedInstruction):
         return (d[2][1][1], d[1][1][1]), i
 
     @classmethod
-    def invoke(cls, d, stack: AbstractStack):
+    async def invoke(cls, d, stack: AbstractStack):
         name, target_type = d
         value = stack.pop()
         obj = stack.pop()
@@ -1474,9 +1474,9 @@ class InvokeVirtual(CPLinkedInstruction):
         stack.push(None)
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack):
+    async def invoke(cls, data: typing.Any, stack: AbstractStack):
         # print(data)
-        method = stack.vm.get_method_of_nat(
+        method = await stack.vm.get_method_of_nat(
             data, version=stack.method.class_file.internal_version
         )
         args = stack.runtime.parse_args_from_stack(method, stack, False)
@@ -1493,13 +1493,13 @@ class InvokeVirtual(CPLinkedInstruction):
 
             else:
                 try:
-                    cls = obj.get_class()
+                    cls = await obj.get_class()
                 except TypeError:
                     pass
                 else:
                     method_before = method
 
-                    method = cls.get_method(
+                    method = await cls.get_method(
                         method.name if hasattr(method, "name") else method.native_name,
                         method.signature
                         if hasattr(method, "signature")
@@ -1512,7 +1512,7 @@ class InvokeVirtual(CPLinkedInstruction):
                     if hasattr(method, "__name__") and method.__name__ == "dynamic" and (not method_before.access & 0x0400 if hasattr(method_before, "access") else True):
                         method = method_before
 
-        stack.push(stack.runtime.run_method(method, *args, stack=stack))
+        stack.push(await stack.runtime.run_method(method, *args, stack=stack))
 
 
 @AbstractBytecodeContainer.register_instruction
@@ -1532,11 +1532,11 @@ class InvokeSpecial(CPLinkedInstruction):
             stack.push(None)
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack):
-        method = stack.vm.get_method_of_nat(
+    async def invoke(cls, data: typing.Any, stack: AbstractStack):
+        method = await stack.vm.get_method_of_nat(
             data, version=stack.method.class_file.internal_version
         )
-        result = stack.runtime.run_method(
+        result = await stack.runtime.run_method(
             method, *stack.runtime.parse_args_from_stack(method, stack, False), stack=stack,
         )
         method_name = (method.name if hasattr(method, "name") else method.native_name)
@@ -1560,12 +1560,12 @@ class InvokeStatic(CPLinkedInstruction):
         stack.push(prepared_data[2][2][1].split(")")[-1])
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack):
-        method = stack.vm.get_method_of_nat(
+    async def invoke(cls, data: typing.Any, stack: AbstractStack):
+        method = await stack.vm.get_method_of_nat(
             data, version=stack.method.class_file.internal_version
         )
         stack.push(
-            stack.runtime.run_method(
+            await stack.runtime.run_method(
                 method, *stack.runtime.parse_args_from_stack(method, stack, static=True), stack=stack,
             )
         )
@@ -1591,15 +1591,15 @@ class InvokeInterface(CPLinkedInstruction):
         ), 5
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack):
-        method = stack.vm.get_method_of_nat(
+    async def invoke(cls, data: typing.Any, stack: AbstractStack):
+        method = await stack.vm.get_method_of_nat(
             data[0], version=stack.method.class_file.internal_version
         )
         args = stack.runtime.parse_args_from_stack(method, stack, False)
         obj = args[0]
 
         try:
-            method = obj.get_class().get_method(
+            method = await (await obj.get_class()).get_method(
                 method.name if hasattr(method, "name") else method.native_name,
                 method.signature
                 if hasattr(method, "signature")
@@ -1625,7 +1625,7 @@ class InvokeInterface(CPLinkedInstruction):
                 method = args.pop(0)
 
         try:
-            stack.push(stack.runtime.run_method(method, *args, stack=stack))
+            stack.push(await stack.runtime.run_method(method, *args, stack=stack))
         except StackCollectingException as e:
             e.add_trace(f"during invoking interface {method} with {args}")
 
@@ -1670,19 +1670,27 @@ class InvokeDynamic(CPLinkedInstruction):
         )
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack):
+    async def invoke(cls, data: typing.Any, stack: AbstractStack):
+        if isinstance(data, typing.Awaitable):
+            raise StackCollectingException(str(data))
+
+        if not isinstance(data, tuple):
+            raise StackCollectingException(
+                f"invalid InvokeDynamic target: target {data} is invalid"
+            )
+
         if len(data) != 2:
             raise StackCollectingException(
                 f"invalid InvokeDynamic target: target {data[1]} not found!"
             )
         else:
             method, data = data
-            # m = stack.vm.get_method_of_nat(data[0])
+            # m = await stack.vm.get_method_of_nat(data[0])
             call_site = method((data[1][2], data[0], data[1]), data[1][0][2][1][1], data[1][2], stack=stack)
             stack.push(call_site)
 
     @classmethod
-    def optimiser_iteration(
+    async def optimiser_iteration(
         cls,
         container: AbstractBytecodeContainer,
         prepared_data: typing.Tuple[typing.Any, str],
@@ -1697,7 +1705,7 @@ class InvokeDynamic(CPLinkedInstruction):
             )
         else:
             vm = container.code.class_file.vm
-            method = vm.get_method_of_nat(prepared_data[2][0][2])
+            method = await vm.get_method_of_nat(prepared_data[2][0][2])
             return method, (container.code.class_file, prepared_data)
 
 
@@ -1722,39 +1730,45 @@ class LambdaInvokeDynamic(BaseInstruction):
             self.extra_args = extra_args
             self.access = method.access  # access stays the same
 
-        def invoke(self, args, stack=None):
-            return self(*args)
-
         def __call__(self, *args):
-            return self.method(*self.extra_args, *args)
+            raise RuntimeError
+
+        async def invoke(self, args, stack=None):
+            return await self.method.invoke(tuple(self.extra_args)+tuple(args), stack=stack)
 
         def __repr__(self):
             return f"InvokeDynamic::CallSite(wrapping={self.method},add_args={self.extra_args})"
 
-        def get_class(self):
-            return self.method.class_file.vm.get_class("java/lang/reflect/Method")
+        async def get_class(self):
+            return await self.method.class_file.vm.get_class("java/lang/reflect/Method")
+
+        def get_parent_class(self):
+            return self.method.get_parent_class()
 
     class LambdaNewInvokeDynamicWrapper(LambdaInvokeDynamicWrapper):
         def __call__(self, *args):
-            instance = self.method.class_file.create_instance()
-            self.method(instance, *self.extra_args, *args)
+            raise RuntimeError
+
+        async def invoke(self, args, stack=None):
+            instance = await self.method.class_file.create_instance()
+            await self.method.invoke((instance,)+tuple(self.extra_args)+tuple(args))
             return instance
 
         def __repr__(self):
             return f"InvokeDynamic::CallSite::new(wrapping={self.method},add_args={self.extra_args})"
 
     class LambdaAbstractInvokeDynamicWrapper(LambdaInvokeDynamicWrapper):
-        def __call__(self, *args):
+        async def __call__(self, *args):
             method = (
-                args[0].get_class().get_method(self.method.name, self.method.signature)
+                await (await args[0].get_class()).get_method(self.method.name, self.method.signature)
             )
-            return method(*self.extra_args, *args)
+            return await method(*self.extra_args, *args)
 
         def __repr__(self):
             return f"InvokeDynamic::CallSite::around_abstract(wrapping={self.method},add_args={self.extra_args})"
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack):
+    async def invoke(cls, data: typing.Any, stack: AbstractStack):
         if callable(data):
             stack.push(data)
             return
@@ -1769,11 +1783,11 @@ class LambdaInvokeDynamic(BaseInstruction):
         # print("invokedynamic debug", nat, "\n", boostrap)
 
         try:
-            cls_file = stack.vm.get_class(
+            cls_file = await stack.vm.get_class(
                 boostrap[1][1][2][1][1][1],
                 version=stack.method.class_file.internal_version,
             )
-            method = cls_file.get_method(target_nat[1][1], target_nat[2][1])
+            method = await cls_file.get_method(target_nat[1][1], target_nat[2][1])
             outer_signature = boostrap[1][0][1][1]
 
             extra_args = []
@@ -1908,11 +1922,11 @@ class New(CPLinkedInstruction):
         stack.push(None)
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack):
-        c = stack.vm.get_class(
+    async def invoke(cls, data: typing.Any, stack: AbstractStack):
+        c = await stack.vm.get_class(
             data[1][1], version=stack.method.class_file.internal_version
         )
-        stack.push(c.create_instance())
+        stack.push(await c.create_instance())
 
 
 @AbstractBytecodeContainer.register_instruction
@@ -2012,14 +2026,14 @@ class InstanceOf(CPLinkedInstruction):
     OPCODES = {0xC1}
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack):
+    async def invoke(cls, data: typing.Any, stack: AbstractStack):
         obj = stack.pop()
 
         if not hasattr(obj, "get_class"):
             # todo: we need a fix here!
             stack.push(0)
         else:
-            stack.push(int(obj is None or obj.get_class().is_subclass_of(data[1][1])))
+            stack.push(int(obj is None or (await obj.get_class()).is_subclass_of(data[1][1])))
 
     @classmethod
     def validate_stack(cls, command_index, prepared_data: typing.Any, container: AbstractBytecodeContainer, stack: AbstractStack):

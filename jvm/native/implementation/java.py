@@ -1,9 +1,12 @@
+import asyncio
 import collections
 import os.path
 import re
 import threading
 import time
 import uuid
+
+import typing
 
 import jvm.api
 from jvm.api import AbstractMethod
@@ -142,8 +145,8 @@ class SetLike:
     @bind_native("java/util/Set", "iterator()Ljava/util/Iterator;")
     @bind_native("java/util/TreeSet", "iterator()Ljava/util/Iterator;")
     @bind_native("java/util/EnumSet", "iterator()Ljava/util/Iterator;")
-    def iterator(method, stack, this):
-        return stack.vm.get_class("java/util/Iterator").create_instance().init("(ITERABLE)V", list(this.underlying))
+    async def iterator(method, stack, this):
+        return await (await (await stack.vm.get_class("java/util/Iterator")).create_instance()).init("(ITERABLE)V", list(this.underlying))
 
     @staticmethod
     @bind_native("java/util/Set", "forEach(Ljava/util/function/Consumer;)V")
@@ -164,8 +167,8 @@ class SetLike:
 
     @staticmethod
     @bind_native("java/util/EnumSet", "allOf(Ljava/lang/Class;)Ljava/util/EnumSet;")
-    def allOf(method, stack, cls: jvm.api.AbstractJavaClass):
-        return stack.vm.get_class("java/util/EnumSet").create_instance().init("(SOURCE)V", cls.get_enum_values())
+    async def allOf(method, stack, cls: jvm.api.AbstractJavaClass):
+        return await (await (await stack.vm.get_class("java/util/EnumSet")).create_instance()).init("(SOURCE)V", await cls.get_enum_values())
 
     @staticmethod
     @bind_native("java/util/HashSet", "isEmpty()Z")
@@ -178,8 +181,8 @@ class SetLike:
 
     @staticmethod
     @bind_native("java/util/Set", "stream()Ljava/util/stream/Stream;")
-    def stream(method, stack, this):
-        obj = stack.vm.get_class("java/util/List").create_instance().init("()V")
+    async def stream(method, stack, this):
+        obj = await (await (await stack.vm.get_class("java/util/List")).create_instance()).init("()V")
         obj.underlying += list(this.underlying)
         return obj
 
@@ -201,8 +204,8 @@ class ListLike:
 
     @staticmethod
     @bind_native("java/util/Collections", "singletonList(Ljava/lang/Object;)Ljava/util/List;")
-    def singletonList(method, stack, obj):
-        return stack.vm.get_class("java/util/Iterator").create_instance().init("(ITERABLE)V", [obj])
+    async def singletonList(method, stack, obj):
+        return await (await (await stack.vm.get_class("java/util/Iterator")).create_instance()).init("(ITERABLE)V", [obj])
 
     @staticmethod
     @bind_native("java/util/Iterator", "hasNext()Z")
@@ -219,6 +222,9 @@ class ListLike:
     @bind_native("java/util/List", "add(Ljava/lang/Object;)Z")
     @bind_native("java/util/concurrent/CopyOnWriteArrayList", "add(Ljava/lang/Object;)Z")
     def add(method, stack, this, obj):
+        if not hasattr(this, "underlying"):
+            del this
+
         this.underlying.append(obj)
         return True
 
@@ -236,8 +242,8 @@ class ListLike:
     @staticmethod
     @bind_native("java/util/Arrays", "asList([Ljava/lang/Object;)Ljava/util/List;")
     @bind_native("java/util/Collections", "unmodifiableList(Ljava/util/List;)Ljava/util/List;")
-    def asList(method, stack, this):
-        obj = stack.vm.get_class("java/util/List").create_instance().init("()V")
+    async def asList(method, stack, this):
+        obj = await (await (await stack.vm.get_class("java/util/List")).create_instance()).init("()V")
 
         if isinstance(this, NativeClassInstance):
             obj.underlying = this.underlying
@@ -286,33 +292,33 @@ class ListLike:
     @bind_native("java/util/List", "of(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/util/List;")
     @bind_native("java/util/List", "of(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/util/List;")
     @bind_native("java/util/List", "of(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/util/List;")
-    def fromVaryingSize(method, stack, *args):
-        obj = method.get_parent_class().create_instance().init("()V")
+    async def fromVaryingSize(method, stack, *args):
+        obj = await (await method.get_parent_class().create_instance()).init("()V")
         obj.underlying += args
         return obj
 
     @staticmethod
     @bind_native("java/util/List", "of([Ljava/lang/Object;)Ljava/util/List;")
-    def fromArray(method, stack, array):
-        obj = method.get_parent_class().create_instance().init("()V")
+    async def fromArray(method, stack, array):
+        obj = await (await method.get_parent_class().create_instance()).init("()V")
         obj.underlying += array
         return obj
 
     @staticmethod
     @bind_native("java/util/Arrays", "stream([Ljava/lang/Object;)Ljava/util/stream/Stream;")
-    def array2stream(method, stack, array):
-        return stack.vm.get_class("java/util/stream/Stream").create_instance().init("(ARRAY)V", array)
+    async def array2stream(method, stack, array):
+        return await (await (await stack.vm.get_class("java/util/stream/Stream")).create_instance()).init("(ARRAY)V", array)
 
     @staticmethod
     @bind_native("java/util/ArrayList", "stream()Ljava/util/stream/Stream;")
-    def arrayList2stream(method, stack, array):
-        return stack.vm.get_class("java/util/stream/Stream").create_instance().init("(ARRAY)V", array.underlying)
+    async def arrayList2stream(method, stack, array):
+        return await (await (await stack.vm.get_class("java/util/stream/Stream")).create_instance()).init("(ARRAY)V", array.underlying)
 
     @staticmethod
     @bind_native("java/util/Collection", "stream()Ljava/util/stream/Stream;")
     @bind_native("java/util/List", "stream()Ljava/util/stream/Stream;")
-    def collection2stream(method, stack, this):
-        return stack.vm.get_class("java/util/stream/Stream").create_instance().init("(ARRAY)V", this.underlying)
+    async def collection2stream(method, stack, this):
+        return await (await (await stack.vm.get_class("java/util/stream/Stream")).create_instance()).init("(ARRAY)V", this.underlying)
 
 
 class MapLike:
@@ -333,15 +339,15 @@ class MapLike:
 
     @staticmethod
     @bind_native("java/util/Map", "copyOf(Ljava/util/Map;)Ljava/util/Map;")
-    def copyOf(method, stack, other):
-        obj = method.get_parent_class().create_instance().init("()V")
+    async def copyOf(method, stack, other):
+        obj = await (await method.get_parent_class().create_instance()).init("()V")
         obj.underlying = other.underlying.copy()
         return obj
 
     @staticmethod
     @bind_native("java/util/Map", "of(Ljava/lang/Object;Ljava/lang/Object;)Ljava/util/Map;")
-    def mapFromKeyValuePairs(method, stack, key, value):
-        obj = method.get_parent_class().create_instance().init("()V")
+    async def mapFromKeyValuePairs(method, stack, key, value):
+        obj = await (await method.get_parent_class().create_instance()).init("()V")
         obj.underlying = {key: value}
         return obj
 
@@ -411,9 +417,9 @@ class MapLike:
 
     @staticmethod
     @bind_native("java/lang/ThreadLocal", "get()Ljava/lang/Object;")
-    def get(method, stack, this):
+    async def get(method, stack, this):
         if "value " not in this.underlying:
-            this.underlying["value"] = this.get_method("initialValue", "()Ljava/lang/Object;").invoke([this])
+            this.underlying["value"] = await (await this.get_method("initialValue", "()Ljava/lang/Object;")).invoke([this])
         return this.underlying["value"]
 
     @staticmethod
@@ -434,20 +440,20 @@ class MapLike:
 
     @staticmethod
     @bind_native("java/util/Map", "entrySet()Ljava/util/Set;")
-    def entrySet(method, stack, this):
-        obj = stack.vm.get_class("java/util/Set").create_instance().init("()V")
+    async def entrySet(method, stack, this):
+        obj = await (await (await stack.vm.get_class("java/util/Set")).create_instance()).init("()V")
         obj.underlying |= set(this.underlying.entries())
         return obj
 
     @staticmethod
     @bind_native("java/util/Properties", "entrySet()Ljava/util/Set;")
-    def entrySet(method, stack, this):
-        return stack.vm.get_class("java/util/Set").create_instance().init("()V")
+    async def entrySet(method, stack, this):
+        return await (await (await stack.vm.get_class("java/util/Set")).create_instance()).init("()V")
 
     @staticmethod
     @bind_native("java/util/EnumMap", "values()Ljava/util/Collection;")
-    def values(method, stack, this):
-        base = stack.vm.get_class("java/util/List").create_instance().init("()V")
+    async def values(method, stack, this):
+        base = await (await (await stack.vm.get_class("java/util/List")).create_instance()).init("()V")
         base.underlying = list(this.underlying.values())
         return base
 
@@ -481,8 +487,8 @@ class LockLike:
 class StreamLike:
     @staticmethod
     @bind_native("java/util/stream/Stream", "of([Ljava/lang/Object;)Ljava/util/stream/Stream;")
-    def of(method, stack, array):
-        obj = method.get_parent_class().create_instance().init("()V")
+    async def of(method, stack, array):
+        obj = await (await method.get_parent_class().create_instance()).init("()V")
         obj.underlying = array.copy()
         return obj
 
@@ -498,27 +504,35 @@ class StreamLike:
 
     @staticmethod
     @bind_native("java/util/stream/Stream", "sorted(Ljava/util/Comparator;)Ljava/util/stream/Stream;")
-    def sortedStream(method, stack, this, comparator):
-        this.underlying = list(sorted(this.underlying, key=comparator))
+    async def sortedStream(method, stack, this, comparator):
+        # This work-around is so we can use an async function for sorting
+        original = list(this.underlying)
+        if isinstance(comparator, AbstractMethod):
+            sortable = [(e, await comparator.invoke((e,), stack=stack)) for e in original]
+        else:
+            sortable = [(e, await comparator(e)) for e in original]
+
+        sortable.sort(key=lambda e: e[1])
+        this.underlying = [e[0] for e in sortable]
         return this
 
     @staticmethod
     @bind_native("java/util/stream/Stream", "map(Ljava/util/function/Function;)Ljava/util/stream/Stream;")
-    def mapStream(method, stack, this, function):
-        this.underlying = [function(e) for e in this.underlying]
+    async def mapStream(method, stack, this, function):
+        this.underlying = [await function.invoke((e,)) for e in this.underlying]
         return this
 
     @staticmethod
     @bind_native("java/util/stream/Stream", "concat(Ljava/util/stream/Stream;Ljava/util/stream/Stream;)Ljava/util/stream/Stream;")
-    def concatStreams(method, stack, stream_a, stream_b):
-        stream = method.get_parent_class().create_instance().init("()V")
+    async def concatStreams(method, stack, stream_a, stream_b):
+        stream = await (await method.get_parent_class().create_instance()).init("()V")
         stream.underlying = list(stream_a.underlying) + list(stream_b.underlying)
         return stream
 
     @staticmethod
     @bind_native("java/util/stream/Stream", "toList()Ljava/util/List;")
-    def toList(method, stack, this):
-        obj = stack.vm.get_class("java/util/List").create_instance().init("()V")
+    async def toList(method, stack, this):
+        obj = await (await (await stack.vm.get_class("java/util/List")).create_instance()).init("()V")
         obj.underlying = list(this.underlying)
         return obj
 
@@ -529,17 +543,32 @@ class StreamLike:
 
     @staticmethod
     @bind_native("java/util/stream/Collectors", "toMap(Ljava/util/function/Function;Ljava/util/function/Function;)Ljava/util/stream/Collector;")
-    def toMapCollector(method, stack, func_a, func_b):
-        return lambda e: stack.vm.get_class("java/util/HashMap").create_instance().init("(MAP)V", (
-            {func_a(x): func_b(x) for x in e}
-            if not isinstance(e, NativeClassInstance)
-            else {func_a(x): func_b(x) for x in e.underlying}
-        ))
+    async def toMapCollector(method, stack, func_a, func_b):
+        cls = (await (await stack.vm.get_class("java/util/HashMap")).create_instance())
+
+        async def work(e):
+            return await cls.init("(MAP)V", (
+                {await func_a.invoke((x,)): await func_b.invoke((x,)) for x in e}
+                if not isinstance(e, NativeClassInstance)
+                else {await func_a.invoke((x,)): await func_b.invoke((x,)) for x in e.underlying}
+            ))
+
+        return work
 
     @staticmethod
     @bind_native("java/util/stream/Stream", "filter(Ljava/util/function/Predicate;)Ljava/util/stream/Stream;")
-    def filterStream(method, stack, this, predicate):
-        this.underlying = [e for e in this.underlying if predicate(e)]
+    async def filterStream(method, stack, this, predicate):
+        if not this.underlying: return this
+
+        first = this.underlying[0]
+        first_included = predicate.invoke((first,))
+        if isinstance(first_included, typing.Awaitable):
+            first_included = await first_included
+            this.underlying = ([first] if first_included else []) + [e for e in this.underlying[1:] if await predicate.invoke((e,))]
+
+        else:
+            this.underlying = ([first] if first_included else []) + [e for e in this.underlying[1:] if predicate.invoke((e,))]
+
         return this
 
     @staticmethod
@@ -567,8 +596,9 @@ class StreamLike:
     @staticmethod
     @bind_native("java/util/Comparator", "comparing(Ljava/util/function/Function;)Ljava/util/Comparator;")
     def comparing(method, stack, function):
-        def transform(obj):
-            return function(obj)
+        async def transform(obj):
+            return await function.invoke((obj,))
+
         return transform
 
     @staticmethod
@@ -621,16 +651,16 @@ class System:
 
     @staticmethod
     @bind_native("java/lang/System", "getSecurityManager()Ljava/lang/SecurityManager;")
-    def getSecurityManager(method, stack: AbstractStack):
+    async def getSecurityManager(method, stack: AbstractStack):
         if System.SECURITY_MANAGER is None:
-            System.SECURITY_MANAGER = stack.vm.get_class("java/lang/SecurityManager").create_instance().init("()V")
+            System.SECURITY_MANAGER = await (await (await stack.vm.get_class("java/lang/SecurityManager")).create_instance()).init("()V")
 
         return System.SECURITY_MANAGER
 
     @staticmethod
     @bind_native("java/lang/System", "getProperties()Ljava/util/Properties;")
-    def getProperties(method, stack):
-        return stack.vm.get_class("java/util/Properties").create_instance().init("(MAP)V", System.PROPERTIES)
+    async def getProperties(method, stack):
+        return await (await (await stack.vm.get_class("java/util/Properties")).create_instance()).init("(MAP)V", System.PROPERTIES)
 
     @staticmethod
     @bind_native("java/lang/System", "getProperty(Ljava/lang/String;)Ljava/lang/String;")
@@ -665,9 +695,9 @@ class Thread:
 
     @staticmethod
     @bind_native("java/lang/Thread", "currentThread()Ljava/lang/Thread;")
-    def currentThread(method: AbstractMethod, stack):
+    async def currentThread(method: AbstractMethod, stack):
         if Thread.CURRENT is None:
-            Thread.CURRENT = method.get_parent_class().create_instance().init("()V")
+            Thread.CURRENT = await (await method.get_parent_class().create_instance()).init("()V")
 
         return Thread.CURRENT
 
@@ -675,9 +705,9 @@ class Thread:
     @bind_native("java/lang/Thread", "getContextClassLoader()Ljava/lang/ClassLoader;")
     @bind_native("java/lang/Class", "getClassLoader()Ljava/lang/ClassLoader;")
     @bind_native("java/lang/ClassLoader", "getSystemClassLoader()Ljava/lang/ClassLoader;")
-    def getContextClassLoader(method, stack: AbstractStack, *_):
+    async def getContextClassLoader(method, stack: AbstractStack, *_):
         if Thread.CURRENT_CLASS_LOADER is None:
-            Thread.CURRENT_CLASS_LOADER = stack.vm.get_class("java/lang/ClassLoader").create_instance().init("()V")
+            Thread.CURRENT_CLASS_LOADER = await (await (await stack.vm.get_class("java/lang/ClassLoader")).create_instance()).init("()V")
 
         return Thread.CURRENT_CLASS_LOADER
 
@@ -685,9 +715,10 @@ class Thread:
 class Method:
     @staticmethod
     @bind_native("java/lang/reflect/Constructor", "newInstance([Ljava/lang/Object;)Ljava/lang/Object;")
-    def newInstance(method, stack, constructor: JavaMethod, args):
-        obj = constructor.get_class().create_instance()
-        return constructor.invoke(args)
+    async def newInstance(method, stack, constructor: JavaMethod, args):
+        obj = await (await constructor.get_class()).create_instance()
+        await constructor.invoke([obj] + list(args))
+        return obj
 
 
 class Class:
@@ -715,7 +746,7 @@ class ClassField:
 
     @staticmethod
     @bind_native("java/lang/reflect/Field", "get(Ljava/lang/Object;)Ljava/lang/Object;")
-    def getValue(method, stack, this, obj):
+    async def getValue(method, stack, this, obj):
         try:
             return obj.get_field(this[0])
         except (KeyError, AttributeError):
@@ -723,21 +754,21 @@ class ClassField:
                 return getattr(obj, this[0])
 
             try:
-                return this[1].get_static_attribute(this[0])
+                return await this[1].get_static_attribute(this[0])
             except (AttributeError, KeyError):
-                raise StackCollectingException(f"{obj} has no attribute {this[0]}") from None
+                raise StackCollectingException(f"{obj} has no attribute '{this[0]}'") from None
 
 
 class ClassLoader:
     @staticmethod
     @bind_native("java/lang/ClassLoader", "getResources(Ljava/lang/String;)Ljava/util/Enumeration;")
-    def getResources(method, stack, this, resource):
-        return stack.vm.get_class("java/util/Enumeration").create_instance().init("()V")
+    async def getResources(method, stack, this, resource):
+        return await (await (await stack.vm.get_class("java/util/Enumeration")).create_instance()).init("()V")
 
     @staticmethod
     @bind_native("java/lang/Class", "forName(Ljava/lang/String;)Ljava/lang/Class;")
-    def forName(method, stack, name):
-        return stack.vm.get_class(name)
+    async def forName(method, stack, name):
+        return await stack.vm.get_class(name)
 
     @staticmethod
     @bind_native("java/lang/Class", "getName()Ljava/lang/String;")
@@ -746,20 +777,20 @@ class ClassLoader:
 
     @staticmethod
     @bind_native("java/lang/Class", "newInstance()Ljava/lang/Object;")
-    def newInstance(method, stack, this: jvm.api.AbstractJavaClass):
-        return this.create_instance()
+    async def newInstance(method, stack, this: jvm.api.AbstractJavaClass):
+        return await this.create_instance()
 
 
 class ServiceLoader:
     @staticmethod
     @bind_native("java/util/ServiceLoader", "load(Ljava/lang/Class;Ljava/lang/ClassLoader;)Ljava/util/ServiceLoader;")
-    def load(method, stack, cls, class_loader):
-        return method.get_parent_class().create_instance()
+    async def load(method, stack, cls, class_loader):
+        return await method.get_parent_class().create_instance()
 
     @staticmethod
     @bind_native("java/util/ServiceLoader", "iterator()Ljava/util/Iterator;")
-    def iterator(method, stack, this):
-        return stack.vm.get_class("java/util/Iterator").create_instance().init("(ITERABLE)V", [])
+    async def iterator(method, stack, this):
+        return await (await (await stack.vm.get_class("java/util/Iterator")).create_instance()).init("(ITERABLE)V", [])
 
 
 class Enumeration:
@@ -878,8 +909,8 @@ class Math:
 class Regex:
     @staticmethod
     @bind_native("java/util/regex/Pattern", "compile(Ljava/lang/String;)Ljava/util/regex/Pattern;")
-    def compile(method, stack, pattern):
-        return method.get_parent_class().create_instance().init("(PATTERN)V", re.compile(pattern))
+    async def compile(method, stack, pattern):
+        return await (await method.get_parent_class().create_instance()).init("(PATTERN)V", re.compile(pattern))
 
 
 class Pattern:
@@ -890,9 +921,9 @@ class Pattern:
 
     @staticmethod
     @bind_native("java/util/regex/Pattern", "matcher(Ljava/lang/CharSequence;)Ljava/util/regex/Matcher;")
-    def matcher(method, stack, this, sequence: str):
+    async def matcher(method, stack, this, sequence: str):
         regex: re.Pattern = this.underlying
-        return stack.vm.get_class("java/util/regex/Matcher").create_instance().init("(MATCH)V", regex.match(sequence))
+        return await (await (await stack.vm.get_class("java/util/regex/Matcher")).create_instance()).init("(MATCH)V", regex.match(sequence))
 
 
 class Matcher:
@@ -944,8 +975,8 @@ class JException:
 class MethodImpl:
     @staticmethod
     @bind_native("java/lang/reflect/Method", "apply(Ljava/lang/Object;)Ljava/lang/Object;")
-    def apply(method, stack, this, *args):
-        return this.invoke(args)
+    async def apply(method, stack, this, *args):
+        return await this.invoke(args)
 
 
 class Asserts:
@@ -1048,15 +1079,15 @@ class Record:
 class UUID:
     @staticmethod
     @bind_native("java/util/UUID", "fromString(Ljava/lang/String;)Ljava/util/UUID;")
-    def uuidFromString(method, stack, string: str):
-        obj = method.get_parent_class().create_instance()
+    async def uuidFromString(method, stack, string: str):
+        obj = await method.get_parent_class().create_instance()
         obj.underlying = uuid.UUID(string)
         return obj
 
     @staticmethod
     @bind_native("java/util/UUID", "nameUUIDFromBytes([B)Ljava/util/UUID;")
-    def nameUUIDFromBytes(method, stack, array):
-        obj = method.get_parent_class().create_instance()
+    async def nameUUIDFromBytes(method, stack, array):
+        obj = await method.get_parent_class().create_instance()
         obj.underlying = uuid.UUID(bytes=bytes(array))
         return obj
 
@@ -1073,8 +1104,8 @@ class Optional:
 class Object:
     @staticmethod
     @bind_native("java/lang/Object", "getClass()Ljava/lang/Class;")
-    def getClass(method, stack, this):
-        return None if this is None or not hasattr(this, "get_class") else this.get_class()
+    async def getClass(method, stack, this):
+        return None if this is None or not hasattr(this, "get_class") else await this.get_class()
 
 
 class Atomics:

@@ -50,11 +50,15 @@ class NativeMethod(jvm.api.AbstractMethod):
         self.bound = False
 
     def __call__(self, *args, stack=None):
-        return self.invoke(args, stack=stack)
+        raise RuntimeError
+        # return await self.invoke(args, stack=stack)
 
-    def invoke(self, args: typing.Iterable, stack=None):
+    async def invoke(self, args: typing.Iterable, stack=None):
         try:
-            return self.underlying(self, stack, *args)
+            result = self.underlying(self, stack, *args)
+            if isinstance(result, typing.Awaitable):
+                return await result
+            return result
         except:
             print("during invoking native", self, "with", args)
             raise
@@ -88,13 +92,13 @@ class NativeClass(jvm.api.AbstractJavaClass):
 
         self.enum_attribute_keys = set()
 
-    def get_method(self, name: str, signature: str, inner=False, static=True):
+    async def get_method(self, name: str, signature: str, inner=False, static=True):
         if name+signature not in self.methods:
             self.create_method(name, signature, 0x0008 if static else 0x0000)
 
         return self.methods[name+signature]
 
-    def get_static_attribute(self, name: str, expected_type=None):
+    async def get_static_attribute(self, name: str, expected_type=None):
         if name not in self.static_attributes:
             self.create_attribute(name, expected_type, 0x0008)
         return self.static_attributes[name]
@@ -104,8 +108,10 @@ class NativeClass(jvm.api.AbstractJavaClass):
             self.create_attribute(name, descriptor, 0x0008)
         self.static_attributes[name] = value
 
-    def create_instance(self) -> "NativeClassInstance":
-        return NativeClassInstance(self)
+    async def create_instance(self) -> "NativeClassInstance":
+        obj = NativeClassInstance(self)
+        await obj.init_fields()
+        return obj
 
     def inject_method(self, name: str, signature: str, method, force=True):
         if name+signature not in self.methods or force:
@@ -164,13 +170,15 @@ class NativeClass(jvm.api.AbstractJavaClass):
             lambda m, *_: UnimplementedNative(m)(*_)
         )
 
-    def on_annotate(self, obj, args):
-        self.get_method("onObjectAnnotation", "(Ljava/lang/Object;Ljava/lang/List;)V").invoke([obj, args])
+    async def on_annotate(self, obj, args):
+        result = await (await self.get_method("onObjectAnnotation", "(Ljava/lang/Object;Ljava/lang/List;)V")).invoke([obj, args])
+        if isinstance(result, typing.Awaitable):
+            await result
         
     def __repr__(self):
         return f"NativeClass@{self.header.file.split('/')[-1].split('.')[0]}.h({self.name})"
 
-    def get_dynamic_field_keys(self):
+    async def get_dynamic_field_keys(self):
         return self.dynamic_attribute_keys
 
 
@@ -192,12 +200,12 @@ class NativeClassInstance(jvm.api.AbstractJavaClassInstance):
             raise KeyError(name)
         self.fields[name] = value
 
-    def get_method(self, name: str, signature: str):
-        return self.cls.get_method(name, signature, static=False)
+    async def get_method(self, name: str, signature: str):
+        return await self.cls.get_method(name, signature, static=False)
     
     def __repr__(self):
         exposed = [self.get_field(name) for name in self.cls.exposed_fields]
-        return f"NativeClassInstance@{self.get_class().name}"+(f"@@{self.get_real_class().name}" if self.rebound_type else "")+"("+",".join(exposed)+")"
+        return f"NativeClassInstance@{self.cls.name}"+(f"@@{self.get_real_class().name}" if self.rebound_type else "")+"("+",".join(exposed)+")"
 
 
 class NativeHeader:

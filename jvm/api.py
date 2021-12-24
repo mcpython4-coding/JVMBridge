@@ -136,34 +136,34 @@ class AbstractJavaClass:
 
         self.enum_fields = []
 
-    def get_enum_values(self):
-        return [self.get_static_attribute(e) for e in self.enum_fields]
+    async def get_enum_values(self):
+        return [await self.get_static_attribute(e) for e in self.enum_fields]
 
-    def get_method(self, name: str, signature: str, inner=False):
+    async def get_method(self, name: str, signature: str, inner=False):
         raise NotImplementedError
 
-    def get_static_attribute(self, name: str, expected_type=None):
+    async def get_static_attribute(self, name: str, expected_type=None):
         raise NotImplementedError
 
     def set_static_attribute(self, name: str, value, descriptor=None):
         raise NotImplementedError
 
-    def create_instance(self) -> "AbstractJavaClassInstance":
+    async def create_instance(self) -> "AbstractJavaClassInstance":
         raise NotImplementedError
 
     def inject_method(self, name: str, signature: str, method, force=True):
         raise NotImplementedError
 
-    def on_annotate(self, obj, args):
+    async def on_annotate(self, obj, args):
         print(f"missing annotation implementation on {self} annotating {obj} with {args}")
 
-    def get_dynamic_field_keys(self):
+    async def get_dynamic_field_keys(self):
         return set()
 
     def is_subclass_of(self, class_name: str) -> bool:
         raise NotImplementedError
 
-    def prepare_use(self, runtime=None):
+    async def prepare_use(self, runtime=None):
         pass
 
     def ensure_data(self, data):
@@ -177,23 +177,26 @@ class AbstractJavaClassInstance(ABC):
         self.fields = {}
         self.rebound_type = None
 
+    async def init_fields(self):
+        pass
+
     def get_field(self, name: str):
         raise NotImplementedError
 
     def set_field(self, name: str, value):
         raise NotImplementedError
 
-    def get_method(self, name: str, signature: str) -> "AbstractMethod":
-        return self.get_class().get_method(name, signature)
+    async def get_method(self, name: str, signature: str) -> "AbstractMethod":
+        return await (await self.get_class()).get_method(name, signature)
 
-    def get_class(self) -> AbstractJavaClass:
+    async def get_class(self) -> AbstractJavaClass:
         return self.rebound_type or self.get_real_class()
 
     def get_real_class(self) -> AbstractJavaClass:
         raise NotImplementedError
 
-    def init(self, signature: str, *args, stack=None):
-        self.get_method("<init>", signature).invoke([self]+list(args), stack=stack)
+    async def init(self, signature: str, *args, stack=None):
+        await (await self.get_method("<init>", signature)).invoke([self]+list(args), stack=stack)
         return self
 
 
@@ -211,7 +214,7 @@ class AbstractMethod(metaclass=ABCMeta):
         self.code_repr = None
 
     @abstractmethod
-    def invoke(self, args, stack=None):
+    async def invoke(self, args, stack=None):
         pass
 
     @abstractmethod
@@ -245,7 +248,7 @@ class BaseInstruction(ABC):
     """
 
     @classmethod
-    def invoke(cls, data: typing.Any, stack: AbstractStack) -> bool:
+    async def invoke(cls, data: typing.Any, stack: AbstractStack) -> bool:
         raise NotImplementedError
 
     @classmethod
@@ -257,7 +260,7 @@ class BaseInstruction(ABC):
         pass
 
     @classmethod
-    def optimiser_iteration(
+    async def optimiser_iteration(
         cls,
         container: AbstractBytecodeContainer,
         prepared_data: typing.Any,
@@ -287,7 +290,7 @@ class BaseInstruction(ABC):
 
 class AbstractJavaVM(metaclass=ABCMeta):
     @abstractmethod
-    def get_class(self, name, version):
+    async def get_class(self, name, version):
         """
         Looks up a specific class in the internal class loader array, and loads it from bytecode if not arrival
         :param name: the name of the class
@@ -301,11 +304,11 @@ class AbstractJavaVM(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def get_lazy_class(self, name, version):
+    async def get_lazy_class(self, name, version):
         pass
 
     @abstractmethod
-    def load_class(self, name, version, shared):
+    async def load_class(self, name, version, shared):
         pass
 
     @abstractmethod

@@ -59,10 +59,10 @@ class ArrayBase(jvm.api.AbstractJavaClass):
         self.depth = depth
         self.name = name
 
-    def get_method(self, name: str, signature: str, inner=False):
+    async def get_method(self, name: str, signature: str, inner=False):
         return self.methods[(name, signature)]
 
-    def get_static_attribute(self, name: str, expected_type=None):
+    async def get_static_attribute(self, name: str, expected_type=None):
         return self.attributes.setdefault(name, 0)
 
     def set_static_attribute(self, name: str, value, descriptor=None):
@@ -74,7 +74,7 @@ class ArrayBase(jvm.api.AbstractJavaClass):
     def is_subclass_of(self, class_name: str) -> bool:
         return False
 
-    def create_instance(self):
+    async def create_instance(self):
         return []
 
     def clone(self, method, stack, instance):
@@ -92,10 +92,10 @@ class JavaArrayManager:
     def __init__(self, vm_i):
         self.vm = weakref.proxy(vm_i)
 
-    def get(self, class_text: str, version=0):
+    async def get(self, class_text: str, version=0):
         depth = class_text.count("[")
         cls_name = class_text[depth:]
-        cls = self.vm.get_class(
+        cls = await self.vm.get_class(
             cls_name.removeprefix("L").removesuffix(";"), version=version
         )
 
@@ -115,12 +115,12 @@ class JavaField:
         self.access = 0
         self.attributes = JavaAttributeTable(self)
 
-    def from_data(self, class_file: "JavaBytecodeClass", data: bytearray):
+    async def from_data(self, class_file: "JavaBytecodeClass", data: bytearray):
         self.class_file = weakref.proxy(class_file)
         self.access = pop_u2(data)
         self.name = class_file.cp[pop_u2(data) - 1][1]
         self.descriptor = class_file.cp[pop_u2(data) - 1][1]
-        self.attributes.from_data(class_file, data)
+        await self.attributes.from_data(class_file, data)
 
     def __repr__(self):
         return f"JavaField(name='{self.name}',descriptor='{self.descriptor}',access='{bin(self.access)}',class='{self.class_file.name}')"
@@ -145,7 +145,7 @@ class JavaMethod(AbstractMethod):
 
         self.code_repr = None
 
-    def ensure_code_repr(self):
+    async def ensure_code_repr(self):
         if self.code_repr is not None: return
 
         from jvm.Runtime import BytecodeRepr
@@ -155,33 +155,34 @@ class JavaMethod(AbstractMethod):
             return
 
         self.code_repr = BytecodeRepr(code)
+        await self.code_repr.optimiser_iteration()
 
-    def from_data(self, class_file: "JavaBytecodeClass", data: bytearray):
+    async def from_data(self, class_file: "JavaBytecodeClass", data: bytearray):
         self.class_file = weakref.proxy(class_file)
         self.access = pop_u2(data)
         self.name = class_file.cp[pop_u2(data) - 1][1]
         self.signature = class_file.cp[pop_u2(data) - 1][1]
-        self.attributes.from_data(class_file, data)
+        await self.attributes.from_data(class_file, data)
 
     def __repr__(self):
         return f"JavaMethod(name='{self.name}',signature='{self.signature}',access='{bin(self.access)}',class='{self.class_file.name}')"
 
-    def invoke(self, args, stack=None):
+    async def invoke(self, args, stack=None):
         import jvm.Runtime
 
         runtime = jvm.Runtime.Runtime()
-        return runtime.run_method(self, *args, stack=stack)
+        return await runtime.run_method(self, *args, stack=stack)
 
     def get_parent_class(self):
         return self.class_file
 
-    def get_class(self):
-        return self.class_file.vm.get_class(
+    async def get_class(self):
+        return await self.class_file.vm.get_class(
             "java/lang/reflect/Method", version=self.class_file.internal_version
         )
 
-    def __call__(self, *args):
-        return self.invoke(args)
+    async def __call__(self, *args):
+        return await self.invoke(args)
 
     def dump(self) -> bytearray:
         data = bytearray()
@@ -193,8 +194,8 @@ class JavaMethod(AbstractMethod):
 
         return data
 
-    def print_stats(self, current=None):
-        self.ensure_code_repr()
+    async def print_stats(self, current=None):
+        await self.ensure_code_repr()
         print(f"method {repr(self)}")
 
         if self.code_repr is not None:
@@ -229,10 +230,10 @@ class JavaBytecodeClass(AbstractJavaClass):
         self.class_init_complete = False
 
     # todo: add to that object a marker!
-    def on_annotate(self, obj, args):
+    async def on_annotate(self, obj, args):
         pass
 
-    def from_bytes(self, data: bytearray):
+    async def from_bytes(self, data: bytearray):
         magic = pop_u4(data)
         assert magic == 0xCAFEBABE, f"magic {magic} is invalid!"
 
@@ -313,13 +314,13 @@ class JavaBytecodeClass(AbstractJavaClass):
 
         self.name: str = self.cp[pop_u2(data) - 1][1][1]
         self.parent: typing.Callable[
-            [], typing.Optional[AbstractJavaClass]
-        ] = self.vm.get_lazy_class(
+            [], typing.Coroutine[typing.Optional[AbstractJavaClass]]
+        ] = await self.vm.get_lazy_class(
             self.cp[pop_u2(data) - 1][1][1], version=self.internal_version
         )
 
         self.interfaces += [
-            self.vm.get_lazy_class(
+            await self.vm.get_lazy_class(
                 self.cp[pop_u2(data) - 1][1][1], version=self.internal_version
             )
             for _ in range(pop_u2(data))
@@ -327,7 +328,7 @@ class JavaBytecodeClass(AbstractJavaClass):
 
         for _ in range(pop_u2(data)):
             field = JavaField()
-            field.from_data(self, data)
+            await field.from_data(self, data)
 
             if field.access & 0x4000:
                 self.enum_fields.append(field.name)
@@ -341,23 +342,28 @@ class JavaBytecodeClass(AbstractJavaClass):
 
         for _ in range(pop_u2(data)):
             method = JavaMethod()
-            method.from_data(self, data)
+            await method.from_data(self, data)
 
             self.methods[(method.name, method.signature)] = method
 
-        self.attributes.from_data(self, data)
+        await self.attributes.from_data(self, data)
 
-    def get_method(self, name: str, signature: str, inner=False) -> JavaMethod:
+    async def get_method(self, name: str, signature: str, inner=False) -> JavaMethod:
         des = (name, signature)
         if des in self.methods:
             return self.methods[des]
 
+        if self.parent is not None:
+            parent = await self.parent()
+            if isinstance(parent, typing.Awaitable):
+                parent = await parent
+
         try:
-            m = self.parent().get_method(*des) if self.parent is not None else None
+            m = (await parent.get_method(*des)) if self.parent is not None else None
         except StackCollectingException as e:
             for interface in self.interfaces:
                 try:
-                    m = interface().get_method(*des)
+                    m = await (await interface()).get_method(*des)
                 except StackCollectingException:
                     pass
                 else:
@@ -373,11 +379,15 @@ class JavaBytecodeClass(AbstractJavaClass):
             f"class {self.name} has not method {name} with signature {signature}"
         )
 
-    def get_static_attribute(self, name: str, expected_type=None):
+    async def get_static_attribute(self, name: str, expected_type=None):
         if name not in self.static_field_values:
             if self.parent is not None:
+                parent = await self.parent()
+                if isinstance(parent, typing.Awaitable):
+                    parent = await parent
+
                 try:
-                    return self.parent().get_static_attribute(name)
+                    return await parent.get_static_attribute(name)
                 except KeyError:
                     pass
 
@@ -387,13 +397,13 @@ class JavaBytecodeClass(AbstractJavaClass):
             return self.static_field_values[name]
         except KeyError:
             raise StackCollectingException(
-                f"class {self.name} has no attribute {name} (class instance: {self})"
+                f"class {self.name} has no attribute '{name}' (class instance: {self})"
             ) from None
 
     def set_static_attribute(self, name: str, value, descriptor=None):
         self.static_field_values[name] = value
 
-    def bake(self):
+    async def bake(self):
         """
         Helper method for setting up a class
         Does some fancy work on annotations
@@ -405,27 +415,27 @@ class JavaBytecodeClass(AbstractJavaClass):
         self.on_bake.clear()
 
         if "RuntimeVisibleAnnotations" in self.attributes.attributes:
-            self.process_annotation(self.attributes["RuntimeVisibleAnnotations"])
+            await self.process_annotation(self.attributes["RuntimeVisibleAnnotations"])
 
         if "RuntimeInvisibleAnnotations" in self.attributes.attributes:
-            self.process_annotation(self.attributes["RuntimeInvisibleAnnotations"])
+            await self.process_annotation(self.attributes["RuntimeInvisibleAnnotations"])
 
         for method in self.methods.values():
             attribute: JavaAttributeTable = method.attributes
 
             if "RuntimeVisibleAnnotations" in attribute.attributes:
-                self.process_annotation(attribute.attributes["RuntimeVisibleAnnotations"], target=method)
+                await self.process_annotation(attribute.attributes["RuntimeVisibleAnnotations"], target=method)
 
             if "RuntimeInvisibleAnnotations" in attribute.attributes:
-                self.process_annotation(attribute.attributes["RuntimeInvisibleAnnotations"], target=method)
+                await self.process_annotation(attribute.attributes["RuntimeInvisibleAnnotations"], target=method)
 
-    def process_annotation(self, data, target=None):
+    async def process_annotation(self, data, target=None):
         if target is None: target = self
 
         for annotation in data:
             for cls_name, args in annotation.annotations:
                 try:
-                    cls = self.vm.get_class(cls_name, version=self.internal_version)
+                    cls = await self.vm.get_class(cls_name, version=self.internal_version)
                 except StackCollectingException as e:
                     # checks if the class exists, this will be true if it is a here class loader exception
                     if (
@@ -444,33 +454,39 @@ class JavaBytecodeClass(AbstractJavaClass):
                         )
                         raise
                 else:
-                    cls.on_annotate(target, args)
+                    await cls.on_annotate(target, args)
 
-    def create_instance(self):
+    async def create_instance(self):
         # Abstract classes cannot have instances
         if self.is_abstract:
             raise StackCollectingException(
                 f"class {self.name} is abstract, so we cannot create an instance of it!"
             )
 
-        return JavaClassInstance(self)
+        obj = JavaClassInstance(self)
+        await obj.init_fields()
+        return obj
 
     def __repr__(self):
-        return f"JavaBytecodeClass@{hex(id(self))[2:]}({self.name},access={bin(self.access)},parent={self.parent()},interfaces=[{', '.join(repr(e()) for e in self.interfaces)}])"
+        return f"JavaBytecodeClass@{hex(id(self))[2:]}({self.name},access={bin(self.access)},parent=...,interfaces=...)"
 
-    def get_dynamic_field_keys(self):
-        return self.dynamic_field_keys | self.parent().get_dynamic_field_keys()
+    async def get_dynamic_field_keys(self):
+        parent = await self.parent()
+        if isinstance(parent, typing.Awaitable):
+            parent = await parent
 
-    def is_subclass_of(self, class_name: str):
+        return self.dynamic_field_keys | await parent.get_dynamic_field_keys()
+
+    async def is_subclass_of(self, class_name: str):
         return (
             self.name == class_name
-            or self.parent().is_subclass_of(class_name)
+            or (await self.parent()).is_subclass_of(class_name)
             or any(
                 interface().is_subclass_of(class_name) for interface in self.interfaces
             )
         )
 
-    def prepare_use(self, runtime=None):
+    async def prepare_use(self, runtime=None):
         """
         Method for late-init-ing some stuff
         Can be called more than one time, only the first time will do stuff
@@ -495,7 +511,7 @@ class JavaBytecodeClass(AbstractJavaClass):
                 runtime = jvm.Runtime.Runtime()
 
             try:
-                runtime.run_method(self.get_method("<clinit>", "()V", inner=True))
+                await runtime.run_method(await self.get_method("<clinit>", "()V", inner=True))
             except StackCollectingException as e:
                 e.add_trace(f"during class init of {self.name}")
                 raise
@@ -543,7 +559,7 @@ class JavaBytecodeClass(AbstractJavaClass):
 
         self.methods[(name, signature)] = method
 
-    def dump(self) -> bytearray:
+    async def dump(self) -> bytearray:
         """
         This method does the opposite to most of the stuff here
         It dumps the content of the class into a .class file
@@ -561,7 +577,7 @@ class JavaBytecodeClass(AbstractJavaClass):
         # todo: parse access flags from attributes
         end_data += U2.pack(self.access)
         end_data += U2.pack(self.ensure_data([7, [1, self.name]]))
-        end_data += U2.pack(self.ensure_data([7, [1, self.parent().name if self.parent is not None else "java/lang/Object"]]))
+        end_data += U2.pack(self.ensure_data([7, [1, (await self.parent()).name if self.parent is not None else "java/lang/Object"]]))
 
         end_data += U2.pack(len(self.interfaces))
         end_data += b"".join([U2.pack(self.ensure_data([7, [1, e().name]])) for e in self.interfaces])
@@ -635,16 +651,18 @@ class JavaClassInstance(AbstractJavaClassInstance):
     todo: add abstract base so natives can share the same layout
     todo: add set/get for fields & do type validation
     """
-    __slots__ = AbstractJavaClassInstance.__slots__ + ("class_file", "fields")
+    # __slots__ = AbstractJavaClassInstance.__slots__ + ("class_file", "fields")
 
     def __init__(self, class_file: JavaBytecodeClass):
         super().__init__()
 
         self.class_file = class_file
-        self.fields = {name: None for name in class_file.get_dynamic_field_keys()}
 
-    def get_method(self, name: str, signature: str):
-        return self.class_file.get_method(name, signature)
+    async def init_fields(self):
+        self.fields.update({name: None for name in await self.class_file.get_dynamic_field_keys()})
+
+    async def get_method(self, name: str, signature: str):
+        return await self.class_file.get_method(name, signature)
 
     def __repr__(self):
         return f"JavaByteCodeClassInstance@{hex(id(self))[2:]}(of={self.class_file},fields={self.fields})"

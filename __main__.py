@@ -1,4 +1,8 @@
+import asyncio
 import sys
+
+import asyncio as asyncio
+
 import jvm.JavaVM
 import zipfile
 import os
@@ -21,6 +25,6 @@ accessor = jvm.ClassAdressing.decide_simple(file)
 vm = jvm.JavaVM.JavaVM()
 vm.add_accessor(accessor)
 
-cls = vm.get_class(sys.argv[2])
-cls.get_method("main", "([Ljava/lang/String;)V")(*sys.argv[3:])
+cls = asyncio.get_event_loop().run_until_complete(vm.get_class(sys.argv[2]))
+asyncio.get_event_loop().run_until_complete(asyncio.get_event_loop().run_until_complete(cls.get_method("main", "([Ljava/lang/String;)V")).invoke(*sys.argv[3:]))
 

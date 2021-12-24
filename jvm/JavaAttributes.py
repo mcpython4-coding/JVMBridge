@@ -17,7 +17,7 @@ from jvm.api import AbstractJavaClass
 class AbstractAttributeParser(ABC):
     NAME: str = None
 
-    def parse(self, table: "JavaAttributeTable", data: bytearray):
+    async def parse(self, table: "JavaAttributeTable", data: bytearray):
         raise NotImplementedError
 
     def dump(self, table: "JavaAttributeTable") -> bytearray:
@@ -36,7 +36,7 @@ class ConstantValueParser(AbstractAttributeParser):
         self.field: "JavaField" = None
         self.data = None
 
-    def parse(self, table: "JavaAttributeTable", data: bytearray):
+    async def parse(self, table: "JavaAttributeTable", data: bytearray):
         self.value = table.class_file.cp[pop_u2(data)]
         self.field = table.parent
 
@@ -75,7 +75,7 @@ class CodeParser(AbstractAttributeParser):
         self.exception_table = {}
         self.attributes = JavaAttributeTable(self)
 
-    def parse(self, table: "JavaAttributeTable", data: bytearray):
+    async def parse(self, table: "JavaAttributeTable", data: bytearray):
         self.table = table
         self.class_file = table.class_file
         self.max_stacks = pop_u2(data)
@@ -92,7 +92,7 @@ class CodeParser(AbstractAttributeParser):
             )
             self.exception_table.setdefault(start, []).append((end, handler, catch))
 
-        self.attributes.from_data(table.class_file, data)
+        await self.attributes.from_data(table.class_file, data)
 
     def dump(self, table: "JavaAttributeTable") -> bytearray:
         data = bytearray()
@@ -116,7 +116,7 @@ class BootstrapMethods(AbstractAttributeParser):
     def __init__(self):
         self.entries = []
 
-    def parse(self, table: "JavaAttributeTable", data: bytearray):
+    async def parse(self, table: "JavaAttributeTable", data: bytearray):
         for _ in range(pop_u2(data)):
             method_ref = table.class_file.cp[pop_u2(data) - 1]
             arguments = [
@@ -167,7 +167,7 @@ class StackMapTableParser(AbstractAttributeParser):
     def __init__(self):
         self.entries = []
 
-    def parse(self, table: "JavaAttributeTable", data: bytearray):
+    async def parse(self, table: "JavaAttributeTable", data: bytearray):
         for _ in range(pop_u2(data)):
             entry_type = pop_u1(data)
             # print(1, entry_type)
@@ -220,14 +220,14 @@ class ElementValue:
         self.data = None
         self.raw_data = None
 
-    def parse(self, table: "JavaAttributeTable", data: bytearray):
+    async def parse(self, table: "JavaAttributeTable", data: bytearray):
         # as by https://docs.oracle.com/javase/specs/jvms/se16/html/jvms-4.html#jvms-4.7.16
 
         self.tag = tag = chr(pop_u1(data))
 
         # these can be directly loaded from the constant pool
         if tag in "BCDFIJSZs":
-            self.data = decode_cp_constant(table.class_file.cp[pop_u2(data) - 1], vm=table.class_file.vm)
+            self.data = await decode_cp_constant(table.class_file.cp[pop_u2(data) - 1], vm=table.class_file.vm)
 
         elif tag == "e":
             cls_name = (
@@ -238,16 +238,16 @@ class ElementValue:
             attr_name = table.class_file.cp[pop_u2(data) - 1][1]
             self.raw_data = cls_name, attr_name
 
-            cls = table.class_file.vm.get_class(cls_name, version=table.class_file.internal_version)
+            cls = await table.class_file.vm.get_class(cls_name, version=table.class_file.internal_version)
 
             if cls is not None:
-                self.data = cls.get_static_attribute(attr_name, "enum")
+                self.data = await cls.get_static_attribute(attr_name, "enum")
 
         elif tag == "c":
             self.data = table.class_file.cp[pop_u2(data) - 1]
 
         elif tag == "[":
-            self.data = [ElementValue().parse(table, data) for _ in range(pop_u2(data))]
+            self.data = [await ElementValue().parse(table, data) for _ in range(pop_u2(data))]
 
         elif tag == "@":
             annotation_type = (
@@ -264,7 +264,7 @@ class ElementValue:
                     raise StackCollectingException("invalid entry: "+str(name))
 
                 name = name[1]
-                value = ElementValue().parse(table, data)
+                value = await ElementValue().parse(table, data)
                 values.append((name, value))
 
             self.data = annotation_type, values
@@ -300,7 +300,7 @@ class RuntimeAnnotationsParser(AbstractAttributeParser):
     def __init__(self):
         self.annotations = []
 
-    def parse(self, table: "JavaAttributeTable", data: bytearray):
+    async def parse(self, table: "JavaAttributeTable", data: bytearray):
         for _ in range(pop_u2(data)):
             annotation_type = (
                 table.class_file.cp[pop_u2(data) - 1][1]
@@ -320,7 +320,7 @@ class RuntimeAnnotationsParser(AbstractAttributeParser):
                 name = name[1]
 
                 try:
-                    value = ElementValue().parse(table, data)
+                    value = await ElementValue().parse(table, data)
                 except StackCollectingException as e:
                     e.add_trace(
                         f"during decoding {self.__class__.__name__}-attribute for annotation class {annotation_type} annotating class {table.class_file.name}"
@@ -354,7 +354,7 @@ class NestHostParser(AbstractAttributeParser):
     def __init__(self):
         self.host = None
 
-    def parse(self, table: "JavaAttributeTable", data: bytearray):
+    async def parse(self, table: "JavaAttributeTable", data: bytearray):
         self.host = table.class_file.cp[pop_u2(data) - 1][1][1]
 
     def dump(self, table: "JavaAttributeTable") -> bytearray:
@@ -367,7 +367,7 @@ class NestMembersParser(AbstractAttributeParser):
     def __init__(self):
         self.classes = []
 
-    def parse(self, table: "JavaAttributeTable", data: bytearray):
+    async def parse(self, table: "JavaAttributeTable", data: bytearray):
         self.classes += [
             table.class_file.cp[pop_u2(data) - 1][1][1]
             for _ in range(pop_u2(data))
@@ -389,7 +389,7 @@ class SignatureParser(AbstractAttributeParser):
     def __init__(self):
         self.signature = None
 
-    def parse(self, table: "JavaAttributeTable", data: bytearray):
+    async def parse(self, table: "JavaAttributeTable", data: bytearray):
         self.signature = table.class_file.cp[pop_u2(data) - 1][1]
 
     def dump(self, table: "JavaAttributeTable") -> bytearray:
@@ -402,7 +402,7 @@ class ExceptionsParser(AbstractAttributeParser):
     def __init__(self):
         self.exceptions = []
 
-    def parse(self, table: "JavaAttributeTable", data: bytearray):
+    async def parse(self, table: "JavaAttributeTable", data: bytearray):
         self.exceptions += [
             table.class_file.cp[pop_u2(data) - 1][1][1]
             for _ in range(pop_u2(data))
@@ -424,7 +424,7 @@ class InnerClassesParser(AbstractAttributeParser):
     def __init__(self):
         self.inner_classes = []
 
-    def parse(self, table: "JavaAttributeTable", data: bytearray):
+    async def parse(self, table: "JavaAttributeTable", data: bytearray):
         for _ in range(pop_u2(data)):
             inner_class_index = pop_u2(data)
             outer_class_index = pop_u2(data)
@@ -442,7 +442,7 @@ class EnclosingMethodParser(AbstractAttributeParser):
     def __init__(self):
         self.class_index, self.method_index = -1, -1
 
-    def parse(self, table: "JavaAttributeTable", data: bytearray):
+    async def parse(self, table: "JavaAttributeTable", data: bytearray):
         self.class_index, self.method_index = pop_u2(data), pop_u2(data)
 
     def dump(self, table: "JavaAttributeTable") -> bytearray:
@@ -501,7 +501,7 @@ class JavaAttributeTable:
         self.attributes_unparsed = {}
         self.attributes = {}
 
-    def from_data(self, class_file: AbstractJavaClass, data: bytearray):
+    async def from_data(self, class_file: AbstractJavaClass, data: bytearray):
         self.class_file = class_file
 
         for _ in range(pop_u2(data)):
@@ -516,7 +516,7 @@ class JavaAttributeTable:
 
                 for data in self.attributes_unparsed[key]:
                     instance = self.ATTRIBUTES[key]()
-                    instance.parse(self, bytearray(data))
+                    await instance.parse(self, bytearray(data))
                     self.attributes[key].append(instance)
 
                 del self.attributes_unparsed[key]
