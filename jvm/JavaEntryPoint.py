@@ -298,8 +298,8 @@ class JavaModLoader(AbstractModLoaderInstance):
 class McModInfoLoader(AbstractModLoaderInstance):
     # mcmod.info
     @classmethod
-    def match_container_loader(cls, container: ModContainer) -> bool:
-        return container.resource_access.is_in_path("mcmod.info")
+    async def match_container_loader(cls, container: ModContainer) -> bool:
+        return await container.resource_access.is_in_path("mcmod.info")
 
     async def on_select(self):
         data = json.loads(
