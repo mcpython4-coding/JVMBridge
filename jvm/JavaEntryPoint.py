@@ -66,7 +66,7 @@ jvm.natives.manager.load_files()
 class McpythonResourceLookup(IClassAccessor):
     async def try_access_resource(self, path: str) -> typing.Optional[bytes]:
         try:
-            return mcpython.engine.ResourceLoader.read_raw(path)
+            return await mcpython.engine.ResourceLoader.read_raw(path)
         except (FileNotFoundError, KeyError, NameError):
             pass
 
@@ -115,13 +115,13 @@ class JavaMod(mcpython.common.mod.Mod.Mod):
         :param file: the file, as reach-able by local access
         """
 
-        data = json.loads(self.resource_access.read_raw(file).decode("utf-8"))
+        data = json.loads((await self.resource_access.read_raw(file)).decode("utf-8"))
 
         if "refmap" in data:
             refmap = data["refmap"]
 
             try:
-                refmap_data = json.loads(self.resource_access.read_raw(refmap).decode("utf-8"))
+                refmap_data = json.loads((await self.resource_access.read_raw(refmap)).decode("utf-8"))
             except KeyError:
                 logger.println("[MIXIN PROCESSOR][FATAL] failed to load refmap")
                 return
@@ -239,7 +239,7 @@ class JavaModLoader(AbstractModLoaderInstance):
     It binds the java bytecode loader framework together with its bridges to mcpython mod loader
     """
 
-    def on_select(self):
+    async def on_select(self):
         shared.mod_loader.current_container = self.container
         data = self.parent.raw_data
 
@@ -301,9 +301,9 @@ class McModInfoLoader(AbstractModLoaderInstance):
     def match_container_loader(cls, container: ModContainer) -> bool:
         return container.resource_access.is_in_path("mcmod.info")
 
-    def on_select(self):
+    async def on_select(self):
         data = json.loads(
-            self.container.resource_access.read_raw("mcmod.info").decode("utf-8")
+            (await self.container.resource_access.read_raw("mcmod.info")).decode("utf-8")
         )
 
         self.raw_data = data
