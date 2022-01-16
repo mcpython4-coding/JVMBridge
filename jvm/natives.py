@@ -259,6 +259,7 @@ class NativeManager:
         "com/electronwill/nightconfig/core/": "night_config",
         "org/intellij/lang/annotations/": "java",
         "org/objectweb/asm/": "asm",
+        "scala/reflect/": "java",
     }
 
     @classmethod

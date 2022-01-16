@@ -28,6 +28,9 @@
       },
       "m_5524_()Ljava/lang/String;": {
         "access": 8
+      },
+      "m_7968_()Lnet/minecraft/world/item/ItemStack;": {
+        "access": 8
       }
     }
   },
@@ -300,6 +303,390 @@
         "access": 8
       },
       "f_42542_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42413_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42416_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42417_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42534_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42415_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42616_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_41983_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42525_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42692_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42695_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42696_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42584_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42500_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42591_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42403_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42516_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42501_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42414_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42484_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42452_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42689_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42691_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42648_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42649_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42454_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42402_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42585_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42748_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42686_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42401_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42583_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42029_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42094_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_41866_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_41864_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42211_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42210_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_41865_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42799_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42800_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42801_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_41826_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_41827_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_41828_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42410_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42436_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42406_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42521_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42528_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42529_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42572_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42730_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42579_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42485_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42581_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42697_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42658_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42536_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42537_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42538_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42539_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42540_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42489_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42490_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42491_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42492_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42493_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42495_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42496_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42497_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42498_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42747_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42655_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42656_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42716_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42355_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42715_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42714_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_41951_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42104_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42494_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42532_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42535_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42784_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42418_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42733_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42404_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42192_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42258_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42435_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42102_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42517_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_41962_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_41961_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_151049_": {
+        "descriptor": "Lnet/minecraft/world/item/Item;",
+        "access": 8
+      },
+      "f_42398_": {
         "descriptor": "Lnet/minecraft/world/item/Item;",
         "access": 8
       }
@@ -6390,6 +6777,15 @@
     "attributes": {
       "f_49792_": {
         "descriptor": "",
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraft/world/food/Foods",
+    "attributes": {
+      "f_38831_": {
+        "descriptor": "Lnet/minecraft/world/food/FoodProperties;",
         "access": 8
       }
     }

@@ -738,6 +738,9 @@
       },
       "isEmpty()Z": {
         "access": 8
+      },
+      "contains(Ljava/lang/Object;)Z": {
+        "access": 8
       }
     }
   },
@@ -822,6 +825,9 @@
         "access": 8
       },
       "of([Ljava/lang/Object;)Ljava/util/List;": {
+        "access": 8
+      },
+      "contains(Ljava/lang/Object;)Z": {
         "access": 8
       }
     }
@@ -2052,6 +2058,14 @@
       },
       "getSystemClassLoader()Ljava/lang/ClassLoader;": {
         "access": 1
+      }
+    }
+  },
+  {
+    "name": "scala/reflect/ScalaSignature",
+    "methods": {
+      "onObjectAnnotation(Ljava/lang/Object;Ljava/lang/List;)V": {
+        "access": 8
       }
     }
   }

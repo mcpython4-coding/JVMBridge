@@ -1650,5 +1650,21 @@
   },
   {
     "name": "net/minecraftforge/common/crafting/conditions/IConditionSerializer"
+  },
+  {
+    "name": "net/minecraftforge/common/brewing/BrewingRecipe",
+    "methods": {
+      "<init>(Lnet/minecraft/world/item/crafting/Ingredient;Lnet/minecraft/world/item/crafting/Ingredient;Lnet/minecraft/world/item/ItemStack;)V": {
+        "access": 8
+      }
+    }
+  },
+  {
+    "name": "net/minecraftforge/common/brewing/BrewingRecipeRegistry",
+    "methods": {
+      "addRecipe(Lnet/minecraftforge/common/brewing/IBrewingRecipe;)Z": {
+        "access": 8
+      }
+    }
   }
 ]

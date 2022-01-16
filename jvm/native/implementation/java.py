@@ -276,9 +276,15 @@ class ListLike:
     @bind_native("java/util/ArrayList", "forEach(Ljava/util/function/Consumer;)V")
     @bind_native("java/util/List", "forEach(Ljava/util/function/Consumer;)V")
     @bind_native("java/util/Collection", "forEach(Ljava/util/function/Consumer;)V")
-    def forEach(method, stack, this, consumer):
+    async def forEach(method, stack, this, consumer):
         for item in this.underlying:
-            consumer(item)
+            if hasattr(consumer, "invoke"):
+                await consumer.invoke((item,))
+            else:
+                result = consumer(item)
+
+                if isinstance(result, typing.Awaitable):
+                    await result
 
     @staticmethod
     @bind_native("java/util/Collections", "emptyList()Ljava/util/List;")
